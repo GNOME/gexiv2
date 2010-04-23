@@ -3,6 +3,7 @@
  *
  * Author(s)
  * 	Mike Gemuende <mike@gemuende.de>
+ * 	Jim Nelson <jim@yorba.org>
  *
  * This is free software. See COPYING for details.
  */
@@ -25,6 +26,39 @@ gexiv2_metadata_has_iptc (GExiv2Metadata *self)
 	g_return_val_if_fail (GEXIV2_IS_METADATA (self), false);
 	
 	return ! (self->priv->iptc_data.empty ());
+}
+
+
+gboolean
+gexiv2_metadata_has_iptc_tag(GExiv2Metadata *self, const gchar* tag)
+{
+	g_return_val_if_fail(GEXIV2_IS_METADATA(self), false);
+	g_return_val_if_fail(tag != NULL, false);
+	
+	Exiv2::IptcData &iptc_data = self->priv->iptc_data;
+	for (Exiv2::IptcData::iterator it = iptc_data.begin(); it != iptc_data.end(); ++it) {
+		if (g_ascii_strcasecmp(tag, it->key().c_str()) == 0)
+			return true;
+	}
+	
+	return false;
+}
+
+
+void
+gexiv2_metadata_clear_iptc_tag(GExiv2Metadata *self, const gchar* tag)
+{
+	g_return_if_fail(GEXIV2_IS_METADATA(self));
+	g_return_if_fail(tag != NULL);
+	
+	Exiv2::IptcData &iptc_data = self->priv->iptc_data;
+	Exiv2::IptcData::iterator it = iptc_data.begin();
+	while (it != iptc_data.end()) {
+		if (g_ascii_strcasecmp(tag, it->key().c_str()) == 0)
+			it = iptc_data.erase(it);
+		else
+			it++;
+	}
 }
 
 
@@ -231,14 +265,14 @@ gexiv2_metadata_get_iptc_caption (GExiv2Metadata *self)
 
 
 gchar*
-gexiv2_metadata_get_iptc_by_line (GExiv2Metadata *self)
+gexiv2_metadata_get_iptc_byline (GExiv2Metadata *self)
 {
 	return gexiv2_metadata_get_iptc_tag_string (self, "Iptc.Application2.Byline");
 }
 
 
 gchar*
-gexiv2_metadata_get_iptc_by_line_title (GExiv2Metadata *self)
+gexiv2_metadata_get_iptc_byline_title (GExiv2Metadata *self)
 {
 	return gexiv2_metadata_get_iptc_tag_string (self, "Iptc.Application2.BylineTitle");
 }
@@ -310,14 +344,14 @@ gexiv2_metadata_set_iptc_tag_string_cut (GExiv2Metadata *self, const gchar* tag,
 
 
 void
-gexiv2_metadata_set_iptc_by_line (GExiv2Metadata *self, const gchar* value)
+gexiv2_metadata_set_iptc_byline (GExiv2Metadata *self, const gchar* value)
 {
 	gexiv2_metadata_set_iptc_tag_string_cut (self, "Iptc.Application2.Byline", value, 32);
 }
 
 
 void
-gexiv2_metadata_set_iptc_by_line_title (GExiv2Metadata *self, const gchar* value)
+gexiv2_metadata_set_iptc_byline_title (GExiv2Metadata *self, const gchar* value)
 {
 	gexiv2_metadata_set_iptc_tag_string_cut (self, "Iptc.Application2.BylineTitle", value, 32);
 }

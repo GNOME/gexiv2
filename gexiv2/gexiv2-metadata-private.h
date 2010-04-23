@@ -10,7 +10,7 @@
 #ifndef __GEXIV2_METADATA_PRIVATE_H__
 #define __GEXIV2_METADATA_PRIVATE_H__
 
-#include "gexiv2-metadata.h"
+#include <gexiv2/gexiv2-metadata.h>
 #include <exiv2/image.hpp>
 #include <exiv2/exif.hpp>
 #include <exiv2/iptc.hpp>

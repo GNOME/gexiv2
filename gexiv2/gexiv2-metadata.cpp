@@ -3,6 +3,7 @@
  *
  * Author(s)
  * 	Mike Gemuende <mike@gemuende.de>
+ *  Jim Nelson <jim@yorba.org>
  *
  * This is free software. See COPYING for details.
  */
@@ -64,6 +65,7 @@ gexiv2_metadata_finalize (GObject *object)
 	GExiv2Metadata *self = GEXIV2_METADATA (object);
 	
 	g_free (self->priv->comment);
+	g_free (self->priv->mime_type);
 	
 	G_OBJECT_CLASS (gexiv2_metadata_parent_class)->finalize (object);
 }
@@ -275,6 +277,42 @@ gexiv2_metadata_save_stream (GExiv2Metadata *self, ManagedStreamCallbacks* cb, G
 
 
 
+gboolean
+gexiv2_metadata_has_tag(GExiv2Metadata *self, const gchar* tag)
+{
+    g_return_val_if_fail(GEXIV2_IS_METADATA(self), false);
+    g_return_val_if_fail(tag != NULL, false);
+    
+    if (gexiv2_metadata_is_xmp_tag(tag))
+        return gexiv2_metadata_has_xmp_tag(self, tag);
+    
+    if (gexiv2_metadata_is_exif_tag(tag))
+        return gexiv2_metadata_has_exif_tag(self, tag);
+    
+    if (gexiv2_metadata_is_iptc_tag(tag))
+        return gexiv2_metadata_has_iptc_tag(self, tag);
+    
+    return false;
+}
+
+
+void
+gexiv2_metadata_clear_tag(GExiv2Metadata *self, const gchar* tag)
+{
+    g_return_if_fail(GEXIV2_IS_METADATA(self));
+    g_return_if_fail(tag != NULL);
+    
+    if (gexiv2_metadata_is_xmp_tag(tag))
+        return gexiv2_metadata_clear_tag(self, tag);
+    
+    if (gexiv2_metadata_is_exif_tag(tag))
+        return gexiv2_metadata_clear_tag(self, tag);
+    
+    if (gexiv2_metadata_is_iptc_tag(tag))
+        return gexiv2_metadata_clear_tag(self, tag);
+}
+
+
 void
 gexiv2_metadata_clear (GExiv2Metadata *self)
 {
@@ -387,7 +425,7 @@ gexiv2_metadata_set_date_time (GExiv2Metadata *self, const gchar* datetime)
 	xmp_data["Xmp.xmp.ModifyDate"] = datetime;
 	xmp_data["Xmp.xmp.MetadataDate"] = datetime;
 	
-	/* handle IPTC data */
+	/* TODO: handle IPTC data */
 }
 
 
@@ -739,21 +777,68 @@ gexiv2_metadata_set_rating (GExiv2Metadata *self, guint rating)
 }
 
 
+gboolean
+gexiv2_metadata_is_exif_tag(const gchar* tag)
+{
+    g_return_val_if_fail(tag != NULL, false);
+    
+    return g_ascii_strncasecmp("Exif.", tag, 4) == 0;
+}
+
+
+gboolean
+gexiv2_metadata_is_xmp_tag(const gchar* tag)
+{
+    g_return_val_if_fail(tag != NULL, false);
+    
+    return g_ascii_strncasecmp("Xmp.", tag, 4) == 0;
+}
+
+
+gboolean
+gexiv2_metadata_is_iptc_tag(const gchar* tag)
+{
+    g_return_val_if_fail(tag != NULL, false);
+    
+    return g_ascii_strncasecmp("Iptc.", tag, 5) == 0;
+}
+
+
 gchar*
 gexiv2_metadata_get_tag_string (GExiv2Metadata *self, const gchar* tag)
 {
 	g_return_val_if_fail (GEXIV2_IS_METADATA (self), NULL);
+	g_return_val_if_fail (tag != NULL, NULL);
 	
-	if (g_ascii_strncasecmp ("Xmp." , tag, 4) == 0)
+	if (gexiv2_metadata_is_xmp_tag(tag))
 		return gexiv2_metadata_get_xmp_tag_string (self, tag);
 		
-	if (g_ascii_strncasecmp ("Exif." , tag, 4) == 0)
+	if (gexiv2_metadata_is_exif_tag(tag))
 		return gexiv2_metadata_get_exif_tag_string (self, tag);
 		
-	if (g_ascii_strncasecmp ("Iptc." , tag, 5) == 0)
+	if (gexiv2_metadata_is_iptc_tag(tag))
 		return gexiv2_metadata_get_iptc_tag_string (self, tag);
 	
 	return NULL;
+}
+
+
+gboolean
+gexiv2_metadata_set_tag_string (GExiv2Metadata *self, const gchar* tag, const gchar* value)
+{
+    g_return_val_if_fail(GEXIV2_IS_METADATA(self), false);
+    g_return_val_if_fail(tag != NULL, false);
+    
+    if (gexiv2_metadata_is_xmp_tag(tag))
+        return gexiv2_metadata_set_xmp_tag_string(self, tag, value);
+    
+    if (gexiv2_metadata_is_exif_tag(tag))
+        return gexiv2_metadata_set_exif_tag_string(self, tag, value);
+    
+    if (gexiv2_metadata_is_iptc_tag(tag))
+        return gexiv2_metadata_set_iptc_tag_string(self, tag, value);
+    
+    return false;
 }
 
 
@@ -761,24 +846,89 @@ gchar*
 gexiv2_metadata_get_tag_interpreted_string (GExiv2Metadata *self, const gchar* tag)
 {
 	g_return_val_if_fail (GEXIV2_IS_METADATA (self), NULL);
+	g_return_val_if_fail (tag != NULL, NULL);
 	
-	if (g_ascii_strncasecmp ("Xmp." , tag, 4) == 0)
+	if (gexiv2_metadata_is_xmp_tag(tag))
 		return gexiv2_metadata_get_xmp_tag_interpreted_string (self, tag);
 		
-	if (g_ascii_strncasecmp ("Exif." , tag, 4) == 0)
+	if (gexiv2_metadata_is_exif_tag(tag))
 		return gexiv2_metadata_get_exif_tag_interpreted_string (self, tag);
 		
-	if (g_ascii_strncasecmp ("Iptc." , tag, 5) == 0)
+	if (gexiv2_metadata_is_iptc_tag(tag))
 		return gexiv2_metadata_get_iptc_tag_interpreted_string (self, tag);
 	
 	return NULL;
 }
 
 
+gchar**
+gexiv2_metadata_get_tag_multiple(GExiv2Metadata *self, const gchar* tag)
+{
+	g_return_val_if_fail(GEXIV2_IS_METADATA(self), NULL);
+	g_return_val_if_fail(tag != NULL, NULL);
+	
+	if (gexiv2_metadata_is_xmp_tag(tag))
+		return gexiv2_metadata_get_xmp_tag_multiple(self, tag);
+	
+	if (gexiv2_metadata_is_iptc_tag(tag))
+		return gexiv2_metadata_get_iptc_tag_multiple(self, tag);
+	
+	return NULL;
+}
+
+
+gboolean
+gexiv2_metadata_set_tag_multiple(GExiv2Metadata *self, const gchar* tag, const gchar** values)
+{
+	g_return_val_if_fail(GEXIV2_IS_METADATA(self), false);
+	g_return_val_if_fail(tag != NULL, false);
+	g_return_val_if_fail(values != NULL, false);
+	
+	if (gexiv2_metadata_is_xmp_tag(tag))
+		return gexiv2_metadata_set_xmp_tag_multiple(self, tag, values);
+	
+	if (gexiv2_metadata_is_iptc_tag(tag))
+		return gexiv2_metadata_set_iptc_tag_multiple(self, tag, values);
+	
+	return false;
+}
+
+glong
+gexiv2_metadata_get_tag_long(GExiv2Metadata *self, const gchar* tag)
+{
+    g_return_val_if_fail(GEXIV2_IS_METADATA(self), 0);
+    g_return_val_if_fail(tag != NULL, 0);
+    
+    if (gexiv2_metadata_is_xmp_tag(tag))
+        return gexiv2_metadata_get_xmp_tag_long(self, tag);
+    
+    if (gexiv2_metadata_is_exif_tag(tag))
+        return gexiv2_metadata_get_exif_tag_long(self, tag);
+    
+    return 0;
+}
+
+
+gboolean
+gexiv2_metadata_set_tag_long(GExiv2Metadata *self, const gchar* tag, glong value)
+{
+    g_return_val_if_fail(GEXIV2_IS_METADATA(self), false);
+    g_return_val_if_fail(tag != NULL, false);
+    
+    if (gexiv2_metadata_is_xmp_tag(tag))
+        return gexiv2_metadata_set_xmp_tag_long(self, tag, value);
+    
+    if (gexiv2_metadata_is_exif_tag(tag))
+        return gexiv2_metadata_set_exif_tag_long(self, tag, value);
+    
+    return false;
+}
+
+
 gboolean
 gexiv2_metadata_get_exposure_time (GExiv2Metadata *self, gint *nom, gint *den)
 {
-	return gexiv2_metadata_get_exif_tag_rational (self, "	Exif.Photo.ExposureTime", nom, den);
+	return gexiv2_metadata_get_exif_tag_rational (self, "Exif.Photo.ExposureTime", nom, den);
 }
 
 

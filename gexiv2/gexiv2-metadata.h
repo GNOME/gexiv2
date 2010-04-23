@@ -3,6 +3,7 @@
  *
  * Author(s)
  * 	Mike Gemuende <mike@gemuende.de>
+ * 	Jim Nelson <jim@yorba.org>
  *
  * This is free software. See COPYING for details.
  */
@@ -12,7 +13,7 @@
 
 #include <glib-object.h>
 #include <gio/gio.h>
-#include "gexiv2-managed-stream.h"
+#include <gexiv2/gexiv2-managed-stream.h>
 
 G_BEGIN_DECLS
 
@@ -84,6 +85,8 @@ gboolean		gexiv2_metadata_save_file			(GExiv2Metadata *self, const gchar *path, 
 
 gboolean		gexiv2_metadata_save_stream			(GExiv2Metadata *self, ManagedStreamCallbacks* cb, GError **error);
 
+gboolean		gexiv2_metadata_has_tag				(GExiv2Metadata *self, const gchar* tag);
+void			gexiv2_metadata_clear_tag			(GExiv2Metadata *self, const gchar* tag);
 void			gexiv2_metadata_clear				(GExiv2Metadata *self);
 
 const gchar*	gexiv2_metadata_get_mime_type		(GExiv2Metadata *self);
@@ -118,8 +121,15 @@ void			gexiv2_metadata_set_rating			(GExiv2Metadata *self, guint rating);
 
 gchar*			gexiv2_metadata_get_tag_string		(GExiv2Metadata *self, const gchar* tag);
 gchar*			gexiv2_metadata_get_tag_interpreted_string (GExiv2Metadata *self, const gchar* tag);
+gboolean		gexiv2_metadata_set_tag_string		(GExiv2Metadata *self, const gchar* tag, const gchar* value);
 
-/* not yet implemented
+glong			gexiv2_metadata_get_tag_long		(GExiv2Metadata *self, const gchar* tag);
+gboolean		gexiv2_metadata_set_tag_long		(GExiv2Metadata *self, const gchar* tag, glong value);
+
+gchar**			gexiv2_metadata_get_tag_multiple (GExiv2Metadata *self, const gchar* tag);
+gboolean		gexiv2_metadata_set_tag_multiple (GExiv2Metadata *self, const gchar* tag, const gchar** values);
+
+/* TODO: not yet implemented
 gchar*			gexiv2_metadata_get_creator			(GExiv2Metadata *self);
 void			gexiv2_metadata_set_creator			(GExiv2Metadata *self, const gchar* creator);
 
@@ -137,8 +147,10 @@ gchar*			gexiv2_metadata_get_camera_model	(GExiv2Metadata *self);
 /* exif functions */
 
 gboolean		gexiv2_metadata_has_exif			(GExiv2Metadata *self);
+void			gexiv2_metadata_clear_exif_tag		(GExiv2Metadata *self, const gchar* tag);
 void			gexiv2_metadata_clear_exif			(GExiv2Metadata *self);
 
+gboolean		gexiv2_metadata_has_exif_tag			(GExiv2Metadata *self, const gchar* tag);
 gchar**			gexiv2_metadata_get_exif_tags		(GExiv2Metadata *self);
 
 gchar*			gexiv2_metadata_get_exif_tag_string	(GExiv2Metadata *self, const gchar* tag);
@@ -162,8 +174,10 @@ const gchar*	gexiv2_metadata_get_exif_tag_description (const gchar* tag);
 /* xmp functions */
 
 gboolean		gexiv2_metadata_has_xmp				(GExiv2Metadata *self);
+void			gexiv2_metadata_clear_xmp_tag		(GExiv2Metadata *self, const gchar* tag);
 void			gexiv2_metadata_clear_xmp			(GExiv2Metadata *self);
 
+gboolean		gexiv2_metadata_has_xmp_tag			(GExiv2Metadata *self, const gchar* tag);
 gchar**			gexiv2_metadata_get_xmp_tags		(GExiv2Metadata *self);
 
 gchar*			gexiv2_metadata_get_xmp_tag_string	(GExiv2Metadata *self, const gchar* tag);
@@ -179,7 +193,10 @@ gboolean		gexiv2_metadata_set_xmp_tag_multiple (GExiv2Metadata *self, const gcha
 
 /* static xmp functions */
 
-const gchar*	gexiv2_metadata_get_xmp_tag_label	(const gchar* tag);
+gboolean		gexiv2_metadata_is_xmp_tag				(const gchar* tag);
+gboolean		gexiv2_metadata_is_exif_tag				(const gchar* tag);
+gboolean		gexiv2_metadata_is_iptc_tag				(const gchar* tag);
+const gchar*	gexiv2_metadata_get_xmp_tag_label		(const gchar* tag);
 const gchar*	gexiv2_metadata_get_xmp_tag_description	(const gchar* tag);
 
 
@@ -187,8 +204,10 @@ const gchar*	gexiv2_metadata_get_xmp_tag_description	(const gchar* tag);
 /* iptc functions */
 
 gboolean		gexiv2_metadata_has_iptc			(GExiv2Metadata *self);
+void			gexiv2_metadata_clear_iptc_tag		(GExiv2Metadata *self, const gchar* tag);
 void			gexiv2_metadata_clear_iptc			(GExiv2Metadata *self);
 
+gboolean		gexiv2_metadata_has_iptc_tag			(GExiv2Metadata *self, const gchar* tag);
 gchar**			gexiv2_metadata_get_iptc_tags		(GExiv2Metadata *self);
 
 gchar*			gexiv2_metadata_get_iptc_tag_string	(GExiv2Metadata *self, const gchar* tag);
@@ -202,13 +221,13 @@ gboolean		gexiv2_metadata_set_iptc_tag_multiple	(GExiv2Metadata *self, const gch
 gchar**			gexiv2_metadata_get_iptc_keywords	(GExiv2Metadata *self);
 
 gchar*			gexiv2_metadata_get_iptc_headline	(GExiv2Metadata *self);
-gchar*			gexiv2_metadata_get_iptc_headline	(GExiv2Metadata *self);
+/* TODO: set headline */
 
 gchar*			gexiv2_metadata_get_iptc_caption	(GExiv2Metadata *self);
-gchar*			gexiv2_metadata_get_iptc_caption	(GExiv2Metadata *self);
+/* TODO: set caption */
 
-gchar*			gexiv2_metadata_get_iptc_by_line		(GExiv2Metadata *self);
-gchar*			gexiv2_metadata_get_iptc_by_line_title	(GExiv2Metadata *self);
+gchar*			gexiv2_metadata_get_iptc_byline			(GExiv2Metadata *self);
+gchar*			gexiv2_metadata_get_iptc_byline_title	(GExiv2Metadata *self);
 gchar*			gexiv2_metadata_get_iptc_copyright		(GExiv2Metadata *self);
 gchar*			gexiv2_metadata_get_iptc_contact		(GExiv2Metadata *self);
 gchar*			gexiv2_metadata_get_iptc_city			(GExiv2Metadata *self);
@@ -218,8 +237,8 @@ gchar*			gexiv2_metadata_get_iptc_country_code	(GExiv2Metadata *self);
 gchar*			gexiv2_metadata_get_iptc_country_name	(GExiv2Metadata *self);
 gchar*			gexiv2_metadata_get_iptc_writer			(GExiv2Metadata *self);
 
-void			gexiv2_metadata_set_iptc_by_line		(GExiv2Metadata *self, const gchar* value);
-void			gexiv2_metadata_set_iptc_by_line_title	(GExiv2Metadata *self, const gchar* value);
+void			gexiv2_metadata_set_iptc_byline			(GExiv2Metadata *self, const gchar* value);
+void			gexiv2_metadata_set_iptc_byline_title	(GExiv2Metadata *self, const gchar* value);
 void			gexiv2_metadata_set_iptc_copyright		(GExiv2Metadata *self, const gchar* value);
 void			gexiv2_metadata_set_iptc_contact		(GExiv2Metadata *self, const gchar* value);
 void			gexiv2_metadata_set_iptc_city			(GExiv2Metadata *self, const gchar* value);

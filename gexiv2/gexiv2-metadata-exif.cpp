@@ -3,6 +3,7 @@
  *
  * Author(s)
  * 	Mike Gemuende <mike@gemuende.de>
+ *  Jim Nelson <jim@yorba.org>
  *
  * This is free software. See COPYING for details.
  */
@@ -22,6 +23,39 @@ gexiv2_metadata_has_exif (GExiv2Metadata *self)
 	g_return_val_if_fail (GEXIV2_IS_METADATA (self), false);
 	
 	return ! (self->priv->exif_data.empty ());
+}
+
+
+gboolean
+gexiv2_metadata_has_exif_tag(GExiv2Metadata *self, const gchar* tag)
+{
+	g_return_val_if_fail(GEXIV2_IS_METADATA(self), false);
+	g_return_val_if_fail(tag != NULL, false);
+	
+	Exiv2::ExifData &exif_data = self->priv->exif_data;
+	for (Exiv2::ExifData::iterator it = exif_data.begin(); it != exif_data.end(); ++it) {
+		if (g_ascii_strcasecmp(tag, it->key().c_str()) == 0)
+			return true;
+	}
+	
+	return false;
+}
+
+
+void
+gexiv2_metadata_clear_exif_tag(GExiv2Metadata *self, const gchar* tag)
+{
+	g_return_if_fail(GEXIV2_IS_METADATA(self));
+	g_return_if_fail(tag != NULL);
+	
+	Exiv2::ExifData &exif_data = self->priv->exif_data;
+	Exiv2::ExifData::iterator it = exif_data.begin();
+	while (it != exif_data.end()) {
+		if (g_ascii_strcasecmp(tag, it->key().c_str()) == 0)
+			it = exif_data.erase(it);
+		else
+			it++;
+	}
 }
 
 

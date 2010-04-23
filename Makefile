@@ -1,0 +1,139 @@
+PKGNAME = gexiv2
+VERSION = 0.0.1+trunk
+
+LIBRARY = lib$(PKGNAME)
+LIBRARY_BIN = $(LIBRARY).la
+
+INSTALL_PROGRAM = install
+INSTALL_DATA = install -m 644
+
+# defaults that may be overridden by configure.mk
+PREFIX=/usr/local
+BUILD_RELEASE=1
+BUILD_DIR=gexiv2
+
+-include configure.mk
+
+SRC_FILES = \
+	gexiv2-metadata.cpp \
+	gexiv2-metadata-exif.cpp \
+	gexiv2-metadata-gps.cpp \
+	gexiv2-metadata-iptc.cpp \
+	gexiv2-metadata-xmp.cpp \
+	gexiv2-stream-io.cpp
+
+HEADER_FILES = \
+	gexiv2.h \
+	gexiv2-metadata.h \
+	gexiv2-managed-stream.h \
+	gexiv2-metadata-private.h \
+	gexiv2-metadata-stream-io.h
+
+INSTALLED_HEADER_FILES = \
+	gexiv2.h \
+	gexiv2-metadata.h \
+	gexiv2-managed-stream.h
+
+EXT_PKGS = \
+	gobject-2.0 \
+	glib-2.0 \
+	exiv2
+
+VAPI_INPUT = \
+	gexiv2.deps \
+	gexiv2.excludes \
+	gexiv2.files \
+	gexiv2.metadata \
+	gexiv2.namespace
+
+EXPANDED_SRC_FILES = $(foreach src,$(SRC_FILES),gexiv2/$(src))
+EXPANDED_OBJ_FILES = $(foreach src,$(SRC_FILES),$(BUILD_DIR)/$(src:.cpp=.o))
+EXPANDED_LO_FILES = $(foreach src,$(SRC_FILES),$(BUILD_DIR)/$(src:.cpp=.lo))
+EXPANDED_HEADER_FILES = $(foreach hdr,$(HEADER_FILES),gexiv2/$(hdr))
+EXPANDED_INSTALLED_HEADER_FILES = $(foreach hdr,$(INSTALLED_HEADER_FILES),gexiv2/$(hdr))
+EXPANDED_VAPI_INPUT = $(foreach src,$(VAPI_INPUT),vapi/$(src))
+
+VAPI_FILE = $(PKGNAME).vapi
+VAPI_GENERATED_FILES = $(VAPI_FILE) vapi/$(PKGNAME).gi
+
+PC_FILE = $(PKGNAME).pc
+
+DIST_FILES = Makefile configure $(EXPANDED_SRC_FILES) $(EXPANDED_HEADER_FILES) $(EXPANDED_VAPI_INPUT) \
+	AUTHORS COPYING INSTALL MAINTAINERS NEWS README
+
+DIST_TAR = $(LIBRARY)-$(VERSION).tar
+DIST_TAR_BZ2 = $(DIST_TAR).bz2
+DIST_TAR_GZ = $(DIST_TAR).gz
+
+EXT_PKGS_CFLAGS = `pkg-config --cflags $(EXT_PKGS)`
+EXT_PKGS_LDFLAGS = `pkg-config --libs $(EXT_PKGS)`
+
+# setting CFLAGS in configure.mk overrides build type
+ifndef CFLAGS
+ifdef BUILD_DEBUG
+CFLAGS = -O0 -g -pipe -fPIC -nostdlib
+else
+CFLAGS = -O2 -g -pipe -fPIC -nostdlib
+endif
+endif
+
+all: $(LIBRARY_BIN) $(PC_FILE)
+
+clean:
+	rm -f $(EXPANDED_OBJ_FILES)
+	rm -f $(EXPANDED_LO_FILES)
+	rm -rf .libs
+	rm -rf $(BUILD_DIR)/.libs
+	rm -rf $(LIBRARY)-$(VERSION)
+	rm -f $(LIBRARY_BIN)
+	rm -f $(VAPI_GENERATED_FILES)
+	rm -f $(PC_FILE)
+
+dist: $(DIST_FILES)
+	mkdir -p $(LIBRARY)-$(VERSION)
+	cp --parents $(DIST_FILES) $(LIBRARY)-$(VERSION)
+	tar --bzip2 -cvf $(DIST_TAR_BZ2) $(LIBRARY)-$(VERSION)
+	tar --gzip -cvf $(DIST_TAR_GZ) $(LIBRARY)-$(VERSION)
+	rm -rf $(LIBRARY)-$(VERSION)
+
+distclean: clean
+	rm -f configure.mk
+
+vapi: $(VAPI_FILE)
+	@
+
+install:
+	@mkdir -p $(DESTDIR)$(PREFIX)/lib
+	libtool --mode=install $(INSTALL_PROGRAM) $(LIBRARY).la $(DESTDIR)$(PREFIX)/lib
+	@mkdir -p $(DESTDIR)$(PREFIX)/include/$(PKGNAME)
+	$(INSTALL_DATA) $(EXPANDED_INSTALLED_HEADER_FILES) $(DESTDIR)$(PREFIX)/include/$(PKGNAME)
+	@mkdir -p $(DESTDIR)$(PREFIX)/lib/pkgconfig
+	$(INSTALL_DATA) $(PC_FILE) $(DESTDIR)$(PREFIX)/lib/pkgconfig
+	ldconfig
+
+install-vapi:
+	@mkdir -p $(DESTDIR)$(PREFIX)/share/vala/vapi
+	$(INSTALL_DATA) $(VAPI_FILE) $(DESTDIR)$(PREFIX)/share/vala/vapi
+
+uninstall:
+	libtool --mode=uninstall rm -f $(DESTDIR)$(PREFIX)/lib/$(LIBRARY).la
+	rm -rf $(DESTDIR)$(PREFIX)/include/$(PKGNAME)
+	rm -f $(DESTDIR)$(PREFIX)/lib/pkgconfig/$(PKGNAME).pc
+	rm -f $(DESTDIR)$(PREFIX)/share/vala/vapi/$(PKGNAME).vapi
+	ldconfig
+
+$(VAPI_FILE): $(EXPANDED_VAPI_INPUT) Makefile $(CONFIG_IN)
+	@pkg-config --exists --print-errors $(PKGNAME)
+	vala-gen-introspect $(PKGNAME) vapi
+	vapigen --library=$(PKGNAME) --metadata=vapi/$(PKGNAME).metadata vapi/$(PKGNAME).gi
+
+$(PC_FILE) : $(PKGNAME).m4 Makefile $(CONFIG_IN)
+	m4 '--define=_VERSION_=$(VERSION)' '--define=_PREFIX_=$(PREFIX)' $< > $@
+
+$(EXPANDED_OBJ_FILES): $(BUILD_DIR)/%.o: gexiv2/%.cpp $(CONFIG_IN) Makefile
+	@mkdir -p $(BUILD_DIR)
+	libtool --mode=compile $(CXX) -c $(EXT_PKGS_CFLAGS) $(CFLAGS) -I. -o $@ $<
+
+$(LIBRARY_BIN): $(EXPANDED_OBJ_FILES)
+	libtool --mode=link $(CXX) -rpath $(PREFIX)/lib $(EXPANDED_LO_FILES) $(EXT_PKGS_LDFLAGS) $(CFLAGS) $(LDFLAGS) -o $(LIBRARY_BIN)
+

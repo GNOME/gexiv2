@@ -3,6 +3,7 @@
  *
  * Author(s)
  * 	Mike Gemuende <mike@gemuende.de>
+ *  Jim Nelson <jim@yorba.org>
  *
  * This is free software. See COPYING for details.
  */
@@ -34,6 +35,39 @@ gexiv2_metadata_clear_xmp	(GExiv2Metadata *self)
 }
 
 
+gboolean
+gexiv2_metadata_has_xmp_tag(GExiv2Metadata *self, const gchar* tag)
+{
+	g_return_val_if_fail(GEXIV2_IS_METADATA(self), false);
+	g_return_val_if_fail(tag != NULL, false);
+	
+	Exiv2::XmpData &xmp_data = self->priv->xmp_data;
+	for (Exiv2::XmpData::iterator it = xmp_data.begin(); it != xmp_data.end(); ++it) {
+		if (g_ascii_strcasecmp(tag, it->key().c_str()) == 0)
+			return true;
+	}
+	
+	return false;
+}
+
+
+void
+gexiv2_metadata_clear_xmp_tag(GExiv2Metadata *self, const gchar* tag)
+{
+	g_return_if_fail(GEXIV2_IS_METADATA(self));
+	g_return_if_fail(tag != NULL);
+	
+	Exiv2::XmpData &xmp_data = self->priv->xmp_data;
+	Exiv2::XmpData::iterator it = xmp_data.begin();
+	while (it != xmp_data.end()) {
+		if (g_ascii_strcasecmp(tag, it->key().c_str()) == 0)
+			it = xmp_data.erase(it);
+		else
+			it++;
+	}
+}
+
+
 gchar**
 gexiv2_metadata_get_xmp_tags (GExiv2Metadata *self)
 {
@@ -47,7 +81,7 @@ gexiv2_metadata_get_xmp_tags (GExiv2Metadata *self)
 	
 	xmp_data.sortByKey ();
 	
-	for (Exiv2::XmpData::iterator it = xmp_data.begin(); it != xmp_data.end(); ++it) {        
+	for (Exiv2::XmpData::iterator it = xmp_data.begin(); it != xmp_data.end(); ++it) {
 		list = g_slist_prepend (list, g_strdup (it->key ().c_str ()));
 		count = count + 1;
 	}
