@@ -22,7 +22,7 @@ gexiv2_metadata_has_xmp (GExiv2Metadata *self)
 {
 	g_return_val_if_fail (GEXIV2_IS_METADATA (self), false);
 	
-	return ! (self->priv->xmp_data.empty ());
+	return !(self->priv->image->xmpData().empty());
 }
 
 
@@ -31,7 +31,7 @@ gexiv2_metadata_clear_xmp	(GExiv2Metadata *self)
 {
 	g_return_if_fail (GEXIV2_IS_METADATA (self));
 	
-	self->priv->xmp_data.clear ();
+	self->priv->image->xmpData().clear();
 }
 
 
@@ -41,7 +41,8 @@ gexiv2_metadata_has_xmp_tag(GExiv2Metadata *self, const gchar* tag)
 	g_return_val_if_fail(GEXIV2_IS_METADATA(self), false);
 	g_return_val_if_fail(tag != NULL, false);
 	
-	Exiv2::XmpData &xmp_data = self->priv->xmp_data;
+	Exiv2::XmpData &xmp_data = self->priv->image->xmpData();
+	
 	for (Exiv2::XmpData::iterator it = xmp_data.begin(); it != xmp_data.end(); ++it) {
 		if (g_ascii_strcasecmp(tag, it->key().c_str()) == 0)
 			return true;
@@ -51,20 +52,27 @@ gexiv2_metadata_has_xmp_tag(GExiv2Metadata *self, const gchar* tag)
 }
 
 
-void
+gboolean
 gexiv2_metadata_clear_xmp_tag(GExiv2Metadata *self, const gchar* tag)
 {
-	g_return_if_fail(GEXIV2_IS_METADATA(self));
-	g_return_if_fail(tag != NULL);
+	g_return_val_if_fail(GEXIV2_IS_METADATA(self), false);
+	g_return_val_if_fail(tag != NULL, false);
 	
-	Exiv2::XmpData &xmp_data = self->priv->xmp_data;
+	Exiv2::XmpData &xmp_data = self->priv->image->xmpData();
+	
+	gboolean erased = false;
+	
 	Exiv2::XmpData::iterator it = xmp_data.begin();
 	while (it != xmp_data.end()) {
-		if (g_ascii_strcasecmp(tag, it->key().c_str()) == 0)
+		if (g_ascii_strcasecmp(tag, it->key().c_str()) == 0) {
 			it = xmp_data.erase(it);
-		else
+			erased = true;
+		} else {
 			it++;
+		}
 	}
+	
+	return erased;
 }
 
 
@@ -73,13 +81,14 @@ gexiv2_metadata_get_xmp_tags (GExiv2Metadata *self)
 {
 	g_return_val_if_fail (GEXIV2_IS_METADATA (self), NULL);
 	
+	// get a copy of the original XmpData and sort it by key, preserving the original
+	Exiv2::XmpData xmp_data = Exiv2::XmpData(self->priv->image->xmpData());
+	xmp_data.sortByKey ();
+	
 	GSList *list = NULL;
 	GSList *list_iter;
 	gchar** data;
 	gint count = 0;
-	Exiv2::XmpData xmp_data (self->priv->xmp_data);
-	
-	xmp_data.sortByKey ();
 	
 	for (Exiv2::XmpData::iterator it = xmp_data.begin(); it != xmp_data.end(); ++it) {
 		list = g_slist_prepend (list, g_strdup (it->key ().c_str ()));
@@ -101,19 +110,18 @@ gchar*
 gexiv2_metadata_get_xmp_tag_string (GExiv2Metadata *self, const gchar* tag)
 {
 	g_return_val_if_fail (GEXIV2_IS_METADATA (self), NULL);
+	g_return_val_if_fail (tag != NULL, NULL);
 	
-	Exiv2::XmpData& xmp_data = self->priv->xmp_data;
+	Exiv2::XmpData& xmp_data = self->priv->image->xmpData();
 	
 	try {
 		
-		Exiv2::XmpKey key (tag);
-		Exiv2::XmpData::iterator it = xmp_data.findKey (key);
+		Exiv2::XmpData::iterator it = xmp_data.findKey(Exiv2::XmpKey(tag));
+		
 		if (it != xmp_data.end ())
 			return g_strdup (it->toString ().c_str ());
-		
-		return g_strdup ("");
-		
 	} catch (Exiv2::Error& e) {
+		LOG_ERROR(e);
 	}
 	
 	return NULL;
@@ -124,23 +132,20 @@ gchar*
 gexiv2_metadata_get_xmp_tag_interpreted_string (GExiv2Metadata *self, const gchar* tag)
 {
 	g_return_val_if_fail (GEXIV2_IS_METADATA (self), NULL);
+	g_return_val_if_fail(tag != NULL, NULL);
 	
-	Exiv2::XmpData& xmp_data = self->priv->xmp_data;
+	Exiv2::XmpData& xmp_data = self->priv->image->xmpData();
 	
 	try {
-		
-		Exiv2::XmpKey key (tag);
-		Exiv2::XmpData::iterator it = xmp_data.findKey (key);
-		
+		Exiv2::XmpData::iterator it = xmp_data.findKey(Exiv2::XmpKey(tag));
 		if (it != xmp_data.end ()) {
 			std::ostringstream os;
         	it->write (os);
+        	
 			return g_strdup (os.str ().c_str ());
 		}
-		
-		return g_strdup ("");
-		
 	} catch (Exiv2::Error& e) {
+		LOG_ERROR(e);
 	}
 	
 	return NULL;
@@ -151,14 +156,15 @@ gboolean
 gexiv2_metadata_set_xmp_tag_string (GExiv2Metadata *self, const gchar* tag, const gchar* value)
 {
 	g_return_val_if_fail (GEXIV2_IS_METADATA (self), false);
+	g_return_val_if_fail(tag != NULL, false);
+	g_return_val_if_fail(value != NULL, false);
 	
 	try {
+		self->priv->image->xmpData()[tag] = value;
 		
-		self->priv->xmp_data[tag] = value;
-	
 		return true;
-		
 	} catch (Exiv2::Error& e) {
+		LOG_ERROR(e);
 	}
 	
 	return false;
@@ -169,19 +175,16 @@ glong
 gexiv2_metadata_get_xmp_tag_long (GExiv2Metadata *self, const gchar* tag)
 {
 	g_return_val_if_fail (GEXIV2_IS_METADATA (self), 0);
+	g_return_val_if_fail(tag != NULL, 0);
 	
-	Exiv2::XmpData& xmp_data = self->priv->xmp_data;
+	Exiv2::XmpData& xmp_data = self->priv->image->xmpData();
 	
 	try {
-		
-		Exiv2::XmpKey key (tag);
-		Exiv2::XmpData::iterator it = xmp_data.findKey (key);
+		Exiv2::XmpData::iterator it = xmp_data.findKey(Exiv2::XmpKey(tag));
 		if (it != xmp_data.end ())
 			return it->toLong ();
-		
-		return 0;
-		
 	} catch (Exiv2::Error& e) {
+		LOG_ERROR(e);
 	}
 	
 	return 0;
@@ -192,14 +195,14 @@ gboolean
 gexiv2_metadata_set_xmp_tag_long (GExiv2Metadata *self, const gchar* tag, glong value)
 {
 	g_return_val_if_fail (GEXIV2_IS_METADATA (self), false);
+	g_return_val_if_fail(tag != NULL, false);
 	
 	try {
+		self->priv->image->xmpData()[tag] = value;
 		
-		self->priv->xmp_data[tag] = value;
-	
 		return true;
-		
 	} catch (Exiv2::Error& e) {
+		LOG_ERROR(e);
 	}
 	
 	return false;
@@ -210,20 +213,15 @@ gchar**
 gexiv2_metadata_get_xmp_tag_multiple (GExiv2Metadata *self, const gchar* tag)
 {
 	g_return_val_if_fail (GEXIV2_IS_METADATA (self), NULL);
+	g_return_val_if_fail(tag != NULL, NULL);
 	
-	Exiv2::XmpData& xmp_data = self->priv->xmp_data;
+	Exiv2::XmpData& xmp_data = self->priv->image->xmpData();
 	
 	try {
-	
-		Exiv2::XmpKey key (tag);
-		Exiv2::XmpData::iterator it = xmp_data.findKey (key);
-		
-		gchar **array = NULL;
-		
+		Exiv2::XmpData::iterator it = xmp_data.findKey(Exiv2::XmpKey(tag));
 		if (it != xmp_data.end ()) {
-			
 			int size = it->count ();
-			array = g_new (gchar*, size + 1);
+			gchar **array = g_new (gchar*, size + 1);
 			array[size] = NULL;
 			
 			for (int i = 0; i < it->count (); i++)
@@ -231,15 +229,14 @@ gexiv2_metadata_get_xmp_tag_multiple (GExiv2Metadata *self, const gchar* tag)
 			
 			return array;
 		}
-		
-		array = g_new (gchar*, 1);
-		array[0] = NULL;
-		return array;
-		
 	} catch (Exiv2::Error& e) {
+		LOG_ERROR(e);
 	}
 	
-	return NULL;
+	gchar **array = g_new (gchar*, 1);
+	array[0] = NULL;
+	
+	return array;
 }
 
 
@@ -247,28 +244,27 @@ gboolean
 gexiv2_metadata_set_xmp_tag_multiple (GExiv2Metadata *self, const gchar* tag, const gchar** values)
 {
 	g_return_val_if_fail (GEXIV2_IS_METADATA (self), false);
+	g_return_val_if_fail(tag != NULL, false);
+	g_return_val_if_fail(values != NULL, false);
 	
-	Exiv2::XmpData& xmp_data = self->priv->xmp_data;
+	Exiv2::XmpData& xmp_data = self->priv->image->xmpData();
 	
 	try {
-		
 		/* first clear existing tag */
-		Exiv2::XmpKey key (tag);
-		Exiv2::XmpData::iterator xmp_it = xmp_data.findKey (key);
+		Exiv2::XmpData::iterator xmp_it = xmp_data.findKey(Exiv2::XmpKey(tag));
 		if (xmp_it != xmp_data.end ())
 			xmp_data.erase (xmp_it);
 		
 		/* ... and then set the others */
 		const gchar **val_it = values;
 		while (*val_it != NULL) {
-			
 			xmp_data[tag] = static_cast<const std::string> (*val_it);
-			++ val_it;
+			++val_it;
 		}
-	 
-	 	return true;
-	 
+		
+		return true;
 	} catch (Exiv2::Error& e) {
+		LOG_ERROR(e);
 	}
 	
 	return false;
@@ -278,30 +274,30 @@ gexiv2_metadata_set_xmp_tag_multiple (GExiv2Metadata *self, const gchar* tag, co
 const gchar*
 gexiv2_metadata_get_xmp_tag_label (const gchar* tag)
 {
+	g_return_val_if_fail(tag != NULL, NULL);
+	
 	try {
-		
-		Exiv2::XmpKey key (tag);
-		return Exiv2::XmpProperties::propertyTitle (key);
-		
+		return Exiv2::XmpProperties::propertyTitle(Exiv2::XmpKey(tag));
 	} catch (Exiv2::Error& e) {
+		LOG_ERROR(e);
 	}
 	
-	return "";
+	return NULL;
 }
 
 
 const gchar*
 gexiv2_metadata_get_xmp_tag_description (const gchar* tag)
 {
+	g_return_val_if_fail(tag != NULL, NULL);
+	
 	try {
-		
-		Exiv2::XmpKey key (tag);
-		return Exiv2::XmpProperties::propertyDesc (key);
-		
+		return Exiv2::XmpProperties::propertyDesc(Exiv2::XmpKey(tag));
 	} catch (Exiv2::Error& e) {
+		LOG_ERROR(e);
 	}
 	
-	return "";
+	return NULL;
 }
 
 

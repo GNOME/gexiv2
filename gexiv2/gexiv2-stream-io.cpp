@@ -20,6 +20,7 @@
 #include <exiv2/basicio.hpp>
 #include <gio/gio.h>
 #include <glib.h>
+#include <stdio.h>
 
 #include <exception>
 
@@ -44,17 +45,21 @@ StreamIo::~StreamIo ()
 }
 
 
-void StreamIo::munmap ()
+int StreamIo::munmap ()
 {
+	int result = 0;
+	
 	/* remove current memio object */
 	if (memio.get () != NULL) {
-		memio->munmap ();
+		result = memio->munmap ();
 		memio.reset (NULL);
 	}
+	
+	return result;
 }
 
 
-const Exiv2::byte* StreamIo::mmap ()
+Exiv2::byte* StreamIo::mmap (bool isWriteable)
 {
 	/* mmap requires to map the whole data to memory, so we just use the MemIo
 	   class ad fill it with our stream to emulate this */
@@ -62,7 +67,7 @@ const Exiv2::byte* StreamIo::mmap ()
 	
 	memio->write (*this);
 	
-	return memio->mmap ();
+	return memio->mmap (isWriteable);
 }
 
 

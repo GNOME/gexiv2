@@ -14,6 +14,8 @@
 #include <glib-object.h>
 #include <gio/gio.h>
 #include <gexiv2/gexiv2-managed-stream.h>
+#include <gexiv2/gexiv2-preview-properties.h>
+#include <gexiv2/gexiv2-preview-image.h>
 
 G_BEGIN_DECLS
 
@@ -74,6 +76,7 @@ struct _GExiv2MetadataClass
 GType 			gexiv2_metadata_get_type			(void);
 
 GExiv2Metadata* gexiv2_metadata_new					();
+void			gexiv2_metadata_free				(GExiv2Metadata *self);
 
 gboolean		gexiv2_metadata_open_path			(GExiv2Metadata *self, const gchar *path, GError **error);
 
@@ -86,7 +89,7 @@ gboolean		gexiv2_metadata_save_file			(GExiv2Metadata *self, const gchar *path, 
 gboolean		gexiv2_metadata_save_stream			(GExiv2Metadata *self, ManagedStreamCallbacks* cb, GError **error);
 
 gboolean		gexiv2_metadata_has_tag				(GExiv2Metadata *self, const gchar* tag);
-void			gexiv2_metadata_clear_tag			(GExiv2Metadata *self, const gchar* tag);
+gboolean		gexiv2_metadata_clear_tag			(GExiv2Metadata *self, const gchar* tag);
 void			gexiv2_metadata_clear				(GExiv2Metadata *self);
 
 const gchar*	gexiv2_metadata_get_mime_type		(GExiv2Metadata *self);
@@ -126,8 +129,8 @@ gboolean		gexiv2_metadata_set_tag_string		(GExiv2Metadata *self, const gchar* ta
 glong			gexiv2_metadata_get_tag_long		(GExiv2Metadata *self, const gchar* tag);
 gboolean		gexiv2_metadata_set_tag_long		(GExiv2Metadata *self, const gchar* tag, glong value);
 
-gchar**			gexiv2_metadata_get_tag_multiple (GExiv2Metadata *self, const gchar* tag);
-gboolean		gexiv2_metadata_set_tag_multiple (GExiv2Metadata *self, const gchar* tag, const gchar** values);
+gchar**			gexiv2_metadata_get_tag_multiple	(GExiv2Metadata *self, const gchar* tag);
+gboolean		gexiv2_metadata_set_tag_multiple	(GExiv2Metadata *self, const gchar* tag, const gchar** values);
 
 /* TODO: not yet implemented
 gchar*			gexiv2_metadata_get_creator			(GExiv2Metadata *self);
@@ -143,14 +146,19 @@ gdouble			gexiv2_metadata_get_focal_length	(GExiv2Metadata *self);
 gint			gexiv2_metadata_get_iso_speed		(GExiv2Metadata *self);
 gchar*			gexiv2_metadata_get_camera_model	(GExiv2Metadata *self);
 
+/* static functions */
+
+const gchar*	gexiv2_metadata_get_tag_label		(const gchar *tag);
+const gchar*	gexiv2_metadata_get_tag_description	(const gchar *tag);
+
 
 /* exif functions */
 
 gboolean		gexiv2_metadata_has_exif			(GExiv2Metadata *self);
-void			gexiv2_metadata_clear_exif_tag		(GExiv2Metadata *self, const gchar* tag);
+gboolean		gexiv2_metadata_clear_exif_tag		(GExiv2Metadata *self, const gchar* tag);
 void			gexiv2_metadata_clear_exif			(GExiv2Metadata *self);
 
-gboolean		gexiv2_metadata_has_exif_tag			(GExiv2Metadata *self, const gchar* tag);
+gboolean		gexiv2_metadata_has_exif_tag		(GExiv2Metadata *self, const gchar* tag);
 gchar**			gexiv2_metadata_get_exif_tags		(GExiv2Metadata *self);
 
 gchar*			gexiv2_metadata_get_exif_tag_string	(GExiv2Metadata *self, const gchar* tag);
@@ -164,6 +172,10 @@ gboolean		gexiv2_metadata_set_exif_tag_long	(GExiv2Metadata *self, const gchar* 
 gboolean		gexiv2_metadata_get_exif_tag_rational (GExiv2Metadata *self, const gchar* tag, gint* nom, gint* den);
 gboolean		gexiv2_metadata_set_exif_tag_rational (GExiv2Metadata *self, const gchar* tag, gint nom, gint den);
 
+gboolean		gexiv2_metadata_set_exif_thumbnail_from_file (GExiv2Metadata *self, const gchar *path, GError **error);
+void			gexiv2_metadata_set_exif_thumbnail_from_buffer (GExiv2Metadata *self, const guint8 *buffer, gint size);
+void			gexiv2_metadata_erase_exif_thumbnail (GExiv2Metadata *self);
+
 /* static exif functions */
 
 const gchar*	gexiv2_metadata_get_exif_tag_label	(const gchar* tag);
@@ -174,7 +186,7 @@ const gchar*	gexiv2_metadata_get_exif_tag_description (const gchar* tag);
 /* xmp functions */
 
 gboolean		gexiv2_metadata_has_xmp				(GExiv2Metadata *self);
-void			gexiv2_metadata_clear_xmp_tag		(GExiv2Metadata *self, const gchar* tag);
+gboolean		gexiv2_metadata_clear_xmp_tag		(GExiv2Metadata *self, const gchar* tag);
 void			gexiv2_metadata_clear_xmp			(GExiv2Metadata *self);
 
 gboolean		gexiv2_metadata_has_xmp_tag			(GExiv2Metadata *self, const gchar* tag);
@@ -204,10 +216,10 @@ const gchar*	gexiv2_metadata_get_xmp_tag_description	(const gchar* tag);
 /* iptc functions */
 
 gboolean		gexiv2_metadata_has_iptc			(GExiv2Metadata *self);
-void			gexiv2_metadata_clear_iptc_tag		(GExiv2Metadata *self, const gchar* tag);
+gboolean		gexiv2_metadata_clear_iptc_tag		(GExiv2Metadata *self, const gchar* tag);
 void			gexiv2_metadata_clear_iptc			(GExiv2Metadata *self);
 
-gboolean		gexiv2_metadata_has_iptc_tag			(GExiv2Metadata *self, const gchar* tag);
+gboolean		gexiv2_metadata_has_iptc_tag		(GExiv2Metadata *self, const gchar* tag);
 gchar**			gexiv2_metadata_get_iptc_tags		(GExiv2Metadata *self);
 
 gchar*			gexiv2_metadata_get_iptc_tag_string	(GExiv2Metadata *self, const gchar* tag);
@@ -267,6 +279,11 @@ gboolean		gexiv2_metadata_set_gps_info				(GExiv2Metadata *self, gdouble longitu
 const gchar*	gexiv2_metadata_get_iptc_tag_label			(const gchar* tag);
 const gchar*	gexiv2_metadata_get_iptc_tag_description	(const gchar* tag);
 
+
+/* preview manager */
+
+GExiv2PreviewProperties** gexiv2_metadata_get_preview_properties (GExiv2Metadata *self);
+GExiv2PreviewImage* gexiv2_metadata_get_preview_image		(GExiv2Metadata *self, GExiv2PreviewProperties *props);
 
 G_END_DECLS
 

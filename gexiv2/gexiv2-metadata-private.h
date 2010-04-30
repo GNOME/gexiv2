@@ -15,23 +15,29 @@
 #include <exiv2/exif.hpp>
 #include <exiv2/iptc.hpp>
 #include <exiv2/xmp.hpp>
+#include <exiv2/preview.hpp>
 
 G_BEGIN_DECLS
 
 
 struct _GExiv2MetadataPrivate
 {
-	Exiv2::ExifData exif_data;
-	Exiv2::IptcData iptc_data;
-	Exiv2::XmpData xmp_data;
+	Exiv2::Image::AutoPtr image;
 	gchar* comment;
 	gchar* mime_type;
 	gint pixel_width;
 	gint pixel_height;
 	gboolean supports_exif;
 	gboolean supports_xmp;
-	gboolean supports_iptc;	
+	gboolean supports_iptc;
+	Exiv2::PreviewManager *preview_manager;
+	GExiv2PreviewProperties **preview_properties;
 };
+
+
+#define LOG_ERROR(e) \
+	g_warning("%s", e.what());
+
 
 G_END_DECLS
 

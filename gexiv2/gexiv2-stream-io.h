@@ -39,8 +39,8 @@ public:
 	virtual int getb ();
 	virtual void transfer (Exiv2::BasicIo& src);
 	virtual int seek (long offset, Position pos);
-	virtual const Exiv2::byte* mmap ();
-	virtual void  munmap ();
+	virtual Exiv2::byte* mmap (bool isWriteable = false);
+	virtual int munmap ();
 	virtual long tell () const;
 	virtual long size () const;
 	virtual bool isopen () const;

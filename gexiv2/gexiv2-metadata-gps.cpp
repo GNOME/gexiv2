@@ -11,6 +11,7 @@
 #include "gexiv2-metadata-private.h"
 #include <string>
 #include <cmath>
+#include <stdio.h>
 #include <glib-object.h>
 #include <exiv2/exif.hpp>
 
@@ -20,9 +21,9 @@ gboolean
 gexiv2_metadata_get_gps_longitude (GExiv2Metadata *self, gdouble *longitude)
 {
 	g_return_val_if_fail (GEXIV2_IS_METADATA (self), false);
+	g_return_val_if_fail (longitude != NULL, false);
 	
 	try {
-	
         double num, den, min, sec;
         *longitude = 0.0;
 
@@ -31,7 +32,7 @@ gexiv2_metadata_get_gps_longitude (GExiv2Metadata *self, gdouble *longitude)
 		if (longitude_ref == NULL || longitude_ref[0] == '\0')
 			return false;
 
-		Exiv2::ExifData& exif_data = self->priv->exif_data;
+		Exiv2::ExifData& exif_data = self->priv->image->exifData();
 		Exiv2::ExifKey key ("Exif.GPSInfo.GPSLongitude");
 		Exiv2::ExifData::iterator it = exif_data.findKey (key);
 
@@ -75,6 +76,7 @@ gexiv2_metadata_get_gps_longitude (GExiv2Metadata *self, gdouble *longitude)
 
 		return true;
 	} catch (Exiv2::Error &e) {
+		LOG_ERROR(e);
 	}
 
 	return false;
@@ -85,6 +87,7 @@ gboolean
 gexiv2_metadata_get_gps_latitude (GExiv2Metadata *self, gdouble *latitude)
 {
 	g_return_val_if_fail (GEXIV2_IS_METADATA (self), false);
+	g_return_val_if_fail (latitude != NULL, false);
 	
 	try {
         double num, den, min, sec;
@@ -95,7 +98,7 @@ gexiv2_metadata_get_gps_latitude (GExiv2Metadata *self, gdouble *latitude)
 		if (latitude_ref == NULL || latitude_ref[0] == '\0')
 			return false;
 
-		Exiv2::ExifData& exif_data = self->priv->exif_data;
+		Exiv2::ExifData& exif_data = self->priv->image->exifData();
 		Exiv2::ExifKey key ("Exif.GPSInfo.GPSLatitude");
 		Exiv2::ExifData::iterator it = exif_data.findKey (key);
 
@@ -139,6 +142,7 @@ gexiv2_metadata_get_gps_latitude (GExiv2Metadata *self, gdouble *latitude)
 		return true;
 		
 	} catch (Exiv2::Error &e) {
+		LOG_ERROR(e);
 	}
 
 	return false;
@@ -149,6 +153,7 @@ gboolean
 gexiv2_metadata_get_gps_altitude (GExiv2Metadata *self, gdouble *altitude)
 {
 	g_return_val_if_fail (GEXIV2_IS_METADATA (self), false);
+	g_return_val_if_fail (altitude != NULL, false);
 	
 	try {
 		double num, den;
@@ -159,7 +164,7 @@ gexiv2_metadata_get_gps_altitude (GExiv2Metadata *self, gdouble *altitude)
 		if (altitude_ref == NULL || altitude_ref[0] == '\0')
 			return false;
 
-		Exiv2::ExifData& exif_data = self->priv->exif_data;
+		Exiv2::ExifData& exif_data = self->priv->image->exifData();
 		Exiv2::ExifKey key ("Exif.GPSInfo.GPSAltitude");
 		Exiv2::ExifData::iterator it = exif_data.findKey (key);
 
@@ -181,6 +186,7 @@ gexiv2_metadata_get_gps_altitude (GExiv2Metadata *self, gdouble *altitude)
 		return true;
 		
 	} catch (Exiv2::Error &e) {
+		LOG_ERROR(e);
 	}
 
 	return false;
@@ -209,10 +215,9 @@ gexiv2_metadata_set_gps_info (GExiv2Metadata *self, gdouble longitude, gdouble l
 	g_return_val_if_fail (GEXIV2_IS_METADATA (self), false);
 
 	try {
-		
 		gexiv2_metadata_delete_gps_info (self);
 		
-		Exiv2::ExifData& exif_data = self->priv->exif_data;
+		Exiv2::ExifData& exif_data = self->priv->image->exifData();
 
 		gchar buffer [100];
 		gint deg, min;
@@ -258,10 +263,10 @@ gexiv2_metadata_set_gps_info (GExiv2Metadata *self, gdouble longitude, gdouble l
 		snprintf (buffer, 100, "%d/1 %d/1000000 0/1", deg, min);
 		exif_data ["Exif.GPSInfo.GPSLongitude"] = buffer;
 
-
 		return true;
 		
 	} catch (Exiv2::Error &e) {
+		LOG_ERROR(e);
 	}
 
 	return false;
@@ -274,7 +279,7 @@ gexiv2_metadata_delete_gps_info (GExiv2Metadata *self)
 	g_return_if_fail (GEXIV2_IS_METADATA (self));
 	
 	try {
-		Exiv2::ExifData& exif_data = self->priv->exif_data;
+		Exiv2::ExifData& exif_data = self->priv->image->exifData();
 		
 		/* clear in exif data */
 		Exiv2::ExifData::iterator exif_it = exif_data.begin();
@@ -282,17 +287,17 @@ gexiv2_metadata_delete_gps_info (GExiv2Metadata *self)
 			if (exif_it->groupName () == "GPSInfo")
 				exif_it = exif_data.erase (exif_it);
 			else
-				++ exif_it;
+				++exif_it;
 		}
-		
 	} catch (Exiv2::Error& e) {
+		LOG_ERROR(e);
 	}
 	
 	/* FIXME: two blocks shall ensure to erase in xmp data, if erasing in exif
 	 *         fails. Do we need this?
 	 */
 	try {
-		Exiv2::XmpData& xmp_data = self->priv->xmp_data;
+		Exiv2::XmpData& xmp_data = self->priv->image->xmpData();
 		
 		/* clear in xmp data */
 		Exiv2::XmpData::iterator xmp_it = xmp_data.begin();
@@ -304,6 +309,7 @@ gexiv2_metadata_delete_gps_info (GExiv2Metadata *self)
 		}
 		
 	} catch (Exiv2::Error& e) {
+		LOG_ERROR(e);
 	}
 }
 

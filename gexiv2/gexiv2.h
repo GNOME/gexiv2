@@ -12,5 +12,7 @@
 
 #include <gexiv2/gexiv2-metadata.h>
 #include <gexiv2/gexiv2-managed-stream.h>
+#include <gexiv2/gexiv2-preview-properties.h>
+#include <gexiv2/gexiv2-preview-image.h>
 
 #endif /* __GEXIV2_H__ */

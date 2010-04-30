@@ -1,5 +1,5 @@
 PKGNAME = gexiv2
-VERSION = 0.0.1+trunk
+VERSION = 0.0.2+trunk
 
 LIBRARY = lib$(PKGNAME)
 LIBRARY_BIN = $(LIBRARY).la
@@ -20,24 +20,35 @@ SRC_FILES = \
 	gexiv2-metadata-gps.cpp \
 	gexiv2-metadata-iptc.cpp \
 	gexiv2-metadata-xmp.cpp \
-	gexiv2-stream-io.cpp
+	gexiv2-stream-io.cpp \
+	gexiv2-preview-properties.cpp \
+	gexiv2-preview-image.cpp
 
 HEADER_FILES = \
 	gexiv2.h \
 	gexiv2-metadata.h \
 	gexiv2-managed-stream.h \
 	gexiv2-metadata-private.h \
-	gexiv2-metadata-stream-io.h
+	gexiv2-stream-io.h \
+	gexiv2-preview-properties.h \
+	gexiv2-preview-properties-private.h \
+	gexiv2-preview-image.h \
+	gexiv2-preview-image-private.h
 
 INSTALLED_HEADER_FILES = \
 	gexiv2.h \
 	gexiv2-metadata.h \
-	gexiv2-managed-stream.h
+	gexiv2-managed-stream.h \
+	gexiv2-preview-properties.h \
+	gexiv2-preview-image.h
 
 EXT_PKGS = \
 	gobject-2.0 \
 	glib-2.0 \
 	exiv2
+
+EXT_PKG_VERSIONS = \
+	exiv2 >= 0.19
 
 VAPI_INPUT = \
 	gexiv2.deps \
@@ -52,6 +63,7 @@ EXPANDED_LO_FILES = $(foreach src,$(SRC_FILES),$(BUILD_DIR)/$(src:.cpp=.lo))
 EXPANDED_HEADER_FILES = $(foreach hdr,$(HEADER_FILES),gexiv2/$(hdr))
 EXPANDED_INSTALLED_HEADER_FILES = $(foreach hdr,$(INSTALLED_HEADER_FILES),gexiv2/$(hdr))
 EXPANDED_VAPI_INPUT = $(foreach src,$(VAPI_INPUT),vapi/$(src))
+DESTDIR_HEADER_FILES = $(foreach hdr,$(INSTALLED_HEADER_FILES),$(DESTDIR)$(PREFIX)/include/$(PKGNAME)/$(hdr))
 
 VAPI_FILE = $(PKGNAME).vapi
 VAPI_GENERATED_FILES = $(VAPI_FILE) vapi/$(PKGNAME).gi
@@ -122,7 +134,7 @@ uninstall:
 	rm -f $(DESTDIR)$(PREFIX)/share/vala/vapi/$(PKGNAME).vapi
 	ldconfig
 
-$(VAPI_FILE): $(EXPANDED_VAPI_INPUT) Makefile $(CONFIG_IN)
+$(VAPI_FILE): $(EXPANDED_VAPI_INPUT) $(DESTDIR_HEADER_FILES) Makefile $(CONFIG_IN)
 	@pkg-config --exists --print-errors $(PKGNAME)
 	vala-gen-introspect $(PKGNAME) vapi
 	vapigen --library=$(PKGNAME) --metadata=vapi/$(PKGNAME).metadata vapi/$(PKGNAME).gi
@@ -130,7 +142,8 @@ $(VAPI_FILE): $(EXPANDED_VAPI_INPUT) Makefile $(CONFIG_IN)
 $(PC_FILE) : $(PKGNAME).m4 Makefile $(CONFIG_IN)
 	m4 '--define=_VERSION_=$(VERSION)' '--define=_PREFIX_=$(PREFIX)' $< > $@
 
-$(EXPANDED_OBJ_FILES): $(BUILD_DIR)/%.o: gexiv2/%.cpp $(CONFIG_IN) Makefile
+$(EXPANDED_OBJ_FILES): $(BUILD_DIR)/%.o: gexiv2/%.cpp $(EXPANDED_HEADER_FILES) $(CONFIG_IN) Makefile
+	@pkg-config --print-errors --exists '$(EXT_PKG_VERSIONS)'
 	@mkdir -p $(BUILD_DIR)
 	libtool --mode=compile $(CXX) -c $(EXT_PKGS_CFLAGS) $(CFLAGS) -I. -o $@ $<
 

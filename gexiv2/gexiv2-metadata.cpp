@@ -12,6 +12,10 @@
 #include "gexiv2-metadata-private.h"
 #include "gexiv2-stream-io.h"
 #include "gexiv2-managed-stream.h"
+#include "gexiv2-preview-properties.h"
+#include "gexiv2-preview-properties-private.h"
+#include "gexiv2-preview-image.h"
+#include "gexiv2-preview-image-private.h"
 #include <string>
 #include <glib-object.h>
 #include <gio/gio.h>
@@ -19,6 +23,7 @@
 #include <exiv2/exif.hpp>
 #include <exiv2/iptc.hpp>
 #include <exiv2/xmp.hpp>
+#include <exiv2/preview.hpp>
 
 
 G_BEGIN_DECLS
@@ -27,7 +32,7 @@ G_DEFINE_TYPE (GExiv2Metadata, gexiv2_metadata, G_TYPE_OBJECT);
 static void gexiv2_metadata_finalize (GObject *object);
 static void gexiv2_metadata_set_comment_internal (GExiv2Metadata *self, const gchar *new_comment);
 
-static gboolean gexiv2_metadata_open_internal (GExiv2Metadata *self, Exiv2::Image::AutoPtr image, GError **error);
+static gboolean gexiv2_metadata_open_internal (GExiv2Metadata *self, GError **error);
 static gboolean gexiv2_metadata_save_internal (GExiv2Metadata *self, Exiv2::Image::AutoPtr image, GError **error);
 
 
@@ -41,6 +46,8 @@ gexiv2_metadata_init (GExiv2Metadata *self)
 	/* Initialize members */
 	self->priv->comment = NULL;
 	self->priv->mime_type = NULL;
+	self->priv->preview_manager = NULL;
+	self->priv->preview_properties = NULL;
 	self->priv->pixel_width = -1;
 	self->priv->pixel_height = -1;
 	
@@ -66,6 +73,18 @@ gexiv2_metadata_finalize (GObject *object)
 	
 	g_free (self->priv->comment);
 	g_free (self->priv->mime_type);
+	delete self->priv->preview_manager;
+	
+	if (self->priv->preview_properties != NULL) {
+		int ctr = 0;
+		while (self->priv->preview_properties[ctr] != NULL)
+			gexiv2_preview_properties_free(self->priv->preview_properties[ctr++]);
+		
+		g_free (self->priv->preview_properties);
+	}
+	
+	if (self->priv->image.get() != NULL)
+		self->priv->image.release();
 	
 	G_OBJECT_CLASS (gexiv2_metadata_parent_class)->finalize (object);
 }
@@ -74,10 +93,16 @@ gexiv2_metadata_finalize (GObject *object)
 GExiv2Metadata*
 gexiv2_metadata_new ()
 {
-	GExiv2Metadata *metadata;
-	metadata = GEXIV2_METADATA (g_object_new (GEXIV2_TYPE_METADATA, NULL));
+	return GEXIV2_METADATA (g_object_new (GEXIV2_TYPE_METADATA, NULL));
+}
+
+
+void
+gexiv2_metadata_free (GExiv2Metadata *self)
+{
+	g_return_if_fail(GEXIV2_IS_METADATA(self));
 	
-	return metadata;
+	g_object_unref(self);
 }
 
 
@@ -93,36 +118,43 @@ gexiv2_metadata_set_comment_internal (GExiv2Metadata *self, const gchar *new_com
 
 
 static gboolean
-gexiv2_metadata_open_internal (GExiv2Metadata *self, Exiv2::Image::AutoPtr image, GError **error)
+gexiv2_metadata_open_internal (GExiv2Metadata *self, GError **error)
 {
-	if (image.get () == NULL || ! image->good ()) {
+	GExiv2MetadataPrivate* priv = self->priv;
+	
+	if (priv->image.get () == NULL || ! priv->image->good ()) {
 		g_set_error_literal (error, g_quark_from_string ("GExiv2"),
 							501, "format seems not to be supported");
 		return false;
 	}
 	
-	image->readMetadata ();
+	priv->image->readMetadata ();
 	
-	GExiv2MetadataPrivate* priv = self->priv;
-	
-	priv->exif_data = image->exifData ();
-	priv->iptc_data = image->iptcData ();
-	priv->xmp_data = image->xmpData ();
+	gexiv2_metadata_set_comment_internal (self, priv->image->comment ().c_str ());
+	priv->mime_type = g_strdup (priv->image->mimeType ().c_str ());
 		
-	gexiv2_metadata_set_comment_internal (self, image->comment ().c_str ());
-	priv->mime_type = g_strdup (image->mimeType ().c_str ());
+	priv->pixel_width = priv->image->pixelWidth ();
+	priv->pixel_height = priv->image->pixelHeight ();
 		
-	priv->pixel_width = image->pixelWidth ();
-	priv->pixel_height = image->pixelHeight ();
-		
-	Exiv2::AccessMode mode = image->checkMode (Exiv2::mdExif);
+	Exiv2::AccessMode mode = priv->image->checkMode (Exiv2::mdExif);
 	priv->supports_exif = (mode == Exiv2::amWrite || mode == Exiv2::amReadWrite);
 	
-	mode = image->checkMode (Exiv2::mdXmp);
+	mode = priv->image->checkMode (Exiv2::mdXmp);
 	priv->supports_xmp = (mode == Exiv2::amWrite || mode == Exiv2::amReadWrite);
 	
-	mode = image->checkMode (Exiv2::mdIptc);
+	mode = priv->image->checkMode (Exiv2::mdIptc);
 	priv->supports_iptc = (mode == Exiv2::amWrite || mode == Exiv2::amReadWrite);
+	
+	priv->preview_manager = new Exiv2::PreviewManager(*priv->image.get());
+	
+	Exiv2::PreviewPropertiesList list = priv->preview_manager->getPreviewProperties();
+	int count = list.size();
+	if (count > 0) {
+		priv->preview_properties = g_new(GExiv2PreviewProperties *, count + 1);
+		for (int ctr = 0; ctr < count; ctr++)
+			priv->preview_properties[ctr] = gexiv2_preview_properties_new(list[ctr]);
+		priv->preview_properties[count] = NULL;
+	}
 	
 	return true;
 }
@@ -135,8 +167,9 @@ gexiv2_metadata_open_path (GExiv2Metadata *self, const gchar *path, GError **err
 
 	try {
 		Exiv2::BasicIo::AutoPtr file (new Exiv2::FileIo (path));
+		self->priv->image = Exiv2::ImageFactory::open (file);
 		
-		return gexiv2_metadata_open_internal (self, Exiv2::ImageFactory::open (file), error);
+		return gexiv2_metadata_open_internal (self, error);
 		
 	} catch (Exiv2::Error &e) {
 		g_set_error_literal (error, g_quark_from_string ("GExiv2"), e.code (), e.what ());
@@ -152,8 +185,9 @@ gexiv2_metadata_open_buf (GExiv2Metadata *self, const guint8 *data, glong n_data
 	g_return_val_if_fail (GEXIV2_IS_METADATA (self), false);
 	
 	try {
-	
-		return gexiv2_metadata_open_internal (self, Exiv2::ImageFactory::open (data, n_data), error);
+		self->priv->image = Exiv2::ImageFactory::open (data, n_data);
+		
+		return gexiv2_metadata_open_internal (self, error);
 		
 	} catch (Exiv2::Error &e) {
 		g_set_error_literal (error, g_quark_from_string ("GExiv2"), e.code (), e.what ());
@@ -170,8 +204,9 @@ gexiv2_metadata_open_stream (GExiv2Metadata *self, ManagedStreamCallbacks* cb, G
 	
 	try {
 		Exiv2::BasicIo::AutoPtr stream_ptr (new StreamIo (cb));
+		self->priv->image = Exiv2::ImageFactory::open (stream_ptr);
 		
-		return gexiv2_metadata_open_internal (self, Exiv2::ImageFactory::open (stream_ptr), error);
+		return gexiv2_metadata_open_internal (self, error);
 	
 	} catch (Exiv2::Error &e) {
 		g_set_error_literal (error, g_quark_from_string ("GExiv2"), e.code (), e.what ());
@@ -219,19 +254,19 @@ gexiv2_metadata_save_internal (GExiv2Metadata *self, Exiv2::Image::AutoPtr image
             new_exif_data["Exif.Image.ResolutionUnit"];
             */
             
-            image->setExifData (self->priv->exif_data);
+            image->setExifData (self->priv->image->exifData());
 		} else {
-			image->setExifData (self->priv->exif_data);
+			image->setExifData (self->priv->image->exifData());
 		}
 	}
 		
 	mode = image->checkMode (Exiv2::mdXmp);
 	if (mode == Exiv2::amWrite || mode == Exiv2::amReadWrite)
-		image->setXmpData (self->priv->xmp_data);
+		image->setXmpData (self->priv->image->xmpData());
 	
 	mode = image->checkMode (Exiv2::mdIptc);
 	if (mode == Exiv2::amWrite || mode == Exiv2::amReadWrite)
-		image->setIptcData (self->priv->iptc_data);
+		image->setIptcData (self->priv->image->iptcData());
 	
 	mode = image->checkMode (Exiv2::mdComment);
 	if (mode == Exiv2::amWrite || mode == Exiv2::amReadWrite)
@@ -296,20 +331,22 @@ gexiv2_metadata_has_tag(GExiv2Metadata *self, const gchar* tag)
 }
 
 
-void
+gboolean
 gexiv2_metadata_clear_tag(GExiv2Metadata *self, const gchar* tag)
 {
-    g_return_if_fail(GEXIV2_IS_METADATA(self));
-    g_return_if_fail(tag != NULL);
+    g_return_val_if_fail(GEXIV2_IS_METADATA(self), false);
+    g_return_val_if_fail(tag != NULL, false);
     
     if (gexiv2_metadata_is_xmp_tag(tag))
-        return gexiv2_metadata_clear_tag(self, tag);
+    	return gexiv2_metadata_clear_xmp_tag(self, tag);
     
     if (gexiv2_metadata_is_exif_tag(tag))
-        return gexiv2_metadata_clear_tag(self, tag);
+    	return gexiv2_metadata_clear_exif_tag(self, tag);
     
     if (gexiv2_metadata_is_iptc_tag(tag))
-        return gexiv2_metadata_clear_tag(self, tag);
+    	return gexiv2_metadata_clear_iptc_tag(self, tag);
+	
+	return false;
 }
 
 
@@ -322,6 +359,8 @@ gexiv2_metadata_clear (GExiv2Metadata *self)
 	gexiv2_metadata_clear_xmp (self);
 	gexiv2_metadata_clear_iptc (self);
 	gexiv2_metadata_clear_comment (self);
+	
+	self->priv->image->clearMetadata();
 }
 
 
@@ -339,7 +378,7 @@ gexiv2_metadata_get_date_time (GExiv2Metadata *self)
 {
 	g_return_val_if_fail (GEXIV2_IS_METADATA (self), NULL);
 	
-	Exiv2::ExifData& exif_data = self->priv->exif_data;
+	Exiv2::ExifData& exif_data = self->priv->image->exifData();
 	
 	if (!exif_data.empty ()) {
 		Exiv2::ExifKey key ("Exif.Photo.DateTimeOriginal");
@@ -354,11 +393,11 @@ gexiv2_metadata_get_date_time (GExiv2Metadata *self)
 		
 		key = Exiv2::ExifKey ("Exif.Photo.DateTimeDigitized");
 		it = exif_data.findKey (key);
-		if (it != self->priv->exif_data.end ())
+		if (it != exif_data.end ())
 			return g_strdup (it->toString ().c_str ());
 	}
 	
-	Exiv2::XmpData& xmp_data = self->priv->xmp_data;
+	Exiv2::XmpData& xmp_data = self->priv->image->xmpData();
 	
 	if (!xmp_data.empty ()) {
 		Exiv2::XmpKey key ("Xmp.exif.DateTimeOriginal");
@@ -408,8 +447,8 @@ gexiv2_metadata_set_date_time (GExiv2Metadata *self, const gchar* datetime)
 {
 	g_return_if_fail (GEXIV2_IS_METADATA (self));
 	
-	Exiv2::ExifData& exif_data = self->priv->exif_data;
-	Exiv2::XmpData& xmp_data = self->priv->xmp_data;
+	Exiv2::ExifData& exif_data = self->priv->image->exifData();
+	Exiv2::XmpData& xmp_data = self->priv->image->xmpData();
 	
 	exif_data["Exif.Image.DateTime"] = datetime;
 	exif_data["Exif.Photo.DateTimeOriginal"] = datetime;
@@ -434,7 +473,7 @@ gexiv2_metadata_get_orientation (GExiv2Metadata *self)
 {
 	g_return_val_if_fail (GEXIV2_IS_METADATA (self), GEXIV2_ORIENTATION_UNSPECIFIED);
 	
-	Exiv2::ExifData& exif_data = self->priv->exif_data;
+	Exiv2::ExifData& exif_data = self->priv->image->exifData();
 	
 	if (!exif_data.empty ()) {
 	
@@ -468,18 +507,18 @@ gexiv2_metadata_get_orientation (GExiv2Metadata *self)
 		}
 	
 		Exiv2::ExifKey std_key ("Exif.Image.Orientation");
-		it = self->priv->exif_data.findKey (std_key);
+		it = exif_data.findKey (std_key);
 		if (it != exif_data.end ())
-			return (GExiv2Orientation)it->toLong ();
+			return (GExiv2Orientation) it->toLong ();
 	}
 	
-	Exiv2::XmpData& xmp_data = self->priv->xmp_data;
+	Exiv2::XmpData& xmp_data = self->priv->image->xmpData();
 	
 	if (!xmp_data.empty ()) {
 		Exiv2::XmpKey tiff_width_key ("Xmp.tiff.ImageWidth");
 		Exiv2::XmpData::iterator it = xmp_data.findKey (tiff_width_key);
 		if (it != xmp_data.end ())
-			return (GExiv2Orientation)(it->toLong ());
+			return (GExiv2Orientation) (it->toLong ());
 	}
 	
 	return GEXIV2_ORIENTATION_UNSPECIFIED;
@@ -517,11 +556,11 @@ void
 gexiv2_metadata_set_orientation (GExiv2Metadata *self, GExiv2Orientation orientation)
 {
 	g_return_if_fail (GEXIV2_IS_METADATA (self));
-	g_return_if_fail (orientation > GEXIV2_ORIENTATION_ROT_270);
-	g_return_if_fail (orientation < GEXIV2_ORIENTATION_UNSPECIFIED);	
+	g_return_if_fail (orientation <= GEXIV2_ORIENTATION_ROT_270);
+	g_return_if_fail (orientation >= GEXIV2_ORIENTATION_UNSPECIFIED);
 	
-	Exiv2::ExifData& exif_data = self->priv->exif_data;
-	Exiv2::XmpData& xmp_data = self->priv->xmp_data;
+	Exiv2::ExifData& exif_data = self->priv->image->exifData();
+	Exiv2::XmpData& xmp_data = self->priv->image->xmpData();
 	
 	exif_data["Exif.Image.Orientation"] = static_cast<uint16_t> (orientation);
 	xmp_data["Xmp.tiff.ImageWidth"] = static_cast<uint16_t> (orientation);
@@ -561,7 +600,7 @@ gexiv2_metadata_get_metadata_pixel_width (GExiv2Metadata *self)
 {
 	g_return_val_if_fail (GEXIV2_IS_METADATA (self), -1);
 	
-	Exiv2::ExifData& exif_data = self->priv->exif_data;
+	Exiv2::ExifData& exif_data = self->priv->image->exifData();
 	
 	if (!exif_data.empty ()) {
 		Exiv2::ExifKey pixel_dim_key ("Exif.Photo.PixelXDimension");
@@ -570,12 +609,12 @@ gexiv2_metadata_get_metadata_pixel_width (GExiv2Metadata *self)
 			return it->toLong ();
 	
 		Exiv2::ExifKey image_width_key ("Exif.Image.ImageWidth");
-		it = self->priv->exif_data.findKey (image_width_key);
+		it = exif_data.findKey (image_width_key);
 		if (it != exif_data.end ())
 			return it->toLong ();
 	}
 	
-	Exiv2::XmpData& xmp_data = self->priv->xmp_data;
+	Exiv2::XmpData& xmp_data = self->priv->image->xmpData();
 	
 	if (!exif_data.empty ()) {
 		Exiv2::XmpKey tiff_width_key ("Xmp.tiff.ImageWidth");
@@ -598,7 +637,7 @@ gexiv2_metadata_get_metadata_pixel_height (GExiv2Metadata *self)
 {
 	g_return_val_if_fail (GEXIV2_IS_METADATA (self), -1);
 	
-	Exiv2::ExifData& exif_data = self->priv->exif_data;
+	Exiv2::ExifData& exif_data = self->priv->image->exifData();
 	
 	if (!exif_data.empty ()) {
 		Exiv2::ExifKey pixel_dim_key ("Exif.Photo.PixelYDimension");
@@ -612,7 +651,7 @@ gexiv2_metadata_get_metadata_pixel_height (GExiv2Metadata *self)
 			return it->toLong ();
 	}
 	
-	Exiv2::XmpData& xmp_data = self->priv->xmp_data;
+	Exiv2::XmpData& xmp_data = self->priv->image->xmpData();
 	
 	if (!exif_data.empty ()) {
 		Exiv2::XmpKey tiff_height_key ("Xmp.tiff.ImageHeight");
@@ -635,8 +674,8 @@ gexiv2_metadata_set_metadata_pixel_width (GExiv2Metadata *self, gint width)
 {
 	g_return_if_fail (GEXIV2_IS_METADATA (self));
 	
-	Exiv2::ExifData& exif_data = self->priv->exif_data;
-	Exiv2::XmpData& xmp_data = self->priv->xmp_data;
+	Exiv2::ExifData& exif_data = self->priv->image->exifData();
+	Exiv2::XmpData& xmp_data = self->priv->image->xmpData();
 	
 	exif_data["Exif.Photo.PixelXDimension"] = static_cast<uint32_t>(width);
 	exif_data["Exif.Image.ImageWidth"] = static_cast<uint32_t>(width);
@@ -650,8 +689,8 @@ gexiv2_metadata_set_metadata_pixel_height (GExiv2Metadata *self, gint height)
 {
 	g_return_if_fail (GEXIV2_IS_METADATA (self));
 	
-	Exiv2::ExifData& exif_data = self->priv->exif_data;
-	Exiv2::XmpData& xmp_data = self->priv->xmp_data;
+	Exiv2::ExifData& exif_data = self->priv->image->exifData();
+	Exiv2::XmpData& xmp_data = self->priv->image->xmpData();
 	
 	exif_data ["Exif.Photo.PixelXDimension"] = static_cast<uint32_t>(height);
 	exif_data ["Exif.Image.ImageHeight"] = static_cast<uint32_t>(height);
@@ -702,8 +741,8 @@ gexiv2_metadata_set_comment (GExiv2Metadata *self, const gchar* comment)
 {
 	g_return_if_fail (GEXIV2_IS_METADATA (self));
 	
-	Exiv2::ExifData& exif_data = self->priv->exif_data;
-	Exiv2::IptcData& iptc_data = self->priv->iptc_data;
+	Exiv2::ExifData& exif_data = self->priv->image->exifData();
+	Exiv2::IptcData& iptc_data = self->priv->image->iptcData();
 	
 	gexiv2_metadata_set_comment_internal (self, (comment != NULL) ? comment : "");
 	exif_data ["Exif.Image.ImageDescription"] = comment;
@@ -732,14 +771,7 @@ gexiv2_metadata_get_keywords (GExiv2Metadata *self)
 	if (keywords != NULL && (*keywords) != NULL)
 		return keywords;
 	
-	keywords = gexiv2_metadata_get_iptc_keywords (self);
-	if (keywords != NULL)
-		return keywords;
-	
-	/* return empty string array */
-	keywords = g_new (gchar*, 1);
-	keywords[0] = NULL;
-	return keywords;
+	return gexiv2_metadata_get_iptc_keywords (self);
 }
 
 
@@ -982,5 +1014,100 @@ gexiv2_metadata_get_camera_model (GExiv2Metadata *self)
 	return gexiv2_metadata_get_exif_tag_string (self, "Exif.Image.Model");
 }
 
+
+GExiv2PreviewProperties**
+gexiv2_metadata_get_preview_properties (GExiv2Metadata *self)
+{
+	g_return_val_if_fail(GEXIV2_IS_METADATA(self), NULL);
+	
+	return self->priv->preview_properties;
+}
+
+
+GExiv2PreviewImage*
+gexiv2_metadata_get_preview_image (GExiv2Metadata *self, GExiv2PreviewProperties *props)
+{
+	g_return_val_if_fail(GEXIV2_IS_METADATA(self), NULL);
+	g_return_val_if_fail(GEXIV2_IS_PREVIEW_PROPERTIES(props), NULL);
+	
+	return gexiv2_preview_image_new(self->priv->preview_manager, *props->priv->props);
+}
+
+
+gboolean
+gexiv2_metadata_set_exif_thumbnail_from_file (GExiv2Metadata *self, const gchar *path, GError **error)
+{
+	g_return_val_if_fail(GEXIV2_IS_METADATA(self), false);
+	g_return_val_if_fail(path != NULL && g_utf8_strlen(path, -1) > 0, false);
+	
+	Exiv2::ExifThumb thumb = Exiv2::ExifThumb(self->priv->image->exifData());
+	try {
+		thumb.setJpegThumbnail(std::string(path));
+		
+		return true;
+	} catch (Exiv2::Error &e) {
+		g_set_error_literal (error, g_quark_from_string ("GExiv2"), e.code (), e.what ());
+	}
+	
+	return false;
+}
+
+
+void
+gexiv2_metadata_set_exif_thumbnail_from_buffer (GExiv2Metadata *self, const guint8 *buffer, gint size)
+{
+	g_return_if_fail(GEXIV2_IS_METADATA(self));
+	g_return_if_fail(buffer != NULL);
+	g_return_if_fail(size > 0);
+	
+	Exiv2::ExifThumb thumb = Exiv2::ExifThumb(self->priv->image->exifData());
+	thumb.setJpegThumbnail(buffer, size);
+}
+
+
+void
+gexiv2_metadata_erase_exif_thumbnail (GExiv2Metadata *self)
+{
+	g_return_if_fail(GEXIV2_IS_METADATA(self));
+	
+	Exiv2::ExifThumb thumb = Exiv2::ExifThumb(self->priv->image->exifData());
+	thumb.erase();
+}
+
+
+const gchar*
+gexiv2_metadata_get_tag_label (const gchar *tag)
+{
+	g_return_val_if_fail(tag != NULL, NULL);
+	
+	if (gexiv2_metadata_is_xmp_tag(tag))
+		return gexiv2_metadata_get_xmp_tag_label(tag);
+	
+	if (gexiv2_metadata_is_exif_tag(tag))
+		return gexiv2_metadata_get_exif_tag_label(tag);
+	
+	if (gexiv2_metadata_is_iptc_tag(tag))
+		return gexiv2_metadata_get_iptc_tag_label(tag);
+	
+	return NULL;
+}
+
+
+const gchar*
+gexiv2_metadata_get_tag_description (const gchar *tag)
+{
+	g_return_val_if_fail(tag != NULL, NULL);
+	
+	if (gexiv2_metadata_is_xmp_tag(tag))
+		return gexiv2_metadata_get_xmp_tag_description(tag);
+	
+	if (gexiv2_metadata_is_exif_tag(tag))
+		return gexiv2_metadata_get_exif_tag_description(tag);
+	
+	if (gexiv2_metadata_is_iptc_tag(tag))
+		return gexiv2_metadata_get_iptc_tag_description(tag);
+	
+	return NULL;
+}
 
 G_END_DECLS
