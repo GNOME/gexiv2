@@ -121,6 +121,8 @@ install:
 	$(INSTALL_DATA) $(EXPANDED_INSTALLED_HEADER_FILES) $(DESTDIR)$(PREFIX)/include/$(PKGNAME)
 	@mkdir -p $(DESTDIR)$(PREFIX)/lib/pkgconfig
 	$(INSTALL_DATA) $(PC_FILE) $(DESTDIR)$(PREFIX)/lib/pkgconfig
+	@mkdir -p $(DESTDIR)$(PREFIX)/share/vala/vapi
+	$(INSTALL_DATA) $(VAPI_FILE) $(DESTDIR)$(PREFIX)/share/vala/vapi
 	ldconfig
 
 install-vapi:
