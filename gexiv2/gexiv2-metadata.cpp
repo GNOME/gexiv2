@@ -222,7 +222,9 @@ gexiv2_metadata_open_stream (GExiv2Metadata *self, ManagedStreamCallbacks* cb, G
 //
 // This method of directly decoding the buffer from offset 10 (where the EXIF data looks like
 // a TIFF image) comes from this ticket: http://dev.exiv2.org/issues/show/465  When this ticket
-// is closed this code can revert to a direct image decode.
+// is closed this code can revert to a direct image decode.  To be more flexible for other
+// file formats that encode EXIF via other means (such as PNG), search for the TIFF header and
+// decode from there.
 gboolean
 gexiv2_metadata_from_app1_segment(GExiv2Metadata *self, const guint8 *data, glong n_data, GError **error)
 {
@@ -230,13 +232,21 @@ gexiv2_metadata_from_app1_segment(GExiv2Metadata *self, const guint8 *data, glon
 	g_return_val_if_fail(data != NULL, false);
 	g_return_val_if_fail(n_data > 0, false);
 	
-	// The decode starts 10 bytes in, so the buffer has to at least allow for that
-	if (n_data <= 10)
+	int offset = 0;
+	while (offset < n_data - 1) {
+		if ((data[offset] == 0x4D && data[offset + 1] == 0x4D)
+			|| (data[offset] == 0x49 && data[offset + 1] == 0x49))
+			break;
+		
+		offset++;
+	}
+	
+	if (offset >= n_data - 1)
 		return false;
 	
 	try {
 		self->priv->image = Exiv2::ImageFactory::create(Exiv2::ImageType::jpeg);
-		Exiv2::ExifParser::decode(self->priv->image->exifData(), data + 10, n_data - 10);
+		Exiv2::ExifParser::decode(self->priv->image->exifData(), data + offset, n_data - offset);
 		
 		return true;
 	} catch (Exiv2::Error &e) {
