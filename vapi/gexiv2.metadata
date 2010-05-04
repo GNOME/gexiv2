@@ -14,6 +14,8 @@ GExiv2PreviewImageClass hidden="1"
 
 gexiv2_metadata_open_buf.data no_array_length="1" is_array="0"
 gexiv2_metadata_open_buf.n_data hidden="0"
+gexiv2_metadata_from_app1_segment.data no_array_length="1" is_array="0"
+gexiv2_metadata_from_app1_segment.n_data hidden="0"
 
 gexiv2_metadata_get_date_time transfer_ownership="1" nullable="1"
 gexiv2_metadata_get_comment transfer_ownership="1" nullable="1"

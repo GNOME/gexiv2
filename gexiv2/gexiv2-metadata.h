@@ -84,6 +84,8 @@ gboolean		gexiv2_metadata_open_buf			(GExiv2Metadata *self, const guint8 *data, 
 
 gboolean		gexiv2_metadata_open_stream			(GExiv2Metadata *self, ManagedStreamCallbacks* cb, GError **error);
 
+gboolean		gexiv2_metadata_from_app1_segment	(GExiv2Metadata *self, const guint8 *data, glong n_data, GError **error);
+
 gboolean		gexiv2_metadata_save_file			(GExiv2Metadata *self, const gchar *path, GError **error);
 
 gboolean		gexiv2_metadata_save_stream			(GExiv2Metadata *self, ManagedStreamCallbacks* cb, GError **error);

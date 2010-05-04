@@ -24,6 +24,7 @@
 #include <exiv2/iptc.hpp>
 #include <exiv2/xmp.hpp>
 #include <exiv2/preview.hpp>
+#include <exiv2/jpgimage.hpp>
 
 
 G_BEGIN_DECLS
@@ -210,6 +211,36 @@ gexiv2_metadata_open_stream (GExiv2Metadata *self, ManagedStreamCallbacks* cb, G
 	
 	} catch (Exiv2::Error &e) {
 		g_set_error_literal (error, g_quark_from_string ("GExiv2"), e.code (), e.what ());
+	}
+	
+	return false;
+}
+
+// Exiv2 does not today offer a clean way to decode a buffer with only the JFIF APP1 segment,
+// where EXIF lives.  This is a common situation when reading EXIF metadata straight from a
+// camera (i.e. via gPhoto) where accessing the entire JPEG image is inconvenient.
+//
+// This method of directly decoding the buffer from offset 10 (where the EXIF data looks like
+// a TIFF image) comes from this ticket: http://dev.exiv2.org/issues/show/465  When this ticket
+// is closed this code can revert to a direct image decode.
+gboolean
+gexiv2_metadata_from_app1_segment(GExiv2Metadata *self, const guint8 *data, glong n_data, GError **error)
+{
+	g_return_val_if_fail(GEXIV2_IS_METADATA(self), false);
+	g_return_val_if_fail(data != NULL, false);
+	g_return_val_if_fail(n_data > 0, false);
+	
+	// The decode starts 10 bytes in, so the buffer has to at least allow for that
+	if (n_data <= 10)
+		return false;
+	
+	try {
+		self->priv->image = Exiv2::ImageFactory::create(Exiv2::ImageType::jpeg);
+		Exiv2::ExifParser::decode(self->priv->image->exifData(), data + 10, n_data - 10);
+		
+		return true;
+	} catch (Exiv2::Error &e) {
+		g_set_error_literal(error, g_quark_from_string("GExiv2"), e.code(), e.what());
 	}
 	
 	return false;

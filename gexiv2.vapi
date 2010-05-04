@@ -32,6 +32,7 @@ namespace GExiv2 {
 		public bool clear_xmp_tag (string tag);
 		public void delete_gps_info ();
 		public void erase_exif_thumbnail ();
+		public bool from_app1_segment ([CCode (array_length = false)] uchar[] data, long n_data) throws GLib.Error;
 		public string? get_camera_model ();
 		public string? get_comment ();
 		public string? get_date_time ();
