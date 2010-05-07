@@ -44,6 +44,7 @@ namespace GExiv2 {
 		public string? get_exif_tag_string (string tag);
 		[CCode (array_length = false, array_null_terminated = true)]
 		public string[] get_exif_tags ();
+		public bool get_exif_thumbnail (out uchar[] buffer);
 		public bool get_exposure_time (out int nom, out int den);
 		public double get_fnumber ();
 		public double get_focal_length ();

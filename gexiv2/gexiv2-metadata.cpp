@@ -1076,6 +1076,26 @@ gexiv2_metadata_get_preview_image (GExiv2Metadata *self, GExiv2PreviewProperties
 
 
 gboolean
+gexiv2_metadata_get_exif_thumbnail (GExiv2Metadata *self, guint8** buffer, gint *size)
+{
+	g_return_val_if_fail(GEXIV2_IS_METADATA(self), FALSE);
+	g_return_val_if_fail(buffer != NULL, FALSE);
+	g_return_val_if_fail(size != NULL, FALSE);
+	
+	Exiv2::ExifThumb thumb = Exiv2::ExifThumb(self->priv->image->exifData());
+	Exiv2::DataBuf data = thumb.copy();
+	if (data.pData_ == NULL)
+		return FALSE;
+	
+	*buffer = (guint8*) g_malloc(data.size_);
+	memcpy(*buffer, data.pData_, data.size_);
+	*size = data.size_;
+	
+	return true;
+}
+
+
+gboolean
 gexiv2_metadata_set_exif_thumbnail_from_file (GExiv2Metadata *self, const gchar *path, GError **error)
 {
 	g_return_val_if_fail(GEXIV2_IS_METADATA(self), false);
