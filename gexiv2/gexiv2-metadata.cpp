@@ -118,18 +118,10 @@ gexiv2_metadata_set_comment_internal (GExiv2Metadata *self, const gchar *new_com
 }
 
 
-static gboolean
-gexiv2_metadata_open_internal (GExiv2Metadata *self, GError **error)
+static void
+gexiv2_metadata_init_internal (GExiv2Metadata *self)
 {
 	GExiv2MetadataPrivate* priv = self->priv;
-	
-	if (priv->image.get () == NULL || ! priv->image->good ()) {
-		g_set_error_literal (error, g_quark_from_string ("GExiv2"),
-							501, "format seems not to be supported");
-		return false;
-	}
-	
-	priv->image->readMetadata ();
 	
 	gexiv2_metadata_set_comment_internal (self, priv->image->comment ().c_str ());
 	priv->mime_type = g_strdup (priv->image->mimeType ().c_str ());
@@ -156,6 +148,19 @@ gexiv2_metadata_open_internal (GExiv2Metadata *self, GError **error)
 			priv->preview_properties[ctr] = gexiv2_preview_properties_new(list[ctr]);
 		priv->preview_properties[count] = NULL;
 	}
+}
+
+static gboolean
+gexiv2_metadata_open_internal (GExiv2Metadata *self, GError **error)
+{
+	if (self->priv->image.get () == NULL || ! self->priv->image->good ()) {
+		g_set_error_literal (error, g_quark_from_string ("GExiv2"),
+							501, "unsupported format");
+		return false;
+	}
+	
+	self->priv->image->readMetadata ();
+	gexiv2_metadata_init_internal(self);
 	
 	return true;
 }
@@ -191,7 +196,7 @@ gexiv2_metadata_open_buf (GExiv2Metadata *self, const guint8 *data, glong n_data
 		return gexiv2_metadata_open_internal (self, error);
 		
 	} catch (Exiv2::Error &e) {
-		g_set_error_literal (error, g_quark_from_string ("GExiv2"), e.code (), e.what ());
+		g_set_error_literal (error, g_quark_from_string ("GExiv2"), 501, "unsupported format");
 	}
 	
 	return false;
@@ -241,19 +246,23 @@ gexiv2_metadata_from_app1_segment(GExiv2Metadata *self, const guint8 *data, glon
 		offset++;
 	}
 	
-	if (offset >= n_data - 1)
+	if (offset >= n_data - 1) {
+		g_set_error_literal(error, g_quark_from_string("GExiv2"), 501, "unsupported format");\
+		
 		return false;
+	}
 	
 	try {
 		self->priv->image = Exiv2::ImageFactory::create(Exiv2::ImageType::jpeg);
 		Exiv2::ExifParser::decode(self->priv->image->exifData(), data + offset, n_data - offset);
+		gexiv2_metadata_init_internal(self);
 		
 		return true;
 	} catch (Exiv2::Error &e) {
 		g_set_error_literal(error, g_quark_from_string("GExiv2"), e.code(), e.what());
+		
+		return false;
 	}
-	
-	return false;
 }
 
 
