@@ -174,6 +174,7 @@ namespace GExiv2 {
 	}
 	[CCode (cprefix = "GEXIV2_ORIENTATION_", has_type_id = false, cheader_filename = "gexiv2/gexiv2.h")]
 	public enum Orientation {
+		MIN,
 		UNSPECIFIED,
 		NORMAL,
 		HFLIP,
@@ -182,7 +183,8 @@ namespace GExiv2 {
 		ROT_90_HFLIP,
 		ROT_90,
 		ROT_90_VFLIP,
-		ROT_270
+		ROT_270,
+		MAX
 	}
 	[CCode (cprefix = "", has_type_id = false, cheader_filename = "gexiv2/gexiv2.h")]
 	public enum WrapperSeekOrigin {

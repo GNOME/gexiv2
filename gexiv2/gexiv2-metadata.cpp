@@ -558,8 +558,13 @@ gexiv2_metadata_get_orientation (GExiv2Metadata *self)
 	
 		Exiv2::ExifKey std_key ("Exif.Image.Orientation");
 		it = exif_data.findKey (std_key);
-		if (it != exif_data.end ())
-			return (GExiv2Orientation) it->toLong ();
+		if (it != exif_data.end ()) {
+            GExiv2Orientation orientation = (GExiv2Orientation) it->toLong ();
+
+			return ((orientation < GEXIV2_ORIENTATION_MIN || 
+                    orientation > GEXIV2_ORIENTATION_MAX) ?
+                    GEXIV2_ORIENTATION_UNSPECIFIED : orientation);
+        }
 	}
 	
 	Exiv2::XmpData& xmp_data = self->priv->image->xmpData();
@@ -567,8 +572,13 @@ gexiv2_metadata_get_orientation (GExiv2Metadata *self)
 	if (!xmp_data.empty ()) {
 		Exiv2::XmpKey tiff_width_key ("Xmp.tiff.ImageWidth");
 		Exiv2::XmpData::iterator it = xmp_data.findKey (tiff_width_key);
-		if (it != xmp_data.end ())
-			return (GExiv2Orientation) (it->toLong ());
+		if (it != xmp_data.end ()) {
+			GExiv2Orientation orientation = (GExiv2Orientation) it->toLong ();
+
+			return ((orientation < GEXIV2_ORIENTATION_MIN || 
+                    orientation > GEXIV2_ORIENTATION_MAX) ?
+                    GEXIV2_ORIENTATION_UNSPECIFIED : orientation);
+        }
 	}
 	
 	return GEXIV2_ORIENTATION_UNSPECIFIED;
