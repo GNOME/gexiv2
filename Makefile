@@ -123,7 +123,7 @@ install:
 	$(INSTALL_DATA) $(PC_FILE) $(DESTDIR)$(PREFIX)/lib/pkgconfig
 	@mkdir -p $(DESTDIR)$(PREFIX)/share/vala/vapi
 	$(INSTALL_DATA) $(VAPI_FILE) $(DESTDIR)$(PREFIX)/share/vala/vapi
-	ldconfig
+	-ldconfig
 
 install-vapi:
 	@mkdir -p $(DESTDIR)$(PREFIX)/share/vala/vapi
@@ -134,7 +134,7 @@ uninstall:
 	rm -rf $(DESTDIR)$(PREFIX)/include/$(PKGNAME)
 	rm -f $(DESTDIR)$(PREFIX)/lib/pkgconfig/$(PKGNAME).pc
 	rm -f $(DESTDIR)$(PREFIX)/share/vala/vapi/$(PKGNAME).vapi
-	ldconfig
+	-ldconfig
 
 $(VAPI_FILE): $(EXPANDED_VAPI_INPUT) $(DESTDIR_HEADER_FILES) Makefile $(CONFIG_IN)
 	@pkg-config --exists --print-errors $(PKGNAME)
