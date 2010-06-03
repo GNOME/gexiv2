@@ -84,8 +84,7 @@ gexiv2_metadata_finalize (GObject *object)
 		g_free (self->priv->preview_properties);
 	}
 	
-	if (self->priv->image.get() != NULL)
-		self->priv->image.release();
+	self->priv->image.reset();
 	
 	G_OBJECT_CLASS (gexiv2_metadata_parent_class)->finalize (object);
 }
