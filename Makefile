@@ -11,6 +11,7 @@ INSTALL_DATA = install -m 644
 PREFIX=/usr/local
 BUILD_RELEASE=1
 BUILD_DIR=gexiv2
+LIB=lib
 
 -include configure.mk
 
@@ -116,12 +117,12 @@ vapi: $(VAPI_FILE)
 	@
 
 install:
-	@mkdir -p $(DESTDIR)$(PREFIX)/lib
-	libtool --mode=install $(INSTALL_PROGRAM) $(LIBRARY).la $(DESTDIR)$(PREFIX)/lib
+	@mkdir -p $(DESTDIR)$(PREFIX)/$(LIB)
+	libtool --mode=install $(INSTALL_PROGRAM) $(LIBRARY).la $(DESTDIR)$(PREFIX)/$(LIB)
 	@mkdir -p $(DESTDIR)$(PREFIX)/include/$(PKGNAME)
 	$(INSTALL_DATA) $(EXPANDED_INSTALLED_HEADER_FILES) $(DESTDIR)$(PREFIX)/include/$(PKGNAME)
-	@mkdir -p $(DESTDIR)$(PREFIX)/lib/pkgconfig
-	$(INSTALL_DATA) $(PC_FILE) $(DESTDIR)$(PREFIX)/lib/pkgconfig
+	@mkdir -p $(DESTDIR)$(PREFIX)/$(LIB)/pkgconfig
+	$(INSTALL_DATA) $(PC_FILE) $(DESTDIR)$(PREFIX)/$(LIB)/pkgconfig
 	@mkdir -p $(DESTDIR)$(PREFIX)/share/vala/vapi
 	$(INSTALL_DATA) $(VAPI_FILE) $(DESTDIR)$(PREFIX)/share/vala/vapi
 	-ldconfig
@@ -131,9 +132,9 @@ install-vapi:
 	$(INSTALL_DATA) $(VAPI_FILE) $(DESTDIR)$(PREFIX)/share/vala/vapi
 
 uninstall:
-	libtool --mode=uninstall rm -f $(DESTDIR)$(PREFIX)/lib/$(LIBRARY).la
+	libtool --mode=uninstall rm -f $(DESTDIR)$(PREFIX)/$(LIB)/$(LIBRARY).la
 	rm -rf $(DESTDIR)$(PREFIX)/include/$(PKGNAME)
-	rm -f $(DESTDIR)$(PREFIX)/lib/pkgconfig/$(PKGNAME).pc
+	rm -f $(DESTDIR)$(PREFIX)/$(LIB)/pkgconfig/$(PKGNAME).pc
 	rm -f $(DESTDIR)$(PREFIX)/share/vala/vapi/$(PKGNAME).vapi
 	-ldconfig
 
@@ -151,5 +152,5 @@ $(EXPANDED_OBJ_FILES): $(BUILD_DIR)/%.o: gexiv2/%.cpp $(EXPANDED_HEADER_FILES) $
 	libtool --mode=compile $(CXX) -c $(EXT_PKGS_CFLAGS) $(CFLAGS) -I. -o $@ $<
 
 $(LIBRARY_BIN): $(EXPANDED_OBJ_FILES)
-	libtool --mode=link $(CXX) -rpath $(PREFIX)/lib $(EXPANDED_LO_FILES) $(EXT_PKGS_LDFLAGS) $(CFLAGS) $(LDFLAGS) -o $(LIBRARY_BIN)
+	libtool --mode=link $(CXX) -rpath $(PREFIX)/$(LIB) $(EXPANDED_LO_FILES) $(EXT_PKGS_LDFLAGS) $(CFLAGS) $(LDFLAGS) -o $(LIBRARY_BIN)
 
