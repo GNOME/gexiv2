@@ -47,6 +47,9 @@ public:
 	virtual int error () const;
 	virtual bool eof () const;
 	virtual std::string path () const;
+#ifdef EXV_UNICODE_PATH
+	virtual std::wstring wpath () const;
+#endif
 	virtual BasicIo::AutoPtr temporary () const;
 
 private:

@@ -255,3 +255,12 @@ std::string StreamIo::path () const
     return "managed stream";
 }
 
+#ifdef EXV_UNICODE_PATH
+std::wstring StreamIo::wpath() const 
+{
+    std::string p = path();
+    std::wstring w(p.length(), L' ');
+    std::copy(p.begin(), p.end(), w.begin());
+    return w;
+}
+#endif
