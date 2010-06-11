@@ -13,6 +13,21 @@ BUILD_RELEASE=1
 BUILD_DIR=gexiv2
 LIB=lib
 
+UNAME := $(shell uname)
+SYSTEM := $(UNAME:MINGW32_%=MinGW)
+
+ifeq "$(SYSTEM)" "Linux"
+  LINUX = 1
+endif
+
+ifeq "$(SYSTEM)" "MinGW"
+  WINDOWS = 1
+endif
+
+ifeq "$(SYSTEM)" "Darwin"
+  MAC = 1
+endif
+
 -include configure.mk
 
 SRC_FILES = \
@@ -116,6 +131,7 @@ distclean: clean
 vapi: $(VAPI_FILE)
 	@
 
+.PHONY: install
 install:
 	@mkdir -p $(DESTDIR)$(PREFIX)/$(LIB)
 	libtool --mode=install $(INSTALL_PROGRAM) $(LIBRARY).la $(DESTDIR)$(PREFIX)/$(LIB)
@@ -125,7 +141,9 @@ install:
 	$(INSTALL_DATA) $(PC_FILE) $(DESTDIR)$(PREFIX)/$(LIB)/pkgconfig
 	@mkdir -p $(DESTDIR)$(PREFIX)/share/vala/vapi
 	$(INSTALL_DATA) $(VAPI_FILE) $(DESTDIR)$(PREFIX)/share/vala/vapi
+ifndef WINDOWS
 	-ldconfig
+endif
 
 install-vapi:
 	@mkdir -p $(DESTDIR)$(PREFIX)/share/vala/vapi
