@@ -88,7 +88,7 @@ PC_INPUT = $(PKGNAME).m4
 PC_FILE = $(PKGNAME).pc
 
 DIST_FILES = Makefile configure $(EXPANDED_SRC_FILES) $(EXPANDED_HEADER_FILES) $(EXPANDED_VAPI_INPUT) \
-	$(VAPI_FILE) $(PC_INPUT) AUTHORS COPYING INSTALL MAINTAINERS NEWS README
+	$(VAPI_FILE) $(PC_INPUT) AUTHORS COPYING INSTALL MAINTAINERS NEWS README THANKS
 
 DIST_TAR = $(LIBRARY)-$(VERSION).tar
 DIST_TAR_BZ2 = $(DIST_TAR).bz2
@@ -141,9 +141,6 @@ install:
 	$(INSTALL_DATA) $(PC_FILE) $(DESTDIR)$(PREFIX)/$(LIB)/pkgconfig
 	@mkdir -p $(DESTDIR)$(PREFIX)/share/vala/vapi
 	$(INSTALL_DATA) $(VAPI_FILE) $(DESTDIR)$(PREFIX)/share/vala/vapi
-ifndef WINDOWS
-	-ldconfig
-endif
 
 install-vapi:
 	@mkdir -p $(DESTDIR)$(PREFIX)/share/vala/vapi
@@ -154,7 +151,6 @@ uninstall:
 	rm -rf $(DESTDIR)$(PREFIX)/include/$(PKGNAME)
 	rm -f $(DESTDIR)$(PREFIX)/$(LIB)/pkgconfig/$(PKGNAME).pc
 	rm -f $(DESTDIR)$(PREFIX)/share/vala/vapi/$(PKGNAME).vapi
-	-ldconfig
 
 $(VAPI_FILE): $(EXPANDED_VAPI_INPUT) $(DESTDIR_HEADER_FILES) Makefile $(CONFIG_IN)
 	@pkg-config --exists --print-errors $(PKGNAME)
