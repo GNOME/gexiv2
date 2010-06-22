@@ -2,7 +2,7 @@
  * gexiv2-metadata-private.h
  *
  * Author(s)
- * 	Mike Gemuende <mike@gemuende.de>
+ *  Mike Gemuende <mike@gemuende.de>
  *
  * This is free software. See COPYING for details.
  */
@@ -19,25 +19,22 @@
 
 G_BEGIN_DECLS
 
-
 struct _GExiv2MetadataPrivate
 {
-	Exiv2::Image::AutoPtr image;
-	gchar* comment;
-	gchar* mime_type;
-	gint pixel_width;
-	gint pixel_height;
-	gboolean supports_exif;
-	gboolean supports_xmp;
-	gboolean supports_iptc;
-	Exiv2::PreviewManager *preview_manager;
-	GExiv2PreviewProperties **preview_properties;
+    Exiv2::Image::AutoPtr image;
+    gchar* comment;
+    gchar* mime_type;
+    gint pixel_width;
+    gint pixel_height;
+    gboolean supports_exif;
+    gboolean supports_xmp;
+    gboolean supports_iptc;
+    Exiv2::PreviewManager *preview_manager;
+    GExiv2PreviewProperties **preview_properties;
 };
 
-
 #define LOG_ERROR(e) \
-	g_warning("%s", e.what());
-
+    g_warning("%s", e.what());
 
 G_END_DECLS
 

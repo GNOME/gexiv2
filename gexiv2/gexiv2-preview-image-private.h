@@ -15,15 +15,13 @@
 
 G_BEGIN_DECLS
 
-
 struct _GExiv2PreviewImagePrivate
 {
     Exiv2::PreviewImage *image;
 };
 
-
-GExiv2PreviewImage* gexiv2_preview_image_new (Exiv2::PreviewManager *manager, const Exiv2::PreviewProperties &props);
-
+GExiv2PreviewImage* gexiv2_preview_image_new (Exiv2::PreviewManager *manager, 
+   const Exiv2::PreviewProperties &props);
 
 G_END_DECLS
 
