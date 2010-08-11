@@ -194,6 +194,8 @@ gboolean		gexiv2_metadata_has_xmp				(GExiv2Metadata *self);
 gboolean		gexiv2_metadata_clear_xmp_tag		(GExiv2Metadata *self, const gchar* tag);
 void			gexiv2_metadata_clear_xmp			(GExiv2Metadata *self);
 
+gchar*			gexiv2_metadata_get_xmp_packet		(GExiv2Metadata *self);
+
 gboolean		gexiv2_metadata_has_xmp_tag			(GExiv2Metadata *self, const gchar* tag);
 gchar**			gexiv2_metadata_get_xmp_tags		(GExiv2Metadata *self);
 

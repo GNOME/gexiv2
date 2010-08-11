@@ -30,6 +30,19 @@ void gexiv2_metadata_clear_xmp(GExiv2Metadata *self) {
     self->priv->image->xmpData().clear();
 }
 
+gchar *gexiv2_metadata_get_xmp_packet(GExiv2Metadata *self) {
+    g_return_val_if_fail(GEXIV2_IS_METADATA (self), NULL);
+    g_return_val_if_fail(self->priv->image.get() != NULL, NULL);
+    
+    try {
+        return g_strdup(self->priv->image->xmpPacket().c_str());
+    } catch (Exiv2::Error& e) {
+        LOG_ERROR(e);
+    }
+    
+    return NULL;
+}
+
 gboolean gexiv2_metadata_has_xmp_tag(GExiv2Metadata *self, const gchar* tag) {
     g_return_val_if_fail(GEXIV2_IS_METADATA(self), FALSE);
     g_return_val_if_fail(tag != NULL, FALSE);
