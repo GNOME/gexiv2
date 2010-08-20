@@ -1,3 +1,8 @@
+gexiv2 0.2.0 - 20 August 2010
+-----------------------------
+
+  * Fixed a memory leak plus other general bug fixes; no feature changes.
+
 
 gexiv2 0.1.0 - 28 June 2010
 ---------------------------
