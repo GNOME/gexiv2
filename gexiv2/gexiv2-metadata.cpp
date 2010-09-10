@@ -505,6 +505,18 @@ GExiv2Orientation gexiv2_metadata_get_orientation (GExiv2Metadata *self) {
     
         Exiv2::ExifKey std_key ("Exif.Image.Orientation");
         it = exif_data.findKey (std_key);
+        
+        // TODO: This was added in response to http://trac.yorba.org/ticket/2514
+        // The user supplied a file to us with two Exif.Image.Orientation fields, one reported (the
+        // first) as zero by exiv2.  I discovered that field has a count() of zero, or is emtpy,
+        // which causes a segfault when the iterator is dereferenced.
+        //
+        // This searches for the first matching non-empty key.  A better solution would be to guard
+        // against this in all searches for all domains, but that's too much of a change for now.
+        // We'll probably need to do this for the next release.
+        while (it != exif_data.end() && it->count() == 0)
+            it++;
+        
         if (it != exif_data.end ()) {
             GExiv2Orientation orientation = (GExiv2Orientation) it->toLong ();
 
