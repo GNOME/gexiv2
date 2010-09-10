@@ -1,3 +1,15 @@
+gexiv2 0.2.1 - 10 September 2010
+--------------------------------
+
+  * Fixes a crash when an opened file has more than one Exif.Image.Orientation
+    and the first one is empty.  (http://trac.yorba.org/ticket/2514)
+
+
+gexiv2 0.2.0 - 20 August 2010
+-----------------------------
+
+  * Fixed a memory leak plus other general bug fixes; no feature changes.
+
 
 gexiv2 0.1.0 - 28 June 2010
 ---------------------------
