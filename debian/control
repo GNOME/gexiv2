@@ -1,8 +1,7 @@
 Source: gexiv2
 Priority: extra
 Maintainer: Jim Nelson <jim@yorba.org>
-Build-Depends: quilt (>= 0.46-7~),
-               debhelper (>= 7),
+Build-Depends: debhelper (>= 7),
                m4,
                libtool,
                libglib2.0-dev,

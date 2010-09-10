@@ -1,5 +1,5 @@
 PKGNAME = gexiv2
-VERSION = 0.2.0
+VERSION = 0.2.1
 
 LIBRARY = lib$(PKGNAME)
 LIBRARY_BIN = $(LIBRARY).la
@@ -153,7 +153,8 @@ uninstall:
 	rm -f $(DESTDIR)$(PREFIX)/share/vala/vapi/$(PKGNAME).vapi
 
 $(VAPI_FILE): $(EXPANDED_VAPI_INPUT) $(DESTDIR_HEADER_FILES) Makefile $(CONFIG_IN)
-	@pkg-config --exists --print-errors $(PKGNAME)
+	@echo NOTE: This version of gexiv2 must be installed to generate a VAPI file.
+	@pkg-config --exact-version=$(VERSION) --print-errors $(PKGNAME)
 	vala-gen-introspect $(PKGNAME) vapi
 	vapigen --library=$(PKGNAME) --metadata=vapi/$(PKGNAME).metadata vapi/$(PKGNAME).gi
 

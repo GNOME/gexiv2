@@ -1,3 +1,11 @@
+gexiv2 (0.2.1-0lucid1) lucid; urgency=low
+
+  * Fixes a crash when an opened file has more than one Exif.Image.Orientation
+    and the first one is empty.  (http://trac.yorba.org/ticket/2514)
+
+ -- Jim Nelson <jim@yorba.org>  Fri, 10 Sep 2010 14:11:35 -0700 
+
+
 gexiv2 (0.2.0-0lucid1) lucid; urgency=low
 
   * Fixed a memory leak plus other general bug fixes; no feature changes.
