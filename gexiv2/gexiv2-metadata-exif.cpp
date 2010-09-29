@@ -20,7 +20,7 @@ gboolean gexiv2_metadata_has_exif (GExiv2Metadata *self) {
     g_return_val_if_fail (GEXIV2_IS_METADATA (self), FALSE);
     g_return_val_if_fail(self->priv->image.get() != NULL, FALSE);
     
-    return ! (self->priv->image->exifData().empty ());
+    return ! (self->priv->image->exifData().empty());
 }
 
 gboolean gexiv2_metadata_has_exif_tag(GExiv2Metadata *self, const gchar* tag) {
@@ -29,10 +29,9 @@ gboolean gexiv2_metadata_has_exif_tag(GExiv2Metadata *self, const gchar* tag) {
     g_return_val_if_fail(self->priv->image.get() != NULL, FALSE);
     
     Exiv2::ExifData &exif_data = self->priv->image->exifData();
-    
     for (Exiv2::ExifData::iterator it = exif_data.begin(); it != exif_data.end(); ++it) {
-        if (g_ascii_strcasecmp(tag, it->key().c_str()) == 0)
-            return true;
+        if (it->count() > 0 && g_ascii_strcasecmp(tag, it->key().c_str()) == 0)
+            return TRUE;
     }
     
     return FALSE;
@@ -49,7 +48,7 @@ gboolean gexiv2_metadata_clear_exif_tag(GExiv2Metadata *self, const gchar* tag) 
     
     Exiv2::ExifData::iterator it = exif_data.begin();
     while (it != exif_data.end()) {
-        if (g_ascii_strcasecmp(tag, it->key().c_str()) == 0) {
+        if (it->count() > 0 && g_ascii_strcasecmp(tag, it->key().c_str()) == 0) {
             it = exif_data.erase(it);
             erased = true;
         } else {
@@ -81,8 +80,10 @@ gchar** gexiv2_metadata_get_exif_tags (GExiv2Metadata *self) {
     gint count = 0;
     
     for (Exiv2::ExifData::iterator it = exif_data.begin(); it != exif_data.end(); ++it) {
-        list = g_slist_prepend (list, g_strdup (it->key ().c_str ()));
-        count++;
+        if (it->count() > 0) {
+            list = g_slist_prepend (list, g_strdup (it->key ().c_str ()));
+            count++;
+        }
     }
     
     data = g_new (gchar*, count + 1);
@@ -104,7 +105,10 @@ gchar* gexiv2_metadata_get_exif_tag_string (GExiv2Metadata *self, const gchar* t
     
     try {
         Exiv2::ExifData::iterator it = exif_data.findKey(Exiv2::ExifKey(tag));
-        if (it != exif_data.end ())
+        while (it != exif_data.end() && it->count() == 0)
+            it++;
+        
+        if (it != exif_data.end())
             return g_strdup (it->toString ().c_str ());
     } catch (Exiv2::Error& e) {
         LOG_ERROR(e);
@@ -122,7 +126,10 @@ gchar* gexiv2_metadata_get_exif_tag_interpreted_string (GExiv2Metadata *self, co
     
     try {
         Exiv2::ExifData::iterator it = exif_data.findKey(Exiv2::ExifKey(tag));
-        if (it != exif_data.end ()) {
+        while (it != exif_data.end() && it->count() == 0)
+            it++;
+        
+        if (it != exif_data.end()) {
             std::ostringstream os;
             it->write (os);
             
@@ -161,7 +168,10 @@ glong gexiv2_metadata_get_exif_tag_long (GExiv2Metadata *self, const gchar* tag)
     
     try {
         Exiv2::ExifData::iterator it = exif_data.findKey(Exiv2::ExifKey(tag));
-        if (it != exif_data.end ())
+        while (it != exif_data.end() && it->count() == 0)
+            it++;
+        
+        if (it != exif_data.end())
             return it->toLong ();
     } catch (Exiv2::Error& e) {
         LOG_ERROR(e);
@@ -198,7 +208,10 @@ gboolean gexiv2_metadata_get_exif_tag_rational (GExiv2Metadata *self, const gcha
     
     try {
         Exiv2::ExifData::iterator it = exif_data.findKey(Exiv2::ExifKey(tag));
-        if (it != exif_data.end ()) {
+        while (it != exif_data.end() && it->count() == 0)
+            it++;
+        
+        if (it != exif_data.end()) {
             Exiv2::Rational r = it->toRational();
             *nom = r.first;
             *den = r.second;
