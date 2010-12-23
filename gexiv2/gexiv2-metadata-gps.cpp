@@ -28,7 +28,6 @@ gboolean gexiv2_metadata_get_gps_longitude (GExiv2Metadata *self, gdouble *longi
         *longitude = 0.0;
         
         gchar* longitude_ref = gexiv2_metadata_get_exif_tag_string (self, "Exif.GPSInfo.GPSLongitudeRef");
-        
         if (longitude_ref == NULL || longitude_ref[0] == '\0')
             return FALSE;
         
@@ -90,7 +89,6 @@ gboolean gexiv2_metadata_get_gps_latitude (GExiv2Metadata *self, gdouble *latitu
         *latitude = 0.0;
         
         gchar* latitude_ref = gexiv2_metadata_get_exif_tag_string (self, "Exif.GPSInfo.GPSLatitudeRef");
-        
         if (latitude_ref == NULL || latitude_ref[0] == '\0')
             return FALSE;
         
@@ -152,7 +150,6 @@ gboolean gexiv2_metadata_get_gps_altitude (GExiv2Metadata *self, gdouble *altitu
         *altitude = 0.0;
         
         gchar* altitude_ref = gexiv2_metadata_get_exif_tag_string (self, "Exif.GPSInfo.GPSAltitudeRef");
-        
         if (altitude_ref == NULL || altitude_ref[0] == '\0')
             return FALSE;
         

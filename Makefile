@@ -1,5 +1,5 @@
 PKGNAME = gexiv2
-VERSION = 0.2.1+branch
+VERSION = 0.2.2
 
 LIBRARY = lib$(PKGNAME)
 LIBRARY_BIN = $(LIBRARY).la
