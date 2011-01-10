@@ -248,10 +248,9 @@ gboolean gexiv2_metadata_set_exif_tag_rational (GExiv2Metadata *self, const gcha
 const gchar* gexiv2_metadata_get_exif_tag_label (const gchar* tag) {
     g_return_val_if_fail(tag != NULL, NULL);
     
-    Exiv2::ExifKey key(tag);
-    
     try {
-        return Exiv2::ExifTags::tagLabel (key.tag (), key.ifdId ());
+        Exiv2::ExifKey key(tag);
+        return g_intern_string(key.tagLabel().c_str());
     } catch (Exiv2::Error& e) {
         LOG_ERROR(e);
     }
@@ -262,10 +261,9 @@ const gchar* gexiv2_metadata_get_exif_tag_label (const gchar* tag) {
 const gchar* gexiv2_metadata_get_exif_tag_description (const gchar* tag) {
     g_return_val_if_fail(tag != NULL, NULL);
     
-    Exiv2::ExifKey key(tag);
-    
     try {
-        return Exiv2::ExifTags::tagDesc (key.tag (), key.ifdId ());
+        Exiv2::ExifKey key(tag);
+        return g_intern_string(key.tagDesc().c_str());
     } catch (Exiv2::Error& e) {
         LOG_ERROR(e);
     }

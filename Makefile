@@ -64,7 +64,7 @@ EXT_PKGS = \
 	exiv2
 
 EXT_PKG_VERSIONS = \
-	exiv2 >= 0.19
+	exiv2 >= 0.21
 
 VAPI_INPUT = \
 	gexiv2.deps \
