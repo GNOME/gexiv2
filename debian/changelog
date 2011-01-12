@@ -1,3 +1,11 @@
+gexiv2 (0.2.2-0maverick1) maverick; urgency=low
+
+  * A more general case fix from 0.2.1, where guards against empty nodes are
+    now in place throughout the library.
+
+ -- Jim Nelson <jim@yorba.org>  Thu, 23 Dec 2010 13:12:45 -0800 
+
+
 gexiv2 (0.2.1-0lucid1) lucid; urgency=low
 
   * Fixes a crash when an opened file has more than one Exif.Image.Orientation

@@ -1,3 +1,10 @@
+gexiv2 0.2.2 - 23 December 2010
+-------------------------------
+
+  * A more general case fix from 0.2.1, where guards against empty nodes are
+    now in place throughout the library.
+
+
 gexiv2 0.2.1 - 10 September 2010
 --------------------------------
 
