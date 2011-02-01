@@ -1,3 +1,10 @@
+gexiv2 (0.3.0-0maverick1) maverick; urgency=low
+
+  * Updated to work with Exiv2 0.21, which has an ABI change from 0.20.
+
+ -- Jim Nelson <jim@yorba.org>  Mon, 10 Jan 2011 12:18:07 -0800 
+
+
 gexiv2 (0.2.2-0maverick1) maverick; urgency=low
 
   * A more general case fix from 0.2.1, where guards against empty nodes are

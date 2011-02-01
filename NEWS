@@ -1,3 +1,9 @@
+gexiv2 0.3.0 - 10 January 2011
+------------------------------
+
+  * Updated to work with Exiv2 0.21, which has an ABI change from 0.20.
+
+
 gexiv2 0.2.2 - 23 December 2010
 -------------------------------
 
