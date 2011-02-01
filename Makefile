@@ -13,21 +13,6 @@ BUILD_RELEASE=1
 BUILD_DIR=gexiv2
 LIB=lib
 
-UNAME := $(shell uname)
-SYSTEM := $(UNAME:MINGW32_%=MinGW)
-
-ifeq "$(SYSTEM)" "Linux"
-  LINUX = 1
-endif
-
-ifeq "$(SYSTEM)" "MinGW"
-  WINDOWS = 1
-endif
-
-ifeq "$(SYSTEM)" "Darwin"
-  MAC = 1
-endif
-
 -include configure.mk
 
 SRC_FILES = \
