@@ -14,5 +14,6 @@
 #include <gexiv2/gexiv2-managed-stream.h>
 #include <gexiv2/gexiv2-preview-properties.h>
 #include <gexiv2/gexiv2-preview-image.h>
+#include <gexiv2/gexiv2-log.h>
 
 #endif /* __GEXIV2_H__ */

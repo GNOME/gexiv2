@@ -16,6 +16,8 @@
 #include "gexiv2-preview-properties-private.h"
 #include "gexiv2-preview-image.h"
 #include "gexiv2-preview-image-private.h"
+#include "gexiv2-log.h"
+#include "gexiv2-log-private.h"
 #include <string>
 #include <glib-object.h>
 #include <gio/gio.h>
@@ -49,6 +51,15 @@ static void gexiv2_metadata_init (GExiv2Metadata *self) {
     self->priv->pixel_height = -1;
     
     /* the others are static members and need not to be initialized */
+    
+    /*  install GLib logging in place of Exiv2's default (where everything is dumped to stderr)
+        but only if the user hasn't beaten us to the punch
+        
+        if user wants old behavior they should code this:
+            gexiv2_log_set_handler(gexiv2_log_get_default_handler());
+    */
+    if (!gexiv2_log_is_handler_installed())
+        gexiv2_log_use_glib_logging();
 }
 
 static void gexiv2_metadata_class_init (GExiv2MetadataClass *klass) {

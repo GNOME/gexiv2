@@ -23,7 +23,8 @@ SRC_FILES = \
 	gexiv2-metadata-xmp.cpp \
 	gexiv2-stream-io.cpp \
 	gexiv2-preview-properties.cpp \
-	gexiv2-preview-image.cpp
+	gexiv2-preview-image.cpp \
+	gexiv2-log.cpp
 
 HEADER_FILES = \
 	gexiv2.h \
@@ -34,14 +35,16 @@ HEADER_FILES = \
 	gexiv2-preview-properties.h \
 	gexiv2-preview-properties-private.h \
 	gexiv2-preview-image.h \
-	gexiv2-preview-image-private.h
+	gexiv2-preview-image-private.h \
+	gexiv2-log.h
 
 INSTALLED_HEADER_FILES = \
 	gexiv2.h \
 	gexiv2-metadata.h \
 	gexiv2-managed-stream.h \
 	gexiv2-preview-properties.h \
-	gexiv2-preview-image.h
+	gexiv2-preview-image.h \
+	gexiv2-log.h
 
 EXT_PKGS = \
 	gobject-2.0 \
