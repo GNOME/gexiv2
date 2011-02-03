@@ -173,6 +173,14 @@ namespace GExiv2 {
 		public uint32 get_size ();
 		public uint32 get_width ();
 	}
+	[CCode (cprefix = "GEXIV2_LOG_LEVEL_", has_type_id = false, cheader_filename = "gexiv2/gexiv2.h")]
+	public enum LogLevel {
+		DEBUG,
+		INFO,
+		WARN,
+		ERROR,
+		MUTE
+	}
 	[CCode (cprefix = "GEXIV2_ORIENTATION_", has_type_id = false, cheader_filename = "gexiv2/gexiv2.h")]
 	public enum Orientation {
 		MIN,
@@ -194,6 +202,8 @@ namespace GExiv2 {
 		End
 	}
 	[CCode (cheader_filename = "gexiv2/gexiv2.h", has_target = false)]
+	public delegate void LogHandler (GExiv2.LogLevel level, string msg);
+	[CCode (cheader_filename = "gexiv2/gexiv2.h", has_target = false)]
 	public delegate bool Stream_CanRead (void* handle);
 	[CCode (cheader_filename = "gexiv2/gexiv2.h", has_target = false)]
 	public delegate bool Stream_CanSeek (void* handle);
@@ -211,4 +221,16 @@ namespace GExiv2 {
 	public delegate void Stream_Seek (void* handle, int64 offset, GExiv2.WrapperSeekOrigin origin);
 	[CCode (cheader_filename = "gexiv2/gexiv2.h", has_target = false)]
 	public delegate void Stream_Write (void* handle, void* buffer, int32 offset, int32 count);
+	[CCode (cheader_filename = "gexiv2/gexiv2.h")]
+	public static unowned GExiv2.LogHandler log_get_default_handler ();
+	[CCode (cheader_filename = "gexiv2/gexiv2.h")]
+	public static unowned GExiv2.LogHandler log_get_handler ();
+	[CCode (cheader_filename = "gexiv2/gexiv2.h")]
+	public static GExiv2.LogLevel log_get_level ();
+	[CCode (cheader_filename = "gexiv2/gexiv2.h")]
+	public static void log_set_handler (GExiv2.LogHandler handler);
+	[CCode (cheader_filename = "gexiv2/gexiv2.h")]
+	public static void log_set_level (GExiv2.LogLevel level);
+	[CCode (cheader_filename = "gexiv2/gexiv2.h")]
+	public static void log_use_glib_logging ();
 }
