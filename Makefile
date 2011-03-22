@@ -36,7 +36,8 @@ HEADER_FILES = \
 	gexiv2-preview-properties-private.h \
 	gexiv2-preview-image.h \
 	gexiv2-preview-image-private.h \
-	gexiv2-log.h
+	gexiv2-log.h \
+	gexiv2-log-private.h
 
 INSTALLED_HEADER_FILES = \
 	gexiv2.h \
@@ -106,7 +107,8 @@ clean:
 	rm -f $(VAPI_GENERATED_FILES)
 	rm -f $(PC_FILE)
 
-dist: $(DIST_FILES)
+.PHONY: dist
+dist:
 	mkdir -p $(LIBRARY)-$(VERSION)
 	cp --parents $(DIST_FILES) $(LIBRARY)-$(VERSION)
 	tar --bzip2 -cvf $(DIST_TAR_BZ2) $(LIBRARY)-$(VERSION)
