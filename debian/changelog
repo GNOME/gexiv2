@@ -1,3 +1,10 @@
+gexiv2 (0.3.1-0maverick1) maverick; urgency=low
+
+  * All debug and log messages from Exiv2 are now routed through GLib's logging functions.
+
+ -- Jim Nelson <jim@yorba.org>  Tue, 22 Mar 2011 14:46:17 -0700 
+
+
 gexiv2 (0.3.0-0maverick1) maverick; urgency=low
 
   * Updated to work with Exiv2 0.21, which has an ABI change from 0.20.
