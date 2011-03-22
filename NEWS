@@ -1,3 +1,9 @@
+gexiv2 0.3.1 - 22 March 2011
+----------------------------
+
+  * All debug and log messages from Exiv2 are now routed through GLib's logging functions.
+
+
 gexiv2 0.3.0 - 10 January 2011
 ------------------------------
 

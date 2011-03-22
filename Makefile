@@ -1,5 +1,5 @@
 PKGNAME = gexiv2
-VERSION = 0.3.0+trunk
+VERSION = 0.3.1+trunk
 
 LIBRARY = lib$(PKGNAME)
 LIBRARY_BIN = $(LIBRARY).la
@@ -146,7 +146,7 @@ $(VAPI_FILE): $(EXPANDED_VAPI_INPUT) $(DESTDIR_HEADER_FILES) Makefile $(CONFIG_I
 	vala-gen-introspect $(PKGNAME) vapi
 	vapigen --library=$(PKGNAME) --metadata=vapi/$(PKGNAME).metadata vapi/$(PKGNAME).gi
 
-$(PC_FILE) : $(PC_INPUT) Makefile $(CONFIG_IN)
+$(PC_FILE): $(PC_INPUT) Makefile $(CONFIG_IN)
 	m4 '--define=_VERSION_=$(VERSION)' '--define=_PREFIX_=$(PREFIX)' $< > $@
 
 $(EXPANDED_OBJ_FILES): $(BUILD_DIR)/%.o: gexiv2/%.cpp $(EXPANDED_HEADER_FILES) $(CONFIG_IN) Makefile
