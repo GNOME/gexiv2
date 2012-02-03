@@ -144,7 +144,7 @@ $(VAPI_FILE): $(EXPANDED_VAPI_INPUT) $(DESTDIR_HEADER_FILES) Makefile $(CONFIG_I
 	@echo NOTE: This version of gexiv2 must be installed to generate a VAPI file.
 	@pkg-config --exact-version=$(VERSION) --print-errors $(PKGNAME)
 	vala-gen-introspect $(PKGNAME) vapi
-	vapigen --library=$(PKGNAME) --metadata=vapi/$(PKGNAME).metadata vapi/$(PKGNAME).gi
+	vapigen --library=$(PKGNAME) --metadatadir=vapi vapi/$(PKGNAME).gi
 
 $(PC_FILE): $(PC_INPUT) Makefile $(CONFIG_IN)
 	m4 '--define=_VERSION_=$(VERSION)' '--define=_PREFIX_=$(PREFIX)' $< > $@

@@ -84,5 +84,5 @@ gexiv2_metadata_get_gps_info.altitude is_out="1"
 gexiv2_metadata_get_preview_properties transfer_ownership="0" nullable="1" is_array="1" array_null_terminated="1"
 gexiv2_metadata_get_preview_image transfer_ownership="1"
 
-gexiv2_preview_image_get_data transfer_ownership="0" nullable="1" is_array="1" array_length_pos="1"
+gexiv2_preview_image_get_data type_name="uint8" transfer_ownership="0" is_array="1" array_length_pos="1"
 gexiv2_preview_image_get_data.size hidden="1"
