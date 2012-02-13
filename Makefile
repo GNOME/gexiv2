@@ -28,6 +28,8 @@ SRC_FILES = \
 
 HEADER_FILES = \
 	gexiv2.h \
+	gexiv2-log.h \
+	gexiv2-log-private.h \
 	gexiv2-metadata.h \
 	gexiv2-managed-stream.h \
 	gexiv2-metadata-private.h \
@@ -35,8 +37,7 @@ HEADER_FILES = \
 	gexiv2-preview-properties.h \
 	gexiv2-preview-properties-private.h \
 	gexiv2-preview-image.h \
-	gexiv2-preview-image-private.h \
-	gexiv2-log.h
+	gexiv2-preview-image-private.h
 
 INSTALLED_HEADER_FILES = \
 	gexiv2.h \
