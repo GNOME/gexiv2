@@ -9,7 +9,7 @@ Build-Depends: debhelper (>= 7),
                libexpat1-dev
 Standards-Version: 3.8.4
 Section: libs
-Homepage: http://trac.yorba.org/wiki/gexiv2
+Homepage: http://redmine.yorba.org/projects/gexiv2/wiki
 
 Package: libgexiv2-dev
 Section: libdevel
