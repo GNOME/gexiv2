@@ -1,0 +1,7 @@
+.libs/
+gexiv2/.libs
+gexiv2.pc
+*.lo
+*.o
+*.la
+
