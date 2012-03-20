@@ -15,5 +15,6 @@
 #include <gexiv2/gexiv2-preview-properties.h>
 #include <gexiv2/gexiv2-preview-image.h>
 #include <gexiv2/gexiv2-log.h>
+#include <gexiv2/gexiv2-startup.h>
 
 #endif /* __GEXIV2_H__ */
