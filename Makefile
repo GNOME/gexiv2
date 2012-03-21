@@ -1,6 +1,11 @@
 PKGNAME = gexiv2
 VERSION = 0.3.92+trunk
 
+# This number must be edited whenever a change has been made that may affect libgexiv2's
+# external interface.  Please see http://sourceware.org/autobook/autobook/autobook_91.html
+# for the version numbering convention that should be used for this.
+VERSION_INFO = 1:0:0
+
 LIBRARY = lib$(PKGNAME)
 LIBRARY_BIN = $(LIBRARY).la
 
@@ -159,5 +164,5 @@ $(EXPANDED_OBJ_FILES): $(BUILD_DIR)/%.o: gexiv2/%.cpp $(EXPANDED_HEADER_FILES) $
 	libtool --mode=compile --tag=CC $(CXX) -c $(EXT_PKGS_CFLAGS) $(CFLAGS) -I. -o $@ $<
 
 $(LIBRARY_BIN): $(EXPANDED_OBJ_FILES)
-	libtool --mode=link --tag=CC $(CXX) -rpath $(PREFIX)/$(LIB) $(EXPANDED_LO_FILES) $(EXT_PKGS_LDFLAGS) $(CFLAGS) $(LDFLAGS) -o $(LIBRARY_BIN)
+	libtool --mode=link --tag=CC $(CXX) -rpath $(PREFIX)/$(LIB) $(EXPANDED_LO_FILES) $(EXT_PKGS_LDFLAGS) $(CFLAGS) $(LDFLAGS) -version-info $(VERSION_INFO) -o $(LIBRARY_BIN)
 
