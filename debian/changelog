@@ -1,3 +1,11 @@
+gexiv2 (0.4.0-0maverick1) maverick; urgency=low
+
+  * It's now possible (and advisable for multithreaded client applications) to initialize
+    the XMP-handling subsystem in a thread-safe manner prior to encoding or decoding.
+
+ -- Clint Rogers <clinton@yorba.org>  Tue, 27 Mar 2012 11:36:17 -0700 
+
+
 gexiv2 (0.3.1-0maverick1) maverick; urgency=low
 
   * All debug and log messages from Exiv2 are now routed through GLib's logging functions.

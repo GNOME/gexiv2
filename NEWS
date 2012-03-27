@@ -1,3 +1,10 @@
+gexiv2 0.4.0 - 27 March 2012
+----------------------------
+
+  * It's now possible (and advisable for multithreaded client applications) to initialize
+    the XMP-handling subsystem in a thread-safe manner prior to encoding or decoding.
+
+
 gexiv2 0.3.1 - 22 March 2011
 ----------------------------
 
