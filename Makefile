@@ -94,14 +94,20 @@ DIST_TAR_GZ = $(DIST_TAR).gz
 EXT_PKGS_CFLAGS = `pkg-config --cflags $(EXT_PKGS)`
 EXT_PKGS_LDFLAGS = `pkg-config --libs $(EXT_PKGS)`
 
+# REQUIRED_CFLAGS absolutely get appended to CFLAGS, whatever the
+# the value of CFLAGS in the environment
+REQUIRED_CFLAGS := -fPIC
+
 # setting CFLAGS in configure.mk overrides build type
 ifndef CFLAGS
 ifdef BUILD_DEBUG
-CFLAGS = -O0 -g -pipe -fPIC -nostdlib
+CFLAGS = -O0 -g -pipe -nostdlib
 else
-CFLAGS = -O2 -g -pipe -fPIC -nostdlib
+CFLAGS = -O2 -g -pipe -nostdlib
 endif
 endif
+
+CFLAGS += $(REQUIRED_CFLAGS)
 
 all: $(LIBRARY_BIN) $(PC_FILE)
 
