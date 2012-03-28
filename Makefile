@@ -1,5 +1,5 @@
 PKGNAME = gexiv2
-VERSION = 0.4.0
+VERSION = 0.4.1
 
 # This number must be edited whenever a change has been made that may affect libgexiv2's
 # external interface.  Please see http://sourceware.org/autobook/autobook/autobook_91.html
