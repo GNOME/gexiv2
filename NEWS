@@ -1,3 +1,10 @@
+gexiv2 0.4.1 - 28 March 2012
+----------------------------
+
+  * An issue where the 64-bit version of the library would not be built with
+    position-independent code under some circumstances has been corrected.
+
+
 gexiv2 0.4.0 - 27 March 2012
 ----------------------------
 
