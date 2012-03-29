@@ -1,3 +1,11 @@
+gexiv2 (0.4.1-0oneiric1) maverick; urgency=low
+
+  * An issue where the 64-bit version of the library would not be built with
+    position-independent code under some circumstances has been corrected.
+
+ -- Clint Rogers <clinton@yorba.org>  Tue, 28 Mar 2012 17:06:48 -0700
+ 
+
 gexiv2 (0.4.0-0maverick1) maverick; urgency=low
 
   * It's now possible (and advisable for multithreaded client applications) to initialize
