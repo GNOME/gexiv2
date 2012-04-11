@@ -88,8 +88,7 @@ DIST_FILES = Makefile configure $(EXPANDED_SRC_FILES) $(EXPANDED_HEADER_FILES) $
 	$(VAPI_FILE) $(PC_INPUT) AUTHORS COPYING INSTALLING MAINTAINERS NEWS README THANKS
 
 DIST_TAR = $(LIBRARY)-$(VERSION).tar
-DIST_TAR_BZ2 = $(DIST_TAR).bz2
-DIST_TAR_GZ = $(DIST_TAR).gz
+DIST_TAR_XZ = $(DIST_TAR).xz
 
 EXT_PKGS_CFLAGS = `pkg-config --cflags $(EXT_PKGS)`
 EXT_PKGS_LDFLAGS = `pkg-config --libs $(EXT_PKGS)`
@@ -124,8 +123,7 @@ clean:
 dist: $(DIST_FILES)
 	mkdir -p $(LIBRARY)-$(VERSION)
 	cp --parents $(DIST_FILES) $(LIBRARY)-$(VERSION)
-	tar --bzip2 -cvf $(DIST_TAR_BZ2) $(LIBRARY)-$(VERSION)
-	tar --gzip -cvf $(DIST_TAR_GZ) $(LIBRARY)-$(VERSION)
+	tar --xz -cvf $(DIST_TAR_XZ) $(LIBRARY)-$(VERSION)
 	rm -rf $(LIBRARY)-$(VERSION)
 
 distclean: clean
