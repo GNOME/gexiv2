@@ -1,3 +1,11 @@
+gexiv2 (0.4.1-1oneiric5) oneiric; urgency=low
+
+  * Made the Makefile detect the machine's word size before deciding
+    whether -fPIC should be enabled.
+
+ -- Clint Rogers <clinton@yorba.org>  Fri, 8 Jun 2012 14:06:48 -0700
+
+
 gexiv2 (0.4.1-0oneiric1) maverick; urgency=low
 
   * An issue where the 64-bit version of the library would not be built with

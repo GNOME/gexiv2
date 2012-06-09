@@ -1,5 +1,6 @@
 PKGNAME = gexiv2
 VERSION = 0.4.1
+WORD_SIZE:=$(shell getconf LONG_BIT)
 
 # This number must be edited whenever a change has been made that may affect libgexiv2's
 # external interface.  Please see http://sourceware.org/autobook/autobook/autobook_91.html
@@ -94,8 +95,17 @@ EXT_PKGS_CFLAGS = `pkg-config --cflags $(EXT_PKGS)`
 EXT_PKGS_LDFLAGS = `pkg-config --libs $(EXT_PKGS)`
 
 # REQUIRED_CFLAGS absolutely get appended to CFLAGS, whatever the
-# the value of CFLAGS in the environment
-REQUIRED_CFLAGS := -fPIC
+# the value of CFLAGS in the environment.
+REQUIRED_CFLAGS=-Wl,-lstdc++
+
+# Because -fPIC can interfere with compilation on 32-bit platforms but 
+# is absolutely necessary for AMD64, we check what the target machine's 
+# word size is, and set our required flags based upon that.
+ifeq "$(WORD_SIZE)" "64"
+    REQUIRED_CFLAGS += -fPIC -DPIC
+endif
+# otherwise, the target is 32-bit, so we don't need to add -fPIC.
+
 
 # setting CFLAGS in configure.mk overrides build type
 ifndef CFLAGS
