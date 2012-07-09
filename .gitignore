@@ -4,4 +4,4 @@ gexiv2.pc
 *.lo
 *.o
 *.la
-
+/configure.mk
