@@ -13,6 +13,8 @@ configure_help() {
     printf "\n"
     printf "Options:\n"
     printf "\t-h, --help\t\tPrint this help and exit.\n"
+    printf "\t--enable-introspection\tEnable GObject introspection.\n"
+    printf "\t\t\t\t(Also installs Python GExiv2.py module.)\n"
     printf "\t--assume-pkgs\t\tTurn off package version checking.\n"
     printf "\t--build=DIR\t\tBuild secondary files in DIR.\n"
     printf "\t--debug | --release\tBuild executable for debugging or release.\n"
@@ -47,6 +49,9 @@ do
                             
                             variables="${variables}PREFIX=$value\n"
                             ;;
+        
+        --enable-introspection) variables="${variables}ENABLE_INTROSPECTION=1\n"
+                                ;;
         
         --assume-pkgs)      variables="${variables}ASSUME_PKGS=1\n"
                             ;;

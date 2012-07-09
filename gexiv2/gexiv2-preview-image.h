@@ -62,6 +62,12 @@ void			gexiv2_preview_image_free				(GExiv2PreviewImage *self);
 
 /* preview image properties */
 
+/**
+ * gexiv2_preview_image_get_data:
+ * @size: (out) (skip): The size of the buffer holding the data
+ *
+ * Returns: (transfer none) (array length=size): The raw image data
+ */
 const guint8*	gexiv2_preview_image_get_data			(GExiv2PreviewImage *self, guint32 *size);
 const gchar*	gexiv2_preview_image_get_mime_type		(GExiv2PreviewImage *self);
 const gchar*	gexiv2_preview_image_get_extension		(GExiv2PreviewImage *self);

@@ -1,7 +1,9 @@
 .libs/
 gexiv2/.libs
-gexiv2.pc
+/gexiv2.pc
 *.lo
 *.o
 *.la
 /configure.mk
+/GExiv2-0.4.gir
+/GExiv2-0.4.typelib

@@ -2,6 +2,10 @@ PKGNAME = gexiv2
 VERSION = 0.4.1
 WORD_SIZE:=$(shell getconf LONG_BIT)
 
+# This was necessary because the typelib files don't seem to load if the
+# version info has more than one period in it.
+GIR_VERSION = 0.4
+
 # This number must be edited whenever a change has been made that may affect libgexiv2's
 # external interface.  Please see http://sourceware.org/autobook/autobook/autobook_91.html
 # for the version numbering convention that should be used for this.
@@ -20,6 +24,14 @@ BUILD_DIR=gexiv2
 LIB=lib
 
 -include configure.mk
+
+# Used to determine where Python wants the .gi file to be installed ... if Python is not installed,
+# PYTHON2 and PYTHON3 will be empty
+PYTHON="import gi; print(gi._overridesdir)"
+PYTHON2=$(shell python2 -c $(PYTHON))
+PYTHON3=$(shell python3 -c $(PYTHON))
+
+TYPELIB=`pkg-config gobject-introspection-no-export-1.0 --variable typelibdir`
 
 SRC_FILES = \
 	gexiv2-metadata.cpp \
@@ -81,6 +93,9 @@ DESTDIR_HEADER_FILES = $(foreach hdr,$(INSTALLED_HEADER_FILES),$(DESTDIR)$(PREFI
 
 VAPI_FILE = $(PKGNAME).vapi
 VAPI_GENERATED_FILES = vapi/$(PKGNAME).gi
+ifdef ENABLE_INTROSPECTION
+	TYPELIB_FILE = GExiv2-$(GIR_VERSION).typelib
+endif
 
 PC_INPUT = $(PKGNAME).m4
 PC_FILE = $(PKGNAME).pc
@@ -118,7 +133,25 @@ endif
 
 CFLAGS += $(REQUIRED_CFLAGS)
 
-all: $(LIBRARY_BIN) $(PC_FILE)
+all: $(LIBRARY_BIN) $(PC_FILE) $(TYPELIB_FILE)
+
+%.typelib: %.gir
+	g-ir-compiler --includedir=$(BUILD_DIR) -o $@ $<
+
+GExiv2-$(GIR_VERSION).gir: $(LIBRARY_BIN)
+	g-ir-scanner --verbose                          \
+		--namespace=GExiv2                      \
+		--nsversion=$(GIR_VERSION)              \
+		--symbol-prefix=$(PKGNAME)              \
+		--include=GObject-2.0                   \
+		--add-include-path=$(BUILD_DIR)         \
+		--output $@                             \
+		-I $(PKGNAME)                           \
+		$(EXPANDED_INSTALLED_HEADER_FILES)      \
+		$(EXPANDED_SRC_FILES)                   \
+		--library $(LIBRARY_BIN)                \
+		--pkg=gobject-2.0                       \
+		--warn-all
 
 clean:
 	rm -f $(EXPANDED_OBJ_FILES)
@@ -129,6 +162,7 @@ clean:
 	rm -f $(LIBRARY_BIN)
 	rm -f $(VAPI_GENERATED_FILES)
 	rm -f $(PC_FILE)
+	rm -f *.gir *.typelib
 
 dist: $(DIST_FILES)
 	mkdir -p $(LIBRARY)-$(VERSION)
@@ -152,6 +186,17 @@ install:
 	$(INSTALL_DATA) $(PC_FILE) $(DESTDIR)$(PREFIX)/$(LIB)/pkgconfig
 	@mkdir -p $(DESTDIR)$(PREFIX)/share/vala/vapi
 	$(INSTALL_DATA) $(VAPI_FILE) $(DESTDIR)$(PREFIX)/share/vala/vapi
+ifdef ENABLE_INTROSPECTION
+	$(INSTALL_DATA) GExiv2-$(GIR_VERSION).gir $(DESTDIR)$(PREFIX)/share/gir-1.0
+	$(INSTALL_DATA) GExiv2-$(GIR_VERSION).typelib $(DESTDIR)$(TYPELIB)
+# No introspection, no .gi file for the Python module to call into
+ifneq "$(PYTHON2)" ""
+	$(INSTALL_DATA) GExiv2.py $(DESTDIR)$(PYTHON2)
+endif
+ifneq "$(PYTHON3)" ""
+	$(INSTALL_DATA) GExiv2.py $(DESTDIR)$(PYTHON3)
+endif
+endif
 
 install-vapi:
 	@mkdir -p $(DESTDIR)$(PREFIX)/share/vala/vapi
@@ -162,6 +207,16 @@ uninstall:
 	rm -rf $(DESTDIR)$(PREFIX)/include/$(PKGNAME)
 	rm -f $(DESTDIR)$(PREFIX)/$(LIB)/pkgconfig/$(PKGNAME).pc
 	rm -f $(DESTDIR)$(PREFIX)/share/vala/vapi/$(PKGNAME).vapi
+ifdef ENABLE_INTROSPECTION
+	rm -f $(DESTDIR)$(PREFIX)/share/gir-1.0/GExiv2-$(GIR_VERSION).gir
+	rm -f $(DESTDIR)$(TYPELIB)/GExiv2-$(GIR_VERSION).typelib
+ifneq "$(PYTHON2)" ""
+	rm -rf $(DESTDIR)$(PYTHON2)/GExiv2.py
+endif
+ifneq "$(PYTHON3)" ""
+	rm -rf $(DESTDIR)$(PYTHON3)/GExiv2.py
+endif
+endif
 
 $(VAPI_FILE): $(EXPANDED_VAPI_INPUT) $(DESTDIR_HEADER_FILES) Makefile $(CONFIG_IN)
 	@echo NOTE: This version of gexiv2 must be installed to generate a VAPI file.
