@@ -205,7 +205,10 @@ gboolean gexiv2_metadata_set_gps_info (GExiv2Metadata *self, gdouble longitude, 
         Exiv2::ExifData& exif_data = self->priv->image->exifData();
         
         gchar buffer [100];
-        gint deg, min;
+        gint deg, min, sec;
+        gdouble remainder, whole;
+        
+        const gint denom = 1000000;
         
         /* set GPS Info Version */
         exif_data ["Exif.GPSInfo.GPSVersionID"] = "2 0 0 0";
@@ -219,19 +222,25 @@ gboolean gexiv2_metadata_set_gps_info (GExiv2Metadata *self, gdouble longitude, 
         else
             exif_data ["Exif.GPSInfo.GPSAltitudeRef"] = "1";
         
-        // FIXME:
-        exif_data ["Exif.GPSInfo.GPSAltitude"] = "0/1";
+        deg = (gint) floor (fabs (altitude) * denom);
+        
+        snprintf (buffer, 100, "%d/%d", deg, denom);
+        exif_data ["Exif.GPSInfo.GPSAltitude"] = buffer;
         
         /* set latitude */
         if (latitude < 0)
             exif_data ["Exif.GPSInfo.GPSLatitudeRef"] = "S";
         else
             exif_data ["Exif.GPSInfo.GPSLatitudeRef"] = "N";
-            
-        deg = (gint) floor (fabs (latitude));
-        min = (gint) floor ((fabs (latitude) - floor (fabs (latitude))) * 60000000);
         
-        snprintf (buffer, 100, "%d/1 %d/1000000 0/1", deg, min);
+        remainder = modf (fabs (latitude), &whole);
+        deg = (gint) floor (whole);
+        
+        remainder = modf (fabs (remainder * 60), &whole);
+        min = (gint) floor (whole);
+        sec = (gint) floor (remainder * 60 * denom);
+        
+        snprintf (buffer, 100, "%d/1 %d/1 %d/%d", deg, min, sec, denom);
         exif_data ["Exif.GPSInfo.GPSLatitude"] = buffer;
         
         /* set longitude */
@@ -240,14 +249,17 @@ gboolean gexiv2_metadata_set_gps_info (GExiv2Metadata *self, gdouble longitude, 
         else
             exif_data ["Exif.GPSInfo.GPSLongitudeRef"] = "E";
         
-        deg = (gint) floor (fabs (longitude));
-        min = (gint) floor ((fabs (longitude) - floor (fabs (longitude))) * 60000000);
+        remainder = modf (fabs (longitude), &whole);
+        deg = (gint) floor (whole);
         
-        snprintf (buffer, 100, "%d/1 %d/1000000 0/1", deg, min);
+        remainder = modf (fabs (remainder * 60), &whole);
+        min = (gint) floor (whole);
+        sec = (gint) floor (remainder * 60 * denom);
+        
+        snprintf (buffer, 100, "%d/1 %d/1 %d/%d", deg, min, sec, denom);
         exif_data ["Exif.GPSInfo.GPSLongitude"] = buffer;
         
         return true;
-        
     } catch (Exiv2::Error &e) {
         LOG_ERROR(e);
     }
