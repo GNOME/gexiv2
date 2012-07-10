@@ -28,8 +28,8 @@ LIB=lib
 # Used to determine where Python wants the .gi file to be installed ... if Python is not installed,
 # PYTHON2 and PYTHON3 will be empty
 PYTHON="import gi; print(gi._overridesdir)"
-@PYTHON2=$(shell python2 -c $(PYTHON))
-@PYTHON3=$(shell python3 -c $(PYTHON))
+PYTHON2=$(shell python2 -c $(PYTHON) 2> /dev/null)
+PYTHON3=$(shell python3 -c $(PYTHON) 2> /dev/null)
 
 TYPELIB=`pkg-config gobject-introspection-no-export-1.0 --variable typelibdir`
 
