@@ -165,7 +165,7 @@ clean:
 
 dist: $(DIST_FILES)
 	mkdir -p $(LIBRARY)-$(VERSION)
-	cp --parents $(DIST_FILES) $(LIBRARY)-$(VERSION)
+	cp --parents --preserve $(DIST_FILES) $(LIBRARY)-$(VERSION)
 	tar --xz -cvf $(DIST_TAR_XZ) $(LIBRARY)-$(VERSION)
 	rm -rf $(LIBRARY)-$(VERSION)
 
