@@ -1,3 +1,11 @@
+gexiv2 (0.4.90-1precise1) precise; urgency=low
+
+  * Corrected an issue with the makefile that would cause the GIR scanner to generate a
+    lot of inconsequential-but-seemingly-ominous warnings.
+  * Corrected handling of altitude in gexiv2_metadata_set_gps_info().
+
+ -- Clint Rogers <clinton@yorba.org>  Wed, 29 Aug 2012 15:23:11 -0700
+
 gexiv2 (0.4.1-1oneiric5) oneiric; urgency=low
 
   * Made the Makefile detect the machine's word size before deciding
