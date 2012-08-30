@@ -186,13 +186,17 @@ install:
 	@mkdir -p $(DESTDIR)$(PREFIX)/share/vala/vapi
 	$(INSTALL_DATA) $(VAPI_FILE) $(DESTDIR)$(PREFIX)/share/vala/vapi
 ifdef ENABLE_INTROSPECTION
+	@mkdir -p $(DESTDIR)$(PREFIX)/share/gir-1.0
 	$(INSTALL_DATA) GExiv2-$(GIR_VERSION).gir $(DESTDIR)$(PREFIX)/share/gir-1.0
+	@mkdir -p $(DESTDIR)$(TYPELIB)
 	$(INSTALL_DATA) GExiv2-$(GIR_VERSION).typelib $(DESTDIR)$(TYPELIB)
 # No introspection, no .gi file for the Python module to call into
 ifneq "$(PYTHON2)" ""
+	@mkdir -p $(DESTDIR)$(PYTHON2)
 	$(INSTALL_DATA) GExiv2.py $(DESTDIR)$(PYTHON2)
 endif
 ifneq "$(PYTHON3)" ""
+	@mkdir -p $(DESTDIR)$(PYTHON3)
 	$(INSTALL_DATA) GExiv2.py $(DESTDIR)$(PYTHON3)
 endif
 endif
