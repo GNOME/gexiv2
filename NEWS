@@ -1,8 +1,20 @@
+gexiv2 0.5.0 - 1 October 2012
+-----------------------------
+
+  * Corrects a major issue where some required directories wouldn't be created
+    when running 'make install'.
+  * Corrects an issue where gexiv2.py wouldn't get copied to the tarball when
+    running 'make dist'.
+  * Adds support for GObject introspection.
+
+
 gexiv2 0.4.90 - 29 August 2012
 -----------------------------
+
   * Corrected an issue with the makefile that would cause the GIR scanner to generate a
     lot of inconsequential-but-seemingly-ominous warnings.
   * Corrected handling of altitude in gexiv2_metadata_set_gps_info().
+
 
 gexiv2 0.4.1 - 28 March 2012
 ----------------------------
