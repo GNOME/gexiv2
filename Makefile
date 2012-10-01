@@ -1,5 +1,5 @@
 PKGNAME = gexiv2
-VERSION = 0.4.90
+VERSION = 0.5.0
 WORD_SIZE:=$(shell getconf LONG_BIT)
 
 # This was necessary because the typelib files don't seem to load if the
