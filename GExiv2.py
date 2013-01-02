@@ -96,7 +96,7 @@ class Metadata(GExiv2.Metadata):
     
     def __delitem__(self, key):
         if self.has_tag(key):
-            self.clear_tag(tagname)
+            self.clear_tag(key)
         else:
             raise KeyError('%s: Unknown tag' % key)
     
