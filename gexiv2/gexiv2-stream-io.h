@@ -7,13 +7,10 @@
  * This is free software. See COPYING for details.
  */
 
-
 /*
  * The class StreamIo is derived from BasicIo to provide usage of a
  * ManagedStream to exiv2.
  */
-
-
 
 #ifndef __GEXIV2_STREAM_IO_H__
 #define __GEXIV2_STREAM_IO_H__

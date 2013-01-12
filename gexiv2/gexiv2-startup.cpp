@@ -6,7 +6,7 @@
  *
  * This is free software. See COPYING for details.
  */
- 
+
 #include <exiv2/xmp.hpp>
 #include "gexiv2-startup.h"
 
