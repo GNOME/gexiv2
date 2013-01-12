@@ -23,6 +23,7 @@ gboolean gexiv2_metadata_has_exif (GExiv2Metadata *self) {
     return ! (self->priv->image->exifData().empty());
 }
 
+
 gboolean gexiv2_metadata_has_exif_tag(GExiv2Metadata *self, const gchar* tag) {
     g_return_val_if_fail(GEXIV2_IS_METADATA(self), FALSE);
     g_return_val_if_fail(tag != NULL, FALSE);

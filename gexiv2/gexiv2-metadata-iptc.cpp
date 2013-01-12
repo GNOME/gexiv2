@@ -16,9 +16,6 @@
 
 G_BEGIN_DECLS
 
-void gexiv2_metadata_set_iptc_tag_string_cut (GExiv2Metadata *self, const gchar* tag,
-    const gchar* value, gsize bytes);
-
 gboolean gexiv2_metadata_has_iptc (GExiv2Metadata *self) {
     g_return_val_if_fail(GEXIV2_IS_METADATA (self), FALSE);
     g_return_val_if_fail(self->priv->image.get() != NULL, FALSE);
@@ -237,115 +234,6 @@ gboolean gexiv2_metadata_set_iptc_tag_multiple (GExiv2Metadata *self, const gcha
     }
     
     return FALSE;
-}
-
-gchar** gexiv2_metadata_get_iptc_keywords (GExiv2Metadata *self) {
-    return gexiv2_metadata_get_iptc_tag_multiple (self, "Iptc.Application2.Keywords");
-}
-
-gchar* gexiv2_metadata_get_iptc_headline (GExiv2Metadata *self) {
-    return gexiv2_metadata_get_iptc_tag_string (self, "Iptc.Application2.Headline");
-}
-
-
-gchar* gexiv2_metadata_get_iptc_caption (GExiv2Metadata *self) {
-    return gexiv2_metadata_get_iptc_tag_string (self, "Iptc.Application2.Caption");
-}
-
-gchar* gexiv2_metadata_get_iptc_byline (GExiv2Metadata *self) {
-    return gexiv2_metadata_get_iptc_tag_string (self, "Iptc.Application2.Byline");
-}
-
-gchar* gexiv2_metadata_get_iptc_byline_title (GExiv2Metadata *self) {
-    return gexiv2_metadata_get_iptc_tag_string (self, "Iptc.Application2.BylineTitle");
-}
-
-gchar* gexiv2_metadata_get_iptc_copyright (GExiv2Metadata *self) {
-    return gexiv2_metadata_get_iptc_tag_string (self, "Iptc.Application2.Copyright");
-}
-
-gchar* gexiv2_metadata_get_iptc_contact (GExiv2Metadata *self) {
-    return gexiv2_metadata_get_iptc_tag_string (self, "Iptc.Application2.Contact");
-}
-
-gchar* gexiv2_metadata_get_iptc_city (GExiv2Metadata *self) {
-    return gexiv2_metadata_get_iptc_tag_string (self, "Iptc.Application2.City");
-}
-
-gchar* gexiv2_metadata_get_iptc_sublocation (GExiv2Metadata *self) {
-    return gexiv2_metadata_get_iptc_tag_string (self, "Iptc.Application2.SubLocation");
-}
-
-gchar* gexiv2_metadata_get_iptc_province_state (GExiv2Metadata *self) {
-    return gexiv2_metadata_get_iptc_tag_string (self, "Iptc.Application2.ProvinceState");
-}
-
-gchar* gexiv2_metadata_get_iptc_country_code (GExiv2Metadata *self) {
-    return gexiv2_metadata_get_iptc_tag_string (self, "Iptc.Application2.CountryCode");
-}
-
-gchar* gexiv2_metadata_get_iptc_country_name (GExiv2Metadata *self) {
-    return gexiv2_metadata_get_iptc_tag_string (self, "Iptc.Application2.CountryName");
-}
-
-gchar* gexiv2_metadata_get_iptc_writer (GExiv2Metadata *self) {
-    return gexiv2_metadata_get_iptc_tag_string (self, "Iptc.Application2.Writer");
-}
-
-void gexiv2_metadata_set_iptc_tag_string_cut (GExiv2Metadata *self, const gchar* tag, 
-    const gchar* value, gsize bytes) {
-    g_return_if_fail(GEXIV2_IS_METADATA(self));
-    g_return_if_fail(tag != NULL);
-    g_return_if_fail(value != NULL);
-    g_return_if_fail(bytes >= 0);
-    g_return_if_fail(self->priv->image.get() != NULL);
-    
-    if (bytes == 0)
-        return;
-    
-    gchar* cut_value = g_strndup (value, bytes);
-    gexiv2_metadata_set_iptc_tag_string (self, tag, cut_value);
-    g_free (cut_value);
-}
-
-void gexiv2_metadata_set_iptc_byline (GExiv2Metadata *self, const gchar* value) {
-    gexiv2_metadata_set_iptc_tag_string_cut (self, "Iptc.Application2.Byline", value, 32);
-}
-
-void gexiv2_metadata_set_iptc_byline_title (GExiv2Metadata *self, const gchar* value) {
-    gexiv2_metadata_set_iptc_tag_string_cut (self, "Iptc.Application2.BylineTitle", value, 32);
-}
-
-void gexiv2_metadata_set_iptc_copyright (GExiv2Metadata *self, const gchar* value) {
-    gexiv2_metadata_set_iptc_tag_string_cut (self, "Iptc.Application2.Copyright", value, 128);
-}
-
-void gexiv2_metadata_set_iptc_contact (GExiv2Metadata *self, const gchar* value) {
-    gexiv2_metadata_set_iptc_tag_string_cut (self, "Iptc.Application2.Contact", value, 128);
-}
-
-void gexiv2_metadata_set_iptc_city (GExiv2Metadata *self, const gchar* value) {
-    gexiv2_metadata_set_iptc_tag_string_cut (self, "Iptc.Application2.City", value, 32);
-}
-
-void gexiv2_metadata_set_iptc_sublocation (GExiv2Metadata *self, const gchar* value) {
-    gexiv2_metadata_set_iptc_tag_string_cut (self, "Iptc.Application2.SubLocation", value, 32);
-}
-
-void gexiv2_metadata_set_iptc_province_state (GExiv2Metadata *self, const gchar* value) {
-    gexiv2_metadata_set_iptc_tag_string_cut (self, "Iptc.Application2.ProvinceState", value, 32);
-}
-
-void gexiv2_metadata_set_iptc_country_code (GExiv2Metadata *self, const gchar* value) {
-    gexiv2_metadata_set_iptc_tag_string_cut (self, "Iptc.Application2.CountryCode", value, 3);
-}
-
-void gexiv2_metadata_set_iptc_country_name (GExiv2Metadata *self, const gchar* value) {
-    gexiv2_metadata_set_iptc_tag_string_cut (self, "Iptc.Application2.CountryName", value, 32);
-}
-
-void gexiv2_metadata_set_iptc_writer (GExiv2Metadata *self, const gchar* value) {
-    gexiv2_metadata_set_iptc_tag_string_cut (self, "Iptc.Application2.Writer", value, 32);
 }
 
 const gchar* gexiv2_metadata_get_iptc_tag_label (const gchar* tag) {

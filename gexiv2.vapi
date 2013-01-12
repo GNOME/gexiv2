@@ -24,24 +24,14 @@ namespace GExiv2 {
 		public void clear ();
 		public void clear_comment ();
 		public void clear_exif ();
-		public bool clear_exif_tag (string tag);
 		public void clear_iptc ();
-		public bool clear_iptc_tag (string tag);
 		public bool clear_tag (string tag);
 		public void clear_xmp ();
-		public bool clear_xmp_tag (string tag);
 		public void delete_gps_info ();
 		public void erase_exif_thumbnail ();
 		public bool from_app1_segment ([CCode (array_length = false)] uchar[] data, long n_data) throws GLib.Error;
-		public string? get_camera_model ();
 		public string? get_comment ();
-		public string? get_date_time ();
-		public static unowned string? get_exif_tag_description (string tag);
-		public string? get_exif_tag_interpreted_string (string tag);
-		public static unowned string? get_exif_tag_label (string tag);
-		public long get_exif_tag_long (string tag);
 		public bool get_exif_tag_rational (string tag, out int nom, out int den);
-		public string? get_exif_tag_string (string tag);
 		[CCode (array_length = false, array_null_terminated = true)]
 		public string[] get_exif_tags ();
 		public bool get_exif_thumbnail (out uchar[] buffer);
@@ -52,33 +42,9 @@ namespace GExiv2 {
 		public bool get_gps_info (out double longitude, out double latitude, out double altitude);
 		public bool get_gps_latitude (out double latitude);
 		public bool get_gps_longitude (out double longitude);
-		public string? get_iptc_byline ();
-		public string? get_iptc_byline_title ();
-		public string? get_iptc_caption ();
-		public string? get_iptc_city ();
-		public string? get_iptc_contact ();
-		public string? get_iptc_copyright ();
-		public string? get_iptc_country_code ();
-		public string? get_iptc_country_name ();
-		public string? get_iptc_headline ();
-		[CCode (array_length = false, array_null_terminated = true)]
-		public string[] get_iptc_keywords ();
-		public string? get_iptc_province_state ();
-		public string? get_iptc_sublocation ();
-		public static unowned string? get_iptc_tag_description (string tag);
-		public string? get_iptc_tag_interpreted_string (string tag);
-		public static unowned string? get_iptc_tag_label (string tag);
-		[CCode (array_length = false, array_null_terminated = true)]
-		public string[]? get_iptc_tag_multiple (string tag);
-		public string? get_iptc_tag_string (string tag);
 		[CCode (array_length = false, array_null_terminated = true)]
 		public string[] get_iptc_tags ();
-		public string? get_iptc_writer ();
 		public int get_iso_speed ();
-		[CCode (array_length = false, array_null_terminated = true)]
-		public unowned string[]? get_keywords ();
-		public int get_metadata_pixel_height ();
-		public int get_metadata_pixel_width ();
 		public unowned string get_mime_type ();
 		public GExiv2.Orientation get_orientation ();
 		public int get_pixel_height ();
@@ -86,7 +52,6 @@ namespace GExiv2 {
 		public GExiv2.PreviewImage get_preview_image (GExiv2.PreviewProperties props);
 		[CCode (array_length = false, array_null_terminated = true)]
 		public unowned GExiv2.PreviewProperties?[] get_preview_properties ();
-		public uint get_rating ();
 		public bool get_supports_exif ();
 		public bool get_supports_iptc ();
 		public bool get_supports_xmp ();
@@ -98,22 +63,12 @@ namespace GExiv2 {
 		public string[]? get_tag_multiple (string tag);
 		public string? get_tag_string (string tag);
 		public string? get_xmp_packet ();
-		public static unowned string? get_xmp_tag_description (string tag);
-		public string? get_xmp_tag_interpreted_string (string tag);
-		public static unowned string? get_xmp_tag_label (string tag);
-		public long get_xmp_tag_long (string tag);
-		[CCode (array_length = false, array_null_terminated = true)]
-		public string[]? get_xmp_tag_multiple (string tag);
-		public string? get_xmp_tag_string (string tag);
 		[CCode (array_length = false, array_null_terminated = true)]
 		public string[] get_xmp_tags ();
 		public bool has_exif ();
-		public bool has_exif_tag (string tag);
 		public bool has_iptc ();
-		public bool has_iptc_tag (string tag);
 		public bool has_tag (string tag);
 		public bool has_xmp ();
-		public bool has_xmp_tag (string tag);
 		public static bool is_exif_tag (string tag);
 		public static bool is_iptc_tag (string tag);
 		public static bool is_xmp_tag (string tag);
@@ -123,36 +78,14 @@ namespace GExiv2 {
 		public bool save_file (string path) throws GLib.Error;
 		public bool save_stream (GExiv2.ManagedStreamCallbacks cb) throws GLib.Error;
 		public void set_comment (string comment);
-		public void set_date_time (string datetime);
-		public bool set_exif_tag_long (string tag, long value);
 		public bool set_exif_tag_rational (string tag, int nom, int den);
-		public bool set_exif_tag_string (string tag, string value);
 		public void set_exif_thumbnail_from_buffer ([CCode (array_length_pos = 1.9)] uchar[] buffer);
 		public bool set_exif_thumbnail_from_file (string path) throws GLib.Error;
 		public bool set_gps_info (double longitude, double latitude, double altitude);
-		public void set_iptc_byline (string value);
-		public void set_iptc_byline_title (string value);
-		public void set_iptc_city (string value);
-		public void set_iptc_contact (string value);
-		public void set_iptc_copyright (string value);
-		public void set_iptc_country_code (string value);
-		public void set_iptc_country_name (string value);
-		public void set_iptc_province_state (string value);
-		public void set_iptc_sublocation (string value);
-		public bool set_iptc_tag_multiple (string tag, [CCode (array_length = false, array_null_terminated = true)] string[] values);
-		public bool set_iptc_tag_string (string tag, string value);
-		public void set_iptc_writer (string value);
-		public void set_keywords ([CCode (array_length = false, array_null_terminated = true)] string[] keywords);
-		public void set_metadata_pixel_height (int height);
-		public void set_metadata_pixel_width (int width);
 		public void set_orientation (GExiv2.Orientation orientation);
-		public void set_rating (uint rating);
 		public bool set_tag_long (string tag, long value);
 		public bool set_tag_multiple (string tag, [CCode (array_length = false, array_null_terminated = true)] string[] values);
 		public bool set_tag_string (string tag, string value);
-		public bool set_xmp_tag_long (string tag, long value);
-		public bool set_xmp_tag_multiple (string tag, [CCode (array_length = false, array_null_terminated = true)] string[] values);
-		public bool set_xmp_tag_string (string tag, string value);
 	}
 	[CCode (cheader_filename = "gexiv2/gexiv2.h")]
 	[Compact]
