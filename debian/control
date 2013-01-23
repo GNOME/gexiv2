@@ -15,13 +15,13 @@ Package: libgexiv2-dev
 Section: libdevel
 Architecture: any
 Depends: ${misc:Depends},
-         libgexiv2-0 (= ${binary:Version}),
+         libgexiv2-1 (= ${binary:Version}),
          libexiv2-dev
 Description: GObject-based wrapper around the Exiv2 library (development files)
  gexiv2 is a GObject-based wrapper around the Exiv2 library. It makes the basic
  features of Exiv2 available to GNOME applications.
 
-Package: libgexiv2-0
+Package: libgexiv2-1
 Section: libs
 Architecture: any
 Depends: ${shlibs:Depends},
