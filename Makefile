@@ -125,9 +125,9 @@ endif
 # setting CFLAGS in configure.mk overrides build type
 ifndef CFLAGS
 ifdef BUILD_DEBUG
-CFLAGS = -O0 -g -pipe -nostdlib
+CFLAGS = -O0 -g -pipe -nostdlib -shared
 else
-CFLAGS = -O2 -g -pipe -nostdlib
+CFLAGS = -O2 -g -pipe -nostdlib -shared
 endif
 endif
 
