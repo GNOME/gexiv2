@@ -24,6 +24,8 @@ Description: GObject-based wrapper around the Exiv2 library (development files)
 Package: libgexiv2-1
 Section: libs
 Architecture: any
+Conflicts: libgexiv2-0
+Replaces: libgexiv2-0
 Depends: ${shlibs:Depends},
          ${misc:Depends}
 Description: GObject-based wrapper around the Exiv2 library
