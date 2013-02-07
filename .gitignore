@@ -7,3 +7,4 @@ gexiv2/.libs
 /configure.mk
 /GExiv2-0.4.gir
 /GExiv2-0.4.typelib
+vapi/gexiv2.gi

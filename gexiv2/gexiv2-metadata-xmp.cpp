@@ -300,4 +300,43 @@ const gchar* gexiv2_metadata_get_xmp_tag_description (const gchar* tag) {
     return NULL;
 }
 
+gboolean gexiv2_metadata_register_xmp_namespace (const gchar* name, const gchar* prefix) {
+    g_return_val_if_fail(name != NULL, FALSE);
+    g_return_val_if_fail(prefix != NULL, FALSE);
+
+    try {
+        Exiv2::XmpProperties::ns(prefix);
+    } catch (Exiv2::Error& error) {
+        // No namespace, OK to register
+        Exiv2::XmpProperties::registerNs(name, prefix);
+        return TRUE;
+    }
+
+    return FALSE;
+}
+
+gboolean gexiv2_metadata_unregister_xmp_namespace (const gchar* name) {
+    g_return_val_if_fail(name != NULL, FALSE);
+
+    std::string prefix = Exiv2::XmpProperties::prefix(name);
+
+    if (!prefix.empty()) {
+        // Unregister
+        Exiv2::XmpProperties::unregisterNs(name);
+
+        try {
+            Exiv2::XmpProperties::ns(prefix);
+        } catch (Exiv2::Error& error) {
+            // Namespace successfully removed
+            return TRUE;
+        }
+    }
+
+    return FALSE;
+}
+
+void gexiv2_metadata_unregister_all_xmp_namespaces (void) {
+    Exiv2::XmpProperties::unregisterNs();
+}
+
 G_END_DECLS

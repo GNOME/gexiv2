@@ -75,6 +75,7 @@ namespace GExiv2 {
 		public bool open_buf ([CCode (array_length = false)] uchar[] data, long n_data) throws GLib.Error;
 		public bool open_path (string path) throws GLib.Error;
 		public bool open_stream (GExiv2.ManagedStreamCallbacks cb) throws GLib.Error;
+		public static bool register_xmp_namespace (string name, string prefix);
 		public bool save_file (string path) throws GLib.Error;
 		public bool save_stream (GExiv2.ManagedStreamCallbacks cb) throws GLib.Error;
 		public void set_comment (string comment);
@@ -86,6 +87,8 @@ namespace GExiv2 {
 		public bool set_tag_long (string tag, long value);
 		public bool set_tag_multiple (string tag, [CCode (array_length = false, array_null_terminated = true)] string[] values);
 		public bool set_tag_string (string tag, string value);
+		public static void unregister_all_xmp_namespaces ();
+		public static bool unregister_xmp_namespace (string name);
 	}
 	[CCode (cheader_filename = "gexiv2/gexiv2.h")]
 	[Compact]

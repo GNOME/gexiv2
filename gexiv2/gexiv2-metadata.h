@@ -272,6 +272,24 @@ gchar*			gexiv2_metadata_get_xmp_packet		(GExiv2Metadata *self);
  */
 gchar**			gexiv2_metadata_get_xmp_tags		(GExiv2Metadata *self);
 
+/**
+ * gexiv2_metadata_register_xmp_namespace:
+ * @name: XMP URI name (should end in /)
+ * @prefix: XMP namespace prefix
+ *
+ * Returns: (skip): Boolean success value
+ */
+gboolean        gexiv2_metadata_register_xmp_namespace (const gchar* name, const gchar *prefix);
+
+/**
+ * gexiv2_metadata_unregister_xmp_namespace:
+ * @name: XMP URI name (should end in /)
+ *
+ * Returns: (skip): Boolean success value
+ */
+gboolean        gexiv2_metadata_unregister_xmp_namespace (const gchar* name);
+
+void            gexiv2_metadata_unregister_all_xmp_namespaces (void);
 
 /* IPTC functions */
 
