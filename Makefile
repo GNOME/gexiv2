@@ -230,11 +230,11 @@ $(VAPI_FILE): $(EXPANDED_VAPI_INPUT) $(DESTDIR_HEADER_FILES) Makefile $(CONFIG_I
 $(PC_FILE): $(PC_INPUT) Makefile $(CONFIG_IN)
 	m4 '--define=_VERSION_=$(VERSION)' '--define=_PREFIX_=$(PREFIX)' $< > $@
 
-$(EXPANDED_OBJ_FILES): $(BUILD_DIR)/%.o: gexiv2/%.cpp $(EXPANDED_HEADER_FILES) $(CONFIG_IN) Makefile
+$(EXPANDED_LO_FILES): $(BUILD_DIR)/%.lo: gexiv2/%.cpp $(EXPANDED_HEADER_FILES) $(CONFIG_IN) Makefile
 	@pkg-config --print-errors --exists '$(EXT_PKG_VERSIONS)'
 	@mkdir -p $(BUILD_DIR)
 	libtool --mode=compile --tag=CC $(CXX) -c $(EXT_PKGS_CFLAGS) $(CFLAGS) -I. -o $@ $<
 
-$(LIBRARY_BIN): $(EXPANDED_OBJ_FILES)
+$(LIBRARY_BIN): $(EXPANDED_LO_FILES)
 	libtool --mode=link --tag=CC $(CXX) -rpath $(PREFIX)/$(LIB) $(EXPANDED_LO_FILES) $(EXT_PKGS_LDFLAGS) $(CFLAGS) $(LDFLAGS) -version-info $(VERSION_INFO) -o $(LIBRARY_BIN)
 
