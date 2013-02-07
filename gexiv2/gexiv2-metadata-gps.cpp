@@ -71,7 +71,7 @@ gboolean gexiv2_metadata_get_gps_longitude (GExiv2Metadata *self, gdouble *longi
         if (longitude_ref[0] == 'W')
             *longitude *= -1.0;
         
-        return true;
+        return TRUE;
     } catch (Exiv2::Error &e) {
         LOG_ERROR(e);
     }
@@ -132,7 +132,7 @@ gboolean gexiv2_metadata_get_gps_latitude (GExiv2Metadata *self, gdouble *latitu
         if (latitude_ref[0] == 'W')
             *latitude *= -1.0;
         
-        return true;
+        return TRUE;
     } catch (Exiv2::Error &e) {
         LOG_ERROR(e);
     }
@@ -171,7 +171,7 @@ gboolean gexiv2_metadata_get_gps_altitude (GExiv2Metadata *self, gdouble *altitu
         if (altitude_ref[0] == '1')
             *altitude *= -1.0;
         
-        return true;
+        return TRUE;
     } catch (Exiv2::Error &e) {
         LOG_ERROR(e);
     }
@@ -190,7 +190,7 @@ gboolean gexiv2_metadata_get_gps_info (GExiv2Metadata *self, gdouble *longitude,
     if ( ! gexiv2_metadata_get_gps_altitude (self, altitude))
         *altitude = 0.0;
     
-    return true;
+    return TRUE;
 }
 
 
@@ -259,7 +259,7 @@ gboolean gexiv2_metadata_set_gps_info (GExiv2Metadata *self, gdouble longitude, 
         snprintf (buffer, 100, "%d/1 %d/1 %d/%d", deg, min, sec, denom);
         exif_data ["Exif.GPSInfo.GPSLongitude"] = buffer;
         
-        return true;
+        return TRUE;
     } catch (Exiv2::Error &e) {
         LOG_ERROR(e);
     }

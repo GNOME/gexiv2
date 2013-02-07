@@ -52,7 +52,7 @@ gboolean gexiv2_metadata_has_xmp_tag(GExiv2Metadata *self, const gchar* tag) {
     
     for (Exiv2::XmpData::iterator it = xmp_data.begin(); it != xmp_data.end(); ++it) {
         if (it->count() > 0 && g_ascii_strcasecmp(tag, it->key().c_str()) == 0)
-            return true;
+            return TRUE;
     }
     
     return FALSE;
@@ -71,7 +71,7 @@ gboolean gexiv2_metadata_clear_xmp_tag(GExiv2Metadata *self, const gchar* tag) {
     while (it != xmp_data.end()) {
         if (it->count() > 0 && g_ascii_strcasecmp(tag, it->key().c_str()) == 0) {
             it = xmp_data.erase(it);
-            erased = true;
+            erased = TRUE;
         } else {
             it++;
         }
@@ -166,7 +166,7 @@ gboolean gexiv2_metadata_set_xmp_tag_string (GExiv2Metadata *self, const gchar* 
     try {
         self->priv->image->xmpData()[tag] = value;
         
-        return true;
+        return TRUE;
     } catch (Exiv2::Error& e) {
         LOG_ERROR(e);
     }
@@ -203,7 +203,7 @@ gboolean gexiv2_metadata_set_xmp_tag_long (GExiv2Metadata *self, const gchar* ta
     try {
         self->priv->image->xmpData()[tag] = value;
         
-        return true;
+        return TRUE;
     } catch (Exiv2::Error& e) {
         LOG_ERROR(e);
     }
@@ -268,7 +268,7 @@ gboolean gexiv2_metadata_set_xmp_tag_multiple (GExiv2Metadata *self, const gchar
             ++val_it;
         }
         
-        return true;
+        return TRUE;
     } catch (Exiv2::Error& e) {
         LOG_ERROR(e);
     }

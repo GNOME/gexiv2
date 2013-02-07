@@ -153,7 +153,7 @@ static gboolean gexiv2_metadata_open_internal (GExiv2Metadata* self, GError** er
     self->priv->image->readMetadata ();
     gexiv2_metadata_init_internal(self);
     
-    return true;
+    return TRUE;
 }
 
 gboolean gexiv2_metadata_open_path (GExiv2Metadata *self, const gchar *path, GError **error) {
@@ -239,7 +239,7 @@ gboolean gexiv2_metadata_from_app1_segment(GExiv2Metadata *self, const guint8 *d
         Exiv2::ExifParser::decode(self->priv->image->exifData(), data + offset, n_data - offset);
         gexiv2_metadata_init_internal(self);
         
-        return true;
+        return TRUE;
     } catch (Exiv2::Error &e) {
         g_set_error_literal(error, g_quark_from_string("GExiv2"), e.code(), e.what());
         
@@ -304,7 +304,7 @@ static gboolean gexiv2_metadata_save_internal (GExiv2Metadata *self, Exiv2::Imag
     
     image->writeMetadata ();
     
-    return true;
+    return TRUE;
 }
 
 gboolean gexiv2_metadata_save_file (GExiv2Metadata *self, const gchar *path, GError **error) {
@@ -808,7 +808,7 @@ gboolean gexiv2_metadata_get_exif_thumbnail (GExiv2Metadata *self, guint8** buff
     memcpy(*buffer, data.pData_, data.size_);
     *size = data.size_;
     
-    return true;
+    return TRUE;
 }
 
 gboolean gexiv2_metadata_set_exif_thumbnail_from_file (GExiv2Metadata *self, const gchar *path,
@@ -821,7 +821,7 @@ gboolean gexiv2_metadata_set_exif_thumbnail_from_file (GExiv2Metadata *self, con
     try {
         thumb.setJpegThumbnail(std::string(path));
         
-        return true;
+        return TRUE;
     } catch (Exiv2::Error &e) {
         g_set_error_literal (error, g_quark_from_string ("GExiv2"), e.code (), e.what ());
     }

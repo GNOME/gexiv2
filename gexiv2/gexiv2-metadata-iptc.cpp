@@ -32,7 +32,7 @@ gboolean gexiv2_metadata_has_iptc_tag(GExiv2Metadata *self, const gchar* tag) {
     
     for (Exiv2::IptcData::iterator it = iptc_data.begin(); it != iptc_data.end(); ++it) {
         if (it->count() > 0 && g_ascii_strcasecmp(tag, it->key().c_str()) == 0)
-            return true;
+            return TRUE;
     }
     
     return FALSE;
@@ -51,7 +51,7 @@ gboolean gexiv2_metadata_clear_iptc_tag(GExiv2Metadata *self, const gchar* tag) 
     while (it != iptc_data.end()) {
         if (it->count() > 0 && g_ascii_strcasecmp(tag, it->key().c_str()) == 0) {
             it = iptc_data.erase(it);
-            erased = true;
+            erased = TRUE;
         } else {
             it++;
         }
@@ -153,7 +153,7 @@ gboolean gexiv2_metadata_set_iptc_tag_string (GExiv2Metadata *self, const gchar*
     try {
         self->priv->image->iptcData()[tag] = value;
         
-        return true;
+        return TRUE;
     } catch (Exiv2::Error& e) {
         LOG_ERROR(e);
     }
@@ -228,7 +228,7 @@ gboolean gexiv2_metadata_set_iptc_tag_multiple (GExiv2Metadata *self, const gcha
             ++it;
         }
         
-        return true;
+        return TRUE;
     } catch (Exiv2::Error& e) {
         LOG_ERROR(e);
     }

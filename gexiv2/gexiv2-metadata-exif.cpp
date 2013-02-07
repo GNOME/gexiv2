@@ -51,7 +51,7 @@ gboolean gexiv2_metadata_clear_exif_tag(GExiv2Metadata *self, const gchar* tag) 
     while (it != exif_data.end()) {
         if (it->count() > 0 && g_ascii_strcasecmp(tag, it->key().c_str()) == 0) {
             it = exif_data.erase(it);
-            erased = true;
+            erased = TRUE;
         } else {
             it++;
         }
@@ -152,7 +152,7 @@ gboolean gexiv2_metadata_set_exif_tag_string (GExiv2Metadata *self, const gchar*
     try {
         self->priv->image->exifData()[tag] = value;
         
-        return true;
+        return TRUE;
     } catch (Exiv2::Error& e) {
         LOG_ERROR(e);
     }
@@ -189,7 +189,7 @@ gboolean gexiv2_metadata_set_exif_tag_long (GExiv2Metadata *self, const gchar* t
     try {
         self->priv->image->exifData()[tag] = static_cast<int32_t>(value);
         
-        return true;
+        return TRUE;
     } catch (Exiv2::Error& e) {
         LOG_ERROR(e);
     }
@@ -217,7 +217,7 @@ gboolean gexiv2_metadata_get_exif_tag_rational (GExiv2Metadata *self, const gcha
             *nom = r.first;
             *den = r.second;
             
-            return true;
+            return TRUE;
         }
     } catch (Exiv2::Error& e) {
         LOG_ERROR(e);
@@ -238,7 +238,7 @@ gboolean gexiv2_metadata_set_exif_tag_rational (GExiv2Metadata *self, const gcha
         r.second = den;
         self->priv->image->exifData()[tag] = r;
         
-        return true;
+        return TRUE;
     } catch (Exiv2::Error& e) {
         LOG_ERROR(e);
     }

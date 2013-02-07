@@ -147,7 +147,7 @@ long StreamIo::size () const {
 int StreamIo::open () {
     seek (0, beg);
 
-    is_open = true;
+    is_open = TRUE;
     return 0;
 }
 
