@@ -579,7 +579,7 @@ gchar* gexiv2_metadata_get_comment (GExiv2Metadata *self) {
     else
         g_free (str);
     
-    str = gexiv2_metadata_get_exif_tag_interpreted_string (self, "Iptc.Application2.Caption");
+    str = gexiv2_metadata_get_iptc_tag_interpreted_string (self, "Iptc.Application2.Caption");
     if (str != NULL && *str != '\0')
         return str;
     else
@@ -599,7 +599,7 @@ void gexiv2_metadata_set_comment (GExiv2Metadata *self, const gchar* comment) {
     exif_data ["Exif.Image.ImageDescription"] = comment;
     exif_data ["Exif.Photo.UserComment"] = comment;
     exif_data ["Exif.Image.XPComment"] = comment;
-    exif_data ["Iptc.Application2.Caption"] = comment;
+    iptc_data ["Iptc.Application2.Caption"] = comment;
 }
 
 void gexiv2_metadata_clear_comment (GExiv2Metadata *self) {
