@@ -15,6 +15,7 @@ configure_help() {
     printf "\t-h, --help\t\tPrint this help and exit.\n"
     printf "\t--enable-introspection\tEnable GObject introspection.\n"
     printf "\t\t\t\t(Also installs Python GExiv2.py module.)\n"
+    printf "\t--with-libtool=LIBTOOL\tUse LIBTOOL for g-ir-scanner.\n"
     printf "\t--assume-pkgs\t\tTurn off package version checking.\n"
     printf "\t--build=DIR\t\tBuild secondary files in DIR.\n"
     printf "\t--debug | --release\tBuild executable for debugging or release.\n"
@@ -52,6 +53,15 @@ do
         
         --enable-introspection) variables="${variables}ENABLE_INTROSPECTION=1\n"
                                 ;;
+        
+        --with-libtool)
+                            if [ ! $value ]
+                            then
+                                abort $1
+                            fi
+                            
+                            variables="${variables}LIBTOOL=--libtool=$value\n"
+                            ;;
         
         --assume-pkgs)      variables="${variables}ASSUME_PKGS=1\n"
                             ;;

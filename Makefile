@@ -150,6 +150,7 @@ GExiv2-$(GIR_VERSION).gir: $(LIBRARY_BIN)
 		$(EXPANDED_INSTALLED_HEADER_FILES)      \
 		$(EXPANDED_SRC_FILES)                   \
 		--library $(LIBRARY_BIN)                \
+		$(LIBTOOL)                              \
 		--pkg=gobject-2.0
 
 clean:
