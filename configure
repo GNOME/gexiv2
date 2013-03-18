@@ -13,15 +13,15 @@ configure_help() {
     printf "\n"
     printf "Options:\n"
     printf "\t-h, --help\t\tPrint this help and exit.\n"
-    printf "\t--enable-introspection\tEnable GObject introspection.\n"
-    printf "\t\t\t\t(Also installs Python GExiv2.py module.)\n"
-    printf "\t--with-libtool=LIBTOOL\tUse LIBTOOL for g-ir-scanner.\n"
-    printf "\t--assume-pkgs\t\tTurn off package version checking.\n"
     printf "\t--build=DIR\t\tBuild secondary files in DIR.\n"
     printf "\t--debug | --release\tBuild executable for debugging or release.\n"
     printf "\t\t\t\t[--release]\n"
     printf "\t--prefix=PREFIX\t\tPrepend PREFIX to program installation paths.\n"
     printf "\t\t\t\t[/usr/local]\n"
+    printf "\t--assume-pkgs\t\tTurn off package version checking.\n"
+    printf "\t--enable-introspection\tEnable GObject introspection.\n"
+    printf "\t\t\t\t(Also installs Python GExiv2.py module.)\n"
+    printf "\t--with-libtool=LIBTOOL\tUse LIBTOOL for g-ir-scanner.\n"
 }
 
 abort() {
