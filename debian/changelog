@@ -1,3 +1,15 @@
+gexiv2 (0.6.0-0quantal1) quantal; urgency=low
+
+  * API has been cleaned up: several unnecessary or questionable
+    calls removed
+  * Improved support for developing GExiv2-based applications
+    in Python
+  * Now includes calls to register and unregister custom XMP
+    namespaces
+
+ -- Lucas Beeler <lucas@yorba.org>  Mon, 18 Oct 2013 15:24:14 -0700
+
+
 gexiv2 (0.5.0-0precise1) precise; urgency=low
 
   * Corrects a major issue where some required directories wouldn't be created

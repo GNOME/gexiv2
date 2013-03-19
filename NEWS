@@ -1,3 +1,13 @@
+gexiv2 0.6.0 - 18 March 2013
+-----------------------------
+  * API has been cleaned up: several unnecessary or questionable
+    calls removed
+  * Improved support for developing GExiv2-based applications
+    in Python
+  * Now includes calls to register and unregister custom XMP
+    namespaces
+
+
 gexiv2 0.5.0 - 1 October 2012
 -----------------------------
 
