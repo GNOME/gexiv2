@@ -1,3 +1,9 @@
+gexiv2 0.6.1 - 19 March 2013
+-----------------------------
+  * Increases the libtool so version to 2.0.0 to reflect ABI
+    changes introduced in 0.6.0.
+
+
 gexiv2 0.6.0 - 18 March 2013
 -----------------------------
   * API has been cleaned up: several unnecessary or questionable
