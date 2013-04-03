@@ -47,14 +47,6 @@ class Metadata(GExiv2.Metadata):
     def save_file(self, path=None):
         super(Metadata, self).save_file(path or self._path)
     
-    def get_date_time(self):
-        datestring = super(Metadata, self).get_date_time()
-        if datestring is not None:
-            return datetime.strptime(datestring, DATE_FORMAT)
-    
-    def set_date_time(self, value):
-        super(Metadata, self).set_date_time(value.strftime(DATE_FORMAT))
-    
     def get_exposure_time(self):
         num, denom = super(Metadata, self).get_exposure_time()
         return Fraction(num, denom) if denom else None
