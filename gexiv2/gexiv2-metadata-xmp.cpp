@@ -300,6 +300,18 @@ const gchar* gexiv2_metadata_get_xmp_tag_description (const gchar* tag) {
     return NULL;
 }
 
+const gchar* gexiv2_metadata_get_xmp_tag_type (const gchar* tag) {
+    g_return_val_if_fail(tag != NULL, NULL);
+    
+    try {
+        return Exiv2::TypeInfo::typeName(Exiv2::XmpProperties::propertyType(Exiv2::XmpKey(tag)));
+    } catch (Exiv2::Error& e) {
+        LOG_ERROR(e);
+    }
+    
+    return NULL;
+}
+
 gboolean gexiv2_metadata_register_xmp_namespace (const gchar* name, const gchar* prefix) {
     g_return_val_if_fail(name != NULL, FALSE);
     g_return_val_if_fail(prefix != NULL, FALSE);

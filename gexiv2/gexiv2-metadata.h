@@ -206,6 +206,14 @@ const gchar*	gexiv2_metadata_get_tag_label		(const gchar *tag);
  */
 const gchar*	gexiv2_metadata_get_tag_description	(const gchar *tag);
 
+/**
+ * gexiv2_metadata_get_tag_type:
+ * @tag: Name of the tag who's type you want
+ *
+ * Returns: (transfer none) (allow-none): The tag's type
+ */
+const gchar*	gexiv2_metadata_get_tag_type	(const gchar *tag);
+
 
 /**
  * EXIF functions

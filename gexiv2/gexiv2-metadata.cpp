@@ -878,4 +878,19 @@ const gchar* gexiv2_metadata_get_tag_description (const gchar *tag) {
     return NULL;
 }
 
+const gchar* gexiv2_metadata_get_tag_type (const gchar *tag) {
+    g_return_val_if_fail(tag != NULL, NULL);
+    
+    if (gexiv2_metadata_is_xmp_tag(tag))
+        return gexiv2_metadata_get_xmp_tag_type(tag);
+    
+    if (gexiv2_metadata_is_exif_tag(tag))
+        return gexiv2_metadata_get_exif_tag_type(tag);
+    
+    if (gexiv2_metadata_is_iptc_tag(tag))
+        return gexiv2_metadata_get_iptc_tag_type(tag);
+    
+    return NULL;
+}
+
 G_END_DECLS

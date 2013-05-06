@@ -272,4 +272,17 @@ const gchar* gexiv2_metadata_get_exif_tag_description (const gchar* tag) {
     return NULL;
 }
 
+const gchar* gexiv2_metadata_get_exif_tag_type (const gchar* tag) {
+    g_return_val_if_fail(tag != NULL, NULL);
+    
+    try {
+        Exiv2::ExifKey key(tag);
+        return Exiv2::TypeInfo::typeName(key.defaultTypeId());
+    } catch (Exiv2::Error& e) {
+        LOG_ERROR(e);
+    }
+    
+    return NULL;
+}
+
 G_END_DECLS

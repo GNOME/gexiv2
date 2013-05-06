@@ -48,6 +48,7 @@ gboolean		gexiv2_metadata_set_exif_tag_long	(GExiv2Metadata *self, const gchar* 
 
 const gchar*	gexiv2_metadata_get_exif_tag_label	(const gchar* tag);
 const gchar*	gexiv2_metadata_get_exif_tag_description (const gchar* tag);
+const gchar*	gexiv2_metadata_get_exif_tag_type (const gchar* tag);
 
 /* private XMP functions */
 
@@ -63,6 +64,7 @@ gboolean		gexiv2_metadata_set_xmp_tag_multiple (GExiv2Metadata *self, const gcha
 
 const gchar*	gexiv2_metadata_get_xmp_tag_label		(const gchar* tag);
 const gchar*	gexiv2_metadata_get_xmp_tag_description	(const gchar* tag);
+const gchar*	gexiv2_metadata_get_xmp_tag_type	(const gchar* tag);
 
 /* private IPTC functions */
 
@@ -76,6 +78,7 @@ gboolean		gexiv2_metadata_set_iptc_tag_multiple	(GExiv2Metadata *self, const gch
 
 const gchar*	gexiv2_metadata_get_iptc_tag_label	(const gchar* tag);
 const gchar*	gexiv2_metadata_get_iptc_tag_description	(const gchar* tag);
+const gchar*	gexiv2_metadata_get_iptc_tag_type	(const gchar* tag);
 
 
 G_END_DECLS
