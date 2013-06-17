@@ -68,7 +68,7 @@ gboolean gexiv2_metadata_get_gps_longitude (GExiv2Metadata *self, gdouble *longi
         } else
             return FALSE;
         
-        if (longitude_ref[0] == 'W')
+        if (longitude_ref[0] == 'S')
             *longitude *= -1.0;
         
         return TRUE;
