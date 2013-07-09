@@ -68,7 +68,8 @@ gboolean gexiv2_metadata_get_gps_longitude (GExiv2Metadata *self, gdouble *longi
         } else
             return FALSE;
         
-        if (longitude_ref[0] == 'S')
+        // There's some weird stuff out there in the wild.
+        if (longitude_ref[0] == 'S' || longitude_ref[0] == 'W')
             *longitude *= -1.0;
         
         return TRUE;
@@ -129,7 +130,8 @@ gboolean gexiv2_metadata_get_gps_latitude (GExiv2Metadata *self, gdouble *latitu
         } else
             return FALSE;
         
-        if (latitude_ref[0] == 'W')
+        // There's some weird stuff out there in the wild.
+        if (latitude_ref[0] == 'S' || latitude_ref[0] == 'W')
             *latitude *= -1.0;
         
         return TRUE;
