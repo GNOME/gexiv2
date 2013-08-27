@@ -9,7 +9,7 @@ GIR_VERSION = 0.4
 # This number must be edited whenever a change has been made that may affect libgexiv2's
 # external interface.  Please see http://sourceware.org/autobook/autobook/autobook_91.html
 # for the version numbering convention that should be used for this.
-VERSION_INFO = 2:0:0
+VERSION_INFO = 3:0:0
 
 LIBRARY = lib$(PKGNAME)
 LIBRARY_BIN = $(LIBRARY).la
