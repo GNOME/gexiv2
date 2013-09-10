@@ -461,7 +461,7 @@ void gexiv2_metadata_set_orientation (GExiv2Metadata *self, GExiv2Orientation or
     Exiv2::XmpData& xmp_data = self->priv->image->xmpData();
     
     exif_data["Exif.Image.Orientation"] = static_cast<uint16_t> (orientation);
-    xmp_data["Xmp.tiff.ImageWidth"] = static_cast<uint16_t> (orientation);
+    xmp_data["Xmp.tiff.Orientation"] = static_cast<uint16_t> (orientation);
     
     gexiv2_metadata_clear_exif_tag(self, "Exif.MinoltaCs7D.Rotation");
     gexiv2_metadata_clear_exif_tag(self, "Exif.MinoltaCs5D.Rotation");
