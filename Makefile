@@ -8,8 +8,10 @@ GIR_VERSION = 0.4
 
 # This number must be edited whenever a change has been made that may affect libgexiv2's
 # external interface.  Please see http://sourceware.org/autobook/autobook/autobook_91.html
-# for the version numbering convention that should be used for this.
-VERSION_INFO = 3:0:0
+# for the version numbering convention that should be used for this and
+# http://davidz25.blogspot.se/2011/07/writing-c-library-part-5.html#abi-api-versioning for
+# guidelines about when this should change.
+VERSION_INFO = 2:0:0
 
 LIBRARY = lib$(PKGNAME)
 LIBRARY_BIN = $(LIBRARY).la
