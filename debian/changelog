@@ -1,3 +1,9 @@
+gexiv2 (0.7.0-1raring1) raring; urgency=low
+
+  * Bump package version
+
+ -- Charles Lindsay <chaz@yorba.org>  Fri, 04 Oct 2013 12:58:15 -0700
+
 gexiv2 (0.7.0-0raring1) raring; urgency=low
 
   * Fixed Python date/time getter/setter bindings
