@@ -194,6 +194,8 @@ gchar** gexiv2_metadata_get_iptc_tag_multiple (GExiv2Metadata *self, const gchar
         LOG_ERROR(e);
     }
     
+    g_slist_free_full (list, g_free);
+    
     return NULL;
 }
 
