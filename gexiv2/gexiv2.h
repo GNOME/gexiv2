@@ -16,5 +16,6 @@
 #include <gexiv2/gexiv2-preview-image.h>
 #include <gexiv2/gexiv2-log.h>
 #include <gexiv2/gexiv2-startup.h>
+#include <gexiv2/gexiv2-version.h>
 
 #endif /* __GEXIV2_H__ */

@@ -1,5 +1,6 @@
 .libs/
 gexiv2/.libs
+gexiv2/gexiv2-version.h
 /gexiv2.pc
 *.lo
 *.o
