@@ -21,6 +21,8 @@ static void gexiv2_preview_image_init (GExiv2PreviewImage *self) {
     self->priv = GEXIV2_PREVIEW_IMAGE_GET_PRIVATE (self);
     
     self->priv->image = NULL;
+    self->priv->mime_type = NULL;
+    self->priv->extension = NULL;
 }
 
 static void gexiv2_preview_image_class_init (GExiv2PreviewImageClass *klass) {
@@ -35,6 +37,8 @@ static void gexiv2_preview_image_finalize (GObject *object) {
     GExiv2PreviewImage *self = GEXIV2_PREVIEW_IMAGE (object);
     
     delete self->priv->image;
+    g_free(self->priv->mime_type);
+    g_free(self->priv->extension);
     
     G_OBJECT_CLASS (gexiv2_preview_image_parent_class)->finalize (object);
 }
@@ -44,6 +48,8 @@ GExiv2PreviewImage* gexiv2_preview_image_new (Exiv2::PreviewManager *manager,
     GExiv2PreviewImage* self = GEXIV2_PREVIEW_IMAGE (g_object_new (GEXIV2_TYPE_PREVIEW_IMAGE, NULL));
     
     self->priv->image = new Exiv2::PreviewImage(manager->getPreviewImage(props));
+    self->priv->mime_type = g_strdup(self->priv->image->mimeType().c_str());
+    self->priv->extension = g_strdup(self->priv->image->extension().c_str());
     
     return self;
 }
@@ -53,11 +59,6 @@ void gexiv2_preview_image_free(GExiv2PreviewImage *self) {
     
     g_object_unref(self);
 }
-
-#define ACCESSOR(self, field, fail) \
-    g_return_val_if_fail(GEXIV2_IS_PREVIEW_IMAGE(self), fail); \
-    \
-    return self->priv->image->field;
 
 const guint8* gexiv2_preview_image_get_data (GExiv2PreviewImage *self, guint32 *size) {
     g_return_val_if_fail(GEXIV2_IS_PREVIEW_IMAGE(self), NULL);
@@ -69,19 +70,27 @@ const guint8* gexiv2_preview_image_get_data (GExiv2PreviewImage *self, guint32 *
 }
 
 const gchar * gexiv2_preview_image_get_mime_type (GExiv2PreviewImage *self) {
-    ACCESSOR(self, mimeType().c_str(), NULL);
+    g_return_val_if_fail(GEXIV2_IS_PREVIEW_IMAGE(self), NULL);
+    
+    return self->priv->mime_type;
 }
 
 const gchar *gexiv2_preview_image_get_extension (GExiv2PreviewImage *self) {
-    ACCESSOR(self, extension().c_str(), NULL);
+    g_return_val_if_fail(GEXIV2_IS_PREVIEW_IMAGE(self), NULL);
+    
+    return self->priv->extension;
 }
 
 guint32 gexiv2_preview_image_get_width (GExiv2PreviewImage *self) {
-    ACCESSOR(self, width(), 0);
+    g_return_val_if_fail(GEXIV2_IS_PREVIEW_IMAGE(self), 0);
+    
+    return self->priv->image->width();
 }
 
 guint32 gexiv2_preview_image_get_height (GExiv2PreviewImage *self) {
-    ACCESSOR(self, height(), 0);
+    g_return_val_if_fail(GEXIV2_IS_PREVIEW_IMAGE(self), 0);
+    
+    return self->priv->image->height();
 }
 
 glong gexiv2_preview_image_write_file (GExiv2PreviewImage *self, const gchar *path) {
