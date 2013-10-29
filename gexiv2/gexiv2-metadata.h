@@ -82,7 +82,7 @@ GType 			gexiv2_metadata_get_type			(void);
  *
  * Returns: (transfer full): A fully constructed #GExiv2Metadata ready to be used
  */
-GExiv2Metadata* gexiv2_metadata_new					();
+GExiv2Metadata* gexiv2_metadata_new					(void);
 void			gexiv2_metadata_free				(GExiv2Metadata *self);
 
 /**

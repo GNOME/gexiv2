@@ -92,7 +92,7 @@ static void gexiv2_metadata_finalize (GObject *object) {
     G_OBJECT_CLASS (gexiv2_metadata_parent_class)->finalize (object);
 }
 
-GExiv2Metadata* gexiv2_metadata_new () {
+GExiv2Metadata* gexiv2_metadata_new (void) {
     return GEXIV2_METADATA (g_object_new (GEXIV2_TYPE_METADATA, NULL));
 }
 
