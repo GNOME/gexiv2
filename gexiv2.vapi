@@ -159,6 +159,14 @@ namespace GExiv2 {
 	[CCode (cheader_filename = "gexiv2/gexiv2.h", has_target = false)]
 	public delegate void Stream_Write (void* handle, void* buffer, int32 offset, int32 count);
 	[CCode (cheader_filename = "gexiv2/gexiv2.h")]
+	public const int MAJOR_VERSION;
+	[CCode (cheader_filename = "gexiv2/gexiv2.h")]
+	public const int MICRO_VERSION;
+	[CCode (cheader_filename = "gexiv2/gexiv2.h")]
+	public const int MINOR_VERSION;
+	[CCode (cheader_filename = "gexiv2/gexiv2.h")]
+	public static int get_version ();
+	[CCode (cheader_filename = "gexiv2/gexiv2.h")]
 	public static bool initialize ();
 	[CCode (cheader_filename = "gexiv2/gexiv2.h")]
 	public static unowned GExiv2.LogHandler log_get_default_handler ();

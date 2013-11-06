@@ -9,3 +9,16 @@ gexiv2/gexiv2-version.h
 /GExiv2-0.4.gir
 /GExiv2-0.4.typelib
 vapi/gexiv2.gi
+
+# Autotools files.
+Makefile.in
+Makefile
+configure
+build-aux/
+config.log
+config.status
+libtool
+.deps/
+aclocal.m4
+autom4te.cache/
+m4/
