@@ -52,12 +52,13 @@ GEXIV2_sources = \
 	gexiv2/gexiv2-preview-properties.cpp \
 	gexiv2/gexiv2-preview-image.cpp \
 	gexiv2/gexiv2-log.cpp \
-	gexiv2/gexiv2-startup.cpp
+	gexiv2/gexiv2-startup.cpp \
 	gexiv2/gexiv2-log-private.h \
 	gexiv2/gexiv2-metadata-private.h \
 	gexiv2/gexiv2-stream-io.h \
 	gexiv2/gexiv2-preview-properties-private.h \
-	gexiv2/gexiv2-preview-image-private.h
+	gexiv2/gexiv2-preview-image-private.h \
+	gexiv2/gexiv2-version.m4
 
 dist_vapi_DATA = \
 	@PACKAGE_NAME@.vapi
