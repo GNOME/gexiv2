@@ -7,6 +7,7 @@ girdir           = $(datadir)/gir-1.0
 typelibdir       = `pkg-config gobject-introspection-no-export-1.0 --variable typelibdir`
 py2gidir         = $(PYTHON2_GIDIR)
 py3gidir         = $(PYTHON3_GIDIR)
+vapidir          = $(datadir)/vala/vapi
 
 # Extra package files. #
 EXTRA_DIST =
@@ -58,6 +59,9 @@ GEXIV2_sources = \
 	gexiv2/gexiv2-preview-properties-private.h \
 	gexiv2/gexiv2-preview-image-private.h
 
+dist_vapi_DATA = \
+	@PACKAGE_NAME@.vapi
+
 # compilation setup. #
 
 if PLATFORM_WIN32
@@ -90,10 +94,6 @@ lib@PACKAGE_NAME@_la_LDFLAGS  = \
 # Vala #
 
 if ENABLE_VALA
-
-install-vapi: vapi
-	mkdir -p $(DESTDIR)$(datadir)/vala/vapi
-	$(INSTALL_DATA) @PACKAGE_NAME@.vapi "$(DESTDIR)$(datadir)/vala/vapi"
 
 vapi: @PACKAGE_NAME@.vapi
 
