@@ -1,3 +1,4 @@
 #!/bin/sh
 
-autoreconf --force --install
+mkdir -p m4
+autoreconf --force --install --verbose
