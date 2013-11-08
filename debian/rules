@@ -9,5 +9,14 @@
 # Uncomment this to turn on verbose mode.
 export DH_VERBOSE=1
 
+configure:
+	./autogen.sh
+
+build-arch: configure
+	dh $@
+
+build: configure
+	dh $@
+
 %:
 	dh $@
