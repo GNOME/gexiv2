@@ -10,10 +10,11 @@ py3gidir         = $(PYTHON3_GIDIR)
 vapidir          = $(datadir)/vala/vapi
 
 # Extra package files. #
-EXTRA_DIST =
+EXTRA_DIST = \
 	@PACKAGE_NAME@.pc.in	\
 	GExiv2.py				\
 	@PACKAGE_NAME@.vapi		\
+	gexiv2/gexiv2-version.m4 \
 	$(TYPELIB_FILES)
 
 # Installed Files #
@@ -57,8 +58,7 @@ GEXIV2_sources = \
 	gexiv2/gexiv2-metadata-private.h \
 	gexiv2/gexiv2-stream-io.h \
 	gexiv2/gexiv2-preview-properties-private.h \
-	gexiv2/gexiv2-preview-image-private.h \
-	gexiv2/gexiv2-version.m4
+	gexiv2/gexiv2-preview-image-private.h
 
 dist_vapi_DATA = \
 	@PACKAGE_NAME@.vapi
@@ -82,6 +82,8 @@ endif
 
 CXXFLAGS += $(REQUIRED_CXXFLAGS)
 
+$(GEXIV2_sources): gexiv2/gexiv2-version.h
+
 gexiv2/gexiv2-version.h: gexiv2/gexiv2-version.m4
 	m4 '--define=_VERSION_MAJOR_=$(GEXIV2_MAJOR_VERSION)' '--define=_VERSION_MINOR_=$(GEXIV2_MINOR_VERSION)' '--define=_VERSION_MICRO_=$(GEXIV2_MICRO_VERSION)' $< > $@
 
@@ -91,6 +93,10 @@ lib@PACKAGE_NAME@_la_CPPFLAGS = $(EXIV2_CFLAGS) $(GLIB_CFLAGS)
 
 lib@PACKAGE_NAME@_la_LDFLAGS  = \
 	$(no_undefined) -export-dynamic -version-info $(GEXIV2_VERSION_INFO)
+
+clean-local:
+	rm -f gexiv2/gexiv2-version.h
+	rm -f gexiv2.pc
 
 # Vala #
 
