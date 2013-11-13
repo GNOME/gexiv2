@@ -7,9 +7,8 @@
     gexiv2 is a GObject-based wrapper around the Exiv2 library.  It makes the
     basic features of Exiv2 available to GNOME applications.
 
-    Visit http://redmine.yorba.org/projects/gexiv2/wiki to read about the
-    current state of gexiv2's development and to make sure you're running the
-    latest version.
+    Visit https://wiki.gnome.org/gexiv2 to read about the current state of
+    gexiv2's development and to make sure you're running the latest version.
 
 
   * Installation & Licensing
@@ -20,11 +19,10 @@
   * Contacting Yorba
 
     Yorba:                      http://www.yorba.org
-    gexiv2 project page:        http://redmine.yorba.org/projects/gexiv2
+    gexiv2 project page:        https://wiki.gnome.org/gexiv2
 
-    We also encourage you to join the gexiv2 mailing list.  Send an email with
-    a subject: line of "subscribe" (no quotes) to
-    gexiv2-request@lists.yorba.org.
+    We also encourage you to join the gexiv2 mailing list.  See
+    https://mail.gnome.org/mailman/listinfo/gexiv2-list for details.
 
 
 
