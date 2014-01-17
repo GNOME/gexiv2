@@ -741,39 +741,14 @@ gboolean gexiv2_metadata_get_exposure_time (GExiv2Metadata *self, gint *nom, gin
 }
 
 gdouble gexiv2_metadata_get_fnumber (GExiv2Metadata *self) {
-    g_return_val_if_fail(GEXIV2_IS_METADATA (self), -1.0);
-    g_return_val_if_fail(self->priv->image.get() != NULL, -1.0);
-    
-    gint nom;
-    gint den;
-    if ( ! gexiv2_metadata_get_exif_tag_rational (self, "Exif.Photo.ISOSpeedRatings", &nom, &den))
-        return -1.0;
-    
-    if (den == 0.0)
-        return -1.0;
-    
-    return (nom / den);
+    return gexiv2_metadata_get_exif_tag_rational_as_double(self, "Exif.Photo.Fnumber", -1.0);
 }
 
 gdouble gexiv2_metadata_get_focal_length (GExiv2Metadata *self) {
-    g_return_val_if_fail(GEXIV2_IS_METADATA (self), -1.0);
-    g_return_val_if_fail(self->priv->image.get() != NULL, -1.0);
-    
-    gint nom;
-    gint den;
-    if ( ! gexiv2_metadata_get_exif_tag_rational (self, "Exif.Photo.FocalLength", &nom, &den))
-        return -1.0;
-    
-    if (den == 0.0)
-        return -1.0;
-        
-    return (nom / den);
+    return gexiv2_metadata_get_exif_tag_rational_as_double(self, "Exif.Photo.FocalLength", -1.0);
 }
 
 gint gexiv2_metadata_get_iso_speed (GExiv2Metadata *self) {
-    g_return_val_if_fail (GEXIV2_IS_METADATA (self), -1);
-    g_return_val_if_fail(self->priv->image.get() != NULL, -1);
-    
     return (gint) gexiv2_metadata_get_exif_tag_long (self, "Exif.Photo.ISOSpeedRatings");
 }
 

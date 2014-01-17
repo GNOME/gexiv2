@@ -177,11 +177,38 @@ gboolean		gexiv2_metadata_set_tag_multiple	(GExiv2Metadata *self, const gchar* t
  * @nom: (out): The numerator
  * @den: (out): The denominator
  *
+ * Returns the exposure time in seconds (shutter speed, <em>not</em> date-time of exposure) as a
+ * rational.  See https://en.wikipedia.org/wiki/Shutter_speed for more information.
+ *
  * Returns: (skip): Boolean success value
  */
 gboolean		gexiv2_metadata_get_exposure_time	(GExiv2Metadata *self, gint *nom, gint *den);
+
+/**
+ * gexiv2_metadata_get_fnumber:
+ *
+ * See https://en.wikipedia.org/wiki/F-number for more information.
+ *
+ * Returns: The exposure Fnumber as a gdouble, or -1.0 if tag is not present or invalid.
+ */
 gdouble			gexiv2_metadata_get_fnumber			(GExiv2Metadata *self);
+
+/**
+ * gexiv2_metadata_get_focal_length:
+ *
+ * See https://en.wikipedia.org/wiki/Flange_focal_distance for more information.
+ *
+ * Returns: The focal length as a gdouble, or -1.0 if tag is not present or invalid.
+ */
 gdouble			gexiv2_metadata_get_focal_length	(GExiv2Metadata *self);
+
+/**
+ * gexiv2_metadata_get_iso_speed:
+ *
+ * See https://en.wikipedia.org/wiki/Iso_speed for more information.
+ *
+ * Returns: The ISO speed rating as a gint, or 0 if tag is not present or invalid.
+ */
 gint			gexiv2_metadata_get_iso_speed		(GExiv2Metadata *self);
 
 /* static functions */

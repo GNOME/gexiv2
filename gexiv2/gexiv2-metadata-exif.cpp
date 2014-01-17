@@ -246,6 +246,14 @@ gboolean gexiv2_metadata_set_exif_tag_rational (GExiv2Metadata *self, const gcha
     return FALSE;
 }
 
+gdouble gexiv2_metadata_get_exif_tag_rational_as_double (GExiv2Metadata *self, const gchar* tag, gdouble def) {
+    gint nom, den;
+    if (!gexiv2_metadata_get_exif_tag_rational(self, tag, &nom, &den))
+        return def;
+    
+    return (den != 0.0) ? (double) nom / (double) den : def;
+}
+
 const gchar* gexiv2_metadata_get_exif_tag_label (const gchar* tag) {
     g_return_val_if_fail(tag != NULL, NULL);
     

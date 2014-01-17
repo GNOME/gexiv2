@@ -45,7 +45,7 @@ gboolean		gexiv2_metadata_set_exif_tag_string	(GExiv2Metadata *self, const gchar
 gchar*			gexiv2_metadata_get_exif_tag_interpreted_string (GExiv2Metadata *self, const gchar* tag);
 glong			gexiv2_metadata_get_exif_tag_long	(GExiv2Metadata *self, const gchar* tag);
 gboolean		gexiv2_metadata_set_exif_tag_long	(GExiv2Metadata *self, const gchar* tag, glong value);
-
+gdouble			gexiv2_metadata_get_exif_tag_rational_as_double (GExiv2Metadata *self, const gchar* tag, gdouble def);
 const gchar*	gexiv2_metadata_get_exif_tag_label	(const gchar* tag);
 const gchar*	gexiv2_metadata_get_exif_tag_description (const gchar* tag);
 const gchar*	gexiv2_metadata_get_exif_tag_type (const gchar* tag);
