@@ -57,6 +57,12 @@ struct _GExiv2PreviewImageClass
 /* basic functions */
 
 GType 			gexiv2_preview_image_get_type			(void);
+
+/**
+ * gexiv2_preview_image_free:
+ *
+ * Releases the preview image and all associated memory.
+ */
 void			gexiv2_preview_image_free				(GExiv2PreviewImage *self);
 
 
@@ -69,10 +75,41 @@ void			gexiv2_preview_image_free				(GExiv2PreviewImage *self);
  * Returns: (transfer none) (array length=size): The raw image data
  */
 const guint8*	gexiv2_preview_image_get_data			(GExiv2PreviewImage *self, guint32 *size);
+
+/**
+ * gexiv2_preview_image_get_mime_type:
+ *
+ * Returns: (transfer-none): The preview image's MIME type.
+ */
 const gchar*	gexiv2_preview_image_get_mime_type		(GExiv2PreviewImage *self);
+
+/**
+ * gexiv2_preview_image_get_extension:
+ *
+ * Returns: (transfer-none): The preview image's recommended file extension.
+ */
 const gchar*	gexiv2_preview_image_get_extension		(GExiv2PreviewImage *self);
+
+/**
+ * gexiv2_preview_image_get_width:
+ *
+ * Returns: The preview image's display width in pixels.
+ */
 guint32			gexiv2_preview_image_get_width			(GExiv2PreviewImage *self);
+
+/**
+ * gexiv2_preview_image_get_height:
+ *
+ * Returns: The preview image's display height in pixels.
+ */
 guint32			gexiv2_preview_image_get_height			(GExiv2PreviewImage *self);
+
+/**
+ * gexiv2_preview_image_write_file:
+ * @path: (in): The file path to write the preview image to.
+ *
+ * Returns: The number of bytes written to the file.
+ */
 glong			gexiv2_preview_image_write_file			(GExiv2PreviewImage *self, const gchar *path);
 
 

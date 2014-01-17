@@ -61,10 +61,39 @@ GType 			gexiv2_preview_properties_get_type			(void);
 
 /* preview properties */
 
+/**
+ * gexiv2_preview_properties_get_mime_type:
+ *
+ * Returns: (transfer-none): The preview image's MIME type.
+ */
 const gchar*	gexiv2_preview_properties_get_mime_type		(GExiv2PreviewProperties *self);
+
+/**
+ * gexiv2_preview_properties_get_extension:
+ *
+ * Returns: (transfer-none): The recommended file extension for the preview image.
+ */
 const gchar*	gexiv2_preview_properties_get_extension		(GExiv2PreviewProperties *self);
+
+/**
+ * gexiv2_preview_properties_get_size:
+ *
+ * Returns: The preview image size in bytes.
+ */
 guint32			gexiv2_preview_properties_get_size			(GExiv2PreviewProperties *self);
+
+/**
+ * gexiv2_preview_properties_get_width:
+ *
+ * Returns: The preview image's display width in pixels.
+ */
 guint32			gexiv2_preview_properties_get_width			(GExiv2PreviewProperties *self);
+
+/**
+ * gexiv2_preview_properties_get_height:
+ *
+ * Returns: The preview image's display height in pixels.
+ */
 guint32			gexiv2_preview_properties_get_height		(GExiv2PreviewProperties *self);
 
 
