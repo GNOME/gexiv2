@@ -80,7 +80,7 @@ if WORD_64
 REQUIRED_CXXFLAGS += -fPIC -DPIC
 endif
 
-CXXFLAGS += $(REQUIRED_CXXFLAGS)
+AM_CXXFLAGS = $(REQUIRED_CXXFLAGS)
 
 $(GEXIV2_sources): gexiv2/gexiv2-version.h
 
@@ -97,6 +97,7 @@ lib@PACKAGE_NAME@_la_LDFLAGS  = \
 clean-local:
 	rm -f gexiv2/gexiv2-version.h
 	rm -f gexiv2.pc
+	rm -f test/gexiv2-dump
 
 # Vala #
 
@@ -111,6 +112,17 @@ vapi/@PACKAGE_NAME@.gi:
 	@echo NOTE: This version of gexiv2 must be installed to generate a VAPI file.
 	pkg-config --exact-version=$(GEXIV2_VERSION) --print-errors @PACKAGE_NAME@
 	vala-gen-introspect @PACKAGE_NAME@ vapi
+
+endif
+
+# Tests and utilities #
+
+if ENABLE_TESTS
+
+tests: test/gexiv2-dump
+
+test/gexiv2-dump: test/gexiv2-dump.vala
+	valac -g --enable-checking --vapidir=. --pkg gexiv2 $< -o $@
 
 endif
 

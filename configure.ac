@@ -6,6 +6,7 @@ AC_CONFIG_MACRO_DIR([m4])
 # Will install auxiliary build tools (depcomp, install-sh, missing...) under build-aux/
 AC_CONFIG_AUX_DIR([build-aux])
 AM_INIT_AUTOMAKE([1.11 -Wall no-define foreign dist-xz tar-ustar])
+AM_PROG_AR
 LT_PREREQ([2.2])
 LT_INIT([disable-static win32-dll])
 
@@ -162,6 +163,29 @@ AM_CONDITIONAL(ENABLE_VALA, test "x$enable_vala" = "xyes")
 AC_MSG_CHECKING([enable vala])
 AC_MSG_RESULT([$enable_vala])
 
+#######################
+# Tests and utilities #
+#######################
+
+AC_ARG_ENABLE(tests, [  --enable-tests         enable tests and utilities (requires Vala) [[default=no]]],
+              if eval "test x$enable_tests = xno"; then
+              enable_tests=no
+              else
+              enable_tests=yes
+              fi,
+              enable_tests=no)
+
+if test "x$enable_tests" != "xno"; then
+    AC_CHECK_TOOL([VALAC], [valac], [:])
+    if test "x$VALAC" = "x:"; then
+        enable_tests="no (missing valac)"
+    fi
+fi
+AM_CONDITIONAL(ENABLE_TESTS, test "x$enable_tests" = "xyes")
+
+AC_MSG_CHECKING([enable tests])
+AC_MSG_RESULT([$enable_tests])
+
 ###################
 # Check Word Size #
 ###################
@@ -241,6 +265,7 @@ Options:
     Introspection:      $enable_introspection
     Python2 binding:    $enable_python2
     Python3 binding:    $enable_python3
+    Tests and utils:    $enable_tests
 ])
 
 if test "x$enable_vala" = "xyes"; then
@@ -249,3 +274,8 @@ NOTE: the Vala binding can only be built and installed after the C API.
 After installing with "make install", run "make vapi" to build the bindings and "make install-vapi" to install them.
 ])
 fi
+
+if test "x$enable_tests" = "xyes"; then
+AC_MSG_RESULT([To build tests and utiliies, run "make tests".])
+fi
+
