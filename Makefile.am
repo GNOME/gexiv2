@@ -15,7 +15,8 @@ EXTRA_DIST = \
 	GExiv2.py				\
 	@PACKAGE_NAME@.vapi		\
 	gexiv2/gexiv2-version.m4 \
-	$(TYPELIB_FILES)
+	$(TYPELIB_FILES) \
+	test/gexiv2-dump.vala
 
 # Installed Files #
 pkgconfig_DATA  = @PACKAGE_NAME@.pc

@@ -1,3 +1,12 @@
+gexiv2 0.9.0 - 4 February 2014
+------------------------------
+
+  * Ported to Autotools
+  * Added compile and runtime version number checks
+  * Fixed bugs and resource leaks
+  * Updated GTK-Docs and GI annotations
+
+
 gexiv2 0.7.0 - 3 October 2013
 -----------------------------
 
