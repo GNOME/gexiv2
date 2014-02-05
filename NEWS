@@ -1,3 +1,11 @@
+gexiv2 0.9.1 - 5 February 2014
+------------------------------
+
+  * Fixed tarball compilation problem
+  * Updated configure.ac
+  * Fixed introspection generation
+
+
 gexiv2 0.9.0 - 4 February 2014
 ------------------------------
 
