@@ -1,11 +1,11 @@
-AC_INIT([gexiv2], [0.9.0], [gexiv2-request@lists.yorba.org.], [gexiv2], [http://redmine.yorba.org/projects/gexiv2/])
+AC_INIT([gexiv2], [0.9.0], [gexiv2-list@gnome.org], [gexiv2], [https://wiki.gnome.org/Projects/gexiv2])
 AC_PREREQ(2.54)
 
 AC_CONFIG_MACRO_DIR([m4])
 
 # Will install auxiliary build tools (depcomp, install-sh, missing...) under build-aux/
 AC_CONFIG_AUX_DIR([build-aux])
-AM_INIT_AUTOMAKE([1.11 -Wall no-define foreign dist-xz tar-ustar])
+AM_INIT_AUTOMAKE([1.11 -Wall no-define foreign dist-xz no-dist-gzip tar-ustar])
 AM_PROG_AR
 LT_PREREQ([2.2])
 LT_INIT([disable-static win32-dll])
