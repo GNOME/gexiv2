@@ -25,6 +25,13 @@ m4_define([gexiv2_real_version],
           [gexiv2_major_version.gexiv2_minor_version.gexiv2_micro_version])
 m4_define([gexiv2_version], [gexiv2_real_version])
 
+# Set to target (stable) major.minor version
+#
+# This was necessary because the typelib files don't seem to load if the
+# version info has more than one period in it.
+GIR_VERSION=0.10
+AC_SUBST(GIR_VERSION)
+
 m4_define([glib_required_version], [2.26.1])
 m4_define([exiv2_required_version], [0.21])
 
@@ -35,11 +42,6 @@ m4_define([exiv2_required_version], [0.21])
 # guidelines about when this should change.
 GEXIV2_VERSION_INFO=2:0:0
 AC_SUBST(GEXIV2_VERSION_INFO)
-
-# This was necessary because the typelib files don't seem to load if the
-# version info has more than one period in it.
-GIR_VERSION=0.4
-AC_SUBST(GIR_VERSION)
 
 GEXIV2_MAJOR_VERSION=gexiv2_major_version
 GEXIV2_MINOR_VERSION=gexiv2_minor_version
@@ -104,31 +106,33 @@ fi
 # Introspection #
 #################
 
-enable_introspection=no
-AC_MSG_CHECKING([enable instrospection])
+AC_MSG_CHECKING([enable introspection])
 AC_ARG_ENABLE(introspection,
-              [  --enable-introspection  enable instrospection [[default=no]]],
+              [  --enable-introspection  enable introspection [[default=no]]],
               if eval "test x$enable_introspection = xyes"; then
               enable_introspection="yes"
-              fi)
+              fi,
+              enable_introspection=no)
 
 AM_CONDITIONAL(ENABLE_INTROSPECTION, test "x$enable_introspection" = "xyes")
 AC_MSG_RESULT([$enable_introspection])
 
-enable_python2="no (instrospection disabled)"
-enable_python3="no (instrospection disabled)"
+enable_python2="no (introspection disabled)"
+enable_python3="no (introspection disabled)"
 if test "x$enable_introspection" = "xyes"; then
     # Used to determine where Python wants the .gi file to be installed ...
     # if Python is not installed, PYTHON2 and PYTHON3 will be empty
     PYTHON="import gi; print(gi._overridesdir)"
-    PYTHON2_GIDIR=$(python2 -c $PYTHON 2> /dev/null)
-    PYTHON3_GIDIR=$(python3 -c $PYTHON 2> /dev/null)
-    if test "x$PYTHON2" != "x"; then
+    PYTHON2_GIDIR=$(python2 -c "$PYTHON")
+    AC_MSG_RESULT([Python2 GObject Introspection directory: $PYTHON2_GIDIR])
+    PYTHON3_GIDIR=$(python3 -c "$PYTHON")
+    AC_MSG_RESULT([Python3 GObject Introspection directory: $PYTHON3_GIDIR])
+    if test "x$PYTHON2_GIDIR" != "x"; then
         enable_python2=yes
     else
         enable_python2=no
     fi
-    if test "x$PYTHON3" != "x"; then
+    if test "x$PYTHON3_GIDIR" != "x"; then
         enable_python3=yes
     else
         enable_python3=no

@@ -121,6 +121,7 @@ endif
 
 if ENABLE_INTROSPECTION
 TYPELIB_FILES=GExiv2-$(GIR_VERSION).typelib GExiv2-$(GIR_VERSION).gir
+CLEANFILES=$(TYPELIB_FILES)
 endif
 
 BUILD_DIR=gexiv2
@@ -138,7 +139,6 @@ GExiv2-$(GIR_VERSION).gir: lib@PACKAGE_NAME@.la
 		--output $@                             \
 		-I @PACKAGE_NAME@                           \
 		$(GEXIV2_public_HEADERS)      \
-		$(GEXIV2_sources)                   \
 		--library lib@PACKAGE_NAME@.la                \
 		$(LIBTOOL)                              \
 		--pkg=gobject-2.0

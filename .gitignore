@@ -6,8 +6,8 @@ gexiv2/gexiv2-version.h
 *.o
 *.la
 /configure.mk
-/GExiv2-0.4.gir
-/GExiv2-0.4.typelib
+/GExiv2-*.*.gir
+/GExiv2-*.*.typelib
 vapi/gexiv2.gi
 test/gexiv2-dump
 
