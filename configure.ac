@@ -139,35 +139,11 @@ fi
 AM_CONDITIONAL(HAS_PYTHON2, test "x$PYTHON2_GIDIR" != "x")
 AM_CONDITIONAL(HAS_PYTHON3, test "x$PYTHON3_GIDIR" != "x")
 
-#################
-# Vala Binding  #
-#################
-
-AC_ARG_ENABLE(vala, [  --disable-vala          disable vala binding [[default=no]]],
-              if eval "test x$enable_vala = xno"; then
-              enable_vala=no
-              else
-              enable_vala=yes
-              fi,
-              enable_vala=yes)
-
-if test "x$enable_vala" != "xno"; then
-    AC_CHECK_TOOL([VAPIGEN], [vapigen], [:])
-    AC_CHECK_TOOL([VALA_GEN_INSTROSPECT], [vala-gen-introspect], [:])
-    if test "x$VAPIGEN" = "x:" || test "x$VALA_GEN_INSTROSPECT" = "x:"; then
-        enable_vala="no (missing vapigen and/or vala-gen-introspect)"
-    fi
-fi
-AM_CONDITIONAL(ENABLE_VALA, test "x$enable_vala" = "xyes")
-
-AC_MSG_CHECKING([enable vala])
-AC_MSG_RESULT([$enable_vala])
-
 #######################
 # Tests and utilities #
 #######################
 
-AC_ARG_ENABLE(tests, [  --enable-tests         enable tests and utilities (requires Vala) [[default=no]]],
+AC_ARG_ENABLE(tests, [  --enable-tests          enable tests and utilities (requires Vala) [[default=no]]],
               if eval "test x$enable_tests = xno"; then
               enable_tests=no
               else
@@ -261,19 +237,11 @@ AC_MSG_RESULT([
 GExiv2 will be built with prefix $prefix for $host (cross-compiling: $cross_compiling).
 
 Options:
-    Vala binding:       $enable_vala
     Introspection:      $enable_introspection
     Python2 binding:    $enable_python2
     Python3 binding:    $enable_python3
     Tests and utils:    $enable_tests
 ])
-
-if test "x$enable_vala" = "xyes"; then
-AC_MSG_RESULT([
-NOTE: the Vala binding can only be built and installed after the C API.
-After installing with "make install", run "make vapi" to build the bindings and "make install-vapi" to install them.
-])
-fi
 
 if test "x$enable_tests" = "xyes"; then
 AC_MSG_RESULT([To build tests and utiliies, run "make tests".])

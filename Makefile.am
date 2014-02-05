@@ -33,6 +33,12 @@ py3gi_DATA      = GExiv2.py
 endif
 endif
 
+.PHONY: vapi
+vapi:
+	@echo NOTE: This version of gexiv2 $(GEXIV2_VERSION) must be installed to generate a VAPI file.
+	pkg-config --exact-version=$(GEXIV2_VERSION) --print-errors gexiv2
+	make -C vapi
+
 GEXIV2_public_HEADERS = \
 	gexiv2/gexiv2.h \
 	gexiv2/gexiv2-metadata.h \
@@ -99,22 +105,6 @@ clean-local:
 	rm -f gexiv2/gexiv2-version.h
 	rm -f gexiv2.pc
 	rm -f test/gexiv2-dump
-
-# Vala #
-
-if ENABLE_VALA
-
-vapi: @PACKAGE_NAME@.vapi
-
-@PACKAGE_NAME@.vapi: vapi/@PACKAGE_NAME@.gi
-	vapigen --library=@PACKAGE_NAME@ --metadatadir=vapi vapi/@PACKAGE_NAME@.gi
-
-vapi/@PACKAGE_NAME@.gi:
-	@echo NOTE: This version of gexiv2 must be installed to generate a VAPI file.
-	pkg-config --exact-version=$(GEXIV2_VERSION) --print-errors @PACKAGE_NAME@
-	vala-gen-introspect @PACKAGE_NAME@ vapi
-
-endif
 
 # Tests and utilities #
 

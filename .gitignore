@@ -12,8 +12,8 @@ vapi/gexiv2.gi
 test/gexiv2-dump
 
 # Autotools files.
-Makefile.in
-Makefile
+/Makefile.in
+/Makefile
 configure
 build-aux/
 config.log
