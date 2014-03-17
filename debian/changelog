@@ -1,3 +1,17 @@
+gexiv2 (0.10.0-0saucy1) saucy; urgency=low
+
+  * Ported to Autotools
+  * Added compile and runtime version number checks
+  * Fixed bugs and resource leaks
+  * Updated GTK-Docs and GI annotations
+  * Fixed tarball compilation problem
+  * Fixed introspection generation
+  * Build system fixes
+  * Updated links in documentation
+
+ -- Jim Nelson <jim@yorba.org>  Mon, 17 Mar 2014 14:10:53 -0700
+
+
 gexiv2 (0.7.0-1raring1) raring; urgency=low
 
   * Bump package version
