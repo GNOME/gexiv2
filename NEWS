@@ -1,3 +1,9 @@
+gexiv2 0.10.1 - 25 April 2014
+-----------------------------
+
+  * Fix Python bindings (GObject Introspection issue)
+
+
 gexiv2 0.10.0 - 17 March 2014
 -----------------------------
 

@@ -1,3 +1,10 @@
+gexiv2 (0.10.1-0saucy1) saucy; urgency=low
+
+  * Fix Python bindings (GObject Introspection issue)
+
+ -- Jim Nelson <jim@yorba.org>  Fri, 25 Apr 2014 12:32:17 -0700
+
+
 gexiv2 (0.10.0-0saucy1) saucy; urgency=low
 
   * Ported to Autotools
