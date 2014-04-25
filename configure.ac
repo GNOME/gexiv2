@@ -1,4 +1,4 @@
-AC_INIT([gexiv2], [0.10.0], [gexiv2-list@gnome.org], [gexiv2], [https://wiki.gnome.org/Projects/gexiv2])
+AC_INIT([gexiv2], [0.10.1], [gexiv2-list@gnome.org], [gexiv2], [https://wiki.gnome.org/Projects/gexiv2])
 AC_PREREQ(2.54)
 
 AC_CONFIG_MACRO_DIR([m4])
@@ -20,7 +20,7 @@ PKG_PROG_PKG_CONFIG(0.26)
 
 m4_define([gexiv2_major_version], [0])
 m4_define([gexiv2_minor_version], [10])
-m4_define([gexiv2_micro_version], [0])
+m4_define([gexiv2_micro_version], [1])
 m4_define([gexiv2_real_version],
           [gexiv2_major_version.gexiv2_minor_version.gexiv2_micro_version])
 m4_define([gexiv2_version], [gexiv2_real_version])
