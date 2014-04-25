@@ -1,7 +1,7 @@
 # -*- Mode: Python; py-indent-offset: 4 -*-
 # vim: tabstop=4 shiftwidth=4 expandtab
 #
-# Copyright (C) 2012 Robert Park <rbpark@exolucere.ca>
+# Copyright (C) 2012 Robert Park <r@robru.ca>
 #
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
@@ -21,12 +21,12 @@
 from datetime import datetime
 from fractions import Fraction
 
-from gi import _glib
 from gi.repository import GObject
 from ..overrides import override
-from ..importer import modules
+from ..module import get_introspection_module
 
-GExiv2 = modules['GExiv2']._introspection_module
+GExiv2 = get_introspection_module('GExiv2')
+
 __all__ = []
 
 DATE_FORMAT = '%Y:%m:%d %H:%M:%S'
