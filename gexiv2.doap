@@ -10,6 +10,7 @@
   <homepage rdf:resource="https://wiki.gnome.org/gexiv2" />
   <mailing-list rdf:resource="https://mail.gnome.org/mailman/listinfo/gexiv2-list" />
   <bug-database rdf:resource="https://bugzilla.gnome.org/browse.cgi?product=gexiv2" />
+  <programming-language>C++</programming-language>
 
   <maintainer>
     <foaf:Person>
