@@ -132,7 +132,7 @@ gchar* gexiv2_metadata_get_exif_tag_interpreted_string (GExiv2Metadata *self, co
         
         if (it != exif_data.end()) {
             std::ostringstream os;
-            it->write (os);
+            it->write (os, &exif_data);
             
             return g_strdup (os.str ().c_str ());
         }
