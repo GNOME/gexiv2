@@ -40,14 +40,14 @@ vapi:
 	make -C vapi
 
 GEXIV2_public_HEADERS = \
-	gexiv2/gexiv2.h \
-	gexiv2/gexiv2-metadata.h \
-	gexiv2/gexiv2-managed-stream.h \
-	gexiv2/gexiv2-preview-properties.h \
-	gexiv2/gexiv2-preview-image.h \
-	gexiv2/gexiv2-log.h \
-	gexiv2/gexiv2-startup.h \
-	gexiv2/gexiv2-version.h
+	$(srcdir)/gexiv2/gexiv2.h \
+	$(srcdir)/gexiv2/gexiv2-metadata.h \
+	$(srcdir)/gexiv2/gexiv2-managed-stream.h \
+	$(srcdir)/gexiv2/gexiv2-preview-properties.h \
+	$(srcdir)/gexiv2/gexiv2-preview-image.h \
+	$(srcdir)/gexiv2/gexiv2-log.h \
+	$(srcdir)/gexiv2/gexiv2-startup.h \
+	$(srcdir)/gexiv2/gexiv2-version.h
 
 # Non-installed source files. #
 GEXIV2_sources = \
@@ -134,6 +134,7 @@ GExiv2-$(GIR_VERSION).gir: lib@PACKAGE_NAME@.la
 		--namespace=GExiv2                      \
 		--nsversion=$(GIR_VERSION)              \
 		--symbol-prefix=@PACKAGE_NAME@              \
+		-I$(srcdir)							 \
 		--include=GObject-2.0                   \
 		--add-include-path=$(BUILD_DIR)         \
 		--output $@                             \
