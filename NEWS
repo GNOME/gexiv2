@@ -1,3 +1,10 @@
+gexiv2 0.10.2 - 16 September 2014
+---------------------------------
+
+  * Use all EXIF tags for interpreted strings (#734861)
+  * Automake fixes
+
+
 gexiv2 0.10.1 - 25 April 2014
 -----------------------------
 
