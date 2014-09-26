@@ -156,6 +156,47 @@ gchar* gexiv2_metadata_get_xmp_tag_interpreted_string (GExiv2Metadata *self, con
     return NULL;
 }
 
+gboolean gexiv2_metadata_set_xmp_tag_struct (GExiv2Metadata *self, const gchar* tag, GExiv2StructureType type) {
+    g_return_val_if_fail(GEXIV2_IS_METADATA (self), FALSE);
+    g_return_val_if_fail(tag != NULL, FALSE);
+    g_return_val_if_fail(self->priv->image.get() != NULL, FALSE);
+
+    Exiv2::XmpTextValue tv("");
+    Exiv2::XmpData& xmp_data = self->priv->image->xmpData();
+
+    switch (type) {
+      case GEXIV2_STRUCTURE_XA_NONE:
+        tv.read("");  // Clear the value
+        tv.setXmpArrayType(Exiv2::XmpValue::xaNone);
+        break;
+      case GEXIV2_STRUCTURE_XA_ALT:
+        tv.read("");
+        tv.setXmpArrayType(Exiv2::XmpValue::xaAlt);
+        break;
+      case GEXIV2_STRUCTURE_XA_BAG:
+        tv.read("");
+        tv.setXmpArrayType(Exiv2::XmpValue::xaBag);
+        break;
+      case GEXIV2_STRUCTURE_XA_SEQ:
+        tv.read("");
+        tv.setXmpArrayType(Exiv2::XmpValue::xaSeq);
+        break;
+      default:
+        g_warning("Invalid structure type.");
+        return FALSE;
+        break;
+    }
+
+    try {
+        xmp_data.add(Exiv2::XmpKey(tag), &tv);
+        return TRUE;
+    } catch (Exiv2::Error& e) {
+        LOG_ERROR(e);
+    }
+    
+    return FALSE;
+}
+
 gboolean gexiv2_metadata_set_xmp_tag_string (GExiv2Metadata *self, const gchar* tag, 
     const gchar* value) {
     g_return_val_if_fail(GEXIV2_IS_METADATA (self), FALSE);

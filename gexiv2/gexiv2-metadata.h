@@ -64,6 +64,13 @@ typedef enum {
 	GEXIV2_ORIENTATION_MAX			= 8
 } GExiv2Orientation;
 
+typedef enum {
+  GEXIV2_STRUCTURE_XA_NONE = 0,
+  GEXIV2_STRUCTURE_XA_ALT  = 20,
+  GEXIV2_STRUCTURE_XA_BAG  = 21,
+  GEXIV2_STRUCTURE_XA_SEQ  = 22,
+  GEXIV2_STRUCTURE_XA_LANG = 23
+} GExiv2StructureType;
 
 typedef struct _GExiv2Metadata			GExiv2Metadata;
 typedef struct _GExiv2MetadataClass		GExiv2MetadataClass;
@@ -336,6 +343,17 @@ gchar*			gexiv2_metadata_get_tag_string		(GExiv2Metadata *self, const gchar* tag
  * Returns: TRUE on success
  */
 gboolean		gexiv2_metadata_set_tag_string		(GExiv2Metadata *self, const gchar* tag, const gchar* value);
+
+/**
+ * gexiv2_metadata_set_tag_struct:
+ * @tag: Exiv2 tag name
+ * @type: The GExiv2StructureType specifying the type of structure
+ *
+ * The Exiv2 Tag Reference can be found at http://exiv2.org/metadata.html
+ *
+ * Returns: TRUE on success
+ */
+gboolean gexiv2_metadata_set_xmp_tag_struct (GExiv2Metadata *self, const gchar* tag, GExiv2StructureType type);
 
 /**
  * gexiv2_metadata_get_tag_interpreted_string:
