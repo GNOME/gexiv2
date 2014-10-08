@@ -39,6 +39,7 @@ gexiv2_metadata_get_exif_tag_label nullable="1"
 gexiv2_metadata_get_exif_tag_description nullable="1"
 
 gexiv2_metadata_get_xmp_packet transfer_ownership="1" nullable="1"
+gexiv2_metadata_generate_xmp_packet transfer_ownership="1" nullable="1"
 gexiv2_metadata_get_xmp_tags is_array="1" array_null_terminated="1" transfer_ownership="1"
 gexiv2_metadata_get_xmp_tag_label nullable="1"
 gexiv2_metadata_get_xmp_tag_description nullable="1"
