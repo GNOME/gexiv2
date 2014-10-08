@@ -30,6 +30,7 @@ namespace GExiv2 {
 		public void delete_gps_info ();
 		public void erase_exif_thumbnail ();
 		public bool from_app1_segment ([CCode (array_length = false)] uchar[] data, long n_data) throws GLib.Error;
+		public string? generate_xmp_packet (GExiv2.XmpFormatFlags xmp_format_flags, uint32 padding);
 		public string? get_comment ();
 		public bool get_exif_tag_rational (string tag, out int nom, out int den);
 		[CCode (array_length = false, array_null_terminated = true)]
@@ -88,6 +89,7 @@ namespace GExiv2 {
 		public bool set_tag_long (string tag, long value);
 		public bool set_tag_multiple (string tag, [CCode (array_length = false, array_null_terminated = true)] string[] values);
 		public bool set_tag_string (string tag, string value);
+		public bool set_xmp_tag_struct (string tag, GExiv2.StructureType type);
 		public static void unregister_all_xmp_namespaces ();
 		public static bool unregister_xmp_namespace (string name);
 	}
@@ -132,11 +134,29 @@ namespace GExiv2 {
 		ROT_270,
 		MAX
 	}
+	[CCode (cheader_filename = "gexiv2/gexiv2.h", cprefix = "GEXIV2_STRUCTURE_XA_", has_type_id = false)]
+	public enum StructureType {
+		NONE,
+		ALT,
+		BAG,
+		SEQ,
+		LANG
+	}
 	[CCode (cheader_filename = "gexiv2/gexiv2.h", cprefix = "", has_type_id = false)]
 	public enum WrapperSeekOrigin {
 		Begin,
 		Current,
 		End
+	}
+	[CCode (cheader_filename = "gexiv2/gexiv2.h", cprefix = "GEXIV2_", has_type_id = false)]
+	public enum XmpFormatFlags {
+		OMIT_PACKET_WRAPPER,
+		READ_ONLY_PACKET,
+		USE_COMPACT_FORMAT,
+		INCLUDE_THUMBNAIL_PAD,
+		EXACT_PACKET_LENGTH,
+		WRITE_ALIAS_COMMENTS,
+		OMIT_ALL_FORMATTING
 	}
 	[CCode (cheader_filename = "gexiv2/gexiv2.h", has_target = false)]
 	public delegate void LogHandler (GExiv2.LogLevel level, string msg);
