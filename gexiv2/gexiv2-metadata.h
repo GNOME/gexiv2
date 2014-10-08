@@ -72,6 +72,22 @@ typedef enum {
   GEXIV2_STRUCTURE_XA_LANG = 23
 } GExiv2StructureType;
 
+/**
+ * GExiv2XmpFormatFlags:
+ * Options to control the format of the serialized XMP packet
+ * Taken from: exiv2/src/xmp.hpp
+ *
+ */
+typedef enum {
+  GEXIV2_OMIT_PACKET_WRAPPER   = 0x0010UL,  //!< Omit the XML packet wrapper.
+  GEXIV2_READ_ONLY_PACKET      = 0x0020UL,  //!< Default is a writeable packet.
+  GEXIV2_USE_COMPACT_FORMAT    = 0x0040UL,  //!< Use a compact form of RDF.
+  GEXIV2_INCLUDE_THUMBNAIL_PAD = 0x0100UL,  //!< Include a padding allowance for a thumbnail image.
+  GEXIV2_EXACT_PACKET_LENGTH   = 0x0200UL,  //!< The padding parameter is the overall packet length.
+  GEXIV2_WRITE_ALIAS_COMMENTS  = 0x0400UL,  //!< Show aliases as XML comments.
+  GEXIV2_OMIT_ALL_FORMATTING   = 0x0800UL   //!< Omit all formatting whitespace.
+} GExiv2XmpFormatFlags;
+
 typedef struct _GExiv2Metadata			GExiv2Metadata;
 typedef struct _GExiv2MetadataClass		GExiv2MetadataClass;
 typedef struct _GExiv2MetadataPrivate	GExiv2MetadataPrivate;
@@ -511,9 +527,16 @@ gboolean		gexiv2_metadata_has_xmp				(GExiv2Metadata *self);
 void			gexiv2_metadata_clear_xmp			(GExiv2Metadata *self);
 
 /**
+ * gexiv2_metadata_generate_xmp_packet:
+ *
+ * Returns: (transfer full) (allow-none): Encode the XMP packet and return as a NUL-terminated string.
+ */
+gchar*		gexiv2_metadata_generate_xmp_packet	(GExiv2Metadata *self, GExiv2XmpFormatFlags xmp_format_flags, guint32 padding);
+
+/**
  * gexiv2_metadata_get_xmp_packet:
  *
- * Returns: (transfer full) (allow-none): The XMP tag's description
+ * Returns: (transfer full) (allow-none): The currently-encoded XMP packet (see gexiv2_metadata_generate_xmp_packet).
  */
 gchar*			gexiv2_metadata_get_xmp_packet		(GExiv2Metadata *self);
 
