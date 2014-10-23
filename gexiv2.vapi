@@ -62,6 +62,7 @@ namespace GExiv2 {
 		public long get_tag_long (string tag);
 		[CCode (array_length = false, array_null_terminated = true)]
 		public string[]? get_tag_multiple (string tag);
+		public GLib.Bytes? get_tag_raw (string tag);
 		public string? get_tag_string (string tag);
 		public static unowned string get_tag_type (string tag);
 		public string? get_xmp_packet ();

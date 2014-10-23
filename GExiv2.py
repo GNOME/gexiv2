@@ -78,6 +78,9 @@ class Metadata(GExiv2.Metadata):
     
     def get(self, key, default=None):
         return self.get_tag_string(key) if self.has_tag(key) else default
+
+    def get_raw(self, key):
+        return self.get_tag_raw(key).get_data()
     
     def __iter__(self):
         return iter(self.get_tags())
