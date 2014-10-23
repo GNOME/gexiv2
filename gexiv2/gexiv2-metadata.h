@@ -429,6 +429,16 @@ gchar**			gexiv2_metadata_get_tag_multiple	(GExiv2Metadata *self, const gchar* t
 gboolean		gexiv2_metadata_set_tag_multiple	(GExiv2Metadata *self, const gchar* tag, const gchar** values);
 
 /**
+ * gexiv2_metadata_get_tag_raw:
+ * @tag: Exiv2 tag name
+ *
+ * The Exiv2 Tag Reference can be found at http://exiv2.org/metadata.html
+ *
+ * Returns: (transfer full) (allow-none): The tag's raw value as a byte array
+ */
+GBytes*			gexiv2_metadata_get_tag_raw			(GExiv2Metadata *self, const gchar* tag);
+
+/**
  * EXIF functions
  */
 

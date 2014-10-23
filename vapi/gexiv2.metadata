@@ -24,6 +24,7 @@ gexiv2_metadata_get_tag_multiple is_array="1" array_null_terminated="1" transfer
 gexiv2_metadata_set_tag_multiple.values is_array="1" array_null_terminated="1"
 gexiv2_metadata_get_tag_label nullable="1" transfer_ownership="0"
 gexiv2_metadata_get_tag_description nullable="1" transfer_ownership="0"
+gexiv2_metadata_get_tag_raw transfer_ownership="1" nullable="1"
 
 gexiv2_metadata_get_exposure_time.nom is_out="1"
 gexiv2_metadata_get_exposure_time.den is_out="1"

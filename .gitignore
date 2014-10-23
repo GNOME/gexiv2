@@ -11,6 +11,9 @@ gexiv2/gexiv2-version.h
 /GExiv2-*.*.typelib
 vapi/gexiv2.gi
 test/gexiv2-dump
+test/python/gi
+*.pyc
+__pycache__
 
 # Autotools files.
 /Makefile.in

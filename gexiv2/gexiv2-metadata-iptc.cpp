@@ -277,4 +277,31 @@ const gchar* gexiv2_metadata_get_iptc_tag_type (const gchar* tag) {
     return NULL;
 }
 
+GBytes* gexiv2_metadata_get_iptc_tag_raw (GExiv2Metadata *self, const gchar* tag) {
+    g_return_val_if_fail(GEXIV2_IS_METADATA (self), NULL);
+    g_return_val_if_fail(tag != NULL, NULL);
+    g_return_val_if_fail(self->priv->image.get() != NULL, NULL);
+
+    Exiv2::IptcData& iptc_data = self->priv->image->iptcData();
+
+    try {
+        Exiv2::IptcData::iterator it = iptc_data.findKey(Exiv2::IptcKey(tag));
+        while (it != iptc_data.end() && it->count() == 0)
+            it++;
+
+        if (it != iptc_data.end()) {
+            long size = it->size();
+            if( size > 0 ) {
+                gpointer data = g_malloc(size);
+                it->copy((Exiv2::byte*)data, Exiv2::invalidByteOrder);
+                return g_bytes_new_take(data, size);
+            }
+        }
+    } catch (Exiv2::Error& e) {
+        LOG_ERROR(e);
+    }
+
+    return NULL;
+}
+
 G_END_DECLS

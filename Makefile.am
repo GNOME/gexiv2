@@ -16,7 +16,10 @@ EXTRA_DIST = \
 	@PACKAGE_NAME@.vapi		\
 	gexiv2/gexiv2-version.m4 \
 	$(TYPELIB_FILES) \
-	test/gexiv2-dump.vala
+	test/sample-author-badencoding.jpg \
+	test/gexiv2-dump.vala \
+	test/python/gexiv2.py
+
 
 # Installed Files #
 pkgconfig_DATA  = @PACKAGE_NAME@.pc
@@ -105,15 +108,23 @@ clean-local:
 	rm -f gexiv2/gexiv2-version.h
 	rm -f gexiv2.pc
 	rm -f test/gexiv2-dump
+	rm -rf test/python/gi test/python/__pycache__
 
 # Tests and utilities #
 
 if ENABLE_TESTS
 
-tests: test/gexiv2-dump
+tests: test/gexiv2-dump test/python2 test/python3
 
 test/gexiv2-dump: test/gexiv2-dump.vala
 	valac -g --enable-checking --vapidir=. --pkg gexiv2 $< -o $@
+
+test/python/gi/overrides/GExiv2.py:
+	[ -d $(dir $@) ] || mkdir -p $(dir $@)
+	ln -sf ../../../../GExiv2.py $@
+
+test/python%: $(TYPELIB_FILES) test/python/gi/overrides/GExiv2.py
+	LD_LIBRARY_PATH=.libs GI_TYPELIB_PATH=. PYTHONPATH=test/python python$* -m unittest gexiv2
 
 endif
 
