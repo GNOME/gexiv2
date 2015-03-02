@@ -741,7 +741,7 @@ gboolean gexiv2_metadata_get_exposure_time (GExiv2Metadata *self, gint *nom, gin
 }
 
 gdouble gexiv2_metadata_get_fnumber (GExiv2Metadata *self) {
-    return gexiv2_metadata_get_exif_tag_rational_as_double(self, "Exif.Photo.Fnumber", -1.0);
+    return gexiv2_metadata_get_exif_tag_rational_as_double(self, "Exif.Photo.FNumber", -1.0);
 }
 
 gdouble gexiv2_metadata_get_focal_length (GExiv2Metadata *self) {
