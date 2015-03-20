@@ -585,6 +585,18 @@ gchar* gexiv2_metadata_get_comment (GExiv2Metadata *self) {
     else
         g_free (str);
     
+    str = gexiv2_metadata_get_xmp_tag_interpreted_string (self, "Xmp.dc.description");
+    if (str != NULL && *str != '\0')
+        return str;
+    else
+        g_free (str);
+    
+    str = gexiv2_metadata_get_xmp_tag_interpreted_string (self, "Xmp.acdsee.notes");
+    if (str != NULL && *str != '\0')
+        return str;
+    else
+        g_free (str);
+    
     return NULL;
 }
 
@@ -594,12 +606,16 @@ void gexiv2_metadata_set_comment (GExiv2Metadata *self, const gchar* comment) {
     
     Exiv2::ExifData& exif_data = self->priv->image->exifData();
     Exiv2::IptcData& iptc_data = self->priv->image->iptcData();
+    Exiv2::XmpData& xmp_data = self->priv->image->xmpData();
     
     gexiv2_metadata_set_comment_internal (self, (comment != NULL) ? comment : "");
     exif_data ["Exif.Image.ImageDescription"] = comment;
     exif_data ["Exif.Photo.UserComment"] = comment;
     exif_data ["Exif.Image.XPComment"] = comment;
     iptc_data ["Iptc.Application2.Caption"] = comment;
+    xmp_data ["Xmp.dc.description"] = comment;
+    /* Do not need to write to acdsee properties, just read from them */ 
+    // xmp_data ["Xmp.acdsee.notes"] = comment;
 }
 
 void gexiv2_metadata_clear_comment (GExiv2Metadata *self) {

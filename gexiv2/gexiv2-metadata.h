@@ -625,16 +625,23 @@ void			gexiv2_metadata_set_orientation		(GExiv2Metadata *self, GExiv2Orientation
  * gexiv2_metadata_get_comment:
  *
  * A composite accessor that uses the first available metadata field from a list of well-known
- * locations to find the photo's comment (or description).  These fields are:
+ * locations to find the photo's comment (or description).  
  *
- * Exif.Image.ImageDescription
+ * MWG guidelines refer to these as <em>Description</em>: a textual description of a resource's content.
+ * 
+ * These fields are:
+ *
+ * Exif.Image.ImageDescription  (MWG Guidelines)
  * Exif.Photo.UserComment
  * Exif.Image.XPComment
- * Iptc.Application2.Caption
+ * Iptc.Application2.Caption    (MWG Guidelines)
+ * Xmp.dc.description           (MWG Guidelines)
+ * Xmp.acdsee.notes             (Commonly requested, read only)
  *
- * Note that Exif.Image.ImageDescription is <em>not</em> technically a description field and is
- * described in the EXIF specification as "the title of the image".  Also, it does not support
+ * Note that in the EXIF specification Exif.Image.ImageDescription is 
+ * described  as "the title of the image".  Also, it does not support
  * two-byte character codes for encoding.  However, it's still used here for legacy reasons.
+ * 
  *
  * For fine-grained control, it's recommened to use Exiv2 tags directly rather than this method,
  * which is more useful for quick or casual use.
