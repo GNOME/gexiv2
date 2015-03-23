@@ -1,3 +1,13 @@
+gexiv2 (0.10.3-0utopic1) utopic; urgency=low
+
+  * Retrieve XMP tag's structure type (#736799)
+  * Generate XMP packet as NUL-terminated string (#736587)
+  * Retrieve tag's raw value as GBytes (#730136)
+  * Fix gexiv2_metadata_get_fnumber() (#745347)
+
+ -- Jim Nelson <jim@yorba.org>  Mon, 23 Mar 2015 16:13:48 -0700
+
+
 gexiv2 (0.10.2-0trusty1) trusty; urgency=low
 
   * Use all EXIF tags for interpreted strings (#734861)
