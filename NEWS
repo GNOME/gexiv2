@@ -1,3 +1,12 @@
+gexiv2 0.10.3 - 23 March 2015
+-----------------------------
+
+  * Retrieve XMP tag's structure type (#736799)
+  * Generate XMP packet as NUL-terminated string (#736587)
+  * Retrieve tag's raw value as GBytes (#730136)
+  * Fix gexiv2_metadata_get_fnumber() (#745347)
+
+
 gexiv2 0.10.2 - 16 September 2014
 ---------------------------------
 
