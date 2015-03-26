@@ -641,7 +641,6 @@ void			gexiv2_metadata_set_orientation		(GExiv2Metadata *self, GExiv2Orientation
  * Note that in the EXIF specification Exif.Image.ImageDescription is 
  * described  as "the title of the image".  Also, it does not support
  * two-byte character codes for encoding.  However, it's still used here for legacy reasons.
- * 
  *
  * For fine-grained control, it's recommened to use Exiv2 tags directly rather than this method,
  * which is more useful for quick or casual use.
