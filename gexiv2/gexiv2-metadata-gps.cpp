@@ -22,61 +22,73 @@ gboolean gexiv2_metadata_get_gps_longitude (GExiv2Metadata *self, gdouble *longi
     g_return_val_if_fail (GEXIV2_IS_METADATA (self), FALSE);
     g_return_val_if_fail (longitude != NULL, FALSE);
     g_return_val_if_fail(self->priv->image.get() != NULL, FALSE);
-    
+
     try {
         double num, den, min, sec;
         *longitude = 0.0;
-        
+
         gchar* longitude_ref = gexiv2_metadata_get_exif_tag_string (self, "Exif.GPSInfo.GPSLongitudeRef");
-        if (longitude_ref == NULL || longitude_ref[0] == '\0')
+        if (longitude_ref == NULL || longitude_ref[0] == '\0') {
+            g_free(longitude_ref);
             return FALSE;
-        
+        }
+
         Exiv2::ExifData& exif_data = self->priv->image->exifData();
         Exiv2::ExifKey key ("Exif.GPSInfo.GPSLongitude");
         Exiv2::ExifData::iterator it = exif_data.findKey (key);
-        
+
         if (it != exif_data.end () && (*it).count() == 3) {
             num = (double)((*it).toRational(0).first);
             den = (double)((*it).toRational(0).second);
-            
-            if (den == 0)
+
+            if (den == 0) {
+                g_free(longitude_ref);
                 return FALSE;
-            
+            }
+
             *longitude = num / den;
-            
+
             num = (double)((*it).toRational(1).first);
             den = (double)((*it).toRational(1).second);
-            
-            if (den == 0)
+
+            if (den == 0) {
+                g_free(longitude_ref);
                 return FALSE;
-            
+            }
+
             min = num/den;
-            
+
             if (min != -1.0)
                 *longitude = *longitude + min / 60.0;
-            
+
             num = (double)((*it).toRational(2).first);
             den = (double)((*it).toRational(2).second);
-            
-            if (den == 0)
+
+            if (den == 0) {
+                g_free(longitude_ref);
                 return FALSE;
-            
+            }
+
             sec = num/den;
-            
+
             if (sec != -1.0)
                 *longitude = *longitude + sec / 3600.0;
-        } else
+        } else {
+            g_free(longitude_ref);
             return FALSE;
-        
+        }
+
         // There's some weird stuff out there in the wild.
         if (longitude_ref[0] == 'S' || longitude_ref[0] == 'W')
             *longitude *= -1.0;
-        
+
+        g_free(longitude_ref);
+
         return TRUE;
     } catch (Exiv2::Error &e) {
         LOG_ERROR(e);
     }
-    
+
     return FALSE;
 }
 
