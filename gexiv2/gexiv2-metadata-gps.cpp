@@ -170,33 +170,41 @@ gboolean gexiv2_metadata_get_gps_altitude (GExiv2Metadata *self, gdouble *altitu
     g_return_val_if_fail(GEXIV2_IS_METADATA (self), FALSE);
     g_return_val_if_fail(altitude != NULL, FALSE);
     g_return_val_if_fail(self->priv->image.get() != NULL, FALSE);
-    
+
     try {
         double num, den;
         *altitude = 0.0;
-        
+
         gchar* altitude_ref = gexiv2_metadata_get_exif_tag_string (self, "Exif.GPSInfo.GPSAltitudeRef");
-        if (altitude_ref == NULL || altitude_ref[0] == '\0')
+        if (altitude_ref == NULL || altitude_ref[0] == '\0') {
+            g_free(altitude_ref);
             return FALSE;
-        
+        }
+
         Exiv2::ExifData& exif_data = self->priv->image->exifData();
         Exiv2::ExifKey key ("Exif.GPSInfo.GPSAltitude");
         Exiv2::ExifData::iterator it = exif_data.findKey (key);
-        
+
         if (it != exif_data.end () && (*it).count() == 1) {
             num = (double)((*it).toRational(0).first);
             den = (double)((*it).toRational(0).second);
-            
-            if (den == 0)
+
+            if (den == 0) {
+                g_free(altitude_ref);
                 return FALSE;
-            
+            }
+
             *altitude = num/den;
-        } else
+        } else {
+            g_free(altitude_ref);
             return FALSE;
-        
+        }
+
         if (altitude_ref[0] == '1')
             *altitude *= -1.0;
-        
+
+        g_free(altitude_ref);
+
         return TRUE;
     } catch (Exiv2::Error &e) {
         LOG_ERROR(e);
