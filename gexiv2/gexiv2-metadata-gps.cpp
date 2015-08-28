@@ -96,56 +96,68 @@ gboolean gexiv2_metadata_get_gps_latitude (GExiv2Metadata *self, gdouble *latitu
     g_return_val_if_fail(GEXIV2_IS_METADATA (self), FALSE);
     g_return_val_if_fail(latitude != NULL, FALSE);
     g_return_val_if_fail(self->priv->image.get() != NULL, FALSE);
-    
+
     try {
         double num, den, min, sec;
         *latitude = 0.0;
-        
+
         gchar* latitude_ref = gexiv2_metadata_get_exif_tag_string (self, "Exif.GPSInfo.GPSLatitudeRef");
-        if (latitude_ref == NULL || latitude_ref[0] == '\0')
+        if (latitude_ref == NULL || latitude_ref[0] == '\0') {
+            g_free(latitude_ref);
             return FALSE;
-        
+        }
+
         Exiv2::ExifData& exif_data = self->priv->image->exifData();
         Exiv2::ExifKey key ("Exif.GPSInfo.GPSLatitude");
         Exiv2::ExifData::iterator it = exif_data.findKey (key);
-        
+
         if (it != exif_data.end () && (*it).count() == 3) {
             num = (double)((*it).toRational(0).first);
             den = (double)((*it).toRational(0).second);
-            
-            if (den == 0)
+
+            if (den == 0) {
+                g_free(latitude_ref);
                 return FALSE;
-            
+            }
+
             *latitude = num / den;
-            
+
             num = (double)((*it).toRational(1).first);
             den = (double)((*it).toRational(1).second);
-            
-            if (den == 0)
+
+            if (den == 0) {
+                g_free(latitude_ref);
                 return FALSE;
-            
+            }
+
             min = num/den;
-            
+
             if (min != -1.0)
                 *latitude = *latitude + min / 60.0;
-            
+
             num = (double)((*it).toRational(2).first);
             den = (double)((*it).toRational(2).second);
-            
-            if (den == 0)
+
+            if (den == 0) {
+                g_free(latitude_ref);
                 return FALSE;
-            
+            }
+
             sec = num/den;
-            
+
             if (sec != -1.0)
                 *latitude = *latitude + sec / 3600.0;
-        } else
+        } else {
+            g_free(latitude_ref);
             return FALSE;
-        
+        }
+
         // There's some weird stuff out there in the wild.
         if (latitude_ref[0] == 'S' || latitude_ref[0] == 'W')
             *latitude *= -1.0;
-        
+
+        g_free(latitude_ref);
+
         return TRUE;
     } catch (Exiv2::Error &e) {
         LOG_ERROR(e);
