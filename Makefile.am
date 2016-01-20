@@ -50,7 +50,7 @@ GEXIV2_public_HEADERS = \
 	$(srcdir)/gexiv2/gexiv2-preview-image.h \
 	$(srcdir)/gexiv2/gexiv2-log.h \
 	$(srcdir)/gexiv2/gexiv2-startup.h \
-	$(srcdir)/gexiv2/gexiv2-version.h
+	gexiv2/gexiv2-version.h
 
 # Non-installed source files. #
 GEXIV2_sources = \
@@ -90,7 +90,7 @@ if WORD_64
 REQUIRED_CXXFLAGS += -fPIC -DPIC
 endif
 
-AM_CXXFLAGS = $(REQUIRED_CXXFLAGS)
+AM_CXXFLAGS = $(REQUIRED_CXXFLAGS) -I$(top_builddir)/gexiv2
 
 $(GEXIV2_sources): gexiv2/gexiv2-version.h
 
