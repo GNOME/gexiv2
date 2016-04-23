@@ -424,7 +424,7 @@ gchar**			gexiv2_metadata_get_tag_multiple	(GExiv2Metadata *self, const gchar* t
  *
  * The Exiv2 Tag Reference can be found at http://exiv2.org/metadata.html
  *
- * Returns: (transfer full): Boolean success value
+ * Returns: Boolean success value
  */
 gboolean		gexiv2_metadata_set_tag_multiple	(GExiv2Metadata *self, const gchar* tag, const gchar** values);
 
@@ -438,7 +438,7 @@ gboolean		gexiv2_metadata_set_tag_multiple	(GExiv2Metadata *self, const gchar* t
  */
 GBytes*			gexiv2_metadata_get_tag_raw			(GExiv2Metadata *self, const gchar* tag);
 
-/**
+/*
  * EXIF functions
  */
 
@@ -518,7 +518,7 @@ void			gexiv2_metadata_set_exif_thumbnail_from_buffer (GExiv2Metadata *self, con
 void			gexiv2_metadata_erase_exif_thumbnail (GExiv2Metadata *self);
 
 
-/**
+/*
  * XMP functions
  */
 
@@ -602,7 +602,7 @@ void			gexiv2_metadata_clear_iptc			(GExiv2Metadata *self);
  */
 gchar**			gexiv2_metadata_get_iptc_tags		(GExiv2Metadata *self);
 
-/**
+/*
  * Composite getters/setters and helpful functions.
  */
 
@@ -705,7 +705,7 @@ gdouble			gexiv2_metadata_get_focal_length	(GExiv2Metadata *self);
  */
 gint			gexiv2_metadata_get_iso_speed		(GExiv2Metadata *self);
 
-/**
+/*
  * GPS functions
  */
 
@@ -760,7 +760,7 @@ gboolean		gexiv2_metadata_set_gps_info				(GExiv2Metadata *self, gdouble longitu
  */
 void			gexiv2_metadata_delete_gps_info			(GExiv2Metadata *self);
 
-/**
+/*
  * Preview Manager
  */
 

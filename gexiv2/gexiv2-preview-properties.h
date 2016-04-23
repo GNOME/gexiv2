@@ -64,14 +64,14 @@ GType 			gexiv2_preview_properties_get_type			(void);
 /**
  * gexiv2_preview_properties_get_mime_type:
  *
- * Returns: (transfer-none): The preview image's MIME type.
+ * Returns: (transfer none): The preview image's MIME type.
  */
 const gchar*	gexiv2_preview_properties_get_mime_type		(GExiv2PreviewProperties *self);
 
 /**
  * gexiv2_preview_properties_get_extension:
  *
- * Returns: (transfer-none): The recommended file extension for the preview image.
+ * Returns: (transfer none): The recommended file extension for the preview image.
  */
 const gchar*	gexiv2_preview_properties_get_extension		(GExiv2PreviewProperties *self);
 

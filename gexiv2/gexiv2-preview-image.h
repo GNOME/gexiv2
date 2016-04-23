@@ -79,14 +79,14 @@ const guint8*	gexiv2_preview_image_get_data			(GExiv2PreviewImage *self, guint32
 /**
  * gexiv2_preview_image_get_mime_type:
  *
- * Returns: (transfer-none): The preview image's MIME type.
+ * Returns: (transfer none): The preview image's MIME type.
  */
 const gchar*	gexiv2_preview_image_get_mime_type		(GExiv2PreviewImage *self);
 
 /**
  * gexiv2_preview_image_get_extension:
  *
- * Returns: (transfer-none): The preview image's recommended file extension.
+ * Returns: (transfer none): The preview image's recommended file extension.
  */
 const gchar*	gexiv2_preview_image_get_extension		(GExiv2PreviewImage *self);
 
