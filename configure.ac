@@ -24,13 +24,18 @@ m4_define([gexiv2_micro_version], [3])
 m4_define([gexiv2_real_version],
           [gexiv2_major_version.gexiv2_minor_version.gexiv2_micro_version])
 m4_define([gexiv2_version], [gexiv2_real_version])
+m4_define([gexiv2_gir_version], [gexiv2_major_version.gexiv2_minor_version])
+m4_define([gexiv2_gir_version_u], m4_joinall([_], gexiv2_major_version,
+          gexiv2_minor_version))
 
 # Set to target (stable) major.minor version
 #
 # This was necessary because the typelib files don't seem to load if the
 # version info has more than one period in it.
-GIR_VERSION=0.10
+GIR_VERSION=gexiv2_gir_version
 AC_SUBST(GIR_VERSION)
+GIR_VERSION_U=gexiv2_gir_version_u
+AC_SUBST(GIR_VERSION_U)
 
 m4_define([glib_required_version], [2.26.1])
 m4_define([exiv2_required_version], [0.21])
@@ -106,20 +111,11 @@ fi
 # Introspection #
 #################
 
-AC_MSG_CHECKING([enable introspection])
-AC_ARG_ENABLE(introspection,
-              [  --enable-introspection  enable introspection [[default=no]]],
-              if eval "test x$enable_introspection = xyes"; then
-              enable_introspection="yes"
-              fi,
-              enable_introspection=no)
-
-AM_CONDITIONAL(ENABLE_INTROSPECTION, test "x$enable_introspection" = "xyes")
-AC_MSG_RESULT([$enable_introspection])
+GOBJECT_INTROSPECTION_CHECK([0.6.4])
 
 enable_python2="no (introspection disabled)"
 enable_python3="no (introspection disabled)"
-if test "x$enable_introspection" = "xyes"; then
+if test "x$found_introspection" = "xyes"; then
     # Used to determine where Python wants the .gi file to be installed ...
     # if Python is not installed, PYTHON2 and PYTHON3 will be empty
     PYTHON="import gi; print(gi._overridesdir)"
@@ -241,7 +237,7 @@ AC_MSG_RESULT([
 GExiv2 will be built with prefix $prefix for $host (cross-compiling: $cross_compiling).
 
 Options:
-    Introspection:      $enable_introspection
+    Introspection:      $found_introspection
     Python2 binding:    $enable_python2
     Python3 binding:    $enable_python3
     Tests and utils:    $enable_tests

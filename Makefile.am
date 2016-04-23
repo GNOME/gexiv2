@@ -4,7 +4,7 @@ ACLOCAL_AMFLAGS = -I m4 ${ACLOCAL_FLAGS}
 pkgconfigdir     = $(libdir)/pkgconfig
 GEXIV2_publicdir = $(includedir)/gexiv2
 girdir           = $(datadir)/gir-1.0
-typelibdir       = `pkg-config gobject-introspection-no-export-1.0 --variable typelibdir`
+typelibdir       = $(INTROSPECTION_TYPELIBDIR)
 py2gidir         = $(PYTHON2_GIDIR)
 py3gidir         = $(PYTHON3_GIDIR)
 vapidir          = $(datadir)/vala/vapi
@@ -24,7 +24,7 @@ EXTRA_DIST = \
 # Installed Files #
 pkgconfig_DATA  = @PACKAGE_NAME@.pc
 lib_LTLIBRARIES = lib@PACKAGE_NAME@.la
-if ENABLE_INTROSPECTION
+if HAVE_INTROSPECTION
 gir_DATA        = GExiv2-$(GIR_VERSION).gir
 typelib_DATA    = GExiv2-$(GIR_VERSION).typelib
 # No introspection, no .gi file for the Python module to call into
@@ -130,28 +130,24 @@ endif
 
 # Optional Introspection #
 
-if ENABLE_INTROSPECTION
-TYPELIB_FILES=GExiv2-$(GIR_VERSION).typelib GExiv2-$(GIR_VERSION).gir
-CLEANFILES=$(TYPELIB_FILES)
+-include $(INTROSPECTION_MAKEFILE)
+if HAVE_INTROSPECTION
+INTROSPECTION_GIRS =
+INTROSPECTION_SCANNER_ARGS = \
+			     --symbol-prefix=@PACKAGE_NAME@		\
+			     --add-include-path=$(BUILD_DIR) \
+			     --pkg-export=gexiv2 \
+			     $(WARN_SCANNERFLAGS)
+INTROSPECTION_COMPILER_ARGS = --includedir=$(BUILD_DIR)
+
+GExiv2-@GIR_VERSION@.gir: lib@PACKAGE_NAME@.la
+GExiv2_@GIR_VERSION_U@_gir_INCLUDES = GObject-2.0
+GExiv2_@GIR_VERSION_U@_gir_CFLAGS = -I$(srcdir) -I@PACKAGE_NAME@
+GExiv2_@GIR_VERSION_U@_gir_LIBS = lib@PACKAGE_NAME@.la
+GExiv2_@GIR_VERSION_U@_gir_FILES = $(GEXIV2_public_HEADERS)
+GExiv2_@GIR_VERSION_U@_gir_NAMESPACE = GExiv2
+GExiv2_@GIR_VERSION_U@_gir_VERSION = $(GIR_VERSION)
+INTROSPECTION_GIRS += GExiv2-$(GIR_VERSION).gir
+
+CLEANFILES = $(gir_DATA) $(typelib_DATA)
 endif
-
-BUILD_DIR=gexiv2
-
-%.typelib: %.gir
-	g-ir-compiler --includedir=$(BUILD_DIR) -o $@ $<
-
-GExiv2-$(GIR_VERSION).gir: lib@PACKAGE_NAME@.la
-	g-ir-scanner --verbose                          \
-		--namespace=GExiv2                      \
-		--nsversion=$(GIR_VERSION)              \
-		--symbol-prefix=@PACKAGE_NAME@              \
-		-I$(srcdir)							 \
-		--include=GObject-2.0                   \
-		--add-include-path=$(BUILD_DIR)         \
-		--output $@                             \
-		-I @PACKAGE_NAME@                           \
-		$(GEXIV2_public_HEADERS)      \
-		--library lib@PACKAGE_NAME@.la                \
-		$(LIBTOOL)                              \
-		--pkg=gobject-2.0
-
