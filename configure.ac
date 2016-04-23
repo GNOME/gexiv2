@@ -256,6 +256,11 @@ AM_CONDITIONAL(PLATFORM_WIN32, test "$platform_win32" = "yes")
 
 VAPIGEN_CHECK
 
+###########
+# gtk-doc #
+###########
+GTK_DOC_CHECK([1.14],[--flavour no-tmpl])
+
 ##############
 # Generation #
 ##############
@@ -263,6 +268,8 @@ VAPIGEN_CHECK
 AC_CONFIG_FILES([
 Makefile
 gexiv2.pc:gexiv2.pc.in
+docs/Makefile
+docs/reference/Makefile
 ])
 
 AC_OUTPUT

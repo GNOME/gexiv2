@@ -1,5 +1,7 @@
 ACLOCAL_AMFLAGS = -I m4 ${ACLOCAL_FLAGS}
 
+SUBDIRS = docs
+
 # Installation directories.
 pkgconfigdir     = $(libdir)/pkgconfig
 GEXIV2_publicdir = $(includedir)/gexiv2
