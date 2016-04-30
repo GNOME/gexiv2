@@ -1,5 +1,5 @@
-AC_INIT([gexiv2], [0.10.4], [gexiv2-list@gnome.org], [gexiv2], [https://wiki.gnome.org/Projects/gexiv2])
-AC_PREREQ(2.54)
+AC_INIT([gexiv2],[0.10.4],[https://bugzilla.gnome.org/enter_bug.cgi?product=gexiv2],[gexiv2],[https://wiki.gnome.org/Projects/gexiv2])
+AC_PREREQ([2.69])
 
 AC_CONFIG_MACRO_DIR([m4])
 
