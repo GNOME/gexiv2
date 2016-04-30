@@ -5,7 +5,8 @@ AC_CONFIG_MACRO_DIR([m4])
 
 # Will install auxiliary build tools (depcomp, install-sh, missing...) under build-aux/
 AC_CONFIG_AUX_DIR([build-aux])
-AM_INIT_AUTOMAKE([1.11 -Wall no-define foreign dist-xz no-dist-gzip tar-ustar subdir-objects])
+AM_INIT_AUTOMAKE([1.11 -Wall no-define foreign dist-xz no-dist-gzip tar-ustar
+                  subdir-objects -Wno-portability])
 
 AM_MAINTAINER_MODE([enable])
 AM_SILENT_RULES([yes])
