@@ -8,6 +8,9 @@
     $ make
     $ make install
 
+    When building from git, you need to run ./autgen.sh to generate the
+    configure script.
+
     * By default, gexiv2 will install under /usr/local.  The configure script
       can customize the prefix directory.  Run ./configure --help for
       instructions and other installation options.
