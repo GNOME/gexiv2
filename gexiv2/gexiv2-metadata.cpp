@@ -312,7 +312,7 @@ gboolean gexiv2_metadata_save_file (GExiv2Metadata *self, const gchar *path, GEr
     
     try {
         return gexiv2_metadata_save_internal (self, Exiv2::ImageFactory::open (path), error);
-    } catch (Exiv2::Error e) {
+    } catch (Exiv2::Error &e) {
         g_set_error_literal (error, g_quark_from_string ("GExiv2"), e.code (), e.what ());
     }
     
