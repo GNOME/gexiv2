@@ -20,8 +20,8 @@
 
 #include <exception>
 
-StreamIo::StreamIo (ManagedStreamCallbacks* cb)
-    : cb (cb), is_open (FALSE) {
+StreamIo::StreamIo (ManagedStreamCallbacks* callbacks)
+    : cb (callbacks), memio(NULL), is_open (FALSE), can_write(FALSE) {
     /* at least reading and seeking must be possible to read metatada */
     if ( ! cb->CanRead (cb->handle))
         throw std::exception ();
@@ -131,6 +131,8 @@ int StreamIo::seek (long offset, Position position) {
         case (end):
             cb->Seek (cb->handle, offset, End);
             break;
+        default:
+            g_assert_not_reached ();
     }
     
     return 0;

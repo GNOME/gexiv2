@@ -31,6 +31,8 @@ namespace GExiv2 {
 		[CCode (array_length = false, array_null_terminated = true)]
 		public string[] get_iptc_tags ();
 		public int get_iso_speed ();
+		public int get_metadata_pixel_height ();
+		public int get_metadata_pixel_width ();
 		public unowned string get_mime_type ();
 		public GExiv2.Orientation get_orientation ();
 		public int get_pixel_height ();
@@ -69,6 +71,8 @@ namespace GExiv2 {
 		public void set_exif_thumbnail_from_buffer ([CCode (array_length_cname = "size", array_length_pos = 1.1)] uint8[] buffer);
 		public bool set_exif_thumbnail_from_file (string path) throws GLib.Error;
 		public bool set_gps_info (double longitude, double latitude, double altitude);
+		public void set_metadata_pixel_height (int height);
+		public void set_metadata_pixel_width (int width);
 		public void set_orientation (GExiv2.Orientation orientation);
 		public bool set_tag_long (string tag, long value);
 		public bool set_tag_multiple (string tag, [CCode (array_length = false, array_null_terminated = true)] string[] values);

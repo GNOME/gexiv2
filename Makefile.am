@@ -99,7 +99,7 @@ if WORD_64
 REQUIRED_CXXFLAGS += -fPIC -DPIC
 endif
 
-AM_CXXFLAGS = $(REQUIRED_CXXFLAGS) -I$(top_builddir)/gexiv2
+AM_CXXFLAGS = $(REQUIRED_CXXFLAGS) -I$(top_builddir)/gexiv2 $(WARN_CXXFLAGS)
 
 $(GEXIV2_sources): gexiv2/gexiv2-version.h
 
@@ -111,7 +111,8 @@ lib@PACKAGE_NAME@_la_LIBADD   = $(EXIV2_LIBS) $(GLIB_LIBS)
 lib@PACKAGE_NAME@_la_CPPFLAGS = $(EXIV2_CFLAGS) $(GLIB_CFLAGS)
 
 lib@PACKAGE_NAME@_la_LDFLAGS  = \
-	$(no_undefined) -export-dynamic -version-info $(GEXIV2_VERSION_INFO)
+	$(no_undefined) -export-dynamic -version-info $(GEXIV2_VERSION_INFO) \
+	$(WARN_LDFLAGS)
 
 clean-local:
 	rm -f gexiv2/gexiv2-version.h

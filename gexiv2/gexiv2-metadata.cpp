@@ -401,6 +401,8 @@ GExiv2Orientation gexiv2_metadata_get_orientation (GExiv2Metadata *self) {
                 
                 case 82:
                     return GEXIV2_ORIENTATION_ROT_270;
+                default:
+                    g_assert_not_reached();
             }
         }
         
@@ -411,6 +413,8 @@ GExiv2Orientation gexiv2_metadata_get_orientation (GExiv2Metadata *self) {
                 
                 case 82:
                     return GEXIV2_ORIENTATION_ROT_270;
+                default:
+                    g_assert_not_reached();
             }
         }
         

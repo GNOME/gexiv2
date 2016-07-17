@@ -197,6 +197,7 @@ gboolean gexiv2_metadata_set_xmp_tag_struct (GExiv2Metadata *self, const gchar* 
         tv.read("");
         tv.setXmpArrayType(Exiv2::XmpValue::xaSeq);
         break;
+      case GEXIV2_STRUCTURE_XA_LANG:
       default:
         g_warning("Invalid structure type.");
         return FALSE;

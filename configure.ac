@@ -57,6 +57,9 @@ AC_SUBST(GEXIV2_MINOR_VERSION)
 AC_SUBST(GEXIV2_MICRO_VERSION)
 AC_SUBST(GEXIV2_VERSION)
 
+AX_IS_RELEASE([git-directory])
+AX_COMPILER_FLAGS
+
 ###################
 # Check for glib2 #
 ###################

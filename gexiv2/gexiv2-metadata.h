@@ -624,6 +624,11 @@ GExiv2Orientation gexiv2_metadata_get_orientation 	(GExiv2Metadata *self);
  */
 void			gexiv2_metadata_set_orientation		(GExiv2Metadata *self, GExiv2Orientation orientation);
 
+gint gexiv2_metadata_get_metadata_pixel_width (GExiv2Metadata *self);
+gint gexiv2_metadata_get_metadata_pixel_height (GExiv2Metadata *self);
+void gexiv2_metadata_set_metadata_pixel_width (GExiv2Metadata *self, gint width);
+void gexiv2_metadata_set_metadata_pixel_height (GExiv2Metadata *self, gint height);
+
 /**
  * gexiv2_metadata_get_comment:
  *
