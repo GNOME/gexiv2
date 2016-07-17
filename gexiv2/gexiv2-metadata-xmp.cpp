@@ -277,8 +277,10 @@ gchar** gexiv2_metadata_get_xmp_tag_multiple (GExiv2Metadata *self, const gchar*
     Exiv2::XmpData& xmp_data = self->priv->image->xmpData();
     
     try {
-        Exiv2::XmpData::iterator it = xmp_data.findKey(Exiv2::XmpKey(tag));
-        while (it != xmp_data.end() && it->count() == 0)
+        Exiv2::XmpKey key = Exiv2::XmpKey(tag);
+        Exiv2::XmpData::iterator it = xmp_data.findKey(key);
+
+        while (it != xmp_data.end() && it->count() == 0 && it->key() != key.key())
             it++;
         
         if (it != xmp_data.end()) {
