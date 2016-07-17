@@ -60,6 +60,7 @@ GType 			gexiv2_preview_image_get_type			(void);
 
 /**
  * gexiv2_preview_image_free:
+ * @self: An instance of #GExiv2PreviewImage
  *
  * Releases the preview image and all associated memory.
  *
@@ -73,6 +74,7 @@ void			gexiv2_preview_image_free				(GExiv2PreviewImage *self);
 
 /**
  * gexiv2_preview_image_get_data:
+ * @self: An instance of #GExiv2PreviewImage
  * @size: (out) (skip): The size of the buffer holding the data
  *
  * Returns: (transfer none) (array length=size): The raw image data
@@ -81,6 +83,7 @@ const guint8*	gexiv2_preview_image_get_data			(GExiv2PreviewImage *self, guint32
 
 /**
  * gexiv2_preview_image_get_mime_type:
+ * @self: An instance of #GExiv2PreviewImage
  *
  * Returns: (transfer none): The preview image's MIME type.
  */
@@ -88,6 +91,7 @@ const gchar*	gexiv2_preview_image_get_mime_type		(GExiv2PreviewImage *self);
 
 /**
  * gexiv2_preview_image_get_extension:
+ * @self: An instance of #GExiv2PreviewImage
  *
  * Returns: (transfer none): The preview image's recommended file extension.
  */
@@ -95,6 +99,7 @@ const gchar*	gexiv2_preview_image_get_extension		(GExiv2PreviewImage *self);
 
 /**
  * gexiv2_preview_image_get_width:
+ * @self: An instance of #GExiv2PreviewImage
  *
  * Returns: The preview image's display width in pixels.
  */
@@ -102,6 +107,7 @@ guint32			gexiv2_preview_image_get_width			(GExiv2PreviewImage *self);
 
 /**
  * gexiv2_preview_image_get_height:
+ * @self: An instance of #GExiv2PreviewImage
  *
  * Returns: The preview image's display height in pixels.
  */
@@ -109,6 +115,7 @@ guint32			gexiv2_preview_image_get_height			(GExiv2PreviewImage *self);
 
 /**
  * gexiv2_preview_image_write_file:
+ * @self: An instance of #GExiv2PreviewImage
  * @path: (in): The file path to write the preview image to.
  *
  * Returns: The number of bytes written to the file.

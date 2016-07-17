@@ -17,6 +17,9 @@ G_BEGIN_DECLS
 
 /**
  * GEXIV2_CHECK_VERSION:
+ * @major: the major version to check for
+ * @minor: the minor version to check for
+ * @micro: the micro version to check for
  *
  * Returns: TRUE if the gexiv2 library version is greater than or equal to the supplied version
  * requirement.

@@ -74,6 +74,14 @@ typedef enum {
 
 /**
  * GExiv2XmpFormatFlags:
+ * @GEXIV2_OMIT_PACKET_WRAPPER: Omit the XML packet wrapper.
+ * @GEXIV2_READ_ONLY_PACKET: Default is a writeable packet.
+ * @GEXIV2_USE_COMPACT_FORMAT: Use a compact form of RDF.
+ * @GEXIV2_INCLUDE_THUMBNAIL_PAD: Include a padding allowance for a thumbnail image.
+ * @GEXIV2_EXACT_PACKET_LENGTH: The padding parameter is the overall packet length.
+ * @GEXIV2_WRITE_ALIAS_COMMENTS: Show aliases as XML comments.
+ * @GEXIV2_OMIT_ALL_FORMATTING: Omit all formatting whitespace.
+ *
  * Options to control the format of the serialized XMP packet
  * Taken from: exiv2/src/xmp.hpp
  *
@@ -134,6 +142,7 @@ GExiv2Metadata* gexiv2_metadata_new					(void);
 
 /**
  * gexiv2_metadata_free:
+ * @self: An instance of #GExiv2Metadata
  *
  * Destroys the #GExiv2Metadata object and frees all associated memory.
  *
@@ -144,7 +153,9 @@ void			gexiv2_metadata_free				(GExiv2Metadata *self);
 
 /**
  * gexiv2_metadata_open_path:
+ * @self: An instance of #GExiv2Metadata
  * @path: Path to the file you want to open
+ * @error: (allow-none): A return location for a #GError or %NULL
  *
  * The file must be an image format supported by Exiv2.
  *
@@ -154,8 +165,10 @@ gboolean		gexiv2_metadata_open_path			(GExiv2Metadata *self, const gchar *path, 
 
 /**
  * gexiv2_metadata_open_buf:
+ * @self: An instance of #GExiv2Metadata
  * @data: (array length=n_data): A buffer containing the data to be read
  * @n_data: (skip): The length of the buffer
+ * @error: (allow-none): A return location for a #GError or %NULL
  *
  * The buffer must be an image format supported by Exiv2.
  *
@@ -165,7 +178,9 @@ gboolean		gexiv2_metadata_open_buf			(GExiv2Metadata *self, const guint8 *data, 
 
 /**
  * gexiv2_metadata_open_stream: (skip)
+ * @self: An instance of #GExiv2Metadata
  * @cb: A #ManagedStreamCallbacks struct offering stream access.
+ * @error: (allow-none): A return location for a #GError or %NULL
  *
  * The stream must be an image format supported by Exiv2.
  *
@@ -175,8 +190,10 @@ gboolean		gexiv2_metadata_open_stream			(GExiv2Metadata *self, ManagedStreamCall
 
 /**
  * gexiv2_metadata_from_app1_segment:
+ * @self: An instance of #GExiv2Metadata
  * @data: (array length=n_data): A buffer containing the data to be read
  * @n_data: (skip): The length of the buffer
+ * @error: (allow-none): A return location for a #GError or %NULL
  *
  * Load only an EXIF buffer, typically stored in a JPEG's APP1 segment.
  *
@@ -186,7 +203,9 @@ gboolean		gexiv2_metadata_from_app1_segment	(GExiv2Metadata *self, const guint8 
 
 /**
  * gexiv2_metadata_save_file:
+ * @self: An instance of #GExiv2Metadata
  * @path: Path to the file you want to save to.
+ * @error: (allow-none): A return location for a #GError or %NULL
  *
  * Saves the metadata to the specified file by reading the file into memory,copying this object's
  * metadata into the image, then writing the image back out.
@@ -197,7 +216,9 @@ gboolean		gexiv2_metadata_save_file			(GExiv2Metadata *self, const gchar *path, 
 
 /**
  * gexiv2_metadata_save_stream: (skip)
+ * @self: An instance of #GExiv2Metadata
  * @cb: A #ManagedStreamCallbacks struct offering stream access.
+ * @error: (allow-none): A return location for a #GError or %NULL
  *
  * Saves the metadata to the stream by reading the stream into memory,copying this object's
  * metadata into the image, then writing the image as a stream back out.
@@ -208,6 +229,7 @@ gboolean		gexiv2_metadata_save_stream			(GExiv2Metadata *self, ManagedStreamCall
 
 /**
  * gexiv2_metadata_has_tag:
+ * @self: An instance of #GExiv2Metadata
  * @tag: Exiv2 tag
  *
  * The Exiv2 Tag Reference can be found at http://exiv2.org/metadata.html
@@ -218,6 +240,7 @@ gboolean		gexiv2_metadata_has_tag				(GExiv2Metadata *self, const gchar* tag);
 
 /**
  * gexiv2_metadata_clear_tag:
+ * @self: An instance of #GExiv2Metadata
  * @tag: Exiv2 tag
  *
  * Removes the Exiv2 tag from the metadata object.
@@ -230,6 +253,7 @@ gboolean		gexiv2_metadata_clear_tag			(GExiv2Metadata *self, const gchar* tag);
 
 /**
  * gexiv2_metadata_clear:
+ * @self: An instance of #GExiv2Metadata
  *
  * Removes all tags for all domains (EXIF, IPTC, and XMP).
  */
@@ -300,6 +324,7 @@ const gchar*	gexiv2_metadata_get_tag_type	(const gchar *tag);
 
 /**
  * gexiv2_metadata_get_supports_exif:
+ * @self: An instance of #GExiv2Metadata
  *
  * Returns: TRUE if the loaded image type supports writing EXIF metadata.
  */
@@ -307,6 +332,7 @@ gboolean		gexiv2_metadata_get_supports_exif	(GExiv2Metadata *self);
 
 /**
  * gexiv2_metadata_get_supports_iptc:
+ * @self: An instance of #GExiv2Metadata
  *
  * Returns: TRUE if the loaded image type supports writing IPTC metadata.
  */
@@ -314,6 +340,7 @@ gboolean		gexiv2_metadata_get_supports_iptc	(GExiv2Metadata *self);
 
 /**
  * gexiv2_metadata_get_supports_xmp:
+ * @self: An instance of #GExiv2Metadata
  *
  * Returns: TRUE if the loaded image type supports writing XMP metadata.
  */
@@ -328,6 +355,7 @@ const gchar*	gexiv2_metadata_get_mime_type		(GExiv2Metadata *self);
 
 /**
  * gexiv2_metadata_get_pixel_width:
+ * @self: An instance of #GExiv2Metadata
  *
  * Returns: The <em>actual</em> unoriented display width in pixels of the loaded image.  This may be
  * different than the width reported by various metadata tags, i.e. "Exif.Photo.PixelXDimension".
@@ -336,6 +364,7 @@ gint			gexiv2_metadata_get_pixel_width		(GExiv2Metadata *self);
 
 /**
  * gexiv2_metadata_get_pixel_height:
+ * @self: An instance of #GExiv2Metadata
  *
  * Returns: The <em>actual</em> unoriented display height in pixels of the loaded image.  This may
  * be different than the height reported by various metadata tags, i.e. "Exif.Photo.PixelYDimension".
@@ -344,6 +373,7 @@ gint			gexiv2_metadata_get_pixel_height	(GExiv2Metadata *self);
 
 /**
  * gexiv2_metadata_get_tag_string:
+ * @self: An instance of #GExiv2Metadata
  * @tag: Exiv2 tag name
  *
  * The Exiv2 Tag Reference can be found at http://exiv2.org/metadata.html
@@ -354,6 +384,7 @@ gchar*			gexiv2_metadata_get_tag_string		(GExiv2Metadata *self, const gchar* tag
 
 /**
  * gexiv2_metadata_set_tag_string:
+ * @self: An instance of #GExiv2Metadata
  * @tag: Exiv2 tag name
  * @value: The value to set or replace the existing value
  *
@@ -365,6 +396,7 @@ gboolean		gexiv2_metadata_set_tag_string		(GExiv2Metadata *self, const gchar* ta
 
 /**
  * gexiv2_metadata_set_tag_struct:
+ * @self: An instance of #GExiv2Metadata
  * @tag: Exiv2 tag name
  * @type: The GExiv2StructureType specifying the type of structure
  *
@@ -376,6 +408,7 @@ gboolean gexiv2_metadata_set_xmp_tag_struct (GExiv2Metadata *self, const gchar* 
 
 /**
  * gexiv2_metadata_get_tag_interpreted_string:
+ * @self: An instance of #GExiv2Metadata
  * @tag: Exiv2 tag name
  *
  * An interpreted string is one fit for user display.  It may display units or use formatting
@@ -389,6 +422,7 @@ gchar*			gexiv2_metadata_get_tag_interpreted_string (GExiv2Metadata *self, const
 
 /**
  * gexiv2_metadata_get_tag_long:
+ * @self: An instance of #GExiv2Metadata
  * @tag: Exiv2 tag name
  *
  * The Exiv2 Tag Reference can be found at http://exiv2.org/metadata.html
@@ -399,6 +433,7 @@ glong			gexiv2_metadata_get_tag_long		(GExiv2Metadata *self, const gchar* tag);
 
 /**
  * gexiv2_metadata_set_tag_long:
+ * @self: An instance of #GExiv2Metadata
  * @tag: Exiv2 tag name
  * @value: The value to set or replace the existing value
  *
@@ -411,6 +446,7 @@ gboolean		gexiv2_metadata_set_tag_long		(GExiv2Metadata *self, const gchar* tag,
 
 /**
  * gexiv2_metadata_get_tag_multiple:
+ * @self: An instance of #GExiv2Metadata
  * @tag: Exiv2 tag name
  *
  * The Exiv2 Tag Reference can be found at http://exiv2.org/metadata.html
@@ -422,6 +458,7 @@ gchar**			gexiv2_metadata_get_tag_multiple	(GExiv2Metadata *self, const gchar* t
 
 /**
  * gexiv2_metadata_set_tag_multiple:
+ * @self: An instance of #GExiv2Metadata
  * @tag: Exiv2 tag name
  * @values: (array zero-terminated=1): An array of values to set or replace the existing value(s)
  *
@@ -433,6 +470,7 @@ gboolean		gexiv2_metadata_set_tag_multiple	(GExiv2Metadata *self, const gchar* t
 
 /**
  * gexiv2_metadata_get_tag_raw:
+ * @self: An instance of #GExiv2Metadata
  * @tag: Exiv2 tag name
  *
  * The Exiv2 Tag Reference can be found at http://exiv2.org/metadata.html
@@ -447,6 +485,7 @@ GBytes*			gexiv2_metadata_get_tag_raw			(GExiv2Metadata *self, const gchar* tag)
 
 /**
  * gexiv2_metadata_has_exif:
+ * @self: An instance of #GExiv2Metadata
  *
  * Returns: TRUE if EXIF metadata is present in the loaded image
  */
@@ -454,6 +493,7 @@ gboolean		gexiv2_metadata_has_exif			(GExiv2Metadata *self);
 
 /**
  * gexiv2_metadata_clear_exif:
+ * @self: An instance of #GExiv2Metadata
  *
  * Clears all EXIF metadata from the loaded image.
  */
@@ -461,6 +501,7 @@ void			gexiv2_metadata_clear_exif			(GExiv2Metadata *self);
 
 /**
  * gexiv2_metadata_get_exif_tags:
+ * @self: An instance of #GExiv2Metadata
  *
  * Returns: (transfer full) (array zero-terminated=1): A list of the available EXIF tags in the
  * loaded image
@@ -469,6 +510,7 @@ gchar**			gexiv2_metadata_get_exif_tags		(GExiv2Metadata *self);
 
 /**
  * gexiv2_metadata_get_exif_tag_rational:
+ * @self: An instance of #GExiv2Metadata
  * @tag: (in): The tag you want the rational value for
  * @nom: (out): The numerator
  * @den: (out): The denominator
@@ -479,6 +521,7 @@ gboolean		gexiv2_metadata_get_exif_tag_rational (GExiv2Metadata *self, const gch
 
 /**
  * gexiv2_metadata_set_exif_tag_rational:
+ * @self: An instance of #GExiv2Metadata
  * @tag: (in): The Exiv2 tag
  * @nom: Rational numerator
  * @den: Rational denominator
@@ -489,6 +532,7 @@ gboolean		gexiv2_metadata_set_exif_tag_rational (GExiv2Metadata *self, const gch
 
 /**
  * gexiv2_metadata_get_exif_thumbnail:
+ * @self: An instance of #GExiv2Metadata
  * @buffer: (out) (array length=size) (transfer full): Where to store the thumbnail data
  * @size: (skip): Size of the thumbnail's buffer
  *
@@ -498,7 +542,9 @@ gboolean		gexiv2_metadata_get_exif_thumbnail (GExiv2Metadata *self, guint8** buf
 
 /**
  * gexiv2_metadata_set_exif_thumbnail_from_file:
+ * @self: An instance of #GExiv2Metadata
  * @path: (in): Path of image file
+ * @error: (allow-none): A return location for a #GError or %NULL
  *
  * Sets or replaces the EXIF thumbnail with the image in the file
  *
@@ -508,6 +554,7 @@ gboolean		gexiv2_metadata_set_exif_thumbnail_from_file (GExiv2Metadata *self, co
 
 /**
  * gexiv2_metadata_set_exif_thumbnail_from_buffer:
+ * @self: An instance of #GExiv2Metadata
  * @buffer: (array length=size): A buffer containing thumbnail data
  * @size: (skip): Size of the thumbnail's buffer
  */
@@ -515,6 +562,7 @@ void			gexiv2_metadata_set_exif_thumbnail_from_buffer (GExiv2Metadata *self, con
 
 /**
  * gexiv2_metadata_erase_exif_thumbnail:
+ * @self: An instance of #GExiv2Metadata
  *
  * Removes the EXIF thumbnail from the loaded image.
  */
@@ -527,6 +575,7 @@ void			gexiv2_metadata_erase_exif_thumbnail (GExiv2Metadata *self);
 
 /**
  * gexiv2_metadata_has_xmp:
+ * @self: An instance of #GExiv2Metadata
  *
  * Returns: TRUE if XMP metadata is present in the loaded image
  */
@@ -534,6 +583,7 @@ gboolean		gexiv2_metadata_has_xmp				(GExiv2Metadata *self);
 
 /**
  * gexiv2_metadata_clear_xmp:
+ * @self: An instance of #GExiv2Metadata
  *
  * Clears all XMP metadata from the loaded image.
  */
@@ -541,6 +591,9 @@ void			gexiv2_metadata_clear_xmp			(GExiv2Metadata *self);
 
 /**
  * gexiv2_metadata_generate_xmp_packet:
+ * @self: An instance of #GExiv2Metadata
+ * @xmp_format_flags: One of #GExiv2XmpFormatFlags
+ * @padding: The padding (FIXME: Add documentation)
  *
  * Returns: (transfer full) (allow-none): Encode the XMP packet and return as a NUL-terminated string.
  */
@@ -548,6 +601,7 @@ gchar*		gexiv2_metadata_generate_xmp_packet	(GExiv2Metadata *self, GExiv2XmpForm
 
 /**
  * gexiv2_metadata_get_xmp_packet:
+ * @self: An instance of #GExiv2Metadata
  *
  * Returns: (transfer full) (allow-none): The currently-encoded XMP packet (see gexiv2_metadata_generate_xmp_packet).
  */
@@ -555,6 +609,7 @@ gchar*			gexiv2_metadata_get_xmp_packet		(GExiv2Metadata *self);
 
 /**
  * gexiv2_metadata_get_xmp_tags:
+ * @self: An instance of #GExiv2Metadata
  *
  * Returns: (transfer full) (array zero-terminated=1): A list of the available XMP tags
  */
@@ -586,6 +641,7 @@ void            gexiv2_metadata_unregister_all_xmp_namespaces (void);
 
 /**
  * gexiv2_metadata_has_iptc:
+ * @self: An instance of #GExiv2Metadata
  *
  * Returns: TRUE if IPTC metadata is present in the loaded image
  */
@@ -593,6 +649,7 @@ gboolean		gexiv2_metadata_has_iptc			(GExiv2Metadata *self);
 
 /**
  * gexiv2_metadata_clear_iptc:
+ * @self: An instance of #GExiv2Metadata
  *
  * Clears all IPTC metadata from the loaded image.
  */
@@ -600,6 +657,7 @@ void			gexiv2_metadata_clear_iptc			(GExiv2Metadata *self);
 
 /**
  * gexiv2_metadata_get_iptc_tags:
+ * @self: An instance of #GExiv2Metadata
  *
  * Returns: (transfer full) (array zero-terminated=1): A list of the available IPTC tags
  */
@@ -611,6 +669,7 @@ gchar**			gexiv2_metadata_get_iptc_tags		(GExiv2Metadata *self);
 
 /**
  * gexiv2_metadata_get_orientation:
+ * @self: An instance of #GExiv2Metadata
  *
  * Returns: The EXIF Orientation field.
  */
@@ -618,6 +677,7 @@ GExiv2Orientation gexiv2_metadata_get_orientation 	(GExiv2Metadata *self);
 
 /**
  * gexiv2_metadata_set_orientation:
+ * @self: An instance of #GExiv2Metadata
  * @orientation: The new #Gexiv2Orientation for the image.
  *
  * The orientation must be valid and cannot be #GEXIV2_ORIENTATION_UNSPECIFIED.
@@ -631,6 +691,7 @@ void gexiv2_metadata_set_metadata_pixel_height (GExiv2Metadata *self, gint heigh
 
 /**
  * gexiv2_metadata_get_comment:
+ * @self: An instance of #GExiv2Metadata
  *
  * A composite accessor that uses the first available metadata field from a list of well-known
  * locations to find the photo's comment (or description).  
@@ -639,16 +700,17 @@ void gexiv2_metadata_set_metadata_pixel_height (GExiv2Metadata *self, gint heigh
  * 
  * These fields are:
  *
- * Exif.Image.ImageDescription  (MWG Guidelines)
- * Exif.Photo.UserComment
- * Exif.Image.XPComment
- * Iptc.Application2.Caption    (MWG Guidelines)
- * Xmp.dc.description           (MWG Guidelines)
- * Xmp.acdsee.notes             (Commonly requested, read only)
+ * - Exif.Image.ImageDescription  (MWG Guidelines)
+ * - Exif.Photo.UserComment
+ * - Exif.Image.XPComment
+ * - Iptc.Application2.Caption    (MWG Guidelines)
+ * - Xmp.dc.description           (MWG Guidelines)
+ * - Xmp.acdsee.notes             (Commonly requested, read only)
  *
- * Note that in the EXIF specification Exif.Image.ImageDescription is 
+ * <note><para>that in the EXIF specification Exif.Image.ImageDescription is
  * described  as "the title of the image".  Also, it does not support
  * two-byte character codes for encoding.  However, it's still used here for legacy reasons.
+ * </para></note>
  *
  * For fine-grained control, it's recommened to use Exiv2 tags directly rather than this method,
  * which is more useful for quick or casual use.
@@ -659,6 +721,7 @@ gchar*			gexiv2_metadata_get_comment			(GExiv2Metadata *self);
 
 /**
  * gexiv2_metadata_set_comment:
+ * @self: An instance of #GExiv2Metadata
  * @comment: Comment string to set
  *
  * This is a composite setter that will set a number of fields to the supplied value.  See
@@ -668,6 +731,7 @@ void			gexiv2_metadata_set_comment			(GExiv2Metadata *self, const gchar* comment
 
 /**
  * gexiv2_metadata_clear_comment:
+ * @self: An instance of #GExiv2Metadata
  *
  * This is a composite clear method that will clear a number of fields.  See
  * #gexiv2_metadata_get_comment for more informtion.
@@ -676,6 +740,7 @@ void			gexiv2_metadata_clear_comment		(GExiv2Metadata *self);
 
 /**
  * gexiv2_metadata_get_exposure_time:
+ * @self: An instance of #GExiv2Metadata
  * @nom: (out): The numerator
  * @den: (out): The denominator
  *
@@ -688,6 +753,7 @@ gboolean		gexiv2_metadata_get_exposure_time	(GExiv2Metadata *self, gint *nom, gi
 
 /**
  * gexiv2_metadata_get_fnumber:
+ * @self: An instance of #GExiv2Metadata
  *
  * See https://en.wikipedia.org/wiki/F-number for more information.
  *
@@ -697,6 +763,7 @@ gdouble			gexiv2_metadata_get_fnumber			(GExiv2Metadata *self);
 
 /**
  * gexiv2_metadata_get_focal_length:
+ * @self: An instance of #GExiv2Metadata
  *
  * See https://en.wikipedia.org/wiki/Flange_focal_distance for more information.
  *
@@ -706,6 +773,7 @@ gdouble			gexiv2_metadata_get_focal_length	(GExiv2Metadata *self);
 
 /**
  * gexiv2_metadata_get_iso_speed:
+ * @self: An instance of #GExiv2Metadata
  *
  * See https://en.wikipedia.org/wiki/Iso_speed for more information.
  *
@@ -719,6 +787,7 @@ gint			gexiv2_metadata_get_iso_speed		(GExiv2Metadata *self);
 
 /**
  * gexiv2_metadata_get_gps_longitude:
+ * @self: An instance of #GExiv2Metadata
  * @longitude: (out): Variable to store the longitude value
  *
  * Returns: (skip): Boolean success value
@@ -727,6 +796,7 @@ gboolean		gexiv2_metadata_get_gps_longitude			(GExiv2Metadata *self, gdouble *lo
 
 /**
  * gexiv2_metadata_get_gps_latitude:
+ * @self: An instance of #GExiv2Metadata
  * @latitude: (out): Variable to store the latitude value
  *
  * Returns: (skip): Boolean success value
@@ -735,6 +805,7 @@ gboolean		gexiv2_metadata_get_gps_latitude			(GExiv2Metadata *self, gdouble *lat
 
 /**
  * gexiv2_metadata_get_gps_altitude:
+ * @self: An instance of #GExiv2Metadata
  * @altitude: (out): Variable to store the altitude value
  *
  * Returns: (skip): Boolean success value
@@ -743,6 +814,7 @@ gboolean		gexiv2_metadata_get_gps_altitude			(GExiv2Metadata *self, gdouble *alt
 
 /**
  * gexiv2_metadata_get_gps_info:
+ * @self: An instance of #GExiv2Metadata
  * @longitude: (out): Storage for longitude value
  * @latitude: (out): Storage for latitude value
  * @altitude: (out): Storage for altitude value
@@ -753,6 +825,7 @@ gboolean		gexiv2_metadata_get_gps_info				(GExiv2Metadata *self, gdouble *longit
 
 /**
  * gexiv2_metadata_set_gps_info:
+ * @self: An instance of #GExiv2Metadata
  * @longitude: Longitude value to set or replace current value
  * @latitude: Latitude value to set or replace current value
  * @altitude: Altitude value to set or replace current value
@@ -763,6 +836,7 @@ gboolean		gexiv2_metadata_set_gps_info				(GExiv2Metadata *self, gdouble longitu
 
 /**
  * gexiv2_metadata_delete_gps_info:
+ * @self: An instance of #GExiv2Metadata
  *
  * Removes all GPS metadata from the loaded image
  */
@@ -774,6 +848,7 @@ void			gexiv2_metadata_delete_gps_info			(GExiv2Metadata *self);
 
 /**
  * gexiv2_metadata_get_preview_properties:
+ * @self: An instance of #GExiv2Metadata
  *
  * An image may have stored one or more previews, often of different qualities, sometimes of
  * different image formats than the containing image.  This call returns the properties of all
@@ -787,6 +862,7 @@ GExiv2PreviewProperties** gexiv2_metadata_get_preview_properties (GExiv2Metadata
 
 /**
  * gexiv2_metadata_get_preview_image:
+ * @self: An instance of #GExiv2Metadata
  * @props: A #GExiv2PreviewProperties instance
  *
  * Returns: (transfer full): A #GExiv2PreviewImage instance for the particular
