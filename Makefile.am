@@ -41,11 +41,11 @@ vapi: gexiv2.vapi
 gexiv2.vapi: gexiv2_vapi.stamp
 	@true
 
-gexiv2_vapi.stamp: $(top_builddir)/GExiv2-0.10.gir $(top_srcdir)/vapi/GExiv2-0.10.metadata
+gexiv2_vapi.stamp: $(top_builddir)/GExiv2-0.10.gir $(top_srcdir)/vapi/GExiv2-0.10.metadata $(top_srcdir)/vapi/gexiv2-custom.vala
 	rm -f $(@F)
 	$(AM_V_GEN)$(VAPIGEN) --metadatadir=$(top_srcdir)/vapi \
 			      --library=gexiv2 \
-			      $(top_builddir)/GExiv2-0.10.gir
+			      $(top_builddir)/GExiv2-0.10.gir $(srcdir)/vapi/gexiv2-custom.vala
 	echo timestmap > $(@F)
 
 dist_vapi_DATA = gexiv2.vapi
