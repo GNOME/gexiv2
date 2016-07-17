@@ -235,7 +235,6 @@ VAPIGEN_CHECK
 AC_CONFIG_FILES([
 Makefile
 gexiv2.pc:gexiv2.pc.in
-vapi/Makefile
 ])
 
 AC_OUTPUT
