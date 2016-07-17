@@ -136,7 +136,10 @@ GExiv2Metadata* gexiv2_metadata_new					(void);
  * gexiv2_metadata_free:
  *
  * Destroys the #GExiv2Metadata object and frees all associated memory.
+ *
+ * Deprecated: 0.10.3: Use g_object_unref() instread.
  */
+G_DEPRECATED_FOR(g_object_unref)
 void			gexiv2_metadata_free				(GExiv2Metadata *self);
 
 /**
