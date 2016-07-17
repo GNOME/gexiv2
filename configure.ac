@@ -222,6 +222,12 @@ esac
 AC_MSG_RESULT([$platform_win32])
 AM_CONDITIONAL(PLATFORM_WIN32, test "$platform_win32" = "yes")
 
+################
+# Check for VALA
+################
+
+VAPIGEN_CHECK
+
 ##############
 # Generation #
 ##############
@@ -229,6 +235,7 @@ AM_CONDITIONAL(PLATFORM_WIN32, test "$platform_win32" = "yes")
 AC_CONFIG_FILES([
 Makefile
 gexiv2.pc:gexiv2.pc.in
+vapi/Makefile
 ])
 
 AC_OUTPUT

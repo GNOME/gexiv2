@@ -36,11 +36,20 @@ py3gi_DATA      = GExiv2.py
 endif
 endif
 
-.PHONY: vapi
-vapi:
-	@echo NOTE: This version of gexiv2 $(GEXIV2_VERSION) must be installed to generate a VAPI file.
-	pkg-config --exact-version=$(GEXIV2_VERSION) --print-errors gexiv2
-	make -C vapi
+vapi: gexiv2.vapi
+
+gexiv2.vapi: gexiv2_vapi.stamp
+	@true
+
+gexiv2_vapi.stamp: $(top_builddir)/GExiv2-0.10.gir $(top_srcdir)/vapi/GExiv2-0.10.metadata
+	rm -f $(@F)
+	$(AM_V_GEN)$(VAPIGEN) --metadatadir=$(top_srcdir)/vapi \
+			      --library=gexiv2 \
+			      $(top_builddir)/GExiv2-0.10.gir
+	echo timestmap > $(@F)
+
+dist_vapi_DATA = gexiv2.vapi
+EXTRA_DIST += $(top_srcdir)/vala/GExiv2-0.10.metadata gexiv2.vapi gexiv2.stamp
 
 GEXIV2_public_HEADERS = \
 	$(srcdir)/gexiv2/gexiv2.h \
@@ -69,9 +78,6 @@ GEXIV2_sources = \
 	gexiv2/gexiv2-stream-io.h \
 	gexiv2/gexiv2-preview-properties-private.h \
 	gexiv2/gexiv2-preview-image-private.h
-
-dist_vapi_DATA = \
-	@PACKAGE_NAME@.vapi
 
 # compilation setup. #
 
