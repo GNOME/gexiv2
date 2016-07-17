@@ -90,7 +90,7 @@ endif
 
 # REQUIRED_CFLAGS absolutely get appended to CFLAGS, whatever the
 # the value of CFLAGS in the environment.
-REQUIRED_CXXFLAGS=-Wl,-lstdc++
+REQUIRED_CXXFLAGS=
 
 # Because -fPIC can interfere with compilation on 32-bit platforms but
 # is absolutely necessary for AMD64, we check what the target machine's
