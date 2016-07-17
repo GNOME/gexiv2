@@ -33,9 +33,6 @@ G_BEGIN_DECLS
 #define GEXIV2_PREVIEW_IMAGE_GET_CLASS(obj) \
 	(G_TYPE_INSTANCE_GET_CLASS ((obj), GEXIV2_TYPE_PREVIEW_IMAGE, GExiv2PreviewImageClass))
 	
-#define GEXIV2_PREVIEW_IMAGE_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE ((obj), GEXIV2_TYPE_PREVIEW_IMAGE, GExiv2PreviewImagePrivate))
-
 
 typedef struct _GExiv2PreviewImage			GExiv2PreviewImage;
 typedef struct _GExiv2PreviewImageClass		GExiv2PreviewImageClass;

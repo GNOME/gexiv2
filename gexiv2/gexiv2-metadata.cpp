@@ -30,6 +30,10 @@
 
 
 G_BEGIN_DECLS
+
+#define GEXIV2_METADATA_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE ((obj), GEXIV2_TYPE_METADATA, GExiv2MetadataPrivate))
+
 G_DEFINE_TYPE (GExiv2Metadata, gexiv2_metadata, G_TYPE_OBJECT);
 
 static void gexiv2_metadata_finalize (GObject *object);

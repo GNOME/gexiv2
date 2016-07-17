@@ -13,6 +13,9 @@
 #include <gio/gio.h>
 
 G_BEGIN_DECLS
+#define GEXIV2_PREVIEW_IMAGE_GET_PRIVATE(obj) \
+	(G_TYPE_INSTANCE_GET_PRIVATE ((obj), GEXIV2_TYPE_PREVIEW_IMAGE, GExiv2PreviewImagePrivate))
+
 G_DEFINE_TYPE (GExiv2PreviewImage, gexiv2_preview_image, G_TYPE_OBJECT);
 
 static void gexiv2_preview_image_finalize (GObject *object);

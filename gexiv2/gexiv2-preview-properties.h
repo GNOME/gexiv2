@@ -33,9 +33,6 @@ G_BEGIN_DECLS
 #define GEXIV2_PREVIEW_PROPERTIES_GET_CLASS(obj) \
 	(G_TYPE_INSTANCE_GET_CLASS ((obj), GEXIV2_TYPE_PREVIEW_PROPERTIES, GExiv2PreviewPropertiesClass))
 	
-#define GEXIV2_PREVIEW_PROPERTIES_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE ((obj), GEXIV2_TYPE_PREVIEW_PROPERTIES, GExiv2PreviewPropertiesPrivate))
-
 
 typedef struct _GExiv2PreviewProperties			GExiv2PreviewProperties;
 typedef struct _GExiv2PreviewPropertiesClass	GExiv2PreviewPropertiesClass;

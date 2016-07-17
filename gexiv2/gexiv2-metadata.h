@@ -37,9 +37,6 @@ G_BEGIN_DECLS
 #define GEXIV2_METADATA_GET_CLASS(obj) \
 	(G_TYPE_INSTANCE_GET_CLASS ((obj), GEXIV2_TYPE_METADATA, GExiv2MetadataClass))
 	
-#define GEXIV2_METADATA_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE ((obj), GEXIV2_TYPE_METADATA, GExiv2MetadataPrivate))
-
 
 /**
  * Gexiv2Orientation:
