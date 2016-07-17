@@ -93,17 +93,13 @@ typedef enum {
   GEXIV2_OMIT_ALL_FORMATTING   = 0x0800UL   //!< Omit all formatting whitespace.
 } GExiv2XmpFormatFlags;
 
-typedef struct _GExiv2Metadata			GExiv2Metadata;
-typedef struct _GExiv2MetadataClass		GExiv2MetadataClass;
-typedef struct _GExiv2MetadataPrivate	GExiv2MetadataPrivate;
-
 /**
  * GExiv2Metadata:
  *
  * An object holding all the Exiv2 metadata.  Previews, if present, are also available.
  *
  * As gexiv2 is only a wrapper around Exiv2, it's better to read its documentaiton to understand
- * the full scope of what it offers: http://www.exiv2.org/
+ * the full scope of what it offers: [http://www.exiv2.org/]
  *
  * In particular, rather than providing a getter/setter method pair for every metadata value
  * available for images (of which there are thousands), Exiv2 uses a dotted addressing scheme.
@@ -113,6 +109,10 @@ typedef struct _GExiv2MetadataPrivate	GExiv2MetadataPrivate;
  *
  * A full reference for all supported Exiv2 tags can be found at http://www.exiv2.org/metadata.html
  */
+typedef struct _GExiv2Metadata			GExiv2Metadata;
+typedef struct _GExiv2MetadataClass		GExiv2MetadataClass;
+typedef struct _GExiv2MetadataPrivate	GExiv2MetadataPrivate;
+
 struct _GExiv2Metadata
 {
 	GObject parent_instance;

@@ -21,8 +21,8 @@ struct _GExiv2PreviewPropertiesPrivate
 };
 
 
-GExiv2PreviewProperties* gexiv2_preview_properties_new (Exiv2::PreviewProperties &props);
-void gexiv2_preview_properties_free(GExiv2PreviewProperties *self);
+G_GNUC_INTERNAL GExiv2PreviewProperties* gexiv2_preview_properties_new (Exiv2::PreviewProperties &props);
+G_GNUC_INTERNAL void gexiv2_preview_properties_free(GExiv2PreviewProperties *self);
 
 G_END_DECLS
 

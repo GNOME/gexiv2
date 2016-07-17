@@ -17,18 +17,15 @@
   </bookinfo>
 
   <chapter>
-    <title>[Insert title here]</title>
-        <xi:include href="xml/gexiv2-log.xml"/>
-    <xi:include href="xml/gexiv2-log-private.xml"/>
-    <xi:include href="xml/gexiv2-managed-stream.xml"/>
-    <xi:include href="xml/gexiv2-metadata.xml"/>
-    <xi:include href="xml/gexiv2-metadata-private.xml"/>
-    <xi:include href="xml/gexiv2-preview-image.xml"/>
-    <xi:include href="xml/gexiv2-preview-image-private.xml"/>
-    <xi:include href="xml/gexiv2-preview-properties.xml"/>
-    <xi:include href="xml/gexiv2-preview-properties-private.xml"/>
-    <xi:include href="xml/gexiv2-startup.xml"/>
-    <xi:include href="xml/gexiv2-version.xml"/>
+      <title>[Insert title here]</title>
+      <xi:include href="xml/gexiv2-log.xml"/>
+      <xi:include href="xml/gexiv2-log-private.xml"/>
+      <xi:include href="xml/gexiv2-managed-stream.xml"/>
+      <xi:include href="xml/gexiv2-metadata.xml"/>
+      <xi:include href="xml/gexiv2-preview-image.xml"/>
+      <xi:include href="xml/gexiv2-preview-properties.xml"/>
+      <xi:include href="xml/gexiv2-startup.xml"/>
+      <xi:include href="xml/gexiv2-version.xml"/>
 
   </chapter>
   <chapter id="object-tree">
