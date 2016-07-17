@@ -49,7 +49,7 @@ GExiv2LogLevel		gexiv2_log_get_level(void);
 void				gexiv2_log_set_level(GExiv2LogLevel level);
 
 /**
- * gexiv2_log_get_handler
+ * gexiv2_log_get_handler:(skip)
  *
  * Returns: The current #GExiv2LogHandler, or the default if none set.  See
  * #gexiv2_log_get_default_handler.
@@ -57,7 +57,7 @@ void				gexiv2_log_set_level(GExiv2LogLevel level);
 GExiv2LogHandler	gexiv2_log_get_handler(void);
 
 /**
- * gexiv2_log_get_default_handler
+ * gexiv2_log_get_default_handler: (skip)
  *
  * Returns: The default #GExiv2LogHandler, which uses Exiv2's built-in handler.  Exiv2 will send the
  * message to stderr.
@@ -65,7 +65,7 @@ GExiv2LogHandler	gexiv2_log_get_handler(void);
 GExiv2LogHandler	gexiv2_log_get_default_handler(void);
 
 /**
- * gexiv2_log_set_handler:
+ * gexiv2_log_set_handler: (skip)
  * @handler: A #GExiv2LogHandler callback to begin receiving log messages from Exiv2 and gexiv2
  *
  * This method is not thread-safe.  It's best to set this before beginning to use gexiv2.

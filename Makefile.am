@@ -51,15 +51,18 @@ gexiv2_vapi.stamp: $(top_builddir)/GExiv2-0.10.gir $(top_srcdir)/vapi/GExiv2-0.1
 dist_vapi_DATA = gexiv2.vapi
 EXTRA_DIST += $(top_srcdir)/vala/GExiv2-0.10.metadata gexiv2.vapi gexiv2.stamp
 
-GEXIV2_public_HEADERS = \
+GEXIV2_GIRHEADERS = \
 	$(srcdir)/gexiv2/gexiv2.h \
 	$(srcdir)/gexiv2/gexiv2-metadata.h \
-	$(srcdir)/gexiv2/gexiv2-managed-stream.h \
 	$(srcdir)/gexiv2/gexiv2-preview-properties.h \
 	$(srcdir)/gexiv2/gexiv2-preview-image.h \
 	$(srcdir)/gexiv2/gexiv2-log.h \
 	$(srcdir)/gexiv2/gexiv2-startup.h \
 	gexiv2/gexiv2-version.h
+
+GEXIV2_public_HEADERS = \
+	$(srcdir)/gexiv2/gexiv2-managed-stream.h \
+	$(GEXIV2_GIRHEADERS)
 
 # Non-installed source files. #
 GEXIV2_sources = \
@@ -150,7 +153,7 @@ GExiv2-@GIR_VERSION@.gir: lib@PACKAGE_NAME@.la
 GExiv2_@GIR_VERSION_U@_gir_INCLUDES = GObject-2.0
 GExiv2_@GIR_VERSION_U@_gir_CFLAGS = -I$(srcdir) -I@PACKAGE_NAME@
 GExiv2_@GIR_VERSION_U@_gir_LIBS = lib@PACKAGE_NAME@.la
-GExiv2_@GIR_VERSION_U@_gir_FILES = $(GEXIV2_public_HEADERS)
+GExiv2_@GIR_VERSION_U@_gir_FILES = $(GEXIV2_GIRHEADERS)
 GExiv2_@GIR_VERSION_U@_gir_NAMESPACE = GExiv2
 GExiv2_@GIR_VERSION_U@_gir_VERSION = $(GIR_VERSION)
 INTROSPECTION_GIRS += GExiv2-$(GIR_VERSION).gir

@@ -164,7 +164,7 @@ gboolean		gexiv2_metadata_open_path			(GExiv2Metadata *self, const gchar *path, 
 gboolean		gexiv2_metadata_open_buf			(GExiv2Metadata *self, const guint8 *data, glong n_data, GError **error);
 
 /**
- * gexiv2_metadata_open_stream:
+ * gexiv2_metadata_open_stream: (skip)
  * @cb: A #ManagedStreamCallbacks struct offering stream access.
  *
  * The stream must be an image format supported by Exiv2.
@@ -196,7 +196,7 @@ gboolean		gexiv2_metadata_from_app1_segment	(GExiv2Metadata *self, const guint8 
 gboolean		gexiv2_metadata_save_file			(GExiv2Metadata *self, const gchar *path, GError **error);
 
 /**
- * gexiv2_metadata_save_stream:
+ * gexiv2_metadata_save_stream: (skip)
  * @cb: A #ManagedStreamCallbacks struct offering stream access.
  *
  * Saves the metadata to the stream by reading the stream into memory,copying this object's
