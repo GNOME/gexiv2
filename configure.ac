@@ -120,26 +120,47 @@ fi
 
 GOBJECT_INTROSPECTION_CHECK([0.6.4])
 
+AC_ARG_WITH([python2-girdir],
+            AS_HELP_STRING([--with-python2-girdir],
+                             [Set the GI override file install dir]),
+            [ac_py2girdir=$withval],
+            [ac_py2girdir=""])
+
+AC_ARG_WITH([python3-girdir],
+            AS_HELP_STRING([--with-python3-girdir],
+                             [Set the GI override file install dir]),
+            [ac_py3girdir=$withval],
+            [ac_py3girdir=""])
+
 enable_python2="no (introspection disabled)"
 enable_python3="no (introspection disabled)"
 if test "x$found_introspection" = "xyes"; then
     # Used to determine where Python wants the .gi file to be installed ...
     # if Python is not installed, PYTHON2 and PYTHON3 will be empty
     PYTHON="import gi; print(gi._overridesdir)"
-    PYTHON2_GIDIR=$(python2 -c "$PYTHON")
+    AS_IF([test "x$ac_py2girdir" = "x"],
+    [
+        PYTHON2_GIDIR=$(python2 -c "$PYTHON")
+    ],
+    [
+        PYTHON2_GIDIR=$ac_py2girdir
+    ])
     AC_MSG_RESULT([Python2 GObject Introspection directory: $PYTHON2_GIDIR])
-    PYTHON3_GIDIR=$(python3 -c "$PYTHON")
+
+    AS_IF([test "x$ac_py3girdir" = "x"],
+    [
+        PYTHON3_GIDIR=$(python3 -c "$PYTHON")
+    ],
+    [
+        PYTHON3_GIDIR=$ac_py3girdir
+    ])
     AC_MSG_RESULT([Python3 GObject Introspection directory: $PYTHON3_GIDIR])
-    if test "x$PYTHON2_GIDIR" != "x"; then
-        enable_python2=yes
-    else
-        enable_python2=no
-    fi
-    if test "x$PYTHON3_GIDIR" != "x"; then
-        enable_python3=yes
-    else
-        enable_python3=no
-    fi
+
+    AS_IF([test "x$PYTHON2_GIDIR" != "x"],
+          [enable_python2=yes],[enable_python2=no])
+    AS_IF([test "x$PYTHON3_GIDIR" != "x"],
+          [enable_python3=yes],[enable_python3=no])
+
     AC_SUBST(PYTHON2_GIDIR)
     AC_SUBST(PYTHON3_GIDIR)
 fi

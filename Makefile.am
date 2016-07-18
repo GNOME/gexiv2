@@ -4,10 +4,16 @@ ACLOCAL_AMFLAGS = -I m4 ${ACLOCAL_FLAGS}
 pkgconfigdir     = $(libdir)/pkgconfig
 GEXIV2_publicdir = $(includedir)/gexiv2
 girdir           = $(datadir)/gir-1.0
-typelibdir       = $(INTROSPECTION_TYPELIBDIR)
+typelibdir       = $(datadir)/gir-1.0
 py2gidir         = $(PYTHON2_GIDIR)
 py3gidir         = $(PYTHON3_GIDIR)
 vapidir          = $(datadir)/vala/vapi
+
+DISTCHECK_CONFIGURE_FLAGS = \
+	--enable-gtk-doc \
+	--with-python2-girdir='$${libdir}/python2/dist-packages/gi/overrides' \
+	--with-python3-girdir='$${libdir}/python3/dist-packages/gi/overrides' \
+	--enable-introspection
 
 # Extra package files. #
 EXTRA_DIST = \
@@ -41,15 +47,16 @@ vapi: gexiv2.vapi
 gexiv2.vapi: gexiv2_vapi.stamp
 	@true
 
-gexiv2_vapi.stamp: $(top_builddir)/GExiv2-0.10.gir $(top_srcdir)/vapi/GExiv2-0.10.metadata $(top_srcdir)/vapi/gexiv2-custom.vala
+gexiv2_vapi.stamp: $(top_builddir)/GExiv2-0.10.gir $(abs_top_srcdir)/vapi/GExiv2-0.10.metadata $(abs_top_srcdir)/vapi/gexiv2-custom.vala
 	rm -f $(@F)
-	$(AM_V_GEN)$(VAPIGEN) --metadatadir=$(top_srcdir)/vapi \
+	$(AM_V_GEN)$(VAPIGEN) --metadatadir=$(abs_top_srcdir)/vapi \
 			      --library=gexiv2 \
-			      $(top_builddir)/GExiv2-0.10.gir $(srcdir)/vapi/gexiv2-custom.vala
+			      $(top_builddir)/GExiv2-0.10.gir $(abs_top_srcdir)/vapi/gexiv2-custom.vala
 	echo timestmap > $(@F)
 
 dist_vapi_DATA = gexiv2.vapi
-EXTRA_DIST += $(top_srcdir)/vala/GExiv2-0.10.metadata gexiv2.vapi gexiv2.stamp
+EXTRA_DIST += $(top_srcdir)/vapi/GExiv2-0.10.metadata gexiv2.vapi gexiv2_vapi.stamp $(top_srcdir)/vapi/gexiv2-custom.vala
+DISTCLEANFILES = gexiv2.vapi gexiv2_vapi.stamp
 
 GEXIV2_GIRHEADERS = \
 	$(srcdir)/gexiv2/gexiv2.h \
