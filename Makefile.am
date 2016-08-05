@@ -44,6 +44,7 @@ endif
 
 vapi: gexiv2.vapi
 
+if HAVE_INTROSPECTION
 gexiv2.vapi: gexiv2_vapi.stamp
 	@true
 
@@ -57,6 +58,7 @@ gexiv2_vapi.stamp: $(top_builddir)/GExiv2-0.10.gir $(abs_top_srcdir)/vapi/GExiv2
 dist_vapi_DATA = gexiv2.vapi
 EXTRA_DIST += $(top_srcdir)/vapi/GExiv2-0.10.metadata gexiv2.vapi gexiv2_vapi.stamp $(top_srcdir)/vapi/gexiv2-custom.vala
 DISTCLEANFILES = gexiv2.vapi gexiv2_vapi.stamp
+endif
 
 GEXIV2_GIRHEADERS = \
 	$(srcdir)/gexiv2/gexiv2.h \
