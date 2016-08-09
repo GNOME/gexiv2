@@ -44,7 +44,7 @@ endif
 
 vapi: gexiv2.vapi
 
-if HAVE_INTROSPECTION
+if ENABLE_VAPIGEN
 gexiv2.vapi: gexiv2_vapi.stamp
 	@true
 
