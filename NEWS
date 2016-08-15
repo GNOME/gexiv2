@@ -1,3 +1,40 @@
+gexiv2 0.10.4 - 15 August 2016
+------------------------------
+
+  * Additions to get_comment based on MWG guidelines (#746424)
+  * Fix builddir != srcdir
+  * Fix leaks in GPS coordinate handling (#754241)
+  * Update build instructions (#749800)
+  * Copyright transfer to SFC
+  * Use M4 macros for GObject introspection (#765827)
+  * Clean-up some introspection warnings
+  * Catch exception by reference (CID:112500)
+  * Generate the VAPI file from GIR
+  * Mark _free() functions as deprecated
+  * Fix several g-i-scanner warnings
+  * Fix build issue introduced by VAPI changes (#768896)
+  * Use AX_COMPILER_FLAGS and fix issues risen by that
+  * Remove linker flags from CXXFLAGS
+  * Enable maintainer mode and silent rules
+  * Fix lookup of XMP tags (#768906)
+  * Enable compiling without GObject Introspection
+
+Bugs fixed in this release:
+ - https://bugzilla.gnome.org/show_bug.cgi?id=746424
+ - https://bugzilla.gnome.org/show_bug.cgi?id=749800
+ - https://bugzilla.gnome.org/show_bug.cgi?id=754241
+ - https://bugzilla.gnome.org/show_bug.cgi?id=765827
+ - https://bugzilla.gnome.org/show_bug.cgi?id=768896
+ - https://bugzilla.gnome.org/show_bug.cgi?id=768906
+
+All contributors to this release:
+ - Jens Georg <mail@jensge.org>
+ - Jim Nelson <jim@yorba.org>
+ - Roman Lebedev <lebedev.ri@gmail.com>
+ - Emmanuele Bassi <ebassi@gnome.org>
+ - Alan Pater <alan.pater@gmail.com>
+ - Adam Dingle <adam@medovina.org>
+
 gexiv2 0.10.3 - 23 March 2015
 -----------------------------
 
