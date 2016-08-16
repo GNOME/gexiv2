@@ -1,3 +1,25 @@
+gexiv2 (0.10.4-0~jensge1~xenial1) xenial; urgency=medium
+
+  * Additions to get_comment based on MWG guidelines (#746424)
+  * Fix builddir != srcdir
+  * Fix leaks in GPS coordinate handling (#754241)
+  * Update build instructions (#749800)
+  * Copyright transfer to SFC
+  * Use M4 macros for GObject introspection (#765827)
+  * Clean-up some introspection warnings
+  * Catch exception by reference (CID:112500)
+  * Generate the VAPI file from GIR
+  * Mark _free() functions as deprecated
+  * Fix several g-i-scanner warnings
+  * Fix build issue introduced by VAPI changes (#768896)
+  * Use AX_COMPILER_FLAGS and fix issues risen by that
+  * Remove linker flags from CXXFLAGS
+  * Enable maintainer mode and silent rules
+  * Fix lookup of XMP tags (#768906)
+  * Enable compiling without GObject Introspection
+
+ -- Jens Georg <mail@jensge.org>  Tue, 16 Aug 2016 13:53:53 +0200
+
 gexiv2 (0.10.3-0utopic1) utopic; urgency=low
 
   * Retrieve XMP tag's structure type (#736799)
