@@ -1,4 +1,4 @@
-gexiv2 (0.10.4-0~jensge1~xenial1) xenial; urgency=medium
+gexiv2 (0.10.4-0~jensge1~xenial4) xenial; urgency=medium
 
   * Additions to get_comment based on MWG guidelines (#746424)
   * Fix builddir != srcdir
