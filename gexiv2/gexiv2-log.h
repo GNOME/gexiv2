@@ -24,7 +24,7 @@ typedef enum {
 
 /**
  * GExiv2LogHandler:
- * @level: The #Gexiv2LogLevel for the particular message
+ * @level: The #GExiv2LogLevel for the particular message
  * @msg: (in): The log message
  *
  * The log handler can be set by #gexiv2_log_set_handler.  When set, the log handler will receive

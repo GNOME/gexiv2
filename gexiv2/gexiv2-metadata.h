@@ -675,7 +675,7 @@ GExiv2Orientation gexiv2_metadata_get_orientation 	(GExiv2Metadata *self);
 /**
  * gexiv2_metadata_set_orientation:
  * @self: An instance of #GExiv2Metadata
- * @orientation: The new #Gexiv2Orientation for the image.
+ * @orientation: The new #GExiv2Orientation for the image.
  *
  * The orientation must be valid and cannot be #GEXIV2_ORIENTATION_UNSPECIFIED.
  */

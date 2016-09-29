@@ -1,6 +1,6 @@
 ACLOCAL_AMFLAGS = -I m4 ${ACLOCAL_FLAGS}
 
-SUBDIRS = docs
+SUBDIRS = . docs
 
 # Installation directories.
 pkgconfigdir     = $(libdir)/pkgconfig

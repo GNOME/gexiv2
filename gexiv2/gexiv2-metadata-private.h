@@ -33,8 +33,10 @@ struct _GExiv2MetadataPrivate
     GExiv2PreviewProperties **preview_properties;
 };
 
+#ifndef __GTK_DOC_IGNORE__
 #define LOG_ERROR(e) \
     g_warning("%s", e.what());
+#endif
 
 /* private EXIF functions */
 
@@ -49,8 +51,7 @@ G_GNUC_INTERNAL gdouble			gexiv2_metadata_get_exif_tag_rational_as_double (GExiv
 G_GNUC_INTERNAL const gchar*	gexiv2_metadata_get_exif_tag_label	(const gchar* tag);
 G_GNUC_INTERNAL const gchar*	gexiv2_metadata_get_exif_tag_description (const gchar* tag);
 G_GNUC_INTERNAL const gchar*	gexiv2_metadata_get_exif_tag_type (const gchar* tag);
-G_GNUC_INTERNAL
-GBytes*			gexiv2_metadata_get_exif_tag_raw	(GExiv2Metadata *self, const gchar* tag);
+G_GNUC_INTERNAL GBytes*			gexiv2_metadata_get_exif_tag_raw	(GExiv2Metadata *self, const gchar* tag);
 
 /* private XMP functions */
 
