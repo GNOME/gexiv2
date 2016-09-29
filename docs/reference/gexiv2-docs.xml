@@ -12,14 +12,13 @@
     <releaseinfo>
       for &package_string;.
       The latest version of this documentation can be found on-line at
-      <ulink role="online-location" url="http://[SERVER]/&package_name;/index.html">http://[SERVER]/&package_name;/</ulink>.
+      <ulink role="online-location" url="http://developer.gnome.org/&package_name;/unstable/">http://developer.gnome.org/&package_name;/unstable</ulink>.
     </releaseinfo>
   </bookinfo>
 
   <chapter>
-      <title>[Insert title here]</title>
+      <title>GExiv2</title>
       <xi:include href="xml/gexiv2-log.xml"/>
-      <xi:include href="xml/gexiv2-log-private.xml"/>
       <xi:include href="xml/gexiv2-managed-stream.xml"/>
       <xi:include href="xml/gexiv2-metadata.xml"/>
       <xi:include href="xml/gexiv2-preview-image.xml"/>

@@ -14,6 +14,11 @@
 
 G_BEGIN_DECLS
 
+/**
+ * GExiv2LogLevel:
+ *
+ * Log levels
+ */
 typedef enum {
 	GEXIV2_LOG_LEVEL_DEBUG	= 0,
 	GEXIV2_LOG_LEVEL_INFO	= 1,
