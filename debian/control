@@ -2,6 +2,7 @@ Source: gexiv2
 Priority: extra
 Maintainer: Jens Georg <mail@jensge.org>
 Build-Depends: debhelper (>= 7),
+               gtk-doc-tools,
                autoconf,
                autotools-dev,
                automake,
@@ -23,6 +24,23 @@ Architecture: any
 Depends: ${misc:Depends},
          libgexiv2-2 (= ${binary:Version}),
          libexiv2-dev
+Description: GObject-based wrapper around the Exiv2 library (development files)
+ gexiv2 is a GObject-based wrapper around the Exiv2 library. It makes the basic
+ features of Exiv2 available to GNOME applications.
+
+Package: libgexiv2-dbg
+Section: debug
+Architecture: any
+Depends: ${misc:Depends},
+         libgexiv2-2 (= ${binary:Version}),
+Description: GObject-based wrapper around the Exiv2 library (development files)
+ gexiv2 is a GObject-based wrapper around the Exiv2 library. It makes the basic
+ features of Exiv2 available to GNOME applications.
+
+Package: libgexiv2-doc
+Section: doc
+Architecture: any
+Depends: ${misc:Depends}
 Description: GObject-based wrapper around the Exiv2 library (development files)
  gexiv2 is a GObject-based wrapper around the Exiv2 library. It makes the basic
  features of Exiv2 available to GNOME applications.
