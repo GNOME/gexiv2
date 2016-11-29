@@ -47,17 +47,16 @@ endif
 vapi: gexiv2.vapi
 
 if ENABLE_VAPIGEN
-gexiv2.vapi: gexiv2_vapi.stamp
-	@true
-
 gexiv2_vapi.stamp: $(top_builddir)/GExiv2-0.10.gir $(abs_top_srcdir)/vapi/GExiv2-0.10.metadata $(abs_top_srcdir)/vapi/gexiv2-custom.vala
 	rm -f $(@F)
 	$(AM_V_GEN)$(VAPIGEN) --metadatadir=$(abs_top_srcdir)/vapi \
 			      --library=gexiv2 \
 			      $(top_builddir)/GExiv2-0.10.gir $(abs_top_srcdir)/vapi/gexiv2-custom.vala
 	echo timestmap > $(@F)
-DISTCLEANFILES = gexiv2.vapi gexiv2_vapi.stamp
 endif
+
+gexiv2.vapi: gexiv2_vapi.stamp
+	@true
 
 dist_vapi_DATA = gexiv2.vapi
 EXTRA_DIST += $(top_srcdir)/vapi/GExiv2-0.10.metadata gexiv2.vapi gexiv2_vapi.stamp $(top_srcdir)/vapi/gexiv2-custom.vala
