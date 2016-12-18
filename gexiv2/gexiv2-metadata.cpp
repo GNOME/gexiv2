@@ -399,26 +399,31 @@ GExiv2Orientation gexiv2_metadata_get_orientation (GExiv2Metadata *self) {
         // Because some camera set a wrong standard exif orientation tag,
         // We need to check makernote tags first!
         if (gexiv2_metadata_has_exif_tag(self, "Exif.MinoltaCs7D.Rotation")) {
-            switch (gexiv2_metadata_get_exif_tag_long(self, "Exif.MinoltaCs7D.Rotation")) {
+            long orientation = gexiv2_metadata_get_exif_tag_long(self, "Exif.MinoltaCs7D.Rotation");
+            switch (orientation) {
                 case 76:
                     return GEXIV2_ORIENTATION_ROT_90;
-                
                 case 82:
                     return GEXIV2_ORIENTATION_ROT_270;
+                case 72:
+                    return GEXIV2_ORIENTATION_UNSPECIFIED;
                 default:
-                    g_assert_not_reached();
+                    g_debug ("Unknown Minolta rotation value %ld, ignoring", orientation);
             }
         }
-        
+
         if (gexiv2_metadata_has_exif_tag(self, "Exif.MinoltaCs5D.Rotation")) {
-            switch (gexiv2_metadata_get_exif_tag_long(self, "Exif.MinoltaCs5D.Rotation")) {
+            long orientation = gexiv2_metadata_get_exif_tag_long(self, "Exif.MinoltaCs5D.Rotation");
+            switch (orientation) {
                 case 76:
                     return GEXIV2_ORIENTATION_ROT_90;
                 
                 case 82:
                     return GEXIV2_ORIENTATION_ROT_270;
+                case 72:
+                    return GEXIV2_ORIENTATION_UNSPECIFIED;
                 default:
-                    g_assert_not_reached();
+                    g_debug ("Unknown Minolta rotation value %ld, ignoring", orientation);
             }
         }
         
