@@ -16,20 +16,49 @@
 #include <glib-object.h>
 #include <exiv2/exif.hpp>
 
+#include <limits>
+
 G_BEGIN_DECLS
+
+static double convert_rational(const Exiv2::Rational& r) {
+    if (r.first == 0) {
+        return 0.0;
+    }
+
+    if (r.second == 0) {
+        throw std::overflow_error("Invalid fraction");
+    }
+
+    auto num = static_cast<double>(r.first);
+    auto den = static_cast<double>(r.second);
+
+    return num / den;
+}
+
+struct GPointer {
+    GPointer(gpointer p) : _p(p) {}
+    ~GPointer() { g_free(_p); }
+    gpointer reset(gpointer p) { gpointer old = p; std::swap(old, _p); return old; };
+
+    gpointer _p;
+private:
+    GPointer operator=(const GPointer &other);
+    GPointer(const GPointer &other);
+};
 
 gboolean gexiv2_metadata_get_gps_longitude (GExiv2Metadata *self, gdouble *longitude) {
     g_return_val_if_fail (GEXIV2_IS_METADATA (self), FALSE);
     g_return_val_if_fail (longitude != NULL, FALSE);
-    g_return_val_if_fail(self->priv->image.get() != NULL, FALSE);
+    g_return_val_if_fail (self->priv->image.get() != NULL, FALSE);
 
     try {
-        double num, den, min, sec;
+        double min, sec;
         *longitude = 0.0;
 
         gchar* longitude_ref = gexiv2_metadata_get_exif_tag_string (self, "Exif.GPSInfo.GPSLongitudeRef");
+        GPointer longitude_ref_guard(longitude_ref);
+
         if (longitude_ref == NULL || longitude_ref[0] == '\0') {
-            g_free(longitude_ref);
             return FALSE;
         }
 
@@ -37,44 +66,18 @@ gboolean gexiv2_metadata_get_gps_longitude (GExiv2Metadata *self, gdouble *longi
         Exiv2::ExifKey key ("Exif.GPSInfo.GPSLongitude");
         Exiv2::ExifData::iterator it = exif_data.findKey (key);
 
-        if (it != exif_data.end () && (*it).count() == 3) {
-            num = (double)((*it).toRational(0).first);
-            den = (double)((*it).toRational(0).second);
-
-            if (den == 0) {
-                g_free(longitude_ref);
-                return FALSE;
+        if (it != exif_data.end () && it->count() == 3) {
+            *longitude = convert_rational(it->toRational(0));
+            min = convert_rational(it->toRational(1));
+            if (min != -1.0) {
+                *longitude += min / 60.0;
             }
 
-            *longitude = num / den;
-
-            num = (double)((*it).toRational(1).first);
-            den = (double)((*it).toRational(1).second);
-
-            if (den == 0) {
-                g_free(longitude_ref);
-                return FALSE;
+            sec = convert_rational(it->toRational(2));
+            if (sec != -1.0) {
+                *longitude += sec / 3600.0;
             }
-
-            min = num/den;
-
-            if (min != -1.0)
-                *longitude = *longitude + min / 60.0;
-
-            num = (double)((*it).toRational(2).first);
-            den = (double)((*it).toRational(2).second);
-
-            if (den == 0) {
-                g_free(longitude_ref);
-                return FALSE;
-            }
-
-            sec = num/den;
-
-            if (sec != -1.0)
-                *longitude = *longitude + sec / 3600.0;
         } else {
-            g_free(longitude_ref);
             return FALSE;
         }
 
@@ -82,10 +85,10 @@ gboolean gexiv2_metadata_get_gps_longitude (GExiv2Metadata *self, gdouble *longi
         if (longitude_ref[0] == 'S' || longitude_ref[0] == 'W')
             *longitude *= -1.0;
 
-        g_free(longitude_ref);
-
         return TRUE;
     } catch (Exiv2::Error &e) {
+        LOG_ERROR(e);
+    } catch (std::overflow_error &e) {
         LOG_ERROR(e);
     }
 
@@ -93,17 +96,18 @@ gboolean gexiv2_metadata_get_gps_longitude (GExiv2Metadata *self, gdouble *longi
 }
 
 gboolean gexiv2_metadata_get_gps_latitude (GExiv2Metadata *self, gdouble *latitude) {
-    g_return_val_if_fail(GEXIV2_IS_METADATA (self), FALSE);
-    g_return_val_if_fail(latitude != NULL, FALSE);
-    g_return_val_if_fail(self->priv->image.get() != NULL, FALSE);
+    g_return_val_if_fail (GEXIV2_IS_METADATA (self), FALSE);
+    g_return_val_if_fail (latitude != NULL, FALSE);
+    g_return_val_if_fail (self->priv->image.get() != NULL, FALSE);
 
     try {
-        double num, den, min, sec;
+        double min, sec;
         *latitude = 0.0;
 
         gchar* latitude_ref = gexiv2_metadata_get_exif_tag_string (self, "Exif.GPSInfo.GPSLatitudeRef");
+        GPointer latitude_ref_guard(latitude_ref);
+
         if (latitude_ref == NULL || latitude_ref[0] == '\0') {
-            g_free(latitude_ref);
             return FALSE;
         }
 
@@ -111,55 +115,29 @@ gboolean gexiv2_metadata_get_gps_latitude (GExiv2Metadata *self, gdouble *latitu
         Exiv2::ExifKey key ("Exif.GPSInfo.GPSLatitude");
         Exiv2::ExifData::iterator it = exif_data.findKey (key);
 
-        if (it != exif_data.end () && (*it).count() == 3) {
-            num = (double)((*it).toRational(0).first);
-            den = (double)((*it).toRational(0).second);
-
-            if (den == 0) {
-                g_free(latitude_ref);
-                return FALSE;
+        if (it != exif_data.end () && it->count() == 3) {
+            *latitude = convert_rational(it->toRational(0));
+            min = convert_rational(it->toRational(1));
+            if (min != -1.0) {
+                *latitude += min / 60.0;
             }
 
-            *latitude = num / den;
-
-            num = (double)((*it).toRational(1).first);
-            den = (double)((*it).toRational(1).second);
-
-            if (den == 0) {
-                g_free(latitude_ref);
-                return FALSE;
+            sec = convert_rational(it->toRational(2));
+            if (sec != -1.0) {
+                *latitude += sec / 3600.0;
             }
-
-            min = num/den;
-
-            if (min != -1.0)
-                *latitude = *latitude + min / 60.0;
-
-            num = (double)((*it).toRational(2).first);
-            den = (double)((*it).toRational(2).second);
-
-            if (den == 0) {
-                g_free(latitude_ref);
-                return FALSE;
-            }
-
-            sec = num/den;
-
-            if (sec != -1.0)
-                *latitude = *latitude + sec / 3600.0;
-        } else {
-            g_free(latitude_ref);
-            return FALSE;
-        }
+       } else {
+           return FALSE;
+       }
 
         // There's some weird stuff out there in the wild.
         if (latitude_ref[0] == 'S' || latitude_ref[0] == 'W')
             *latitude *= -1.0;
 
-        g_free(latitude_ref);
-
         return TRUE;
     } catch (Exiv2::Error &e) {
+        LOG_ERROR(e);
+    } catch (std::overflow_error &e) {
         LOG_ERROR(e);
     }
 
@@ -172,12 +150,12 @@ gboolean gexiv2_metadata_get_gps_altitude (GExiv2Metadata *self, gdouble *altitu
     g_return_val_if_fail(self->priv->image.get() != NULL, FALSE);
 
     try {
-        double num, den;
         *altitude = 0.0;
 
         gchar* altitude_ref = gexiv2_metadata_get_exif_tag_string (self, "Exif.GPSInfo.GPSAltitudeRef");
+        GPointer altitude_ref_guard(altitude_ref);
+
         if (altitude_ref == NULL || altitude_ref[0] == '\0') {
-            g_free(altitude_ref);
             return FALSE;
         }
 
@@ -185,28 +163,19 @@ gboolean gexiv2_metadata_get_gps_altitude (GExiv2Metadata *self, gdouble *altitu
         Exiv2::ExifKey key ("Exif.GPSInfo.GPSAltitude");
         Exiv2::ExifData::iterator it = exif_data.findKey (key);
 
-        if (it != exif_data.end () && (*it).count() == 1) {
-            num = (double)((*it).toRational(0).first);
-            den = (double)((*it).toRational(0).second);
-
-            if (den == 0) {
-                g_free(altitude_ref);
-                return FALSE;
-            }
-
-            *altitude = num/den;
+        if (it != exif_data.end () && it->count() == 1) {
+            *altitude = convert_rational(it->toRational(0));
         } else {
-            g_free(altitude_ref);
             return FALSE;
         }
 
         if (altitude_ref[0] == '1')
             *altitude *= -1.0;
 
-        g_free(altitude_ref);
-
         return TRUE;
     } catch (Exiv2::Error &e) {
+        LOG_ERROR(e);
+    } catch (std::overflow_error &e) {
         LOG_ERROR(e);
     }
 
@@ -215,16 +184,27 @@ gboolean gexiv2_metadata_get_gps_altitude (GExiv2Metadata *self, gdouble *altitu
 
 gboolean gexiv2_metadata_get_gps_info (GExiv2Metadata *self, gdouble *longitude, gdouble *latitude,
     gdouble *altitude) {
-    if ( ! gexiv2_metadata_get_gps_longitude (self, longitude))
-        return FALSE;
+    gboolean result = FALSE;
 
-    if ( ! gexiv2_metadata_get_gps_latitude (self, latitude))
-        return FALSE;
-        
-    if ( ! gexiv2_metadata_get_gps_altitude (self, altitude))
+    if (!gexiv2_metadata_get_gps_longitude (self, longitude)) {
+        *longitude = 0.0;
+    } else {
+        result = TRUE;
+    }
+
+    if (!gexiv2_metadata_get_gps_latitude (self, latitude)) {
+        *latitude = 0.0;
+    } else {
+        result = TRUE;
+    }
+
+    if (!gexiv2_metadata_get_gps_altitude (self, altitude)) {
         *altitude = 0.0;
-    
-    return TRUE;
+    } else {
+        result = TRUE;
+    }
+
+    return result;
 }
 
 
