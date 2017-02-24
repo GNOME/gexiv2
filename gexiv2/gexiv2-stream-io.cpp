@@ -67,20 +67,20 @@ long StreamIo::write (const Exiv2::byte* data, long write_count) {
     if ( ! can_write)
         return 0;
     
-    long written_bytes = 0;
+    long total_written_bytes = 0;
     
-    while (write_count > written_bytes) {
+    while (write_count > total_written_bytes) {
     
-        int write = MIN (write_count - written_bytes, G_MAXINT32);
+        int written = MIN (write_count - total_written_bytes, G_MAXINT32);
         
         /* because of a marshalling problem on managed side, we shift the
            pointer and do NOT use the offset parameter */
-        cb->Write (cb->handle, (char*)data + written_bytes, 0, write);
+        cb->Write (cb->handle, (char*)data + total_written_bytes, 0, written);
         
-        written_bytes += write;
+        total_written_bytes += written;
     }
 
-    return written_bytes;
+    return total_written_bytes;
 }
 
 long StreamIo::write (Exiv2::BasicIo& src) {
@@ -174,20 +174,20 @@ Exiv2::DataBuf StreamIo::read (long read_count) {
 }
 
 long StreamIo::read (Exiv2::byte* buf, long read_count) {
-    long read_bytes = 0;
+    long total_read_bytes = 0;
     
-    while (read_count > read_bytes) {
+    while (read_count > total_read_bytes) {
         /* because of a marshalling problem on managed side, we shift the
            pointer and do NOT use the offset parameter */
-        int read = cb->Read (cb->handle, (char*)buf + read_bytes, 0, MIN (read_count - read_bytes, G_MAXINT32));
+        int bytes_read = cb->Read (cb->handle, (char*)buf + total_read_bytes, 0, MIN (read_count - total_read_bytes, G_MAXINT32));
         
-        if (read <= 0)
+        if (bytes_read <= 0)
             break;
         
-        read_bytes += read;
+        total_read_bytes += bytes_read;
     }
     
-    return read_bytes;
+    return total_read_bytes;
 }
 
 int StreamIo::getb () {
