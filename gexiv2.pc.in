@@ -5,7 +5,8 @@ includedir=@includedir@
 
 Name: GExiv2
 Description: GObject bindings for exiv2
-Requires: exiv2 glib-2.0 gobject-2.0
+Requires: glib-2.0 gobject-2.0
 Version: @GEXIV2_VERSION@
 Libs: -L${libdir} -l@PACKAGE_NAME@
 Cflags: -I${includedir}
+Requires.private: exiv2
