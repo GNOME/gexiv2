@@ -29,6 +29,7 @@ import os
 import gi.overrides
 gi.overrides.__path__.append(os.path.join(os.path.dirname(__file__),
                                           'gi', 'overrides'))
+gi.overrides.__path__.append(os.path.join(os.path.dirname(__file__), '..', '..'))
 
 
 from gi.repository import GExiv2
@@ -44,9 +45,20 @@ class TestGexiv2(unittest.TestCase):
 
     def test_author_badencoding(self):
         sample = 'sample-author-badencoding.jpg'
-        md = GExiv2.Metadata(self.get_sample_path(sample))
+        md = GExiv2.Metadata()
+        md.open_path(self.get_sample_path(sample))
 
         self.assertEqual(md.get_raw('Exif.Image.Artist'), b'\xc0\xeb\xe5\xea\xf1\xe0\xed\xe4\xf0 \xca\xee\xf8\xe5\xeb\xe5\xe2\x00')
+
+    def test_gps_coordinates(self):
+        sample = 'CaorVN.jpeg'
+        md = GExiv2.Metadata()
+        md.open_path(self.get_sample_path(sample))
+
+        (lo, la, alt) = md.get_gps_info()
+        self.assertEqual(lo, -1.508425)
+        self.assertEqual(la, 48.631806166666664)
+        self.assertEqual(alt, -0.926000)
 
 
 if __name__ == '__main__':
