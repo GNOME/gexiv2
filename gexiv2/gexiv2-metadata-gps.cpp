@@ -29,8 +29,8 @@ static double convert_rational(const Exiv2::Rational& r) {
         throw std::overflow_error("Invalid fraction");
     }
 
-    auto num = static_cast<double>(r.first);
-    auto den = static_cast<double>(r.second);
+    double num = static_cast<double>(r.first);
+    double den = static_cast<double>(r.second);
 
     return num / den;
 }
