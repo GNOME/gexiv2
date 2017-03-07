@@ -25,7 +25,8 @@ Section: libdevel
 Architecture: any
 Depends: ${misc:Depends},
          libgexiv2-2 (= ${binary:Version}),
-         libexiv2-dev
+         gir1.2-gexiv2-0.10 (= ${binary:Version}),
+         ${misc:Depends}
 Description: GObject-based wrapper around the Exiv2 library (development files)
  gexiv2 is a GObject-based wrapper around the Exiv2 library. It makes the basic
  features of Exiv2 available to GNOME applications.
@@ -70,3 +71,23 @@ Description: GObject introspection data for the GExiv2 library.
  .
  It can be used by packages using the GIRepository format to generate
  dynamic bindings.
+
+Package: python-gexiv2
+Architecture: any
+Depends: gir1.2-gexiv2-0.10 (= ${binary:Version}),
+         libgexiv2-2 (= ${binary:Version}),
+         python-gi,
+         ${python:Depends}
+Description: GExiv2 GObject introspection overrides for Python (Python2)
+ gexiv2 is a GObject-based wrapper around the Exiv2 library. It makes the basic
+ features of Exiv2 available to GNOME applications.
+
+Package: python3-gexiv2
+Architecture: any
+Depends: gir1.2-gexiv2-0.10 (= ${binary:Version}),
+         libgexiv2-2 (= ${binary:Version}),
+         python3-gi,
+         ${python3:Depends}
+Description: GExiv2 GObject introspection overrides for Python (Python3)
+ gexiv2 is a GObject-based wrapper around the Exiv2 library. It makes the basic
+ features of Exiv2 available to GNOME applications.
