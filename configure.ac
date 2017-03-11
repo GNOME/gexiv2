@@ -204,29 +204,6 @@ case x"$target" in
 esac
 AC_MSG_RESULT([$target_or_host])
 
-case "$target_or_host" in
-    i*86-*-*)
-        have_x86=yes
-        AC_DEFINE(ARCH_X86, 1, [Define to 1 if you are compiling for ix86.])
-    ;;
-    x86_64-*-*)
-        have_x86=yes
-        AC_DEFINE(ARCH_X86, 1, [Define to 1 if you are compiling for ix86.])
-        AC_DEFINE(ARCH_X86_64, 1, [Define to 1 if you are compiling for amd64.])
-    ;;
-    ppc-*-* | powerpc-*)
-        have_ppc=yes
-        AC_DEFINE(ARCH_PPC, 1, [Define to 1 if you are compiling for PowerPC.])
-    ;;
-    ppc64-*-* | powerpc64-*)
-        have_ppc=yes
-        AC_DEFINE(ARCH_PPC, 1, [Define to 1 if you are compiling for PowerPC.])
-        AC_DEFINE(ARCH_PPC64, 1, [Define to 1 if you are compiling for PowerPC64.])
-    ;;
-    *)
-    ;;
-esac
-
 #################
 # Check for Win32
 #################
