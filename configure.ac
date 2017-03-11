@@ -1,4 +1,8 @@
-AC_INIT([gexiv2],[0.10.4],[https://bugzilla.gnome.org/enter_bug.cgi?product=gexiv2],[gexiv2],[https://wiki.gnome.org/Projects/gexiv2])
+AC_INIT([gexiv2],
+        [0.10.4],
+        [https://bugzilla.gnome.org/enter_bug.cgi?product=gexiv2],
+        [gexiv2],
+        [https://wiki.gnome.org/Projects/gexiv2])
 AC_PREREQ([2.69])
 
 AC_CONFIG_MACRO_DIR([m4])
@@ -121,6 +125,14 @@ fi
 
 GOBJECT_INTROSPECTION_CHECK([0.6.4])
 
+AC_PATH_PROGS([PYTHON2_PATH],[python2],[:])
+AC_SUBST(PYTHON2_PATH)
+AM_CONDITIONAL([PYTHON2_PATH], [test "x$PYTHON2_PATH" != "x:"])
+
+AC_PATH_PROGS([PYTHON3_PATH],[python3],[:])
+AC_SUBST(PYTHON3_PATH)
+AM_CONDITIONAL([PYTHON3_PATH], [test "x$PYTHON3_PATH" != "x:"])
+
 AC_ARG_WITH([python2-girdir],
             AS_HELP_STRING([--with-python2-girdir],
                              [Set the GI override file install dir]),
@@ -135,22 +147,28 @@ AC_ARG_WITH([python3-girdir],
 
 enable_python2="no (introspection disabled)"
 enable_python3="no (introspection disabled)"
-if test "x$found_introspection" = "xyes"; then
+PYTHON_CODE="import gi; print(gi._overridesdir)"
+AS_IF([test "x$found_introspection" = "xyes"],
+      [
     # Used to determine where Python wants the .gi file to be installed ...
     # if Python is not installed, PYTHON2 and PYTHON3 will be empty
-    PYTHON="import gi; print(gi._overridesdir)"
     AS_IF([test "x$ac_py2girdir" = "x"],
     [
-        PYTHON2_GIDIR=$(python2 -c "$PYTHON")
+        AS_IF([test "x$PYTHON2_PATH" != "x:"],
+              [PYTHON2_GIDIR=$($PYTHON2_PATH -c "$PYTHON_CODE")],
+              [PYTHON2_GIDIR=""])
     ],
     [
         PYTHON2_GIDIR=$ac_py2girdir
     ])
     AC_MSG_RESULT([Python2 GObject Introspection directory: $PYTHON2_GIDIR])
 
+
     AS_IF([test "x$ac_py3girdir" = "x"],
     [
-        PYTHON3_GIDIR=$(python3 -c "$PYTHON")
+        AS_IF([test "x$PYTHON3_PATH" != "x:"],
+              [PYTHON3_GIDIR=$($PYTHON3_PATH -c "$PYTHON_CODE")],
+              [PYTHON3_GIDIR=""])
     ],
     [
         PYTHON3_GIDIR=$ac_py3girdir
@@ -164,7 +182,7 @@ if test "x$found_introspection" = "xyes"; then
 
     AC_SUBST(PYTHON2_GIDIR)
     AC_SUBST(PYTHON3_GIDIR)
-fi
+    ])
 AM_CONDITIONAL(HAS_PYTHON2, test "x$PYTHON2_GIDIR" != "x")
 AM_CONDITIONAL(HAS_PYTHON3, test "x$PYTHON3_GIDIR" != "x")
 
@@ -172,24 +190,8 @@ AM_CONDITIONAL(HAS_PYTHON3, test "x$PYTHON3_GIDIR" != "x")
 # Tests and utilities #
 #######################
 
-AC_ARG_ENABLE(tests, [  --enable-tests          enable tests and utilities (requires Vala) [[default=no]]],
-              if eval "test x$enable_tests = xno"; then
-              enable_tests=no
-              else
-              enable_tests=yes
-              fi,
-              enable_tests=no)
-
-if test "x$enable_tests" != "xno"; then
-    AC_CHECK_TOOL([VALAC], [valac], [:])
-    if test "x$VALAC" = "x:"; then
-        enable_tests="no (missing valac)"
-    fi
-fi
-AM_CONDITIONAL(ENABLE_TESTS, test "x$enable_tests" = "xyes")
-
-AC_MSG_CHECKING([enable tests])
-AC_MSG_RESULT([$enable_tests])
+AC_CHECK_TOOL([VALAC], [valac], [:])
+AM_CONDITIONAL([HAVE_VALAC], [test "x$VALAC" != "x:"])
 
 ###########################
 # Check target architecture
@@ -241,6 +243,8 @@ gexiv2.pc:gexiv2.pc.in
 docs/Makefile
 docs/reference/Makefile
 ])
+AC_CONFIG_FILES([test/python2-test], [chmod +x test/python2-test])
+AC_CONFIG_FILES([test/python3-test], [chmod +x test/python3-test])
 
 AC_OUTPUT
 
@@ -251,7 +255,6 @@ Options:
     Introspection:      $found_introspection
     Python2 binding:    $enable_python2
     Python3 binding:    $enable_python3
-    Tests and utils:    $enable_tests
 ])
 
 if test "x$enable_tests" = "xyes"; then

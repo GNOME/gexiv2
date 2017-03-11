@@ -120,22 +120,9 @@ clean-local:
 	rm -rf test/python/gi test/python/__pycache__
 
 # Tests and utilities #
+#
 
-if ENABLE_TESTS
-
-tests: test/gexiv2-dump test/python2 test/python3
-
-test/gexiv2-dump: test/gexiv2-dump.vala
-	valac -g --enable-checking --vapidir=. --pkg gexiv2 $< -o $@
-
-test/python/gi/overrides/GExiv2.py:
-	[ -d $(dir $@) ] || mkdir -p $(dir $@)
-	ln -sf ../../../../GExiv2.py $@
-
-test/python%: $(TYPELIB_FILES) test/python/gi/overrides/GExiv2.py
-	LD_LIBRARY_PATH=.libs GI_TYPELIB_PATH=. PYTHONPATH=test/python python$* -m unittest gexiv2
-
-endif
+include check.am
 
 # Optional Introspection #
 

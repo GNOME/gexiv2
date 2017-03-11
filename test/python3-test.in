@@ -1,0 +1,3 @@
+#!/bin/bash
+
+@PYTHON3_PATH@ -m unittest gexiv2

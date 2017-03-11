@@ -1,0 +1,36 @@
+TESTS_ENVIRONMENT = \
+	G_SLICE=debug-blocks \
+	LD_LIBRARY_PATH=$(top_builddir)/.libs:$(LD_LIBRARY_PATH) \
+	GI_TYPELIB_PATH=$(top_builddir) \
+	PYTHONPATH=$(top_srcdir)/test/python
+
+tests: check
+
+TESTS =
+
+if PYTHON2_PATH
+TESTS += test/python2-test
+endif
+
+if PYTHON3_PATH
+TESTS += test/python3-test
+endif
+
+if HAVE_VALAC
+check_PROGRAMS = test/gexiv2-dump
+test_gexiv2_dump_SOURCES = test/gexiv2-dump.vala
+endif
+
+AM_VALAFLAGS = --pkg gexiv2 --pkg glib-2.0 --vapidir=$(top_srcdir)
+
+LDADD = \
+	$(top_builddir)/libgexiv2.la \
+	$(GLIB_LIBS) $(EXIV2_LIBS)
+AM_CFLAGS = \
+	$(GLIB_CFLAGS) $(EXIV2_CFLAGS) \
+	-I $(top_srcdir)
+
+EXTRA_DIST += \
+	test/sample-author-badencoding.jpg \
+	test/CaorVN.jpeg
+
