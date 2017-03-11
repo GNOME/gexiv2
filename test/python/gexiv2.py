@@ -32,6 +32,7 @@ gi.overrides.__path__.append(os.path.join(os.path.dirname(__file__),
 gi.overrides.__path__.append(os.path.join(os.path.dirname(__file__), '..', '..'))
 
 
+gi.require_version('GExiv2', '0.10')
 from gi.repository import GExiv2
 
 
