@@ -58,6 +58,8 @@ endif
 gexiv2.vapi: gexiv2_vapi.stamp
 	@true
 
+CLEANFILES = gexiv2.vapi gexiv2_vapi.stamp
+
 dist_vapi_DATA = gexiv2.vapi
 EXTRA_DIST += $(top_srcdir)/vapi/GExiv2-0.10.metadata gexiv2.vapi gexiv2_vapi.stamp $(top_srcdir)/vapi/gexiv2-custom.vala
 
@@ -145,5 +147,5 @@ GExiv2_@GIR_VERSION_U@_gir_NAMESPACE = GExiv2
 GExiv2_@GIR_VERSION_U@_gir_VERSION = $(GIR_VERSION)
 INTROSPECTION_GIRS += GExiv2-$(GIR_VERSION).gir
 
-CLEANFILES = $(gir_DATA) $(typelib_DATA)
+CLEANFILES += $(gir_DATA) $(typelib_DATA)
 endif
