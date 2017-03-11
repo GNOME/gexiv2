@@ -191,14 +191,6 @@ AM_CONDITIONAL(ENABLE_TESTS, test "x$enable_tests" = "xyes")
 AC_MSG_CHECKING([enable tests])
 AC_MSG_RESULT([$enable_tests])
 
-###################
-# Check Word Size #
-###################
-
-AC_CHECK_SIZEOF([int *])
-AC_SUBST(SIZEOF_INT_P)
-AM_CONDITIONAL(WORD_64, test "x$SIZEOF_INT_P" = "x8" )
-
 ###########################
 # Check target architecture
 ###########################

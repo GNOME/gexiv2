@@ -98,18 +98,7 @@ if PLATFORM_WIN32
 no_undefined = -no-undefined
 endif
 
-# REQUIRED_CFLAGS absolutely get appended to CFLAGS, whatever the
-# the value of CFLAGS in the environment.
-REQUIRED_CXXFLAGS=
-
-# Because -fPIC can interfere with compilation on 32-bit platforms but
-# is absolutely necessary for AMD64, we check what the target machine's
-# word size is, and set our required flags based upon that.
-if WORD_64
-REQUIRED_CXXFLAGS += -fPIC -DPIC
-endif
-
-AM_CXXFLAGS = $(REQUIRED_CXXFLAGS) -I$(top_builddir)/gexiv2 $(WARN_CXXFLAGS)
+AM_CXXFLAGS = -I$(top_builddir)/gexiv2 $(WARN_CXXFLAGS)
 
 $(GEXIV2_sources): gexiv2/gexiv2-version.h
 
