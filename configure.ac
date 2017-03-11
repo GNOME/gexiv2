@@ -15,6 +15,12 @@ AM_INIT_AUTOMAKE([1.11 -Wall no-define foreign dist-xz no-dist-gzip tar-ustar
 AM_MAINTAINER_MODE([enable])
 AM_SILENT_RULES([yes])
 
+##############
+# Debug Mode #
+##############
+
+AX_CHECK_ENABLE_DEBUG([no])
+
 AM_PROG_AR
 LT_PREREQ([2.2])
 LT_INIT([disable-static win32-dll])
@@ -93,31 +99,6 @@ PKG_CHECK_MODULES(EXIV2,
                   exiv2 >= $EXIV2_REQUIRED_VERSION,
                   ,
                   AC_MSG_ERROR([exiv2 is required. Please install it.]))
-
-##############
-# Debug Mode #
-##############
-
-AC_MSG_CHECKING([debugging mode])
-AC_ARG_ENABLE(debug,
-              [  --enable-debug          enable debug mode [[default=no]]],
-              if eval "test x$enable_debug = xyes"; then
-              DEBUG_CFLAGS="-O0"
-              fi)
-
-if test -n "$DEBUG_CFLAGS"; then
-    AC_MSG_RESULT([yes])
-    if test -z "$CXXFLAGS"; then
-        CXXFLAGS="-O0 -g -pipe -nostdlib -shared"
-    else
-        CXXFLAGS="$DEBUG_CFLAGS $CXXFLAGS"
-    fi
-else
-    AC_MSG_RESULT([no])
-    if test -z "$CXXFLAGS"; then
-        CXXFLAGS="-O2 -g -pipe -nostdlib -shared"
-    fi
-fi
 
 #################
 # Introspection #
