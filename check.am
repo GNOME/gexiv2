@@ -8,7 +8,11 @@ TESTS_ENVIRONMENT = \
 
 tests: check
 
-TESTS =
+TESTS = test/gexiv2-regression
+
+check_PROGRAMS = test/gexiv2-regression
+
+test_gexiv2_regression_SOURCES = test/gexiv2-regression.c
 
 if PYTHON2_PATH
 TESTS += test/python2-test
@@ -19,7 +23,7 @@ TESTS += test/python3-test
 endif
 
 if HAVE_VALAC
-check_PROGRAMS = test/gexiv2-dump
+check_PROGRAMS += test/gexiv2-dump
 test_gexiv2_dump_SOURCES = test/gexiv2-dump.vala
 endif
 
@@ -30,7 +34,7 @@ LDADD = \
 	$(GLIB_LIBS) $(EXIV2_LIBS)
 AM_CFLAGS = \
 	$(GLIB_CFLAGS) $(EXIV2_CFLAGS) \
-	-I $(top_srcdir)
+	-I $(top_srcdir) -DSAMPLE_PATH="\"$(abs_top_srcdir)/test\""
 
 EXTRA_DIST += \
 	test/sample-author-badencoding.jpg \
