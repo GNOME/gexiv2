@@ -16,8 +16,8 @@ test/python/gi
 __pycache__
 
 # Autotools files.
-/Makefile.in
-/Makefile
+Makefile.in
+Makefile
 configure
 build-aux/
 config.log
@@ -27,3 +27,6 @@ libtool
 aclocal.m4
 autom4te.cache/
 m4/
+test/*.log
+test/*.trs
+test-suite.log
