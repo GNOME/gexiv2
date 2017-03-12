@@ -1,8 +1,10 @@
 TESTS_ENVIRONMENT = \
-	G_SLICE=debug-blocks \
+	G_SLICE=always-malloc \
 	LD_LIBRARY_PATH=$(top_builddir)/.libs:$(LD_LIBRARY_PATH) \
 	GI_TYPELIB_PATH=$(top_builddir) \
-	PYTHONPATH=$(top_srcdir)/test/python
+	PYTHONPATH=$(top_srcdir)/test/python \
+	MALLOC_CHECK_=2 \
+	MALLOC_PERTURB_=$$((RANDOM % 255))
 
 tests: check
 
