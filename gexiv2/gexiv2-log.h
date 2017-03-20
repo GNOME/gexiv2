@@ -14,17 +14,12 @@
 
 G_BEGIN_DECLS
 
-/**
- * GExiv2LogLevel:
- *
- * Log levels
- */
 typedef enum {
-	GEXIV2_LOG_LEVEL_DEBUG	= 0,
-	GEXIV2_LOG_LEVEL_INFO	= 1,
-	GEXIV2_LOG_LEVEL_WARN	= 2,
-	GEXIV2_LOG_LEVEL_ERROR	= 3,
-	GEXIV2_LOG_LEVEL_MUTE	= 4
+    GEXIV2_LOG_LEVEL_DEBUG = 0,
+    GEXIV2_LOG_LEVEL_INFO  = 1,
+    GEXIV2_LOG_LEVEL_WARN  = 2,
+    GEXIV2_LOG_LEVEL_ERROR = 3,
+    GEXIV2_LOG_LEVEL_MUTE  = 4
 } GExiv2LogLevel;
 
 /**
@@ -32,7 +27,7 @@ typedef enum {
  * @level: The #GExiv2LogLevel for the particular message
  * @msg: (in): The log message
  *
- * The log handler can be set by #gexiv2_log_set_handler.  When set, the log handler will receive
+ * The log handler can be set by gexiv2_log_set_handler().  When set, the log handler will receive
  * all log messages emitted by Exiv2 and gexiv2.  It's up to the handler to decide where (and if)
  * the images are displayed or stored.
  */

@@ -14,6 +14,17 @@
  * @short: FOo
  */
 
+/**
+ * GExiv2LogLevel:
+ * @GEXIV2_LOG_LEVEL_DEBUG: Log level for debugging
+ * @GEXIV2_LOG_LEVEL_INFO: Log level for informational messages
+ * @GEXIV2_LOG_LEVEL_WARN: Log level for warning messages
+ * @GEXIV2_LOG_LEVEL_ERROR: Log level for error messages
+ * @GEXIV2_LOG_LEVEL_MUTE: Suppress all log messages
+ *
+ * GExiv2 log levels
+ */
+
 G_BEGIN_DECLS
 
 static GExiv2LogHandler installed_handler = NULL;
