@@ -27,7 +27,7 @@ SCAN_OPTIONS=
 
 # Extra options to supply to gtkdoc-mkdb
 # e.g. MKDB_OPTIONS=--xml-mode --output-format=xml
-MKDB_OPTIONS=--xml-mode --output-format=xml --source-suffixes=h,c,cpp
+MKDB_OPTIONS=--xml-mode --output-format=xml --source-suffixes=h,c
 
 # Extra options to supply to gtkdoc-mkhtml
 MKHTML_OPTIONS=

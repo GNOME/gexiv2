@@ -14,6 +14,16 @@
 
 G_BEGIN_DECLS
 
+/**
+ * GExiv2LogLevel:
+ * @GEXIV2_LOG_LEVEL_DEBUG: Log level for debugging
+ * @GEXIV2_LOG_LEVEL_INFO: Log level for informational messages
+ * @GEXIV2_LOG_LEVEL_WARN: Log level for warning messages
+ * @GEXIV2_LOG_LEVEL_ERROR: Log level for error messages
+ * @GEXIV2_LOG_LEVEL_MUTE: Suppress all log messages
+ *
+ * GExiv2 log levels
+ */
 typedef enum {
     GEXIV2_LOG_LEVEL_DEBUG = 0,
     GEXIV2_LOG_LEVEL_INFO  = 1,
