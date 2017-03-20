@@ -7,8 +7,8 @@
  * This is free software. See COPYING for details.
  */
 
-#ifndef __GEXIV2_METADATA_PRIVATE_H__
-#define __GEXIV2_METADATA_PRIVATE_H__
+#ifndef GEXIV2_METADATA_PRIVATE_H
+#define GEXIV2_METADATA_PRIVATE_H
 
 #include <gexiv2/gexiv2-metadata.h>
 #include <exiv2/image.hpp>
@@ -89,4 +89,4 @@ G_GNUC_INTERNAL GBytes*			gexiv2_metadata_get_iptc_tag_raw	(GExiv2Metadata *self
 
 G_END_DECLS
 
-#endif /* __GEXIV2_METADATA_PRIVATE_H__ */
+#endif /* GEXIV2_METADATA_PRIVATE_H */

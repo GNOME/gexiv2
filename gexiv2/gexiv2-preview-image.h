@@ -7,8 +7,8 @@
  * This is free software. See COPYING for details.
  */
 
-#ifndef __GEXIV2_PREVIEW_IMAGE_H__
-#define __GEXIV2_PREVIEW_IMAGE_H__
+#ifndef GEXIV2_PREVIEW_IMAGE_H
+#define GEXIV2_PREVIEW_IMAGE_H
 
 #include <glib-object.h>
 #include <gio/gio.h>
@@ -122,5 +122,5 @@ glong			gexiv2_preview_image_write_file			(GExiv2PreviewImage *self, const gchar
 
 G_END_DECLS
 
-#endif /* __GEXIV2_PREVIEW_IMAGE_H__ */
+#endif /* GEXIV2_PREVIEW_IMAGE_H */
 

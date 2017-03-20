@@ -12,8 +12,8 @@
  * ManagedStream to exiv2.
  */
 
-#ifndef __GEXIV2_STREAM_IO_H__
-#define __GEXIV2_STREAM_IO_H__
+#ifndef GEXIV2_STREAM_IO_H
+#define GEXIV2_STREAM_IO_H
 
 #include <gexiv2/gexiv2-managed-stream.h>
 #include <exiv2/basicio.hpp>
@@ -67,5 +67,5 @@ private:
 };
 
 
-#endif /* __GEXIV2_STREAM_IO_H__ */
+#endif /* GEXIV2_STREAM_IO_H */
 

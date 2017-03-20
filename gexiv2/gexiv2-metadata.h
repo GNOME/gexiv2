@@ -8,8 +8,8 @@
  * This is free software. See COPYING for details.
  */
 
-#ifndef __GEXIV2_METADATA_H__
-#define __GEXIV2_METADATA_H__
+#ifndef GEXIV2_METADATA_H
+#define GEXIV2_METADATA_H
 
 #include <glib-object.h>
 #include <gio/gio.h>
@@ -893,5 +893,5 @@ GExiv2PreviewImage* gexiv2_metadata_get_preview_image		(GExiv2Metadata *self, GE
 
 G_END_DECLS
 
-#endif /* __GEXIV2_METADATA_H__ */
+#endif /* GEXIV2_METADATA_H */
 

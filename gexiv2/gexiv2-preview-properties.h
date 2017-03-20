@@ -7,8 +7,8 @@
  * This is free software. See COPYING for details.
  */
 
-#ifndef __GEXIV2_PREVIEW_PROPERTIES_H__
-#define __GEXIV2_PREVIEW_PROPERTIES_H__
+#ifndef GEXIV2_PREVIEW_PROPERTIES_H
+#define GEXIV2_PREVIEW_PROPERTIES_H
 
 #include <glib-object.h>
 #include <gio/gio.h>
@@ -101,5 +101,5 @@ guint32			gexiv2_preview_properties_get_height		(GExiv2PreviewProperties *self);
 
 G_END_DECLS
 
-#endif /* __GEXIV2_PREVIEW_PROPERTIES_H__ */
+#endif /* GEXIV2_PREVIEW_PROPERTIES_H */
 

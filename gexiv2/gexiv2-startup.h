@@ -7,8 +7,8 @@
  * This is free software. See COPYING for details.
  */
 
-#ifndef __GEXIV2_STARTUP_H__
-#define __GEXIV2_STARTUP_H__
+#ifndef GEXIV2_STARTUP_H
+#define GEXIV2_STARTUP_H
 
 #include <glib-object.h>
 

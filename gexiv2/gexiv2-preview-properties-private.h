@@ -7,8 +7,8 @@
  * This is free software. See COPYING for details.
  */
 
-#ifndef __GEXIV2_PREVIEW_PROPERTIES_PRIVATE_H__
-#define __GEXIV2_PREVIEW_PROPERTIES_PRIVATE_H__
+#ifndef GEXIV2_PREVIEW_PROPERTIES_PRIVATE_H
+#define GEXIV2_PREVIEW_PROPERTIES_PRIVATE_H
 
 #include <gexiv2/gexiv2-preview-properties.h>
 #include <exiv2/preview.hpp>
@@ -26,4 +26,4 @@ G_GNUC_INTERNAL void gexiv2_preview_properties_free(GExiv2PreviewProperties *sel
 
 G_END_DECLS
 
-#endif /* __GEXIV2_PREVIEW_PROPERTIES_PRIVATE_H__ */
+#endif /* GEXIV2_PREVIEW_PROPERTIES_PRIVATE_H */

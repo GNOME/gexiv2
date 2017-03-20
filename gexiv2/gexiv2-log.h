@@ -7,8 +7,8 @@
  * This is free software. See COPYING for details.
  */
 
-#ifndef __GEXIV2_LOG_H__
-#define __GEXIV2_LOG_H__
+#ifndef GEXIV2_LOG_H
+#define GEXIV2_LOG_H
 
 #include <glib.h>
 
@@ -97,4 +97,4 @@ void				gexiv2_log_use_glib_logging(void);
 
 G_END_DECLS
 
-#endif /* __GEXIV2_LOG_H__ */
+#endif /* GEXIV2_LOG_H */
