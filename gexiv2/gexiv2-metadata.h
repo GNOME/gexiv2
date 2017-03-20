@@ -39,17 +39,28 @@ G_BEGIN_DECLS
 	
 
 /**
- * Gexiv2Orientation:
+ * GExiv2Orientation:
+ * @GEXIV2_ORIENTATION_UNSPECIFIED: The orientation of the image is unknown
+ * @GEXIV2_ORIENTATION_NORMAL: The orientation of the image is without any rotation.
+ * @GEXIV2_ORIENTATION_HFLIP: The image is flipped on its horizontal axis
+ * @GEXIV2_ORIENTATION_ROT_180: The image is rotated by 180 degrees
+ * @GEXIV2_ORIENTATION_VFLIP: The Image is flipped on its vertical axis
+ * @GEXIV2_ORIENTATION_ROT_90_HFLIP: The image is rotated by 90 degrees clockwise and flipped on its horizontal axis
+ * @GEXIV2_ORIENTATION_ROT_90: The image is rotated by 90 degrees clockwise
+ * @GEXIV2_ORIENTATION_ROT_90_VFLIP: The image is rotated by 90 degrees clockwise and flipped on its vertical axis
+ * @GEXIV2_ORIENTATION_ROT_270: The image is rotated 270 degrees clockwise
  *
  * The orientation of an image is defined as the location of it's x,y origin.  More than rotation,
  * orientation allows for every variation of rotation, flips, and mirroring to be described in
  * 3 bits of data.
  *
- * A handy primer to Orientation can be found at
+ * A handy primer to orientation can be found at
  * <ulink url="http://jpegclub.org/exif_orientation.html"></ulink>
  */
 typedef enum {
+    /*<private>*/
 	GEXIV2_ORIENTATION_MIN			= 0,
+    /*<public>*/
 	GEXIV2_ORIENTATION_UNSPECIFIED	= 0,
 	GEXIV2_ORIENTATION_NORMAL		= 1,
 	GEXIV2_ORIENTATION_HFLIP		= 2,
@@ -59,9 +70,20 @@ typedef enum {
 	GEXIV2_ORIENTATION_ROT_90		= 6,
 	GEXIV2_ORIENTATION_ROT_90_VFLIP	= 7,
 	GEXIV2_ORIENTATION_ROT_270		= 8,
+    /*<private>*/
 	GEXIV2_ORIENTATION_MAX			= 8
 } GExiv2Orientation;
 
+/**
+ * GExiv2StructureType:
+ * @GEXIV2_STRUCTURE_XA_NONE: Structure is not an array
+ * @GEXIV2_STRUCTURE_XA_ALT: A list of alternative values
+ * @GEXIV2_STRUCTURE_XA_BAG: An unordered list of values
+ * @GEXIV2_STRUCTURE_XA_SEQ: An ordered list of values
+ * @GEXIV2_STRUCTURE_XA_LANG: Not supported. For completeness only
+ *
+ * Used in gexiv2_metadata_set_xmp_tag_struct() to determine the array type
+ */
 typedef enum {
   GEXIV2_STRUCTURE_XA_NONE = 0,
   GEXIV2_STRUCTURE_XA_ALT  = 20,
