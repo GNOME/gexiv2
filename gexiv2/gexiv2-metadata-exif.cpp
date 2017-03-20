@@ -251,6 +251,10 @@ gdouble gexiv2_metadata_get_exif_tag_rational_as_double (GExiv2Metadata *self, c
     if (!gexiv2_metadata_get_exif_tag_rational(self, tag, &nom, &den))
         return def;
     
+    if (nom == 0.0) {
+        return 0.0;
+    }
+
     return (den != 0.0) ? (double) nom / (double) den : def;
 }
 
