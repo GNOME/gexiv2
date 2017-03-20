@@ -1,3 +1,27 @@
+gexiv2 0.10.5 - 20 March 2017
+
+  * Fix autogen.sh to also run configure
+  * Generate gtk-doc and various documentation updates
+  * Fix an abort on unhandled Minolta meta-data
+  * Fix compilation issues with shadowing variables in StreamIO
+  * Fix GPS rational calculations if fraction has 0 numerator and denominator
+  * Several build cleanups
+  * Add make check to build and run the python tests
+  * Add C tests
+
+Bugs fixed in this release:
+ - https://bugzilla.gnome.org/show_bug.cgi?id=723790
+ - https://bugzilla.gnome.org/show_bug.cgi?id=774105
+ - https://bugzilla.gnome.org/show_bug.cgi?id=775249
+ - https://bugzilla.gnome.org/show_bug.cgi?id=776233
+ - https://bugzilla.gnome.org/show_bug.cgi?id=779089
+ - https://bugzilla.gnome.org/show_bug.cgi?id=779551
+ - https://bugzilla.redhat.com/show_bug.cgi?id=1401706
+
+All contributors to this release:
+ - Jens Georg <mail@jensge.org>
+ - Pablo Castellano <pablo@anche.no>
+
 gexiv2 0.10.4 - 15 August 2016
 ------------------------------
 

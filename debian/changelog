@@ -1,3 +1,16 @@
+gexiv2 (0.10.5-0~jensge1~xenial4) xenial; urgency=medium
+
+  * Fix autogen.sh to also run configure
+  * Generate gtk-doc and various documentation updates
+  * Fix an abort on unhandled Minolta meta-data
+  * Fix compilation issues with shadowing variables in StreamIO
+  * Fix GPS rational calculations if fraction has 0 numerator and denominator
+  * Several build cleanups
+  * Add make check to build and run the python tests
+  * Add C tests
+
+ -- Jens Georg <mail@jensge.org>  Mon, 20 Mar 2017 12:23:32 +0100
+
 gexiv2 (0.10.4-0~jensge1~xenial4) xenial; urgency=medium
 
   * Additions to get_comment based on MWG guidelines (#746424)
