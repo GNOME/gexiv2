@@ -9,11 +9,6 @@
 
 #include "gexiv2-log-private.h"
 
-/**
- * SECTION:gexiv2-log
- * @short: FOo
- */
-
 G_BEGIN_DECLS
 
 static GExiv2LogHandler installed_handler = NULL;

@@ -17,6 +17,50 @@
 #include <gexiv2/gexiv2-preview-properties.h>
 #include <gexiv2/gexiv2-preview-image.h>
 
+/**
+ * SECTION: gexiv2-metadata
+ * @short_description: Class to handle the various image metadata standards
+ *
+ * #GExiv2Metadata is a generic object that provides everything from simple
+ * aggregated accessors to common data such as image comments up to
+ * fine-grained access to specifig tags of a specific format, be it EXIF, IPTC
+ * or XMP
+ */
+
+/**
+ * SECTION: gexiv2-preview-image
+ * @short_description: Class describing preview images (or thumbnails) that
+ * are part of the metadata.
+ * @see_also: #GExiv2Metadata #GExiv2PreviewProperties
+ *
+ * #GExiv2PreviewImage is an accessor to the preview images contained in
+ * the image's metadata. This could be anything from a thumbnail to a
+ * full-sized camera development of a RAW image.
+ *
+ * The #GExiv2PreviewImage is obtained by calling gexiv2_metadata_get_preview_image()
+ * with an instance of #GExiv2PreviewProperties that are describing the image
+ * to be fetched.
+ * <informalexample><programlisting>
+ * GExiv2PreviewProperties **properties, **it;
+ * properts = it = gexiv2_metadata_get_preview_properties(metadata);
+ *
+ * while (*it) {
+ *   preview_image = gexiv2_metadata_get_preview_image(metadata, *it);
+ *   it++;
+ * }
+ * </programlisting></informalexample>
+ */
+
+/**
+ * SECTION: gexiv2-preview-properties
+ * @short_description: Class describing properties of a preview image
+ * @see_also: #GExiv2Metadata #GExiv2PreviewProperties
+ *
+ * Metadata can contain multiple preview images. #GExiv2PreviewProperties are
+ * used to describe the available image without the need of fetching the whole
+ * image from the metadta.
+ */
+
 G_BEGIN_DECLS
 
 #define GEXIV2_TYPE_METADATA \
@@ -347,7 +391,9 @@ const gchar*	gexiv2_metadata_get_tag_type	(const gchar *tag);
  * gexiv2_metadata_get_supports_exif:
  * @self: An instance of #GExiv2Metadata
  *
- * Returns: TRUE if the loaded image type supports writing EXIF metadata.
+ * Query @self whehter it suports writing EXIF metadata.
+ *
+ * Returns: %TRUE if the loaded image type supports writing EXIF metadata.
  */
 gboolean		gexiv2_metadata_get_supports_exif	(GExiv2Metadata *self);
 
@@ -355,7 +401,9 @@ gboolean		gexiv2_metadata_get_supports_exif	(GExiv2Metadata *self);
  * gexiv2_metadata_get_supports_iptc:
  * @self: An instance of #GExiv2Metadata
  *
- * Returns: TRUE if the loaded image type supports writing IPTC metadata.
+ * Query @self whether it supports writing IPTC metadata.
+ *
+ * Returns: %TRUE if the loaded image type supports writing IPTC metadata.
  */
 gboolean		gexiv2_metadata_get_supports_iptc	(GExiv2Metadata *self);
 
@@ -363,14 +411,19 @@ gboolean		gexiv2_metadata_get_supports_iptc	(GExiv2Metadata *self);
  * gexiv2_metadata_get_supports_xmp:
  * @self: An instance of #GExiv2Metadata
  *
- * Returns: TRUE if the loaded image type supports writing XMP metadata.
+ * Query @self whether it supports writing XMP metadata.
+ *
+ * Returns: %TRUE if the loaded image type supports writing XMP metadata.
  */
 gboolean		gexiv2_metadata_get_supports_xmp	(GExiv2Metadata *self);
 
 /**
- * gexiv2_get_mime_type:
+ * gexiv2_metadata_get_mime_type:
+ * @self: An instance of #GExiv2Metadata
  *
- * Returns: (transfer none): The MIME type of the loaded image, NULL if not loaded or unknown.
+ * Query mime type of currently loaded image.
+ *
+ * Returns: (transfer none): The MIME type of the loaded image, %NULL if not loaded or unknown.
  */
 const gchar*	gexiv2_metadata_get_mime_type		(GExiv2Metadata *self);
 
@@ -378,8 +431,11 @@ const gchar*	gexiv2_metadata_get_mime_type		(GExiv2Metadata *self);
  * gexiv2_metadata_get_pixel_width:
  * @self: An instance of #GExiv2Metadata
  *
- * Returns: The <em>actual</em> unoriented display width in pixels of the loaded image.  This may be
- * different than the width reported by various metadata tags, i.e. "Exif.Photo.PixelXDimension".
+ * Get the <emphasis>actual</emphasis> unoriented display width in pixels of the loaded
+ * image. May be different than the width reported by various metadata tags,
+ * i.e. "Exif.Photo.PixelXDimension".
+ *
+ * Returns: Pixel width of current image
  */
 gint			gexiv2_metadata_get_pixel_width		(GExiv2Metadata *self);
 
@@ -387,8 +443,10 @@ gint			gexiv2_metadata_get_pixel_width		(GExiv2Metadata *self);
  * gexiv2_metadata_get_pixel_height:
  * @self: An instance of #GExiv2Metadata
  *
- * Returns: The <em>actual</em> unoriented display height in pixels of the loaded image.  This may
+ * Get the <emphasis>actual</emphasis> unoriented display height in pixels of the loaded image.  This may
  * be different than the height reported by various metadata tags, i.e. "Exif.Photo.PixelYDimension".
+ *
+ * Returns: Pixel height of current image
  */
 gint			gexiv2_metadata_get_pixel_height	(GExiv2Metadata *self);
 
@@ -524,6 +582,8 @@ void			gexiv2_metadata_clear_exif			(GExiv2Metadata *self);
  * gexiv2_metadata_get_exif_tags:
  * @self: An instance of #GExiv2Metadata
  *
+ * Query @self for a list of available EXIF tags
+ *
  * Returns: (transfer full) (array zero-terminated=1): A list of the available EXIF tags in the
  * loaded image
  */
@@ -536,6 +596,9 @@ gchar**			gexiv2_metadata_get_exif_tags		(GExiv2Metadata *self);
  * @nom: (out): The numerator
  * @den: (out): The denominator
  *
+ * Fetch EXIF @tag represented by a fraction. @nom will contian the numerator,
+ * @den the denominator of the fraction on successful return.
+ *
  * Returns: (skip): Boolean success value
  */
 gboolean		gexiv2_metadata_get_exif_tag_rational (GExiv2Metadata *self, const gchar* tag, gint* nom, gint* den);
@@ -547,6 +610,9 @@ gboolean		gexiv2_metadata_get_exif_tag_rational (GExiv2Metadata *self, const gch
  * @nom: Rational numerator
  * @den: Rational denominator
  *
+ * Set EXIF @tag represented by a fraction, with @nom being the numerator,
+ * @den the denominator of the fraction.
+ *
  * Returns: (skip): Boolean success value
  */
 gboolean		gexiv2_metadata_set_exif_tag_rational (GExiv2Metadata *self, const gchar* tag, gint nom, gint den);
@@ -556,6 +622,8 @@ gboolean		gexiv2_metadata_set_exif_tag_rational (GExiv2Metadata *self, const gch
  * @self: An instance of #GExiv2Metadata
  * @buffer: (out) (array length=size) (transfer full): Where to store the thumbnail data
  * @size: (skip): Size of the thumbnail's buffer
+ *
+ * Get the thumbnail stored in the EXIF data of @self
  *
  * Returns: (skip): Boolean success value
  */
@@ -616,7 +684,9 @@ void			gexiv2_metadata_clear_xmp			(GExiv2Metadata *self);
  * @xmp_format_flags: One of #GExiv2XmpFormatFlags
  * @padding: The padding (FIXME: Add documentation)
  *
- * Returns: (transfer full) (allow-none): Encode the XMP packet and return as a NUL-terminated string.
+ * Encode the XMP packet as a %NULL-terminated string.
+ *
+ * Returns: (transfer full) (allow-none): Encode the XMP packet and return as a %NULL-terminated string.
  */
 gchar*		gexiv2_metadata_generate_xmp_packet	(GExiv2Metadata *self, GExiv2XmpFormatFlags xmp_format_flags, guint32 padding);
 
@@ -680,6 +750,8 @@ void			gexiv2_metadata_clear_iptc			(GExiv2Metadata *self);
  * gexiv2_metadata_get_iptc_tags:
  * @self: An instance of #GExiv2Metadata
  *
+ * Query @self for a list of available IPTC tags
+ *
  * Returns: (transfer full) (array zero-terminated=1): A list of the available IPTC tags
  */
 gchar**			gexiv2_metadata_get_iptc_tags		(GExiv2Metadata *self);
@@ -692,7 +764,10 @@ gchar**			gexiv2_metadata_get_iptc_tags		(GExiv2Metadata *self);
  * gexiv2_metadata_get_orientation:
  * @self: An instance of #GExiv2Metadata
  *
- * Returns: The EXIF Orientation field.
+ * The EXIF Orientation field
+ *
+ * Returns: A #GExiv2Orientation value representing the EXIF orientation
+ * value.
  */
 GExiv2Orientation gexiv2_metadata_get_orientation 	(GExiv2Metadata *self);
 
@@ -705,9 +780,46 @@ GExiv2Orientation gexiv2_metadata_get_orientation 	(GExiv2Metadata *self);
  */
 void			gexiv2_metadata_set_orientation		(GExiv2Metadata *self, GExiv2Orientation orientation);
 
+/**
+ * gexiv2_metadata_get_metadata_pixel_width:
+ * @self: An instance of #GExiv2Metadata
+ *
+ * Composite accessor to query the pixel with stored in the metadata. This
+ * might differ from the width of image that is available through
+ * gexiv2_metadata_get_pixel_width()
+ *
+ * Returns: Width of images in pixels as stored in the metadata
+ */
 gint gexiv2_metadata_get_metadata_pixel_width (GExiv2Metadata *self);
+
+/**
+ * gexiv2_metadata_get_metadata_pixel_height:
+ * @self: An instance of #GExiv2Metadata
+ *
+ * Composite accessor to query the pixel with stored in the metadata. This
+ * might differ from the height of image that is available through
+ * gexiv2_metadata_get_pixel_height()
+ *
+ * Returns: Height of images in pixels as stored in the metadata
+ */
 gint gexiv2_metadata_get_metadata_pixel_height (GExiv2Metadata *self);
+
+/**
+ * gexiv2_metadata_set_metadata_pixel_width:
+ * @self: An instance of #GExiv2Metadata
+ * @width: The width of the image as it should be put into the metadta.
+ *
+ * Composite setter to update the image's metadata with @width
+ */
 void gexiv2_metadata_set_metadata_pixel_width (GExiv2Metadata *self, gint width);
+
+/**
+ * gexiv2_metadata_set_metadata_pixel_height:
+ * @self: An instance of #GExiv2Metadata
+ * @height: The width of the image as it should be put into the metadta.
+ *
+ * Update the image's metadata with @height
+ */
 void gexiv2_metadata_set_metadata_pixel_height (GExiv2Metadata *self, gint height);
 
 /**
@@ -717,7 +829,7 @@ void gexiv2_metadata_set_metadata_pixel_height (GExiv2Metadata *self, gint heigh
  * A composite accessor that uses the first available metadata field from a list of well-known
  * locations to find the photo's comment (or description).  
  *
- * MWG guidelines refer to these as <em>Description</em>: a textual description of a resource's content.
+ * MWG guidelines refer to these as <emphasis>Description</emphasis>: a textual description of a resource's content.
  * 
  * These fields are:
  *
@@ -728,10 +840,10 @@ void gexiv2_metadata_set_metadata_pixel_height (GExiv2Metadata *self, gint heigh
  * - Xmp.dc.description           (MWG Guidelines)
  * - Xmp.acdsee.notes             (Commonly requested, read only)
  *
- * <note><para>that in the EXIF specification Exif.Image.ImageDescription is
+ * <note>Note that in the EXIF specification Exif.Image.ImageDescription is
  * described  as "the title of the image".  Also, it does not support
  * two-byte character codes for encoding.  However, it's still used here for legacy reasons.
- * </para></note>
+ * </note>
  *
  * For fine-grained control, it's recommened to use Exiv2 tags directly rather than this method,
  * which is more useful for quick or casual use.
@@ -765,7 +877,7 @@ void			gexiv2_metadata_clear_comment		(GExiv2Metadata *self);
  * @nom: (out): The numerator
  * @den: (out): The denominator
  *
- * Returns the exposure time in seconds (shutter speed, <em>not</em> date-time of exposure) as a
+ * Returns the exposure time in seconds (shutter speed, <emphasis>not</emphasis> date-time of exposure) as a
  * rational.  See <ulink url="https://en.wikipedia.org/wiki/Shutter_speed"></ulink> for more information.
  *
  * Returns: (skip): Boolean success value
@@ -811,6 +923,8 @@ gint			gexiv2_metadata_get_iso_speed		(GExiv2Metadata *self);
  * @self: An instance of #GExiv2Metadata
  * @longitude: (out): Variable to store the longitude value
  *
+ * Query the longitude stored in the GPS tags of @self
+ *
  * Returns: (skip): Boolean success value
  */
 gboolean		gexiv2_metadata_get_gps_longitude			(GExiv2Metadata *self, gdouble *longitude);
@@ -820,6 +934,8 @@ gboolean		gexiv2_metadata_get_gps_longitude			(GExiv2Metadata *self, gdouble *lo
  * @self: An instance of #GExiv2Metadata
  * @latitude: (out): Variable to store the latitude value
  *
+ * Query the latitude stored in the GPS tags of @self
+ *
  * Returns: (skip): Boolean success value
  */
 gboolean		gexiv2_metadata_get_gps_latitude			(GExiv2Metadata *self, gdouble *latitude);
@@ -828,6 +944,9 @@ gboolean		gexiv2_metadata_get_gps_latitude			(GExiv2Metadata *self, gdouble *lat
  * gexiv2_metadata_get_gps_altitude:
  * @self: An instance of #GExiv2Metadata
  * @altitude: (out): Variable to store the altitude value
+ *
+ * Convenience functon to query the altitude stored in the GPS tags of the
+ * image
  *
  * Returns: (skip): Boolean success value
  */
@@ -840,6 +959,8 @@ gboolean		gexiv2_metadata_get_gps_altitude			(GExiv2Metadata *self, gdouble *alt
  * @latitude: (out): Storage for latitude value
  * @altitude: (out): Storage for altitude value
  *
+ * Convenience functon to query all available GPS information at once.
+ *
  * Returns: (skip): Boolean success value.
  */
 gboolean		gexiv2_metadata_get_gps_info				(GExiv2Metadata *self, gdouble *longitude, gdouble *latitude, gdouble *altitude);
@@ -850,6 +971,8 @@ gboolean		gexiv2_metadata_get_gps_info				(GExiv2Metadata *self, gdouble *longit
  * @longitude: Longitude value to set or replace current value
  * @latitude: Latitude value to set or replace current value
  * @altitude: Altitude value to set or replace current value
+ *
+ * Convenience functon to query all available GPS information at once.
  *
  * Returns: (skip): Boolean success value.
  */

@@ -12,6 +12,16 @@
 
 #include <glib.h>
 
+/**
+ * SECTION:gexiv2-log
+ * @title: Logging functionality
+ * @short_description: Utility functions related to GExiv2's and Exiv2's logging.
+ *
+ * The functions in this modules can be used do configure the log level of
+ * GExiv2 and Exiv2 in terms of what to log (see gexiv2_log_set_level()) and
+ * how. Either a custom log handler can be used or GLib's logging mechanisms.
+ */
+
 G_BEGIN_DECLS
 
 /**
@@ -86,11 +96,11 @@ void				gexiv2_log_set_handler(GExiv2LogHandler handler);
  * gexiv2_log_use_glib_logging:
  *
  * When called, gexiv2 will install it's own #GExiv2LogHandler which redirects all Exiv2 and gexiv2
- * log messages to GLib's logging calls (g_debug, g_message, g_warning, and g_critical for the
+ * log messages to GLib's logging calls (g_debug(), g_message(), g_warning(), and g_critical() for the
  * respective #GExiv2LogLevel value).  #GEXIV2_LOG_LEVEL_MUTE logs are dropped.
  *
  * One advantage to using this is that GLib's logging control and handlers can be used rather than
- * gexiv2's ad hoc scheme.  It also means an application can use GLib logging and have all its
+ * GExiv2's ad hoc scheme.  It also means an application can use GLib logging and have all its
  * messages routed through the same calls.
  */
 void				gexiv2_log_use_glib_logging(void);

@@ -197,6 +197,17 @@ gboolean gexiv2_metadata_set_exif_tag_long (GExiv2Metadata *self, const gchar* t
     return FALSE;
 }
 
+/**
+ * gexiv2_metadata_get_exif_tag_rational:
+ * @self: An instance of #GExiv2Metadata
+ * @tag: Name of the tag to fetch
+ * @nom: (out): Return value for the nominator of the rational value of @tag
+ * @den: (out): Return location for the denominator of the rational value of @tag
+ *
+ * Get an Exif tag that is stored as a fraction
+ *
+ * Returns: %TRUE on success, %FALSE otherwise.
+ */
 gboolean gexiv2_metadata_get_exif_tag_rational (GExiv2Metadata *self, const gchar* tag, gint* nom,
     gint* den) {
     g_return_val_if_fail(GEXIV2_IS_METADATA (self), FALSE);
@@ -226,6 +237,17 @@ gboolean gexiv2_metadata_get_exif_tag_rational (GExiv2Metadata *self, const gcha
     return FALSE;
 }
 
+/**
+ * gexiv2_metadata_set_exif_tag_rational:
+ * @self: An instance of #GExiv2Metadata
+ * @tag: Name of the tag to fetch
+ * @nom: The nominator of the rational value of @tag
+ * @den: The denominator of the rational value of @tag
+ *
+ * Set an Exif tag that is stored as a fraction
+ *
+ * Returns: %TRUE on success, %FALSE otherwise.
+ */
 gboolean gexiv2_metadata_set_exif_tag_rational (GExiv2Metadata *self, const gchar* tag, gint nom, 
     gint den) {
     g_return_val_if_fail(GEXIV2_IS_METADATA (self), FALSE);
@@ -246,6 +268,19 @@ gboolean gexiv2_metadata_set_exif_tag_rational (GExiv2Metadata *self, const gcha
     return FALSE;
 }
 
+/**
+ * gexiv2_metadata_get_exif_tag_rational_as_double:
+ * @self: An instance of #GExiv2Metadata
+ * @tag: Name of the tag to fetch
+ * @def: Default value that is returned in error case
+ *
+ * A convenience wrapper around gexiv2_metadata_get_exif_tag_rational() that
+ * will convert the fraction into a floating point number.
+ *
+ * Returns: 0.0 if the nominator of the fraction is 0.0, @def if the fraction
+ * would be a division by zero or the tag could not be read, the fraction as a
+ * floating point value otherwise.
+ */
 gdouble gexiv2_metadata_get_exif_tag_rational_as_double (GExiv2Metadata *self, const gchar* tag, gdouble def) {
     gint nom, den;
     if (!gexiv2_metadata_get_exif_tag_rational(self, tag, &nom, &den))
