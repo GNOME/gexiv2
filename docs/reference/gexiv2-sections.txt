@@ -11,21 +11,6 @@ gexiv2_log_use_glib_logging
 </SECTION>
 
 <SECTION>
-<FILE>gexiv2-managed-stream</FILE>
-WrapperSeekOrigin
-Stream_CanSeek
-Stream_CanRead
-Stream_CanWrite
-Stream_Length
-Stream_Position
-Stream_Read
-Stream_Write
-Stream_Seek
-Stream_Flush
-ManagedStreamCallbacks
-</SECTION>
-
-<SECTION>
 <FILE>gexiv2-metadata</FILE>
 <TITLE>GExiv2Metadata</TITLE>
 GExiv2Orientation
@@ -105,6 +90,17 @@ gexiv2_metadata_set_gps_info
 gexiv2_metadata_delete_gps_info
 gexiv2_metadata_get_preview_properties
 gexiv2_metadata_get_preview_image
+WrapperSeekOrigin
+Stream_CanSeek
+Stream_CanRead
+Stream_CanWrite
+Stream_Length
+Stream_Position
+Stream_Read
+Stream_Write
+Stream_Seek
+Stream_Flush
+ManagedStreamCallbacks
 <SUBSECTION Standard>
 GEXIV2_IS_METADATA
 GEXIV2_IS_METADATA_CLASS
