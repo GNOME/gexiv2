@@ -12,6 +12,7 @@
 #include "gexiv2-metadata-private.h"
 #include <string>
 #include <cmath>
+#include <stdexcept>
 #include <stdio.h>
 #include <glib-object.h>
 #include <exiv2/exif.hpp>
@@ -26,7 +27,7 @@ static double convert_rational(const Exiv2::Rational& r) {
     }
 
     if (r.second == 0) {
-        throw std::overflow_error("Invalid fraction");
+        throw std::invalid_argument("Invalid fraction");
     }
 
     double num = static_cast<double>(r.first);
