@@ -267,6 +267,21 @@ gboolean		gexiv2_metadata_open_stream			(GExiv2Metadata *self, ManagedStreamCall
 gboolean		gexiv2_metadata_from_app1_segment	(GExiv2Metadata *self, const guint8 *data, glong n_data, GError **error);
 
 /**
+ * gexiv2_metadata_save_external:
+ * @self: An instance of #GExiv2Metadata
+ * @path: Path to the file you want to save to.
+ * @error: (allow-none): A return location for a #GError or %NULL
+ *
+ * Saves the metadata to the specified using an XMP sidecar file.
+ *
+ * Returns: Boolean success indicator.
+ *
+ * Since: 0.10.6
+ */
+gboolean		gexiv2_metadata_save_external			(GExiv2Metadata *self, const gchar *path, GError **error);
+
+
+/**
  * gexiv2_metadata_save_file:
  * @self: An instance of #GExiv2Metadata
  * @path: Path to the file you want to save to.

@@ -22,6 +22,7 @@
 #include <glib-object.h>
 #include <gio/gio.h>
 #include <exiv2/image.hpp>
+#include <exiv2/xmpsidecar.hpp>
 #include <exiv2/exif.hpp>
 #include <exiv2/iptc.hpp>
 #include <exiv2/xmp.hpp>
@@ -309,6 +310,18 @@ static gboolean gexiv2_metadata_save_internal (GExiv2Metadata *self, Exiv2::Imag
     image->writeMetadata ();
     
     return TRUE;
+}
+
+gboolean gexiv2_metadata_save_external (GExiv2Metadata *self, const gchar *path, GError **error) {
+    g_return_val_if_fail (GEXIV2_IS_METADATA (self), FALSE);
+
+    try {
+        return gexiv2_metadata_save_internal (self, Exiv2::ImageFactory::create(Exiv2::ImageType::xmp, path), error);
+    } catch (Exiv2::Error &e) {
+        g_set_error_literal (error, g_quark_from_string ("GExiv2"), e.code (), e.what ());
+    }
+
+    return FALSE;
 }
 
 gboolean gexiv2_metadata_save_file (GExiv2Metadata *self, const gchar *path, GError **error) {
