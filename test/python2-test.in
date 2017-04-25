@@ -1,3 +1,4 @@
 #!/bin/bash
 
 @PYTHON2_PATH@ -m unittest gexiv2
+@PYTHON2_PATH@ -m unittest test_metadata

@@ -36,7 +36,7 @@ gi.require_version('GExiv2', '0.10')
 from gi.repository import GExiv2
 
 
-SAMPLES_DIR = os.path.join(os.path.dirname(__file__), '..')
+SAMPLES_DIR = os.path.join(os.path.dirname(__file__), '..', 'data')
 
 
 class TestGexiv2(unittest.TestCase):

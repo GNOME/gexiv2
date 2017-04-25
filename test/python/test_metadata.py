@@ -29,6 +29,8 @@ import unittest
 
 PY3K = sys.version_info[0] == 3
 
+import gi
+gi.require_version('GExiv2', '0.10')
 from gi.repository import GExiv2
 from fractions import Fraction
 
@@ -437,7 +439,7 @@ class TestMetadata(unittest.TestCase):
 
         self.assertEqual(
             results, [
-                (0, GExiv2.Orientation.MIN),
+                (0, GExiv2.Orientation.UNSPECIFIED),
                 (1, GExiv2.Orientation.NORMAL),
                 (2, GExiv2.Orientation.HFLIP),
                 (3, GExiv2.Orientation.ROT_180),
@@ -450,7 +452,7 @@ class TestMetadata(unittest.TestCase):
 
     def test_set_orientation(self):
         rotations = [
-            GExiv2.Orientation.MIN,
+            GExiv2.Orientation.UNSPECIFIED,
             GExiv2.Orientation.NORMAL,
             GExiv2.Orientation.HFLIP,
             GExiv2.Orientation.ROT_180,
@@ -529,11 +531,10 @@ class TestMetadata(unittest.TestCase):
             self.assertEqual(exposure, (10, 150))
 
     def test_get_fnumber(self):
-        #FIXME: WTF? 400 is the ISO, not the F number.
-        self.assertEqual(self.metadata.get_fnumber(), 400)
+        self.assertEqual(self.metadata.get_fnumber(), 4.7)
 
     def test_get_focal_length(self):
-        self.assertEqual(self.metadata.get_focal_length(), 13)
+        self.assertEqual(self.metadata.get_focal_length(), 13.8)
 
     def test_get_iso_speed(self):
         self.assertEqual(self.metadata.get_iso_speed(), 400)

@@ -34,9 +34,10 @@ LDADD = \
 	$(GLIB_LIBS) $(EXIV2_LIBS)
 AM_CFLAGS = \
 	$(GLIB_CFLAGS) $(EXIV2_CFLAGS) \
-	-I $(top_srcdir) -DSAMPLE_PATH="\"$(abs_top_srcdir)/test\""
+	-I $(top_srcdir) -DSAMPLE_PATH="\"$(abs_top_srcdir)/test/data\""
 
 EXTRA_DIST += \
-	test/sample-author-badencoding.jpg \
-	test/CaorVN.jpeg
+	test/data/sample-author-badencoding.jpg \
+	test/data/CaorVN.jpeg \
+	test/data/original.jpg
 
