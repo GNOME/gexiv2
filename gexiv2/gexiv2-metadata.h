@@ -870,10 +870,10 @@ gchar*			gexiv2_metadata_get_comment			(GExiv2Metadata *self);
 /**
  * gexiv2_metadata_set_comment:
  * @self: An instance of #GExiv2Metadata
- * @comment: Comment string to set
+ * @comment: Comment string to set. Must not be %NULL
  *
  * This is a composite setter that will set a number of fields to the supplied value.  See
- * #gexiv2_metadata_get_comment for more informtion.
+ * #gexiv2_metadata_get_comment for more information.
  */
 void			gexiv2_metadata_set_comment			(GExiv2Metadata *self, const gchar* comment);
 

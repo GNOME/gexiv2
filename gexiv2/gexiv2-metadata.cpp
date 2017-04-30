@@ -629,12 +629,13 @@ gchar* gexiv2_metadata_get_comment (GExiv2Metadata *self) {
 void gexiv2_metadata_set_comment (GExiv2Metadata *self, const gchar* comment) {
     g_return_if_fail(GEXIV2_IS_METADATA (self));
     g_return_if_fail(self->priv->image.get() != NULL);
+    g_return_if_fail(comment != NULL);
     
     Exiv2::ExifData& exif_data = self->priv->image->exifData();
     Exiv2::IptcData& iptc_data = self->priv->image->iptcData();
     Exiv2::XmpData& xmp_data = self->priv->image->xmpData();
     
-    gexiv2_metadata_set_comment_internal (self, (comment != NULL) ? comment : "");
+    gexiv2_metadata_set_comment_internal (self, comment);
     exif_data ["Exif.Image.ImageDescription"] = comment;
     exif_data ["Exif.Photo.UserComment"] = comment;
     exif_data ["Exif.Image.XPComment"] = comment;
