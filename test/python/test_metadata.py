@@ -40,11 +40,11 @@ class TestMetadata(unittest.TestCase):
 
     def setUp(self):
         self.metadata = GExiv2.Metadata()
-        self.metadata.open_path('tests/data/original.jpg')
+        self.metadata.open_path('test/data/original.jpg')
 
     def tearDown(self):
         try:
-            os.unlink('tests/data/withgps.jpg')
+            os.unlink('test/data/withgps.jpg')
         except Exception as e:
             if e.errno != errno.ENOENT:
                 raise
@@ -171,7 +171,7 @@ class TestMetadata(unittest.TestCase):
             self.assertIn(method, methods)
 
     def test_open_buf(self):
-        with open('tests/data/original.jpg', 'rb' if PY3K else 'r') as fd:
+        with open('test/data/original.jpg', 'rb' if PY3K else 'r') as fd:
             buf = fd.read()
         metadata = GExiv2.Metadata()
         metadata.open_buf(buf)
@@ -179,7 +179,7 @@ class TestMetadata(unittest.TestCase):
 
     def test_open_path(self):
         metadata = GExiv2.Metadata()
-        metadata.open_path('tests/data/original.jpg')
+        metadata.open_path('test/data/original.jpg')
         self.assertEqual(len(metadata.get_exif_tags()), 112)
 
     def test_get_tag_string(self):
@@ -609,12 +609,12 @@ generated the image. When the field is left blank, it is treated as unknown.""")
         self.assertEqual(len(thumb), 4534)
 
     def test_set_exif_thumbnail_from_file(self):
-        self.metadata.set_exif_thumbnail_from_file('tests/data/original.jpg')
+        self.metadata.set_exif_thumbnail_from_file('test/data/original.jpg')
         thumb = self.metadata.get_exif_thumbnail()
         self.assertEqual(len(thumb), 56080)
 
     def test_set_exif_thumbnail_from_buffer(self):
-        with open('tests/data/original.jpg', 'rb' if PY3K else 'r') as fd:
+        with open('test/data/original.jpg', 'rb' if PY3K else 'r') as fd:
             buf = fd.read()
         self.metadata.set_exif_thumbnail_from_buffer(buf)
         thumb = self.metadata.get_exif_thumbnail()
@@ -740,12 +740,12 @@ generated the image. When the field is left blank, it is treated as unknown.""")
             self.assertEqual(len(thumb.get_data()), nbytes.pop())
 
     def test_save_file(self):
-        shutil.copyfile('tests/data/original.jpg', 'tests/data/withgps.jpg')
+        shutil.copyfile('test/data/original.jpg', 'test/data/withgps.jpg')
         self.metadata.set_gps_info(12.5683371, 55.6760968, 42)
-        self.metadata.save_file('tests/data/withgps.jpg')
+        self.metadata.save_file('test/data/withgps.jpg')
 
         newfile = GExiv2.Metadata()
-        newfile.open_path('tests/data/withgps.jpg')
+        newfile.open_path('test/data/withgps.jpg')
         self.assertEqual(
             [(tag, newfile.get_tag_string(tag))
              for tag in newfile.get_exif_tags()
