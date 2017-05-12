@@ -25,6 +25,12 @@ public:
 
 	StreamIo (ManagedStreamCallbacks* cb);
 
+#if EXIV2_TEST_VERSION(0,26,0)
+    typedef size_t size_type;
+#else
+    typedef long size_type;
+#endif
+
 	virtual ~StreamIo ();
 	virtual int open ();
 	virtual int close ();
@@ -39,7 +45,7 @@ public:
 	virtual Exiv2::byte* mmap (bool isWriteable = false);
 	virtual int munmap ();
 	virtual long tell () const;
-	virtual long size () const;
+	virtual size_type size () const;
 	virtual bool isopen () const;
 	virtual int error () const;
 	virtual bool eof () const;

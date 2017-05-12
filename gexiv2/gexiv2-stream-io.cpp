@@ -142,7 +142,7 @@ long StreamIo::tell () const {
     return cb->Position (cb->handle);
 }
 
-long StreamIo::size () const {
+StreamIo::size_type StreamIo::size () const {
     return cb->Length (cb->handle);
 }
 
@@ -175,7 +175,7 @@ Exiv2::DataBuf StreamIo::read (long read_count) {
 
 long StreamIo::read (Exiv2::byte* buf, long read_count) {
     long total_read_bytes = 0;
-    
+
     while (read_count > total_read_bytes) {
         /* because of a marshalling problem on managed side, we shift the
            pointer and do NOT use the offset parameter */
