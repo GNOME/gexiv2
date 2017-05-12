@@ -1,3 +1,22 @@
+gexiv2 0.10.6 - 21 May 2017
+
+  * Fix missing include file
+  * Add a function to save meta-data in XMP sidecar file
+  * Add a more complete Python test-suite
+  * Fix a potential NULL dereference in _get_comment()
+  * Fix compatibility with Exiv2 0.26
+
+Bugs fixed in this release:
+ - Coverity issue CID 167853
+ - https://bugs.gentoo.org/show_bug.cgi?id=613778
+ - https://bugzilla.gnome.org/show_bug.cgi?id=712455
+ - https://bugzilla.gnome.org/show_bug.cgi?id=780709
+ - https://bugzilla.gnome.org/show_bug.cgi?id=782449
+
+All contributors to this release:
+ - Jens Georg <mail@jensge.org>
+ - Robert Bruce Park <r@robru.ca>
+
 gexiv2 0.10.5 - 20 March 2017
 
   * Fix autogen.sh to also run configure
