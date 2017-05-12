@@ -26,6 +26,7 @@ import sys
 import errno
 import shutil
 import unittest
+import tempfile
 
 PY3K = sys.version_info[0] == 3
 
@@ -38,16 +39,27 @@ from fractions import Fraction
 class TestMetadata(unittest.TestCase):
     maxDiff = None
 
+    DATADIR = os.getenv('TEST_DATA_DIR', default = os.path.join(os.path.dirname(__file__), '..', 'data'))
+
     def setUp(self):
         self.metadata = GExiv2.Metadata()
-        self.metadata.open_path('test/data/original.jpg')
+        self.metadata.open_path(self.get_input_file())
+        self.output_dir = tempfile.mkdtemp()
+        self.output_file = os.path.join(self.output_dir, 'withgps.jpg')
 
     def tearDown(self):
         try:
-            os.unlink('test/data/withgps.jpg')
+            os.remove(self.output_file)
+            os.rmdir(self.output_dir)
         except Exception as e:
             if e.errno != errno.ENOENT:
                 raise
+
+    def get_input_file(self):
+        return os.path.join(self.DATADIR, 'original.jpg')
+
+    def get_output_file(self):
+        return os.path.join(self.output_dir, self.output_file)
 
     def test_presence_of_expected_methods(self):
         metadata = GExiv2.Metadata()
@@ -171,7 +183,7 @@ class TestMetadata(unittest.TestCase):
             self.assertIn(method, methods)
 
     def test_open_buf(self):
-        with open('test/data/original.jpg', 'rb' if PY3K else 'r') as fd:
+        with open(self.get_input_file(), 'rb' if PY3K else 'r') as fd:
             buf = fd.read()
         metadata = GExiv2.Metadata()
         metadata.open_buf(buf)
@@ -179,7 +191,7 @@ class TestMetadata(unittest.TestCase):
 
     def test_open_path(self):
         metadata = GExiv2.Metadata()
-        metadata.open_path('test/data/original.jpg')
+        metadata.open_path(self.get_input_file())
         self.assertEqual(len(metadata.get_exif_tags()), 112)
 
     def test_get_tag_string(self):
@@ -609,12 +621,12 @@ generated the image. When the field is left blank, it is treated as unknown.""")
         self.assertEqual(len(thumb), 4534)
 
     def test_set_exif_thumbnail_from_file(self):
-        self.metadata.set_exif_thumbnail_from_file('test/data/original.jpg')
+        self.metadata.set_exif_thumbnail_from_file(self.get_input_file())
         thumb = self.metadata.get_exif_thumbnail()
         self.assertEqual(len(thumb), 56080)
 
     def test_set_exif_thumbnail_from_buffer(self):
-        with open('test/data/original.jpg', 'rb' if PY3K else 'r') as fd:
+        with open(self.get_input_file(), 'rb' if PY3K else 'r') as fd:
             buf = fd.read()
         self.metadata.set_exif_thumbnail_from_buffer(buf)
         thumb = self.metadata.get_exif_thumbnail()
@@ -740,12 +752,12 @@ generated the image. When the field is left blank, it is treated as unknown.""")
             self.assertEqual(len(thumb.get_data()), nbytes.pop())
 
     def test_save_file(self):
-        shutil.copyfile('test/data/original.jpg', 'test/data/withgps.jpg')
+        shutil.copyfile(self.get_input_file(), self.get_output_file())
         self.metadata.set_gps_info(12.5683371, 55.6760968, 42)
-        self.metadata.save_file('test/data/withgps.jpg')
+        self.metadata.save_file(self.get_output_file())
 
         newfile = GExiv2.Metadata()
-        newfile.open_path('test/data/withgps.jpg')
+        newfile.open_path(self.get_output_file())
         self.assertEqual(
             [(tag, newfile.get_tag_string(tag))
              for tag in newfile.get_exif_tags()

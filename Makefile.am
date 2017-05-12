@@ -24,9 +24,12 @@ EXTRA_DIST = \
 	@PACKAGE_NAME@.vapi		\
 	gexiv2/gexiv2-version.m4 \
 	$(TYPELIB_FILES) \
-	test/sample-author-badencoding.jpg \
+	test/data/sample-author-badencoding.jpg \
+	test/data/original.jpg \
+	test/data/CaorVN.jpeg \
 	test/gexiv2-dump.vala \
-	test/python/gexiv2.py
+	test/python/gexiv2.py \
+	test/python/test_metadata.py
 
 
 # Installed Files #

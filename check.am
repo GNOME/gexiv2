@@ -4,7 +4,8 @@ TESTS_ENVIRONMENT = \
 	GI_TYPELIB_PATH=$(top_builddir) \
 	PYTHONPATH=$(top_srcdir)/test/python \
 	MALLOC_CHECK_=2 \
-	MALLOC_PERTURB_=$$((RANDOM % 255))
+	MALLOC_PERTURB_=$$((RANDOM % 255)) \
+	TEST_DATA_DIR=$(srcdir)/test/data
 
 tests: check
 
