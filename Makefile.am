@@ -29,7 +29,16 @@ EXTRA_DIST = \
 	test/data/CaorVN.jpeg \
 	test/gexiv2-dump.vala \
 	test/python/gexiv2.py \
-	test/python/test_metadata.py
+	test/python/test_metadata.py \
+	docs/meson.build \
+	docs/reference/meson.build \
+	docs/reference/xml/meson.build \
+	docs/reference/xml/gtkdocentities.ent.in \
+	meson.build \
+	gexiv2/meson.build \
+	gexiv2/gexiv2-version.h.meson \
+	vapi/meson.build \
+	meson_options.txt
 
 enumheaders = $(srcdir)/gexiv2/gexiv2-metadata.h \
 	$(srcdir)/gexiv2/gexiv2-log.h

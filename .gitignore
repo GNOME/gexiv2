@@ -1,4 +1,6 @@
 .libs/
+build
+build-am
 gexiv2/.libs
 gexiv2/.dirstamp
 gexiv2/gexiv2-version.h
