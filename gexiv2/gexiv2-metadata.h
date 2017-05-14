@@ -102,9 +102,7 @@ G_BEGIN_DECLS
  * <ulink url="http://jpegclub.org/exif_orientation.html"></ulink>
  */
 typedef enum {
-    /*<private>*/
-	GEXIV2_ORIENTATION_MIN			= 0,
-    /*<public>*/
+	GEXIV2_ORIENTATION_MIN			= 0, /*< skip >*/
 	GEXIV2_ORIENTATION_UNSPECIFIED	= 0,
 	GEXIV2_ORIENTATION_NORMAL		= 1,
 	GEXIV2_ORIENTATION_HFLIP		= 2,
@@ -114,8 +112,7 @@ typedef enum {
 	GEXIV2_ORIENTATION_ROT_90		= 6,
 	GEXIV2_ORIENTATION_ROT_90_VFLIP	= 7,
 	GEXIV2_ORIENTATION_ROT_270		= 8,
-    /*<private>*/
-	GEXIV2_ORIENTATION_MAX			= 8
+	GEXIV2_ORIENTATION_MAX			= 8 /*< skip >*/
 } GExiv2Orientation;
 
 /**
@@ -150,14 +147,14 @@ typedef enum {
  * Taken from: exiv2/src/xmp.hpp
  *
  */
-typedef enum {
-  GEXIV2_OMIT_PACKET_WRAPPER   = 0x0010UL,  //!< Omit the XML packet wrapper.
-  GEXIV2_READ_ONLY_PACKET      = 0x0020UL,  //!< Default is a writeable packet.
-  GEXIV2_USE_COMPACT_FORMAT    = 0x0040UL,  //!< Use a compact form of RDF.
-  GEXIV2_INCLUDE_THUMBNAIL_PAD = 0x0100UL,  //!< Include a padding allowance for a thumbnail image.
-  GEXIV2_EXACT_PACKET_LENGTH   = 0x0200UL,  //!< The padding parameter is the overall packet length.
-  GEXIV2_WRITE_ALIAS_COMMENTS  = 0x0400UL,  //!< Show aliases as XML comments.
-  GEXIV2_OMIT_ALL_FORMATTING   = 0x0800UL   //!< Omit all formatting whitespace.
+typedef enum { /*< flags >*/
+  GEXIV2_OMIT_PACKET_WRAPPER   = 0x0010UL,
+  GEXIV2_READ_ONLY_PACKET      = 0x0020UL,
+  GEXIV2_USE_COMPACT_FORMAT    = 0x0040UL,
+  GEXIV2_INCLUDE_THUMBNAIL_PAD = 0x0100UL,
+  GEXIV2_EXACT_PACKET_LENGTH   = 0x0200UL,
+  GEXIV2_WRITE_ALIAS_COMMENTS  = 0x0400UL,
+  GEXIV2_OMIT_ALL_FORMATTING   = 0x0800UL
 } GExiv2XmpFormatFlags;
 
 /**

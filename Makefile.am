@@ -31,6 +31,22 @@ EXTRA_DIST = \
 	test/python/gexiv2.py \
 	test/python/test_metadata.py
 
+enumheaders = $(srcdir)/gexiv2/gexiv2-metadata.h \
+	$(srcdir)/gexiv2/gexiv2-log.h
+
+gexiv2-enums.cpp: $(enumheaders) Makefile
+	$(AM_V_GEN)$(GLIB_MKENUMS) \
+		--identifier-prefix GEXIV2 \
+		--symbol-prefix gexiv2 \
+		--template $(srcdir)/gexiv2/gexiv2-enums.cpp.template \
+		$(enumheaders) > $@
+
+gexiv2-enums.h: $(enumheaders) Makefile
+	$(AM_V_GEN)$(GLIB_MKENUMS) \
+		--identifier-prefix GEXIV2 \
+		--symbol-prefix gexiv2 \
+		--template $(srcdir)/gexiv2/gexiv2-enums.h.template \
+		$(enumheaders) > $@
 
 # Installed Files #
 pkgconfig_DATA  = @PACKAGE_NAME@.pc
@@ -73,7 +89,8 @@ GEXIV2_GIRHEADERS = \
 	$(srcdir)/gexiv2/gexiv2-preview-image.h \
 	$(srcdir)/gexiv2/gexiv2-log.h \
 	$(srcdir)/gexiv2/gexiv2-startup.h \
-	gexiv2/gexiv2-version.h
+	gexiv2/gexiv2-version.h \
+	gexiv2-enums.h
 
 GEXIV2_public_HEADERS = \
 	$(srcdir)/gexiv2/gexiv2-managed-stream.h \
@@ -95,7 +112,8 @@ GEXIV2_sources = \
 	gexiv2/gexiv2-metadata-private.h \
 	gexiv2/gexiv2-stream-io.h \
 	gexiv2/gexiv2-preview-properties-private.h \
-	gexiv2/gexiv2-preview-image-private.h
+	gexiv2/gexiv2-preview-image-private.h \
+	gexiv2-enums.cpp
 
 # compilation setup. #
 
