@@ -1,3 +1,13 @@
+gexiv2 (0.10.6-0~jensge0~xenial1) xenial; urgency=medium
+
+  * Fix missing include file
+  * Add a function to save meta-data in XMP sidecar file
+  * Add a more complete Python test-suite
+  * Fix a potential NULL dereference in _get_comment()
+  * Fix compatibility with Exiv2 0.26
+
+ -- Jens Georg <mail@jensge.org>  Sat, 03 Jun 2017 09:26:02 +0200
+
 gexiv2 (0.10.5-0~jensge1~xenial4) xenial; urgency=medium
 
   * Fix autogen.sh to also run configure
