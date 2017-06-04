@@ -15,8 +15,10 @@ Build-Depends: debhelper (>= 7),
                libgirepository1.0-dev (>= 0.9.12),
                gir1.2-glib-2.0,
                python3-gi,
-               python-gi
-Standards-Version: 3.8.4
+               python-gi,
+               python:any,
+               python3:any
+Standards-Version: 3.9.8
 Section: libs
 Homepage: https://wiki.gnome.org/Projects/gexiv2
 
@@ -77,7 +79,8 @@ Architecture: any
 Depends: gir1.2-gexiv2-0.10 (= ${binary:Version}),
          libgexiv2-2 (= ${binary:Version}),
          python-gi,
-         ${python:Depends}
+         ${python:Depends},
+         ${misc:Depends}
 Description: GExiv2 GObject introspection overrides for Python (Python2)
  gexiv2 is a GObject-based wrapper around the Exiv2 library. It makes the basic
  features of Exiv2 available to GNOME applications.
@@ -87,7 +90,8 @@ Architecture: any
 Depends: gir1.2-gexiv2-0.10 (= ${binary:Version}),
          libgexiv2-2 (= ${binary:Version}),
          python3-gi,
-         ${python3:Depends}
+         ${python3:Depends},
+         ${misc:Depends}
 Description: GExiv2 GObject introspection overrides for Python (Python3)
  gexiv2 is a GObject-based wrapper around the Exiv2 library. It makes the basic
  features of Exiv2 available to GNOME applications.
