@@ -38,6 +38,7 @@ EXTRA_DIST = \
 	gexiv2/meson.build \
 	gexiv2/gexiv2-version.h.meson \
 	vapi/meson.build \
+	test/meson.build \
 	meson_options.txt
 
 enumheaders = $(srcdir)/gexiv2/gexiv2-metadata.h \
