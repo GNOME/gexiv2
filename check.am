@@ -28,7 +28,8 @@ check_PROGRAMS += test/gexiv2-dump
 test_gexiv2_dump_SOURCES = test/gexiv2-dump.vala
 endif
 
-AM_VALAFLAGS = --pkg gexiv2 --pkg glib-2.0 --vapidir=$(top_srcdir)
+AM_VALAFLAGS = --pkg gexiv2 --pkg glib-2.0 \
+	--vapidir=$(abs_top_srcdir) --vapidir=$(abs_top_builddir)
 
 LDADD = \
 	$(top_builddir)/libgexiv2.la \
