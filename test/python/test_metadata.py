@@ -45,12 +45,11 @@ class TestMetadata(unittest.TestCase):
         self.metadata = GExiv2.Metadata()
         self.metadata.open_path(self.get_input_file())
         self.output_dir = tempfile.mkdtemp()
-        self.output_file = os.path.join(self.output_dir, 'withgps.jpg')
+        self.output_file = 'withgps.jpg'
 
     def tearDown(self):
         try:
-            os.remove(self.output_file)
-            os.rmdir(self.output_dir)
+            shutil.rmtree(self.output_dir)
         except Exception as e:
             if e.errno != errno.ENOENT:
                 raise
