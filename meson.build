@@ -35,7 +35,7 @@ if introspection_available
     if py2gi.returncode() == 0
       python2_available = true
       if python2_girdir == 'auto'
-        python2_girdir = py2gi.stdout()
+        python2_girdir = py2gi.stdout().strip()
       endif
       install_data('GExiv2.py', install_dir : python2_girdir)
     endif
@@ -47,7 +47,7 @@ if introspection_available
     if py3gi.returncode() == 0
       python3_available = true
       if python3_girdir == 'auto'
-        python3_girdir = py3gi.stdout()
+        python3_girdir = py3gi.stdout().strip()
       endif
       install_data('GExiv2.py', install_dir : python3_girdir)
     endif
