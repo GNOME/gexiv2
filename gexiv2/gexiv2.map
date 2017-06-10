@@ -1,0 +1,6 @@
+{
+  global:
+    gexiv2_*;
+  local:
+    *;
+};

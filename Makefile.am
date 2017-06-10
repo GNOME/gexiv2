@@ -37,6 +37,7 @@ EXTRA_DIST = \
 	meson.build \
 	gexiv2/meson.build \
 	gexiv2/gexiv2-version.h.meson \
+	gexiv2/gexiv2.map \
 	vapi/meson.build \
 	test/meson.build \
 	meson_options.txt
@@ -144,6 +145,7 @@ lib@PACKAGE_NAME@_la_CPPFLAGS = $(EXIV2_CFLAGS) $(GLIB_CFLAGS)
 
 lib@PACKAGE_NAME@_la_LDFLAGS  = \
 	$(no_undefined) -export-dynamic -version-info $(GEXIV2_VERSION_INFO) \
+	-Wl,--version-script=$(srcdir)/gexiv2/gexiv2.map \
 	$(WARN_LDFLAGS)
 
 clean-local:

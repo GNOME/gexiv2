@@ -33,6 +33,10 @@ enum_sources = gnome.mkenums('gexiv2-enums',
 
 install_headers(gexiv2_headers, subdir : 'gexiv2')
 
+# Static map file
+mapfile = 'gexiv2.map'
+vflag = '-Wl,--version-script,@0@/@1@'.format(meson.current_source_dir(), mapfile)
+
 gexiv2 = library('gexiv2',
                  ['gexiv2-metadata.cpp',
                   'gexiv2-metadata-exif.cpp',
@@ -52,6 +56,7 @@ gexiv2 = library('gexiv2',
                  gexiv2_headers +
                  [version_header] +
                  enum_sources,
+                 link_args : vflag,
                  include_directories : include_directories('..'),
                  version : '2',
                  soversion: '2.0.0',
