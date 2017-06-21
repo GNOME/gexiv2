@@ -23,7 +23,7 @@
  *
  * #GExiv2Metadata is a generic object that provides everything from simple
  * aggregated accessors to common data such as image comments up to
- * fine-grained access to specifig tags of a specific format, be it EXIF, IPTC
+ * fine-grained access to specific tags of a specific format, be it EXIF, IPTC
  * or XMP
  */
 
@@ -42,7 +42,7 @@
  * to be fetched.
  * <informalexample><programlisting>
  * GExiv2PreviewProperties **properties, **it;
- * properts = it = gexiv2_metadata_get_preview_properties(metadata);
+ * properties = it = gexiv2_metadata_get_preview_properties(metadata);
  *
  * while (*it) {
  *   preview_image = gexiv2_metadata_get_preview_image(metadata, *it);
@@ -58,7 +58,7 @@
  *
  * Metadata can contain multiple preview images. #GExiv2PreviewProperties are
  * used to describe the available image without the need of fetching the whole
- * image from the metadta.
+ * image from the metadata.
  */
 
 G_BEGIN_DECLS
@@ -162,7 +162,7 @@ typedef enum { /*< flags >*/
  *
  * An object holding all the Exiv2 metadata.  Previews, if present, are also available.
  *
- * As gexiv2 is only a wrapper around Exiv2, it's better to read its documentaiton to understand
+ * As gexiv2 is only a wrapper around Exiv2, it's better to read its documentation to understand
  * the full scope of what it offers: <ulink url="http://www.exiv2.org/"></ulink>
  *
  * In particular, rather than providing a getter/setter method pair for every metadata value
@@ -403,7 +403,7 @@ const gchar*	gexiv2_metadata_get_tag_type	(const gchar *tag);
  * gexiv2_metadata_get_supports_exif:
  * @self: An instance of #GExiv2Metadata
  *
- * Query @self whehter it suports writing EXIF metadata.
+ * Query @self whether it supports writing EXIF metadata.
  *
  * Returns: %TRUE if the loaded image type supports writing EXIF metadata.
  */
@@ -608,7 +608,7 @@ gchar**			gexiv2_metadata_get_exif_tags		(GExiv2Metadata *self);
  * @nom: (out): The numerator
  * @den: (out): The denominator
  *
- * Fetch EXIF @tag represented by a fraction. @nom will contian the numerator,
+ * Fetch EXIF @tag represented by a fraction. @nom will contain the numerator,
  * @den the denominator of the fraction on successful return.
  *
  * Returns: (skip): Boolean success value
@@ -819,7 +819,7 @@ gint gexiv2_metadata_get_metadata_pixel_height (GExiv2Metadata *self);
 /**
  * gexiv2_metadata_set_metadata_pixel_width:
  * @self: An instance of #GExiv2Metadata
- * @width: The width of the image as it should be put into the metadta.
+ * @width: The width of the image as it should be put into the metadata.
  *
  * Composite setter to update the image's metadata with @width
  */
@@ -828,7 +828,7 @@ void gexiv2_metadata_set_metadata_pixel_width (GExiv2Metadata *self, gint width)
 /**
  * gexiv2_metadata_set_metadata_pixel_height:
  * @self: An instance of #GExiv2Metadata
- * @height: The width of the image as it should be put into the metadta.
+ * @height: The width of the image as it should be put into the metadata.
  *
  * Update the image's metadata with @height
  */
@@ -857,7 +857,7 @@ void gexiv2_metadata_set_metadata_pixel_height (GExiv2Metadata *self, gint heigh
  * two-byte character codes for encoding.  However, it's still used here for legacy reasons.
  * </note>
  *
- * For fine-grained control, it's recommened to use Exiv2 tags directly rather than this method,
+ * For fine-grained control, it's recommended to use Exiv2 tags directly rather than this method,
  * which is more useful for quick or casual use.
  *
  * Returns: (transfer full) (allow-none): The photo's comment field.
@@ -879,7 +879,7 @@ void			gexiv2_metadata_set_comment			(GExiv2Metadata *self, const gchar* comment
  * @self: An instance of #GExiv2Metadata
  *
  * This is a composite clear method that will clear a number of fields.  See
- * #gexiv2_metadata_get_comment for more informtion.
+ * #gexiv2_metadata_get_comment for more information.
  */
 void			gexiv2_metadata_clear_comment		(GExiv2Metadata *self);
 
@@ -957,7 +957,7 @@ gboolean		gexiv2_metadata_get_gps_latitude			(GExiv2Metadata *self, gdouble *lat
  * @self: An instance of #GExiv2Metadata
  * @altitude: (out): Variable to store the altitude value
  *
- * Convenience functon to query the altitude stored in the GPS tags of the
+ * Convenience function to query the altitude stored in the GPS tags of the
  * image
  *
  * Returns: (skip): Boolean success value
@@ -971,7 +971,7 @@ gboolean		gexiv2_metadata_get_gps_altitude			(GExiv2Metadata *self, gdouble *alt
  * @latitude: (out): Storage for latitude value
  * @altitude: (out): Storage for altitude value
  *
- * Convenience functon to query all available GPS information at once.
+ * Convenience function to query all available GPS information at once.
  *
  * Returns: (skip): Boolean success value.
  */
@@ -984,7 +984,7 @@ gboolean		gexiv2_metadata_get_gps_info				(GExiv2Metadata *self, gdouble *longit
  * @latitude: Latitude value to set or replace current value
  * @altitude: Altitude value to set or replace current value
  *
- * Convenience functon to query all available GPS information at once.
+ * Convenience function to query all available GPS information at once.
  *
  * Returns: (skip): Boolean success value.
  */

@@ -25,7 +25,7 @@ typedef enum {
 
 /**
  * Stream_CanSeek:
- * @handle: Opaque storage for the native handle this function wil operate on
+ * @handle: Opaque storage for the native handle this function will operate on
  *
  * Function that returns the seekability of the stream
  *
@@ -35,7 +35,7 @@ typedef gboolean (*Stream_CanSeek)  (void *handle);
 
 /**
  * Stream_CanRead:
- * @handle: Opaque storage for the native handle this function wil operate on
+ * @handle: Opaque storage for the native handle this function will operate on
  *
  * Function that returns the readability of the stream
  *
@@ -45,7 +45,7 @@ typedef gboolean (*Stream_CanRead)  (void *handle);
 
 /**
  * Stream_CanWrite:
- * @handle: Opaque storage for the native handle this function wil operate on
+ * @handle: Opaque storage for the native handle this function will operate on
  *
  * Function that returns the readability of the stream
  *
@@ -55,7 +55,7 @@ typedef gboolean (*Stream_CanWrite) (void *handle);
 
 /**
  * Stream_Length:
- * @handle: Opaque storage for the native handle this function wil operate on
+ * @handle: Opaque storage for the native handle this function will operate on
  *
  * Function to query the length of the stream
  *
@@ -65,7 +65,7 @@ typedef gint64   (*Stream_Length)   (void *handle);
 
 /**
  * Stream_Position:
- * @handle: Opaque storage for the native handle this function wil operate on
+ * @handle: Opaque storage for the native handle this function will operate on
  *
  * Function to query the current position in the stream
  *
@@ -75,7 +75,7 @@ typedef gint64   (*Stream_Position) (void *handle);
 
 /**
  * Stream_Read:
- * @handle: Opaque storage for the native handle this function wil operate on
+ * @handle: Opaque storage for the native handle this function will operate on
  * @buffer: Destination data to read into
  * @offset: Offset in @buffer where data should be written to
  * @count: Number of bytes to read
@@ -88,7 +88,7 @@ typedef gint32   (*Stream_Read)     (void *handle, void *buffer, gint32 offset, 
 
 /**
  * Stream_Write:
- * @handle: Opaque storage for the native handle this function wil operate on
+ * @handle: Opaque storage for the native handle this function will operate on
  * @buffer: Source data to put into the stream
  * @offset: Offset in @buffer where data should be read from
  * @count: Number of bytes to write
@@ -101,9 +101,9 @@ typedef void     (*Stream_Write)    (void *handle, void *buffer, gint32 offset, 
 
 /**
  * Stream_Seek:
- * @handle: Opaque storage for the native handle this function wil operate on
+ * @handle: Opaque storage for the native handle this function will operate on
  * @offset: Position in the stream, relative to @origin
- * @origin: Determintes meaning of offset, being relative to current posision, start or end of the stream.
+ * @origin: Determines meaning of offset, being relative to current position, start or end of the stream.
  *
  * Change the read or write position in the current stream
  */
@@ -111,7 +111,7 @@ typedef void     (*Stream_Seek)     (void *handle, gint64 offset, WrapperSeekOri
 
 /**
  * Stream_Flush:
- * @handle: Opaque storage for the native handle this function wil operate on
+ * @handle: Opaque storage for the native handle this function will operate on
  *
  * Schedule writing buffered data to the stream's real storage.
  */
