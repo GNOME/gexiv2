@@ -2,6 +2,8 @@ ACLOCAL_AMFLAGS = -I m4 ${ACLOCAL_FLAGS}
 
 SUBDIRS = . docs
 
+CLEANFILES =
+
 # Installation directories.
 pkgconfigdir     = $(libdir)/pkgconfig
 GEXIV2_publicdir = $(includedir)/gexiv2
@@ -21,7 +23,6 @@ DISTCHECK_CONFIGURE_FLAGS = \
 EXTRA_DIST = \
 	@PACKAGE_NAME@.pc.in	\
 	GExiv2.py				\
-	@PACKAGE_NAME@.vapi		\
 	gexiv2/gexiv2-version.m4 \
 	$(TYPELIB_FILES) \
 	test/data/sample-author-badencoding.jpg \
@@ -74,24 +75,24 @@ py3gi_DATA      = GExiv2.py
 endif
 endif
 
+if ENABLE_VAPIGEN
 vapi: gexiv2.vapi
 
-if ENABLE_VAPIGEN
 gexiv2_vapi.stamp: $(top_builddir)/GExiv2-0.10.gir $(abs_top_srcdir)/vapi/GExiv2-0.10.metadata $(abs_top_srcdir)/vapi/gexiv2-custom.vala
 	rm -f $(@F)
 	$(AM_V_GEN)$(VAPIGEN) --metadatadir=$(abs_top_srcdir)/vapi \
 			      --library=gexiv2 \
 			      $(top_builddir)/GExiv2-0.10.gir $(abs_top_srcdir)/vapi/gexiv2-custom.vala
 	echo timestmap > $(@F)
-endif
 
 gexiv2.vapi: gexiv2_vapi.stamp
 	@true
 
-CLEANFILES = gexiv2.vapi gexiv2_vapi.stamp
+CLEANFILES += gexiv2.vapi gexiv2_vapi.stamp
 
 dist_vapi_DATA = gexiv2.vapi
 EXTRA_DIST += $(top_srcdir)/vapi/GExiv2-0.10.metadata gexiv2.vapi gexiv2_vapi.stamp $(top_srcdir)/vapi/gexiv2-custom.vala
+endif
 
 GEXIV2_GIRHEADERS = \
 	$(srcdir)/gexiv2/gexiv2.h \
