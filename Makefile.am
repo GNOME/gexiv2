@@ -19,6 +19,12 @@ DISTCHECK_CONFIGURE_FLAGS = \
 	--with-python3-girdir='$${libdir}/python3/dist-packages/gi/overrides' \
 	--enable-introspection
 
+BUILT_SOURCES = \
+	gexiv2-enums.cpp \
+	gexiv2-enums.h
+
+CLEANFILES += $(BUILT_SOURCES)
+
 # Extra package files. #
 EXTRA_DIST = \
 	@PACKAGE_NAME@.pc.in	\
@@ -37,6 +43,8 @@ EXTRA_DIST = \
 	docs/reference/xml/gtkdocentities.ent.in \
 	meson.build \
 	gexiv2/meson.build \
+	gexiv2/gexiv2-enums.cpp.template \
+	gexiv2/gexiv2-enums.h.template \
 	gexiv2/gexiv2-version.h.meson \
 	gexiv2/gexiv2.map \
 	vapi/meson.build \
