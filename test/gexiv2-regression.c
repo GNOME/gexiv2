@@ -86,12 +86,35 @@ static void test_bgo_730136(void)
     g_clear_pointer (&raw_tag, g_bytes_unref);
 }
 
+static void test_bgo_790925(void)
+{
+    g_autoptr(GExiv2Metadata) meta = NULL;
+    g_autoptr(GExiv2PreviewImage) image = NULL;
+    GExiv2PreviewProperties **props = NULL;
+    GError *error = NULL;
+    gboolean result = FALSE;
+
+    meta = gexiv2_metadata_new ();
+    g_assert_nonnull (meta);
+
+    result = gexiv2_metadata_open_path (meta, SAMPLE_PATH "/original.jpg", &error);
+    g_assert_no_error(error);
+    g_assert_true(result);
+
+    props = gexiv2_metadata_get_preview_properties (meta);
+    g_assert_nonnull (props);
+
+    image = gexiv2_metadata_get_preview_image (meta, *props);
+    g_assert_nonnull(image);
+}
+
 int main(int argc, char *argv[static argc + 1])
 {
     g_test_init(&argc, &argv, NULL);
     g_test_add_func("/bugs/gnome/775249", test_bgo_775249);
     g_test_add_func("/bugs/gnome/730136", test_bgo_730136);
     g_test_add_func("/bugs/gnome/792239", test_bgo_792239);
+    g_test_add_func("/bugs/gnome/790925", test_bgo_790925);
 
     return g_test_run();
 }

@@ -34,9 +34,12 @@ G_BEGIN_DECLS
 	(G_TYPE_INSTANCE_GET_CLASS ((obj), GEXIV2_TYPE_PREVIEW_IMAGE, GExiv2PreviewImageClass))
 	
 
+
 typedef struct _GExiv2PreviewImage			GExiv2PreviewImage;
 typedef struct _GExiv2PreviewImageClass		GExiv2PreviewImageClass;
 typedef struct _GExiv2PreviewImagePrivate	GExiv2PreviewImagePrivate;
+
+G_DEFINE_AUTOPTR_CLEANUP_FUNC(GExiv2PreviewImage, g_object_unref)
 
 struct _GExiv2PreviewImage
 {

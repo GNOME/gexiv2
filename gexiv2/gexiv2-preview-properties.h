@@ -38,6 +38,8 @@ typedef struct _GExiv2PreviewProperties			GExiv2PreviewProperties;
 typedef struct _GExiv2PreviewPropertiesClass	GExiv2PreviewPropertiesClass;
 typedef struct _GExiv2PreviewPropertiesPrivate	GExiv2PreviewPropertiesPrivate;
 
+G_DEFINE_AUTOPTR_CLEANUP_FUNC(GExiv2PreviewProperties, g_object_unref)
+
 struct _GExiv2PreviewProperties
 {
 	GObject parent_instance;

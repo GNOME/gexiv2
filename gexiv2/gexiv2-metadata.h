@@ -178,6 +178,8 @@ typedef struct _GExiv2Metadata			GExiv2Metadata;
 typedef struct _GExiv2MetadataClass		GExiv2MetadataClass;
 typedef struct _GExiv2MetadataPrivate	GExiv2MetadataPrivate;
 
+G_DEFINE_AUTOPTR_CLEANUP_FUNC(GExiv2Metadata, g_object_unref)
+
 struct _GExiv2Metadata
 {
 	GObject parent_instance;
