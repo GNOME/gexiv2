@@ -9,12 +9,12 @@ gir = find_program('g-ir-scanner', required: false)
 vapigen = find_program('vapigen', required: false)
 vala = find_program('valac', required: false)
 
-introspection_available = gir.found() and not get_option('disable-introspection')
-vapi_available = introspection_available and vapigen.found() and not get_option('disable-vala')
+introspection_available = gir.found() and get_option('introspection')
+vapi_available = introspection_available and vapigen.found() and get_option('vapi')
 
 subdir('gexiv2')
 
-if get_option('enable-gtk-doc')
+if get_option('docs')
   subdir('docs')
 endif
 
