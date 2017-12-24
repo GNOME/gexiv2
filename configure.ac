@@ -1,5 +1,5 @@
 AC_INIT([gexiv2],
-        [0.10.6],
+        [0.10.7],
         [https://bugzilla.gnome.org/enter_bug.cgi?product=gexiv2],
         [gexiv2],
         [https://wiki.gnome.org/Projects/gexiv2])

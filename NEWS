@@ -1,3 +1,21 @@
+gexiv2 0.10.7 - 24 Dec 2017
+
+  - Add meson build support
+  - Use glib-mkenums for enum types
+  - Update debian
+  - Fix make check when running out of tree
+  - Use version script to clean up exported functions
+  - Fix --disable-vala
+
+Bugs fixed in this release:
+ - https://bugzilla.gnome.org/show_bug.cgi?id=784045
+ - https://bugzilla.gnome.org/show_bug.cgi?id=787455
+
+All contributors to this release:
+ - Jens Georg <mail@jensge.org>
+ - Debarshi Ray <debarshir@gnome.org>
+ - Jason Crain <jason@inspiresomeone.us>
+
 gexiv2 0.10.6 - 21 May 2017
 
   * Fix missing include file
