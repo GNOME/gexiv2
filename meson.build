@@ -2,7 +2,7 @@ project('gexiv2', ['c', 'cpp'], version : '0.11.0')
 gnome = import('gnome')
 pkg = import('pkgconfig')
 
-exiv2 = dependency('exiv2', version : '>= 0.21')
+exiv2 = dependency('exiv2', version : '>= 0.26')
 gobject = dependency('gobject-2.0', version : '>= 2.38.0')
 
 gir = find_program('g-ir-scanner', required: false)

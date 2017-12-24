@@ -142,7 +142,7 @@ long StreamIo::tell () const {
     return cb->Position (cb->handle);
 }
 
-StreamIo::size_type StreamIo::size () const {
+size_t StreamIo::size () const {
     return cb->Length (cb->handle);
 }
 
