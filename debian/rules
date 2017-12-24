@@ -15,13 +15,13 @@
 
 
 %:
-	dh $@  --with autotools_dev --parallel --with python2 --with python3
+	dh $@  --parallel --with gir --with python2 --with python3
 
 
 # dh_make generated override targets
 # This is example for Cmake (See https://bugs.debian.org/641051 )
 override_dh_auto_configure:
-	dh_auto_configure -- --enable-gtk-doc
+	dh_auto_configure -- -Denable-gtk-doc=true
 
 override_dh_strip:
 	dh_strip --dbg-package=libgexiv2-dbg
