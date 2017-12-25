@@ -152,9 +152,15 @@ lib@PACKAGE_NAME@_la_SOURCES  = $(GEXIV2_sources) $(GEXIV2_public_HEADERS)
 lib@PACKAGE_NAME@_la_LIBADD   = $(EXIV2_LIBS) $(GLIB_LIBS)
 lib@PACKAGE_NAME@_la_CPPFLAGS = $(EXIV2_CFLAGS) $(GLIB_CFLAGS)
 
+if PLATFORM_DARWIN
+VERSION_SCRIPT_LDFLAGS=
+else
+VERSION_SCRIPT_LDFLAGS="-Wl,--version-script=$(srcdir)/gexiv2/gexiv2.map"
+endif
+
 lib@PACKAGE_NAME@_la_LDFLAGS  = \
 	$(no_undefined) -export-dynamic -version-info $(GEXIV2_VERSION_INFO) \
-	-Wl,--version-script=$(srcdir)/gexiv2/gexiv2.map \
+	$(VERSION_SCRIPT_LDFLAGS) \
 	$(WARN_LDFLAGS)
 
 clean-local:
