@@ -210,6 +210,23 @@ AC_MSG_RESULT([$target_or_host])
 # Check for Win32
 #################
 
+AC_MSG_CHECKING([OS X platform])
+case "$target_or_host" in
+    *-*-darwin*)
+        platform_darwin=yes
+    ;;
+    *)
+        platform_darwin=no
+    ;;
+esac
+AC_MSG_RESULT([$platform_darwin])
+AM_CONDITIONAL(PLATFORM_DARWIN, test "$platform_win32" = "yes")
+
+
+#################
+# Check for Win32
+#################
+
 AC_MSG_CHECKING([Win32 platform])
 case "$target_or_host" in
     *-*-mingw* | *-*-cygwin*)

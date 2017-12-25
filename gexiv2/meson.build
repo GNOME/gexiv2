@@ -35,7 +35,11 @@ install_headers(gexiv2_headers, subdir : 'gexiv2')
 
 # Static map file
 mapfile = 'gexiv2.map'
-vflag = '-Wl,--version-script,@0@/@1@'.format(meson.current_source_dir(), mapfile)
+if host_machine.system() == 'darwin'
+    vflag = ''
+else
+    vflag = '-Wl,--version-script,@0@/@1@'.format(meson.current_source_dir(), mapfile)
+endif
 
 gexiv2 = library('gexiv2',
                  ['gexiv2-metadata.cpp',
