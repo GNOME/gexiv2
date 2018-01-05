@@ -14,6 +14,24 @@
 
 #include <string.h>
 
+static void test_bgo_792239(void)
+{
+    GExiv2Metadata *meta = NULL;
+    gdouble fnumber = -1.0;
+    gboolean result = FALSE;
+    GError *error = NULL;
+
+    meta = gexiv2_metadata_new();
+    g_assert_nonnull(meta);
+    result = gexiv2_metadata_open_path(meta, SAMPLE_PATH "/no-fnumber.jpg", &error);
+    g_assert_no_error(error);
+    g_assert_true(result);
+    fnumber = gexiv2_metadata_get_fnumber(meta);
+    g_assert_cmpfloat(fnumber, !=, -1.0);
+
+    g_clear_object(&meta);
+}
+
 /* Check that gexiv2 correctly handles ratios with 0/0 as used by
  * some cameras
  */
@@ -73,6 +91,7 @@ int main(int argc, char *argv[static argc + 1])
     g_test_init(&argc, &argv, NULL);
     g_test_add_func("/bugs/gnome/775249", test_bgo_775249);
     g_test_add_func("/bugs/gnome/730136", test_bgo_730136);
+    g_test_add_func("/bugs/gnome/792239", test_bgo_792239);
 
     return g_test_run();
 }
