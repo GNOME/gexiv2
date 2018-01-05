@@ -19,6 +19,7 @@
 #include "gexiv2-log.h"
 #include "gexiv2-log-private.h"
 #include <string>
+#include <cmath>
 #include <glib-object.h>
 #include <gio/gio.h>
 #include <exiv2/image.hpp>
@@ -784,7 +785,18 @@ gboolean gexiv2_metadata_get_exposure_time (GExiv2Metadata *self, gint *nom, gin
 }
 
 gdouble gexiv2_metadata_get_fnumber (GExiv2Metadata *self) {
-    return gexiv2_metadata_get_exif_tag_rational_as_double(self, "Exif.Photo.FNumber", -1.0);
+    gdouble fnumber = gexiv2_metadata_get_exif_tag_rational_as_double(self, "Exif.Photo.FNumber", -1.0);
+    if (fnumber == -1.0) {
+        gdouble aperture_value = gexiv2_metadata_get_exif_tag_rational_as_double(self,
+                                                                                 "Exif.Photo.ApertureValue",
+                                                                                 -1.0);
+        if (aperture_value == -1.0)
+          return fnumber;
+
+        fnumber = pow (2.0, aperture_value / 2.0);
+    }
+
+    return fnumber;
 }
 
 gdouble gexiv2_metadata_get_focal_length (GExiv2Metadata *self) {
