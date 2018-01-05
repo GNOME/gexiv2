@@ -901,6 +901,8 @@ gboolean		gexiv2_metadata_get_exposure_time	(GExiv2Metadata *self, gint *nom, gi
  * @self: An instance of #GExiv2Metadata
  *
  * See <ulink url="https://en.wikipedia.org/wiki/F-number"></ulink> for more information.
+ * If Exiif.Photo.FNumber does not exist, it will fall back to calclating the FNumber from
+ * Exif.Photo.ApertureValue (if available);
  *
  * Returns: The exposure Fnumber as a gdouble, or -1.0 if tag is not present or invalid.
  */
