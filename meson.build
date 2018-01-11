@@ -18,10 +18,6 @@ if get_option('docs')
   subdir('docs')
 endif
 
-if vapi_available
-  subdir('vapi')
-endif
-
 python2_available = false
 python3_available = false
 python_gi_test_args = ['-c', 'import gi; print(gi._overridesdir)']
