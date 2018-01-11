@@ -183,6 +183,7 @@ INTROSPECTION_SCANNER_ARGS = \
 			     --symbol-prefix=@PACKAGE_NAME@		\
 			     --add-include-path=$(BUILD_DIR) \
 			     --pkg-export=gexiv2 \
+			     --c-include=gexiv2/gexiv2.h \
 			     $(WARN_SCANNERFLAGS)
 INTROSPECTION_COMPILER_ARGS = --includedir=$(BUILD_DIR)
 

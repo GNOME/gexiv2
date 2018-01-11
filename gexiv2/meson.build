@@ -66,6 +66,8 @@ gexiv2 = library('gexiv2',
                  dependencies : [gobject, exiv2],
                  install : true)
 
+pc_deps = ['glib-2.0', 'gobject-2.0']
+
 pkg.generate(
     description : 'GObject bindings for exiv2',
     libraries : gexiv2,
@@ -73,7 +75,7 @@ pkg.generate(
     name : 'GExiv2',
     filebase : 'gexiv2',
     requires_private : 'exiv2',
-    requires : ['glib-2.0', 'gobject-2.0']
+    requires : pc_deps
     )
 
 # set unconditionally
@@ -95,5 +97,6 @@ if introspection_available
       identifier_prefix : 'GExiv2',
       export_packages : 'gexiv2',
       includes : ['GObject-2.0'],
+      header : 'gexiv2/gexiv2.h',
       install : true)
 endif
