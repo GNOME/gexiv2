@@ -34,6 +34,7 @@ EXTRA_DIST = \
 	test/data/sample-author-badencoding.jpg \
 	test/data/original.jpg \
 	test/data/CaorVN.jpeg \
+	test/data/no-fnumber.jpg \
 	test/gexiv2-dump.vala \
 	test/python/gexiv2.py \
 	test/python/test_metadata.py \
