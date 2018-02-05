@@ -1,11 +1,27 @@
+gexiv2 0.10.8 - 5 Feb 2018
+
+  * Do not use linker scripts on Drawin/OS X
+  * Fallback to AperturValue if FNumber is absent
+  * Fix GIR header and vapi when using meson
+
+Bugs fixed in this release:
+ - https://bugzilla.gnome.org/show_bug.cgi?id=791941
+ - https://bugzilla.gnome.org/show_bug.cgi?id=792239
+ - https://bugzilla.gnome.org/show_bug.cgi?id=792431
+
+All contributors to this release:
+ - Jens Georg <mail@jensge.org>
+ - Debarshi Ray <debarshir@gnome.org>
+ - Corentin Noël <corentin@elementary.io>
+
 gexiv2 0.10.7 - 24 Dec 2017
 
-  - Add meson build support
-  - Use glib-mkenums for enum types
-  - Update debian
-  - Fix make check when running out of tree
-  - Use version script to clean up exported functions
-  - Fix --disable-vala
+  * Add meson build support
+  * Use glib-mkenums for enum types
+  * Update debian
+  * Fix make check when running out of tree
+  * Use version script to clean up exported functions
+  * Fix --disable-vala
 
 Bugs fixed in this release:
  - https://bugzilla.gnome.org/show_bug.cgi?id=784045
