@@ -207,7 +207,7 @@ esac
 AC_MSG_RESULT([$target_or_host])
 
 #################
-# Check for Win32
+# Check for OS X
 #################
 
 AC_MSG_CHECKING([OS X platform])
@@ -220,7 +220,7 @@ case "$target_or_host" in
     ;;
 esac
 AC_MSG_RESULT([$platform_darwin])
-AM_CONDITIONAL(PLATFORM_DARWIN, test "$platform_win32" = "yes")
+AM_CONDITIONAL(PLATFORM_DARWIN, test "$platform_darwin" = "yes")
 
 
 #################
