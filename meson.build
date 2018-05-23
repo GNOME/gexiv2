@@ -29,27 +29,31 @@ python2_girdir = get_option('python2-girdir')
 python3_girdir = get_option('python3-girdir')
 
 if introspection_available
-  python2 = find_program('python2', required : false)
-  if python2.found()
-    py2gi = run_command(python2, python_gi_test_args)
-    if py2gi.returncode() == 0
-      python2_available = true
-      if python2_girdir == 'auto'
-        python2_girdir = py2gi.stdout().strip()
+  if python2_girdir != 'no'
+    python2 = find_program('python2', required : false)
+    if python2.found()
+      py2gi = run_command(python2, python_gi_test_args)
+      if py2gi.returncode() == 0
+        python2_available = true
+        if python2_girdir == 'auto'
+          python2_girdir = py2gi.stdout().strip()
+        endif
+        install_data('GExiv2.py', install_dir : python2_girdir)
       endif
-      install_data('GExiv2.py', install_dir : python2_girdir)
     endif
   endif
 
-  python3 = find_program('python3', required : false)
-  if python3.found()
-    py3gi = run_command(python3, python_gi_test_args)
-    if py3gi.returncode() == 0
-      python3_available = true
-      if python3_girdir == 'auto'
-        python3_girdir = py3gi.stdout().strip()
+  if python3_girdir != 'no'
+    python3 = find_program('python3', required : false)
+    if python3.found()
+      py3gi = run_command(python3, python_gi_test_args)
+      if py3gi.returncode() == 0
+        python3_available = true
+        if python3_girdir == 'auto'
+          python3_girdir = py3gi.stdout().strip()
+        endif
+        install_data('GExiv2.py', install_dir : python3_girdir)
       endif
-      install_data('GExiv2.py', install_dir : python3_girdir)
     endif
   endif
 endif

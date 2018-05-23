@@ -135,13 +135,13 @@ AM_CONDITIONAL([PYTHON3_PATH], [test "x$PYTHON3_PATH" != "x:"])
 
 AC_ARG_WITH([python2-girdir],
             AS_HELP_STRING([--with-python2-girdir],
-                             [Set the GI override file install dir]),
+                             [Set the GI override file install dir (no to disable)]),
             [ac_py2girdir=$withval],
             [ac_py2girdir=""])
 
 AC_ARG_WITH([python3-girdir],
             AS_HELP_STRING([--with-python3-girdir],
-                             [Set the GI override file install dir]),
+                             [Set the GI override file install dir (no to disable)]),
             [ac_py3girdir=$withval],
             [ac_py3girdir=""])
 
@@ -158,6 +158,10 @@ AS_IF([test "x$found_introspection" = "xyes"],
               [PYTHON2_GIDIR=$($PYTHON2_PATH -c "$PYTHON_CODE")],
               [PYTHON2_GIDIR=""])
     ],
+    [test "x$ac_py2girdir" = "xno"],
+    [
+        PYTHON2_GIRDIR=""
+    ],
     [
         PYTHON2_GIDIR=$ac_py2girdir
     ])
@@ -169,6 +173,10 @@ AS_IF([test "x$found_introspection" = "xyes"],
         AS_IF([test "x$PYTHON3_PATH" != "x:"],
               [PYTHON3_GIDIR=$($PYTHON3_PATH -c "$PYTHON_CODE")],
               [PYTHON3_GIDIR=""])
+    ],
+    [test "x$ac_py3girdir" = "xno"],
+    [
+        PYTHON3_GIRDIR=""
     ],
     [
         PYTHON3_GIDIR=$ac_py3girdir
