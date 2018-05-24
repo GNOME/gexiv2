@@ -51,7 +51,7 @@ pages:
   only:
     - master
   script:
-    - meson -Ddocumentation=true _build .
+    - meson -Denable-gtk-doc=true _build .
     - ninja -C _build test gexiv2-doc
     - mkdir -p public/
     - mv _build/docs/reference/html/ public/docs/
