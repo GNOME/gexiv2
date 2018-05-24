@@ -1,0 +1,60 @@
+image: debian:unstable
+
+before_script:
+  - apt update -qq
+  - apt install -y -qq build-essential meson pkg-config gtk-doc-tools
+                       libxml2-utils gobject-introspection python-gi python3-gi
+                       libgirepository1.0-dev libglib2.0-dev libexiv2-dev valac
+                       lcov
+  - export LANG=C.UTF-8
+
+stages:
+  - build
+  - test
+  - deploy
+
+build-job:
+  stage: build
+  script:
+    - meson --prefix /usr --libdir /usr/lib64 --buildtype debug --werror _build .
+    - ninja -C _build
+  except:
+    - tags
+  artifacts:
+    when: on_failure
+    name: "gexiv2-_${CI_COMMIT_REF_NAME}"
+    paths:
+      - "${CI_PROJECT_DIR}/_build/meson-logs"
+
+test:
+  stage: test
+  script:
+    - meson _build .
+    - ninja -C _build test
+
+# FIXME: Run gtkdoc-check when we can. See:
+# https://github.com/mesonbuild/meson/issues/3580
+
+dist-job:
+  stage: build
+  only:
+    - tags
+  script:
+    - meson --prefix /usr --libdir /usr/lib64 --buildtype release _build .
+    - ninja -C _build dist
+  artifacts:
+    paths:
+      - "${CI_PROJECT_DIR}/_build/meson-dist/gexiv2-*.tar.xz"
+
+pages:
+  stage: deploy
+  only:
+    - master
+  script:
+    - meson -Ddocumentation=true _build .
+    - ninja -C _build test gexiv2-doc
+    - mkdir -p public/
+    - mv _build/docs/reference/html/ public/docs/
+  artifacts:
+    paths:
+      - public
