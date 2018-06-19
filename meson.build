@@ -4,6 +4,7 @@ pkg = import('pkgconfig')
 
 exiv2 = dependency('exiv2', version : '>= 0.21')
 gobject = dependency('gobject-2.0', version : '>= 2.26.1')
+gio = dependency('gio-2.0', version : '>= 2.32.0')
 
 gir = find_program('g-ir-scanner', required: false)
 vapigen = find_program('vapigen', required: false)
