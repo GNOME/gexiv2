@@ -252,6 +252,8 @@ gboolean		gexiv2_metadata_open_buf			(GExiv2Metadata *self, const guint8 *data, 
  */
 gboolean		gexiv2_metadata_open_stream			(GExiv2Metadata *self, ManagedStreamCallbacks* cb, GError **error);
 
+gboolean		gexiv2_metadata_from_stream			(GExiv2Metadata *self, GInputStream* stream, GError **error);
+
 /**
  * gexiv2_metadata_from_app1_segment:
  * @self: An instance of #GExiv2Metadata

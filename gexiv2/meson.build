@@ -63,7 +63,7 @@ gexiv2 = library('gexiv2',
                  link_args : vflag,
                  include_directories : include_directories('..'),
                  version: '2.0.0',
-                 dependencies : [gobject, exiv2],
+                 dependencies : [gobject, exiv2, gio],
                  install : true)
 
 libgexiv2 = declare_dependency(
@@ -72,7 +72,7 @@ libgexiv2 = declare_dependency(
     dependencies : [gobject, exiv2],
 )
 
-pc_deps = ['glib-2.0', 'gobject-2.0']
+pc_deps = ['glib-2.0', 'gobject-2.0', 'gio-2.0']
 
 pkg.generate(
     description : 'GObject bindings for exiv2',
@@ -102,7 +102,7 @@ if introspection_available
       symbol_prefix : 'gexiv2',
       identifier_prefix : 'GExiv2',
       export_packages : 'gexiv2',
-      includes : ['GObject-2.0'],
+      includes : ['GObject-2.0', 'Gio-2.0'],
       header : 'gexiv2/gexiv2.h',
       install : true)
 
