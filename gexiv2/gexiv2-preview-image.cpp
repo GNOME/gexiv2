@@ -13,15 +13,13 @@
 #include <gio/gio.h>
 
 G_BEGIN_DECLS
-#define GEXIV2_PREVIEW_IMAGE_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE ((obj), GEXIV2_TYPE_PREVIEW_IMAGE, GExiv2PreviewImagePrivate))
 
-G_DEFINE_TYPE (GExiv2PreviewImage, gexiv2_preview_image, G_TYPE_OBJECT);
+G_DEFINE_TYPE_WITH_CODE (GExiv2PreviewImage, gexiv2_preview_image, G_TYPE_OBJECT, G_ADD_PRIVATE(GExiv2PreviewImage));
 
 static void gexiv2_preview_image_finalize (GObject *object);
 
 static void gexiv2_preview_image_init (GExiv2PreviewImage *self) {
-    self->priv = GEXIV2_PREVIEW_IMAGE_GET_PRIVATE (self);
+    self->priv = (GExiv2PreviewImagePrivate *) gexiv2_preview_image_get_instance_private(self);
     
     self->priv->image = NULL;
     self->priv->mime_type = NULL;
@@ -30,8 +28,6 @@ static void gexiv2_preview_image_init (GExiv2PreviewImage *self) {
 
 static void gexiv2_preview_image_class_init (GExiv2PreviewImageClass *klass) {
     GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-    
-    g_type_class_add_private (klass, sizeof (GExiv2PreviewImagePrivate));
     
     gobject_class->finalize = gexiv2_preview_image_finalize;
 }
