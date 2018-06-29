@@ -33,10 +33,7 @@
 
 G_BEGIN_DECLS
 
-#define GEXIV2_METADATA_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE ((obj), GEXIV2_TYPE_METADATA, GExiv2MetadataPrivate))
-
-G_DEFINE_TYPE (GExiv2Metadata, gexiv2_metadata, G_TYPE_OBJECT);
+G_DEFINE_TYPE_WITH_CODE (GExiv2Metadata, gexiv2_metadata, G_TYPE_OBJECT, G_ADD_PRIVATE (GExiv2Metadata));
 
 static void gexiv2_metadata_finalize (GObject *object);
 static void gexiv2_metadata_set_comment_internal (GExiv2Metadata *self, const gchar *new_comment);
@@ -46,7 +43,7 @@ static gboolean gexiv2_metadata_save_internal (GExiv2Metadata *self, Exiv2::Imag
 
 static void gexiv2_metadata_init (GExiv2Metadata *self) {
     GExiv2MetadataPrivate *priv;
-    self->priv = priv = GEXIV2_METADATA_GET_PRIVATE (self);
+    self->priv = priv = (GExiv2MetadataPrivate *) gexiv2_metadata_get_instance_private(self);
     
     /* Initialize members */
     self->priv->comment = NULL;
@@ -70,8 +67,6 @@ static void gexiv2_metadata_init (GExiv2Metadata *self) {
 
 static void gexiv2_metadata_class_init (GExiv2MetadataClass *klass) {
     GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-    
-    g_type_class_add_private (klass, sizeof (GExiv2MetadataPrivate));
     
     gobject_class->finalize = gexiv2_metadata_finalize;
 }

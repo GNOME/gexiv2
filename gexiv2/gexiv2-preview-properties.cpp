@@ -13,23 +13,19 @@
 #include <gio/gio.h>
 
 G_BEGIN_DECLS
-#define GEXIV2_PREVIEW_PROPERTIES_GET_PRIVATE(obj) \
-	(G_TYPE_INSTANCE_GET_PRIVATE ((obj), GEXIV2_TYPE_PREVIEW_PROPERTIES, GExiv2PreviewPropertiesPrivate))
 
-G_DEFINE_TYPE (GExiv2PreviewProperties, gexiv2_preview_properties, G_TYPE_OBJECT);
+G_DEFINE_TYPE_WITH_CODE (GExiv2PreviewProperties, gexiv2_preview_properties, G_TYPE_OBJECT, G_ADD_PRIVATE (GExiv2PreviewProperties));
 
 static void gexiv2_preview_properties_finalize (GObject *object);
 
 static void gexiv2_preview_properties_init (GExiv2PreviewProperties *self) {
-    self->priv = GEXIV2_PREVIEW_PROPERTIES_GET_PRIVATE (self);
+    self->priv = (GExiv2PreviewPropertiesPrivate *) gexiv2_preview_properties_get_instance_private(self);
     
     self->priv->props = NULL;
 }
 
 static void gexiv2_preview_properties_class_init (GExiv2PreviewPropertiesClass *klass) {
     GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-    
-    g_type_class_add_private(klass, sizeof (GExiv2PreviewPropertiesPrivate));
     
     gobject_class->finalize = gexiv2_preview_properties_finalize;
 }

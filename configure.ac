@@ -46,7 +46,7 @@ AC_SUBST(GIR_VERSION)
 GIR_VERSION_U=gexiv2_gir_version_u
 AC_SUBST(GIR_VERSION_U)
 
-m4_define([glib_required_version], [2.26.1])
+m4_define([glib_required_version], [2.38.0])
 m4_define([exiv2_required_version], [0.21])
 
 # This number must be edited whenever a change has been made that may affect libgexiv2's
