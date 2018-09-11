@@ -64,22 +64,23 @@ static void default_log_handler(GExiv2LogLevel level, const gchar *msg) {
     Exiv2::LogMsg::defaultHandler(gexiv2_level_to_exiv2_level(level), msg);
 }
 
-static void glib_log_handler(GExiv2LogLevel level, const gchar *msg) {
+static void glib_log_handler(GExiv2LogLevel level, const gchar *msg_) {
+    char *msg = g_strdup(msg_);
     switch (level) {
         case GEXIV2_LOG_LEVEL_DEBUG:
-            g_debug("%s", msg);
+            g_debug("%s", g_strchomp(msg));
         break;
         
         case GEXIV2_LOG_LEVEL_INFO:
-            g_message("%s", msg);
+            g_message("%s", g_strchomp(msg));
         break;
         
         case GEXIV2_LOG_LEVEL_WARN:
-            g_warning("%s", msg);
+            g_warning("%s", g_strchomp(msg));
         break;
         
         case GEXIV2_LOG_LEVEL_ERROR:
-            g_critical("%s", msg);
+            g_critical("%s", g_strchomp(msg));
         break;
         
         case GEXIV2_LOG_LEVEL_MUTE:
@@ -87,6 +88,8 @@ static void glib_log_handler(GExiv2LogLevel level, const gchar *msg) {
             // do nothing
         break;
     }
+
+    g_free(msg);
 }
 
 GExiv2LogLevel gexiv2_log_get_level(void) {
