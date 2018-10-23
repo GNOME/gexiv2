@@ -570,8 +570,8 @@ void gexiv2_metadata_set_metadata_pixel_height (GExiv2Metadata *self, gint heigh
     Exiv2::XmpData& xmp_data = self->priv->image->xmpData();
     
     exif_data ["Exif.Photo.PixelXDimension"] = static_cast<uint32_t>(height);
-    exif_data ["Exif.Image.ImageHeight"] = static_cast<uint32_t>(height);
-    xmp_data ["Xmp.tiff.ImageHeight"] = static_cast<uint32_t>(height);
+    exif_data ["Exif.Image.ImageLength"] = static_cast<uint32_t>(height);
+    xmp_data ["Xmp.tiff.ImageLength"] = static_cast<uint32_t>(height);
     xmp_data ["Xmp.exif.PixelXDimension"] = static_cast<uint32_t>(height);
 }
 
