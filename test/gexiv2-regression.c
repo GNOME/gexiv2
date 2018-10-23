@@ -29,6 +29,8 @@ static void test_ggo_31(void)
     g_assert_true(result);
 
     gexiv2_metadata_set_metadata_pixel_height(meta, 123);
+    /* Would abort without fix */
+
     g_clear_object(&meta);
 }
 
@@ -54,6 +56,55 @@ static void test_ggo_32 (void)
 
     g_clear_object(&meta);
 }
+
+/* Regression test for https://gitlab.gnome.org/GNOME/gexiv2/issues/33 */
+static void test_ggo_33 (void)
+{
+    GExiv2Metadata *meta = NULL;
+    gboolean result = FALSE;
+    GError *error = NULL;
+    glong pixels = 0;
+
+    meta = gexiv2_metadata_new();
+    g_assert_nonnull(meta);
+
+    result = gexiv2_metadata_open_path (meta, SAMPLE_PATH "/no-metadata.jpg", &error);
+    g_assert_no_error(error);
+    g_assert_true(result);
+
+
+    /* Check all the width tags and check that they have the same value */
+    gexiv2_metadata_set_metadata_pixel_width(meta, 1234);
+    pixels = gexiv2_metadata_get_tag_long(meta, "Exif.Photo.PixelXDimension");
+    g_assert_cmpint(pixels, ==, 1234);
+
+    pixels = gexiv2_metadata_get_tag_long(meta, "Exif.Image.ImageWidth");
+    g_assert_cmpint(pixels, ==, 1234);
+
+    pixels = gexiv2_metadata_get_tag_long(meta, "Xmp.tiff.ImageWidth");
+    g_assert_cmpint(pixels, ==, 1234);
+
+    pixels = gexiv2_metadata_get_tag_long(meta, "Xmp.exif.PixelXDimension");
+    g_assert_cmpint(pixels, ==, 1234);
+
+
+    /* Check all the height tags and check that they have the same value */
+    gexiv2_metadata_set_metadata_pixel_height(meta, 4321);
+    pixels = gexiv2_metadata_get_tag_long(meta, "Exif.Photo.PixelYDimension");
+    g_assert_cmpint(pixels, ==, 4321);
+
+    pixels = gexiv2_metadata_get_tag_long(meta, "Exif.Image.ImageLength");
+    g_assert_cmpint(pixels, ==, 4321);
+
+    pixels = gexiv2_metadata_get_tag_long(meta, "Xmp.tiff.ImageHeight");
+    g_assert_cmpint(pixels, ==, 4321);
+
+    pixels = gexiv2_metadata_get_tag_long(meta, "Xmp.exif.PixelYDimension");
+    g_assert_cmpint(pixels, ==, 4321);
+
+    g_clear_object(&meta);
+}
+
 
 static void test_bgo_792239(void)
 {
@@ -158,6 +209,7 @@ int main(int argc, char *argv[static argc + 1])
     g_test_add_func("/bugs/gnome/790925", test_bgo_790925);
     g_test_add_func("/bugs/gnome/gitlab/31", test_ggo_31);
     g_test_add_func("/bugs/gnome/gitlab/32", test_ggo_32);
+    g_test_add_func("/bugs/gnome/gitlab/33", test_ggo_33);
 
     return g_test_run();
 }

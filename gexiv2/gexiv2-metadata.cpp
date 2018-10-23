@@ -559,7 +559,7 @@ void gexiv2_metadata_set_metadata_pixel_width (GExiv2Metadata *self, gint width)
     exif_data["Exif.Photo.PixelXDimension"] = static_cast<uint32_t>(width);
     exif_data["Exif.Image.ImageWidth"] = static_cast<uint32_t>(width);
     xmp_data["Xmp.tiff.ImageWidth"] = static_cast<uint32_t>(width);
-    xmp_data["Xmp.exif.PixelYDimension"] = static_cast<uint32_t>(width);
+    xmp_data["Xmp.exif.PixelXDimension"] = static_cast<uint32_t>(width);
 }
 
 void gexiv2_metadata_set_metadata_pixel_height (GExiv2Metadata *self, gint height) {
@@ -569,10 +569,10 @@ void gexiv2_metadata_set_metadata_pixel_height (GExiv2Metadata *self, gint heigh
     Exiv2::ExifData& exif_data = self->priv->image->exifData();
     Exiv2::XmpData& xmp_data = self->priv->image->xmpData();
     
-    exif_data ["Exif.Photo.PixelXDimension"] = static_cast<uint32_t>(height);
+    exif_data ["Exif.Photo.PixelYDimension"] = static_cast<uint32_t>(height);
     exif_data ["Exif.Image.ImageLength"] = static_cast<uint32_t>(height);
     xmp_data ["Xmp.tiff.ImageLength"] = static_cast<uint32_t>(height);
-    xmp_data ["Xmp.exif.PixelXDimension"] = static_cast<uint32_t>(height);
+    xmp_data ["Xmp.exif.PixelYDimension"] = static_cast<uint32_t>(height);
 }
 
 gchar* gexiv2_metadata_get_comment (GExiv2Metadata *self) {
