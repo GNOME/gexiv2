@@ -534,8 +534,8 @@ gint gexiv2_metadata_get_metadata_pixel_height (GExiv2Metadata *self) {
         if (gexiv2_metadata_has_exif_tag(self, "Exif.Photo.PixelYDimension"))
             return gexiv2_metadata_get_exif_tag_long(self, "Exif.Photo.PixelYDimension");
         
-        if (gexiv2_metadata_has_exif_tag(self, "Exif.Image.ImageHeight"))
-            return gexiv2_metadata_get_exif_tag_long(self, "Exif.Image.ImageHeight");
+        if (gexiv2_metadata_has_exif_tag(self, "Exif.Image.ImageLength"))
+            return gexiv2_metadata_get_exif_tag_long(self, "Exif.Image.ImageLength");
     }
     
     if (gexiv2_metadata_has_xmp(self)) {

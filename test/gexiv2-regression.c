@@ -32,6 +32,29 @@ static void test_ggo_31(void)
     g_clear_object(&meta);
 }
 
+/* Regression test for https://gitlab.gnome.org/GNOME/gexiv2/issues/32 */
+static void test_ggo_32 (void)
+{
+    GExiv2Metadata *meta = NULL;
+    gboolean result = FALSE;
+    GError *error = NULL;
+    gint pixel_height = 0;
+
+    meta = gexiv2_metadata_new();
+    g_assert_nonnull(meta);
+
+    result = gexiv2_metadata_open_path (meta, SAMPLE_PATH "/no-metadata.jpg", &error);
+    g_assert_no_error(error);
+    g_assert_true(result);
+
+    gexiv2_metadata_set_tag_long(meta, "Exif.Image.ImageLength", 1234);
+
+    pixel_height = gexiv2_metadata_get_metadata_pixel_height(meta);
+    g_assert_cmpint(pixel_height, ==, 1234);
+
+    g_clear_object(&meta);
+}
+
 static void test_bgo_792239(void)
 {
     GExiv2Metadata *meta = NULL;
@@ -134,6 +157,7 @@ int main(int argc, char *argv[static argc + 1])
     g_test_add_func("/bugs/gnome/792239", test_bgo_792239);
     g_test_add_func("/bugs/gnome/790925", test_bgo_790925);
     g_test_add_func("/bugs/gnome/gitlab/31", test_ggo_31);
+    g_test_add_func("/bugs/gnome/gitlab/32", test_ggo_32);
 
     return g_test_run();
 }
