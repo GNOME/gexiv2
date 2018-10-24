@@ -6,6 +6,7 @@ test_env = ['G_SLICE=always-malloc',
             'PYTHONPATH=@0@'.format(python_module_path),
             'TEST_DATA_DIR=@0@'.format(test_sample_path),
             'LD_LIBRARY_PATH=@0@'.format(typelib_path),
+            'MALLOC_PERTURB_=3'
             ]
 
 regression_test = executable('gexiv2-regression', 'gexiv2-regression.c',
