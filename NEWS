@@ -1,3 +1,27 @@
+gexiv2 0.10.9 - 18 Nov 2018
+
+  * Fix check for building on OS X
+  * Fix generating non-reproducible builds
+  * Make it possible to disable the python modules
+  * Fix deprecated g_type_class_add_private
+  * Fix various issues with getting width and height from EXIF
+  * Fix building with 0.27
+
+Bugs fixed in this release:
+ - https://bugs.debian.org/891897
+ - https://bugzilla.gnome.org/show_bug.cgi?id=791941
+ - https://bugzilla.gnome.org/show_bug.cgi?id=793984
+ - https://gitlab.gnome.org/GNOME/gexiv2/issues/28
+ - https://gitlab.gnome.org/GNOME/gexiv2/issues/31
+ - https://gitlab.gnome.org/GNOME/gexiv2/issues/32
+ - https://gitlab.gnome.org/GNOME/gexiv2/issues/33
+
+All contributors to this release:
+ - Jens Georg <mail@jensge.org>
+ - Ting-Wei Lan <lantw@src.gnome.org>
+ - Chris Lamb <chris@chris-lamb.co.uk>
+
+Added/updated translations
 gexiv2 0.10.8 - 5 Feb 2018
 
   * Do not use linker scripts on Drawin/OS X
