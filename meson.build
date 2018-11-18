@@ -14,7 +14,7 @@ vapi_available = introspection_available and vapigen.found() and get_option('vap
 
 subdir('gexiv2')
 
-if get_option('docs')
+if get_option('gtk_doc')
   subdir('docs')
 endif
 
