@@ -3,7 +3,7 @@ image: fedora:latest
 before_script:
   - dnf update -y --nogpgcheck
   - dnf install -y --nogpgcheck meson gcc-c++ exiv2-devel gobject-introspection-devel
-                                ninja-build python2-devel pyhton2-gobject-base vala
+                                ninja-build python2-devel python2-gobject-base vala
                                 python3-devel python3-gobject-base
   - export LANG=C.UTF-8
 
