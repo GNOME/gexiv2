@@ -1,11 +1,10 @@
-image: debian:unstable
+image: fedora:latest
 
 before_script:
-  - apt update -qq
-  - apt install -y -qq build-essential meson pkg-config gtk-doc-tools
-                       libxml2-utils gobject-introspection python-gi python3-gi
-                       libgirepository1.0-dev libglib2.0-dev libexiv2-dev valac
-                       lcov
+  - dnf update -y --nogpgcheck
+  - dnf install -y --nogpgcheck meson gcc-c++ exiv2-devel gobject-introspection-devel
+                                ninja-build python2-devel python2-gobject-base vala
+                                python3-devel python3-gobject-base
   - export LANG=C.UTF-8
 
 stages:
@@ -51,7 +50,7 @@ pages:
   only:
     - master
   script:
-    - meson -Denable-gtk-doc=true _build .
+    - meson -Dgtk_doc=true _build .
     - ninja -C _build test gexiv2-doc
     - mkdir -p public/
     - mv _build/docs/reference/html/ public/docs/
