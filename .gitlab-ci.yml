@@ -21,6 +21,7 @@ exiv2-master:
     - flatpak-builder build-dir build-aux/org.gnome.GExiv2.json --stop-at=gexiv2
     - flatpak build build-dir meson _build
     - flatpak build build-dir ninja -C _build
+    - flatpak build build-dir ninja -C _build test
   artifacts:
     when: on_failure
     name: "gexiv2-_${CI_COMMIT_REF_NAME}"
