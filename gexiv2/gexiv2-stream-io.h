@@ -16,7 +16,7 @@
 #define GEXIV2_STREAM_IO_H
 
 #include <gexiv2/gexiv2-managed-stream.h>
-#include <exiv2/basicio.hpp>
+#include <exiv2/exiv2.hpp>
 #include <gio/gio.h>
 
 

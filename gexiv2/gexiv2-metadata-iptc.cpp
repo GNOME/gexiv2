@@ -12,7 +12,7 @@
 #include "gexiv2-metadata-private.h"
 #include <string>
 #include <glib-object.h>
-#include <exiv2/iptc.hpp>
+#include <exiv2/exiv2.hpp>
 
 G_BEGIN_DECLS
 

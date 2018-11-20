@@ -11,7 +11,7 @@
 #define GEXIV2_PREVIEW_PROPERTIES_PRIVATE_H
 
 #include <gexiv2/gexiv2-preview-properties.h>
-#include <exiv2/preview.hpp>
+#include <exiv2/exiv2.hpp>
 
 G_BEGIN_DECLS
 

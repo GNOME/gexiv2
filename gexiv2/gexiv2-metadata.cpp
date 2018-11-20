@@ -22,13 +22,8 @@
 #include <cmath>
 #include <glib-object.h>
 #include <gio/gio.h>
-#include <exiv2/image.hpp>
-#include <exiv2/xmpsidecar.hpp>
-#include <exiv2/exif.hpp>
-#include <exiv2/iptc.hpp>
-#include <exiv2/xmp.hpp>
-#include <exiv2/preview.hpp>
-#include <exiv2/jpgimage.hpp>
+
+#include <exiv2/exiv2.hpp>
 
 
 G_BEGIN_DECLS

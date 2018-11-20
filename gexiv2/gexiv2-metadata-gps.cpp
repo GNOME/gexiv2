@@ -15,7 +15,7 @@
 #include <stdexcept>
 #include <stdio.h>
 #include <glib-object.h>
-#include <exiv2/exif.hpp>
+#include <exiv2/exiv2.hpp>
 
 #include <limits>
 
