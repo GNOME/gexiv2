@@ -25,7 +25,7 @@ public:
 
 	StreamIo (ManagedStreamCallbacks* cb);
 
-#if EXIV2_MAJOR_VERSION >= 1 || (EXIV2_MAJOR_VERSION == 0 && EXIV2_MINOR_VERSION >= 26)
+#if EXIV2_TEST_VERSION(0,26,0)
     typedef size_t size_type;
 #else
     typedef long size_type;
