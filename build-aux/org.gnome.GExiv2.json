@@ -1,0 +1,65 @@
+{
+    "app-id" : "org.gnome.GExiv2",
+    "runtime" : "org.gnome.Platform",
+    "runtime-version" : "3.30",
+    "sdk" : "org.gnome.Sdk",
+    "command" : "gexiv2",
+    "tags" : [
+        "nightly"
+    ],
+    "desktop-file-name-prefix" : "(Nightly) ",
+    "cleanup" : [
+        "/include",
+        "/lib/pkconfig",
+        "/share/pkgconfig",
+        "/share/gtk-doc",
+        "/share/man",
+        "/share/vala",
+        "/lib/girepository",
+        "*.la",
+        "*.a"
+    ],
+    "modules" : [
+        {
+            "name" : "exiv2",
+            "cleanup" : [
+                "/bin"
+            ],
+            "buildsystem" : "cmake",
+            "config-opts" : [
+                "-DCMAKE_INSTALL_LIBDIR=lib"
+            ],
+            "sources" : [
+                {
+                    "type" : "git",
+                    "url" : "https://github.com/Exiv2/exiv2/",
+                    "branch" : "master"
+                }
+            ]
+        },
+        {
+            "name" : "gexiv2",
+            "buildsystem" : "meson",
+            "cleanup" : [
+                "/lib/girepository-1.0",
+                "/share/gir-1.0"
+            ],
+            "config-opts" : [
+                "-Dpython2-girdir=no",
+                "-Dpython3-girdir=no"
+            ],
+            "build-options" : {
+                "env" : {
+                    "PKG_CONFIG_GOBJECT_INTROSPECTION_1_0_GIRDIR" : "/app/share/gir-1.0",
+                    "PKG_CONFIG_GOBJECT_INTROSPECTION_1_0_TYPELIBDIR" : "/app/lib/girepository-1.0"
+                }
+            },
+            "sources" : [
+                {
+                    "type" : "git",
+                    "url" : "https://gitlab.gnome.org/GNOME/gexiv2.git/"
+                }
+            ]
+        }
+    ]
+}
