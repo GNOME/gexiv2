@@ -11,7 +11,7 @@
 #define GEXIV2_PREVIEW_IMAGE_PRIVATE_H
 
 #include <gexiv2/gexiv2-preview-image.h>
-#include <exiv2/preview.hpp>
+#include <exiv2/exiv2.hpp>
 
 G_BEGIN_DECLS
 
