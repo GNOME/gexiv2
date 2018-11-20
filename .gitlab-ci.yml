@@ -1,18 +1,39 @@
-image: fedora:latest
 
-before_script:
-  - dnf update -y --nogpgcheck
-  - dnf install -y --nogpgcheck meson gcc-c++ exiv2-devel gobject-introspection-devel
-                                ninja-build python2-devel python2-gobject-base vala
-                                python3-devel python3-gobject-base gtk-doc
-  - export LANG=C.UTF-8
+.fedora:
+  image: fedora:latest
+
+  before_script:
+    - dnf update -y --nogpgcheck
+    - dnf install -y --nogpgcheck meson gcc-c++ exiv2-devel gobject-introspection-devel
+                                  ninja-build python2-devel python2-gobject-base vala
+                                  python3-devel python3-gobject-base gtk-doc
+    - export LANG=C.UTF-8
 
 stages:
   - build
   - test
   - deploy
 
+exiv2-master:
+  image: registry.gitlab.gnome.org/gnome/gnome-runtime-images/gnome:3.30
+  stage: build
+  script:
+    - flatpak-builder build-dir build-aux/org.gnome.GExiv2.json --stop-at=gexiv2
+    - flatpak build build-dir meson _build
+    - flatpak build build-dir ninja -C _build
+    - flatpak build build-dir ninja -C _build test
+  artifacts:
+    when: on_failure
+    name: "gexiv2-_${CI_COMMIT_REF_NAME}"
+    paths:
+      - "${CI_PROJECT_DIR}/_build/meson-logs"
+  cache:
+    paths:
+      - .flatpak-builder/downloads
+      - .flatpak-builder/git
+
 build-job:
+  extends: .fedora
   stage: build
   script:
     - meson --prefix /usr --libdir /usr/lib64 --buildtype debug --werror _build .
@@ -26,6 +47,7 @@ build-job:
       - "${CI_PROJECT_DIR}/_build/meson-logs"
 
 test:
+  extends: .fedora
   stage: test
   script:
     - meson _build .
@@ -35,6 +57,7 @@ test:
 # https://github.com/mesonbuild/meson/issues/3580
 
 dist-job:
+  extends: .fedora
   stage: build
   only:
     - tags
@@ -47,6 +70,7 @@ dist-job:
 
 pages:
   stage: deploy
+  extends: .fedora
   only:
     - master
   script:
