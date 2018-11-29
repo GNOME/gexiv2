@@ -1,6 +1,6 @@
 ent_conf = configuration_data()
 ent_conf.set('PACKAGE', 'GExiv2')
-ent_conf.set('PACKAGE_BUGREPORT', 'https://bugzilla.gnome.org/enter_bug.cgi?product=Shotwell')
+ent_conf.set('PACKAGE_BUGREPORT', 'https://gitlab.gnome.org/GNOME/gexiv2/issues/new')
 ent_conf.set('PACKAGE_NAME', 'gexiv2')
 ent_conf.set('PACKAGE_STRING', 'GExiv2')
 ent_conf.set('PACKAGE_TARNAME', 'gexiv2-' + meson.project_version())
