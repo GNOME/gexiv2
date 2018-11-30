@@ -66,6 +66,11 @@ gexiv2 = library('gexiv2',
                  dependencies : [gobject, exiv2],
                  install : true)
 
+libgexiv2 = declare_dependency(
+    link_with : gexiv2,
+    incldue_directories : include_directories('..')
+)
+
 pc_deps = ['glib-2.0', 'gobject-2.0']
 
 pkg.generate(
