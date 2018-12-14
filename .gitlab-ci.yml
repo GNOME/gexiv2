@@ -8,15 +8,18 @@
                                   ninja-build python2-devel python2-gobject-base vala
                                   python3-devel python3-gobject-base gtk-doc
     - export LANG=C.UTF-8
-
+  except:
+    - schedules
 stages:
   - build
   - test
   - deploy
 
-exiv2-master:
+exiv2-master:on-schedule:
   image: registry.gitlab.gnome.org/gnome/gnome-runtime-images/gnome:3.30
   stage: build
+  only:
+    - schedules
   script:
     - flatpak-builder build-dir build-aux/org.gnome.GExiv2.json --stop-at=gexiv2
     - flatpak build build-dir meson _build
