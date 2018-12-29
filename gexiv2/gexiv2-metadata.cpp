@@ -140,7 +140,7 @@ public:
         return -1;
     }
 
-    long size() const {
+    size_t size() const {
         return -1;
     }
 
