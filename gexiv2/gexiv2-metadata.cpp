@@ -47,16 +47,12 @@ public:
     int putb(Exiv2::byte data) { return EOF; }
 
     Exiv2::DataBuf read(long rcount) {
-        Exiv2::DataBuf b;
-        Exiv2::byte *buf = new Exiv2::byte[rcount];
+        Exiv2::DataBuf b{rcount};
 
-        long bytes_read = this->read(buf, rcount);
-        if (bytes_read > 0) {
-            b.alloc(bytes_read);
-            memcpy(b.pData_, buf, bytes_read);
+        long bytes_read = this->read(b.pData_, rcount);
+        if (bytes_read > 0 && bytes_read != rcount) {
+            b.reset(std::pair<Exiv2::byte*, long>(b.pData_, bytes_read));
         }
-
-        delete[] buf;
 
         return b;
     }
