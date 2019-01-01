@@ -1,3 +1,15 @@
+gexiv2 0.10.10 - 01 Jan 2019
+
+  * Fix building against exiv2 0.27
+  * Various meson build fixes back-ported from master
+
+Bugs fixed in this release:
+ - https://gitlab.gnome.org/GNOME/gexiv2/issues/34
+
+All contributors to this release:
+ - Jens Georg <mail@jensge.org>
+ - Andre Klapper <a9016009@gmx.de>
+
 gexiv2 0.10.9 - 18 Nov 2018
 
   * Fix check for building on OS X

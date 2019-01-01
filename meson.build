@@ -1,4 +1,4 @@
-project('gexiv2', ['c', 'cpp'], version : '0.10.9')
+project('gexiv2', ['c', 'cpp'], version : '0.10.10')
 gnome = import('gnome')
 pkg = import('pkgconfig')
 

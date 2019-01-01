@@ -1,6 +1,6 @@
 AC_INIT([gexiv2],
-        [0.10.9],
-        [https://bugzilla.gnome.org/enter_bug.cgi?product=gexiv2],
+        [0.10.10],
+        [https://gitlab.gnome.org/GNOME/gexiv2/issues/new],
         [gexiv2],
         [https://wiki.gnome.org/Projects/gexiv2])
 AC_PREREQ([2.69])
@@ -29,7 +29,7 @@ PKG_PROG_PKG_CONFIG(0.26)
 
 m4_define([gexiv2_major_version], [0])
 m4_define([gexiv2_minor_version], [10])
-m4_define([gexiv2_micro_version], [9])
+m4_define([gexiv2_micro_version], [10])
 m4_define([gexiv2_real_version],
           [gexiv2_major_version.gexiv2_minor_version.gexiv2_micro_version])
 m4_define([gexiv2_version], [gexiv2_real_version])
