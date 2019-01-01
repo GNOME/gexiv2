@@ -21,7 +21,7 @@
 #include <exception>
 
 StreamIo::StreamIo (ManagedStreamCallbacks* callbacks)
-    : cb (callbacks), memio(NULL), is_open (FALSE), can_write(FALSE) {
+    : cb (callbacks), memio(nullptr), is_open (FALSE), can_write(FALSE) {
     /* at least reading and seeking must be possible to read metatada */
     if ( ! cb->CanRead (cb->handle))
         throw std::exception ();
@@ -33,16 +33,16 @@ StreamIo::StreamIo (ManagedStreamCallbacks* callbacks)
 }
 
 StreamIo::~StreamIo () {
-    memio.reset (NULL);
+    memio.reset (nullptr);
 }
 
 int StreamIo::munmap () {
     int result = 0;
     
     /* remove current memio object */
-    if (memio.get () != NULL) {
+    if (memio.get () != nullptr) {
         result = memio->munmap ();
-        memio.reset (NULL);
+        memio.reset (nullptr);
     }
     
     return result;
@@ -58,9 +58,9 @@ Exiv2::byte* StreamIo::mmap (bool isWriteable) {
     return memio->mmap (isWriteable);
 }
 
-Exiv2::BasicIo::AutoPtr StreamIo::temporary () const {
+StreamIo::ptr_type StreamIo::temporary () const {
     /* here again, we just juse the memory for temporary buffer */
-    return Exiv2::BasicIo::AutoPtr (new Exiv2::MemIo ());
+    return ptr_type{new Exiv2::MemIo ()};
 }
 
 long StreamIo::write (const Exiv2::byte* data, long write_count) {

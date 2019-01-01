@@ -22,6 +22,11 @@
 
 class StreamIo : public Exiv2::BasicIo {
 public:
+#if EXIV2_TEST_VERSION(0,27,99)
+    using ptr_type = Exiv2::BasicIo::UniquePtr;
+#else
+    using ptr_type = Exiv2::BasicIo::AutoPtr;
+#endif
 
 	StreamIo (ManagedStreamCallbacks* cb);
 
@@ -47,15 +52,14 @@ public:
 #ifdef EXV_UNICODE_PATH
 	virtual std::wstring wpath () const;
 #endif
-	virtual BasicIo::AutoPtr temporary () const;
+	virtual ptr_type temporary () const;
 
 private:
-
 	/* stream callbacks */
 	ManagedStreamCallbacks* cb;
 	
 	/* used for mmap and  munmap */
-	Exiv2::BasicIo::AutoPtr memio;
+	ptr_type memio;
 
 	/* closing does not mean closing the stream, because this would
 	   destroy it. So just keep track about current state and let stream

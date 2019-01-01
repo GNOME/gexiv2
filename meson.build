@@ -1,4 +1,12 @@
-project('gexiv2', ['c', 'cpp'], version : '0.11.0')
+project(
+    'gexiv2',
+    ['c', 'cpp'],
+    version : '0.11.0',
+    default_options : [
+        'cpp_std=c++11'
+    ]
+)
+
 gnome = import('gnome')
 pkg = import('pkgconfig')
 

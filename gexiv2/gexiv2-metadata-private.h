@@ -17,7 +17,11 @@ G_BEGIN_DECLS
 
 struct _GExiv2MetadataPrivate
 {
+#if EXIV2_TEST_VERSION(0,27,99)
+    Exiv2::Image::UniquePtr image;
+#else
     Exiv2::Image::AutoPtr image;
+#endif
     gchar* comment;
     gchar* mime_type;
     gint pixel_width;

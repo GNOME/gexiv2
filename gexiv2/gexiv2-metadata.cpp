@@ -25,6 +25,11 @@
 
 #include <exiv2/exiv2.hpp>
 
+#if EXIV2_TEST_VERSION(0,27,99)
+using image_ptr = Exiv2::Image::UniquePtr;
+#else
+using image_ptr = Exiv2::Image::AutoPtr;
+#endif
 
 G_BEGIN_DECLS
 
@@ -34,7 +39,7 @@ static void gexiv2_metadata_finalize (GObject *object);
 static void gexiv2_metadata_set_comment_internal (GExiv2Metadata *self, const gchar *new_comment);
 
 static gboolean gexiv2_metadata_open_internal (GExiv2Metadata *self, GError **error);
-static gboolean gexiv2_metadata_save_internal (GExiv2Metadata *self, Exiv2::Image::AutoPtr image, GError **error);
+static gboolean gexiv2_metadata_save_internal (GExiv2Metadata *self, image_ptr image, GError **error);
 
 static void gexiv2_metadata_init (GExiv2Metadata *self) {
     GExiv2MetadataPrivate *priv;
@@ -156,8 +161,7 @@ gboolean gexiv2_metadata_open_path (GExiv2Metadata *self, const gchar *path, GEr
     g_return_val_if_fail (GEXIV2_IS_METADATA (self), FALSE);
     
     try {
-        Exiv2::BasicIo::AutoPtr file (new Exiv2::FileIo (path));
-        self->priv->image = Exiv2::ImageFactory::open (file);
+        self->priv->image = Exiv2::ImageFactory::open (path);
         
         return gexiv2_metadata_open_internal (self, error);
     } catch (Exiv2::Error &e) {
@@ -186,8 +190,12 @@ gboolean gexiv2_metadata_open_stream (GExiv2Metadata *self, ManagedStreamCallbac
     g_return_val_if_fail (GEXIV2_IS_METADATA (self), FALSE);
     
     try {
-        Exiv2::BasicIo::AutoPtr stream_ptr (new StreamIo (cb));
+        StreamIo::ptr_type stream_ptr{new StreamIo (cb)};
+#if EXIV2_TEST_VERSION(0,27,99)
+        self->priv->image = Exiv2::ImageFactory::open (std::move(stream_ptr));
+#else
         self->priv->image = Exiv2::ImageFactory::open (stream_ptr);
+#endif
         
         return gexiv2_metadata_open_internal (self, error);
     } catch (Exiv2::Error &e) {
@@ -243,8 +251,7 @@ gboolean gexiv2_metadata_from_app1_segment(GExiv2Metadata *self, const guint8 *d
     }
 }
 
-static gboolean gexiv2_metadata_save_internal (GExiv2Metadata *self, Exiv2::Image::AutoPtr image,
-    GError **error) {
+static gboolean gexiv2_metadata_save_internal (GExiv2Metadata *self, image_ptr image, GError **error) {
     if (image.get () == NULL || ! image->good ()) {
         g_set_error_literal (error, g_quark_from_string ("GExiv2"),
             501, "format seems not to be supported");
@@ -331,9 +338,13 @@ gboolean gexiv2_metadata_save_stream (GExiv2Metadata *self, ManagedStreamCallbac
     g_return_val_if_fail (GEXIV2_IS_METADATA (self), FALSE);
     
     try {
-        Exiv2::BasicIo::AutoPtr stream_ptr (new StreamIo (cb));
+        StreamIo::ptr_type stream_ptr{new StreamIo (cb)};
         
+#if EXIV2_TEST_VERSION(0,27,99)
+        return gexiv2_metadata_save_internal (self, Exiv2::ImageFactory::open (std::move(stream_ptr)), error);
+#else
         return gexiv2_metadata_save_internal (self, Exiv2::ImageFactory::open (stream_ptr), error);
+#endif
     } catch (Exiv2::Error &e) {
         g_set_error_literal (error, g_quark_from_string ("GExiv2"), e.code (), e.what ());
     }

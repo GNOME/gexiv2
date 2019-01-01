@@ -220,7 +220,7 @@ gboolean gexiv2_metadata_set_iptc_tag_multiple (GExiv2Metadata *self, const gcha
         }
         
         /* ... and then set the others */
-        Exiv2::Value::AutoPtr iptc_value = Exiv2::Value::create(Exiv2::string);
+        auto iptc_value = Exiv2::Value::create(Exiv2::string);
             
         const gchar **it = values;
         while (*it != NULL) {
