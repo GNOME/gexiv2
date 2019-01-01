@@ -171,6 +171,158 @@ private:
 
 
 }; // class GioIo
+
+class RwGioIo : public Exiv2::BasicIo {
+public:
+    RwGioIo (GIOStream *is)
+        : BasicIo ()
+        , _ios (G_IO_STREAM (g_object_ref (is)))
+        , _seekable(G_IS_SEEKABLE(_ios) ? G_SEEKABLE (_ios) : NULL) {}
+    ~RwGioIo() { g_clear_object (&_ios);}
+#if defined(_MSC_VER)
+    typedef int64_t seek_offset_t;
+#else
+    typedef long seek_offset_t;
+#endif
+
+    int open() {
+        g_print ("=> Open\n");
+        return 0;
+    }
+    int close() {
+        g_print ("=> Close\n");
+        return 0;
+    }
+
+    long write(const Exiv2::byte *data, long wcount) {
+        g_print("=> write %p %ld\n", data, wcount);
+        return 0;
+    }
+
+    long write(BasicIo &src) {
+        g_print("=> write basicio\n");
+        return 0; 
+    }
+
+    int putb(Exiv2::byte data) {
+        g_print("=> putb\n");
+        return EOF;
+    }
+
+    Exiv2::DataBuf read(long rcount) {
+        g_print("=> read\n");
+        return Exiv2::DataBuf();
+    }
+
+    long read(Exiv2::byte *buf, long rcount) {
+        GInputStream *is = g_io_stream_get_input_stream (_ios);
+        GError *error = NULL;
+        gssize result = 0;
+
+        result = g_input_stream_read(is, reinterpret_cast<void *>(buf), rcount, NULL, &error);
+        if (error != NULL) {
+            throw Exiv2::Error(2);
+            return 0;
+        }
+
+        return result;
+    }
+
+    int getb() {
+        g_print("=> getb\n");
+        Exiv2::byte b;
+        return this->read (&b, 1) == 1 ? b : EOF;
+    }
+
+    void transfer(Exiv2::BasicIo &src) {
+        g_print("=> Transfer\n");
+    }
+
+    int seek(seek_offset_t offset, Exiv2::BasicIo::Position position) {
+        g_print("seek %lld %d\n", offset, (int)position);
+        if (_seekable != NULL && g_seekable_can_seek (_seekable)) {
+            GSeekType t = G_SEEK_SET;
+            switch (position) {
+                case Exiv2::BasicIo::cur:
+                    t = G_SEEK_CUR;
+                    break;
+                case Exiv2::BasicIo::beg:
+                    t = G_SEEK_SET;
+                    break;
+                case Exiv2::BasicIo::end:
+                    t = G_SEEK_END;
+                    break;
+                default:
+                    g_assert_not_reached ();
+                    break;
+            }
+
+            GError *error = NULL;
+            g_seekable_seek (_seekable, offset, t, NULL, &error);
+            if (error != NULL) {
+                g_critical ("Failed to seek: %s", error->message);
+
+                g_error_free (error);
+
+                return -1;
+            }
+
+            return 0;
+        } else {
+            return -1;
+        }
+    }
+
+    Exiv2::byte *mmap(bool writable) {
+        g_print("mmap: %d\n", (int) writable);
+        return NULL;
+    }
+
+    int munmap() {
+        g_print("munmap\n");
+        return 0;
+    }
+
+    long tell() const {
+        g_print("tell\n");
+        return -1;
+    }
+
+    size_t size() const {
+        g_print("size\n");
+        return -1;
+    }
+
+    bool isopen() const {
+        g_print("isopen\n");
+        return true;
+    }
+
+    int error() const {
+        g_print("error\n");
+        return 0;
+    }
+
+    bool eof() const {
+        g_print("eof\n");
+        return false;
+    }
+
+    std::string path() const {
+        g_print ("path\n");
+        return "GIO Wrapper";
+    }
+
+    Exiv2::BasicIo::AutoPtr temporary() const {
+        g_print ("temporary\n");
+        return Exiv2::BasicIo::AutoPtr(new Exiv2::FileIo("/tmp/exiv2-temp"));
+    }
+
+
+private:
+    GIOStream *_ios;
+    GSeekable *_seekable;
+};
 } // Anonymous namespace
 
 G_BEGIN_DECLS
@@ -502,6 +654,22 @@ gboolean gexiv2_metadata_save_stream (GExiv2Metadata *self, ManagedStreamCallbac
     
     return FALSE;
 }
+
+gboolean gexiv2_metadata_to_stream (GExiv2Metadata *self, GIOStream* cb, GError **error) {
+    g_return_val_if_fail (GEXIV2_IS_METADATA (self), FALSE);
+    
+    try {
+        Exiv2::BasicIo::AutoPtr stream_ptr (new RwGioIo (cb));
+        
+        return gexiv2_metadata_save_internal (self, Exiv2::ImageFactory::open (stream_ptr), error);
+    } catch (Exiv2::Error &e) {
+        g_set_error_literal (error, g_quark_from_string ("GExiv2"), e.code (), e.what ());
+    }
+    
+    return FALSE;
+}
+
+
 
 gboolean gexiv2_metadata_has_tag(GExiv2Metadata *self, const gchar* tag) {
     g_return_val_if_fail(GEXIV2_IS_METADATA(self), FALSE);

@@ -21,6 +21,7 @@ int main(string[] args) {
 //            metadata.open_path(filename);
             var file = File.new_for_path (filename);
             metadata.from_stream (file.read ());
+            metadata.to_stream (file.open_readwrite ());
             
             dump_tags(metadata, metadata.get_exif_tags());
             dump_tags(metadata, metadata.get_iptc_tags());

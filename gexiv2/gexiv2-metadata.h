@@ -308,6 +308,9 @@ gboolean		gexiv2_metadata_save_file			(GExiv2Metadata *self, const gchar *path, 
  */
 gboolean		gexiv2_metadata_save_stream			(GExiv2Metadata *self, ManagedStreamCallbacks* cb, GError **error);
 
+gboolean gexiv2_metadata_to_stream (GExiv2Metadata *self, 
+    GIOStream *io, GError **error);
+
 /**
  * gexiv2_metadata_has_tag:
  * @self: An instance of #GExiv2Metadata
