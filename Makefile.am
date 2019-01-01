@@ -35,6 +35,7 @@ EXTRA_DIST = \
 	test/data/original.jpg \
 	test/data/CaorVN.jpeg \
 	test/data/no-fnumber.jpg \
+	test/data/no-metadata.jpg \
 	test/gexiv2-dump.vala \
 	test/python/gexiv2.py \
 	test/python/test_metadata.py \
