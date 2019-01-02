@@ -10,6 +10,7 @@
 
 #include "gexiv2-metadata.h"
 #include "gexiv2-metadata-private.h"
+#include "gexiv2-metadata-gio.h"
 #include "gexiv2-stream-io.h"
 #include "gexiv2-managed-stream.h"
 #include "gexiv2-preview-properties.h"
@@ -30,195 +31,6 @@ using image_ptr = Exiv2::Image::UniquePtr;
 #else
 using image_ptr = Exiv2::Image::AutoPtr;
 #endif
-
-namespace {
-class GioIo : public Exiv2::BasicIo {
-public:
-    GioIo (GInputStream *is)
-        : BasicIo ()
-        , _is (G_INPUT_STREAM (g_object_ref (is)))
-        , _seekable(G_IS_SEEKABLE(_is) ? G_SEEKABLE (_is) : NULL)
-        , _error{nullptr}
-        , _eof{false}
-        {}
-
-    ~GioIo() { g_clear_object (&_is); g_clear_error (&_error); _seekable = NULL;}
-#if defined(_MSC_VER)
-    typedef int64_t seek_offset_t;
-#else
-    typedef long seek_offset_t;
-#endif
-
-#if EXIV2_TEST_VERSION(0,27,99)
-    using ptr_type = Exiv2::BasicIo::UniquePtr;
-#else
-    using ptr_type = Exiv2::BasicIo::AutoPtr;
-#endif
-
-    int open() {
-        return 0;
-    }
-
-    int close() {
-        return 0;
-    }
-
-    // Writing is not supported
-    long write(const Exiv2::byte *data, long wcount) { return 0; }
-    long write(BasicIo &src) { return 0; }
-    int putb(Exiv2::byte data) { return EOF; }
-
-
-    Exiv2::DataBuf read(long rcount) {
-        Exiv2::DataBuf b{rcount};
-
-        long bytes_read = this->read(b.pData_, rcount);
-        if (bytes_read > 0 && bytes_read != rcount) {
-            b.reset({b.pData_, bytes_read});
-        }
-
-        return b;
-    }
-
-    long read(Exiv2::byte *buf, long rcount) {
-        GError *error = NULL;
-        gssize result = 0;
-
-        result = g_input_stream_read(_is, reinterpret_cast<void *>(buf), rcount, NULL, &error);
-        if (error != NULL) {
-            g_critical ("Error reading from stream: %d %s", error->code, error->message);
-            g_clear_error (&_error);
-            _error = error;
-
-#if EXIV2_TEST_VERSION(0,27,0)
-            throw Exiv2::Error(Exiv2::ErrorCode::kerFailedToReadImageData);
-#else
-            throw Exiv2::Error(2);
-#endif
-            return 0;
-        }
-
-        if (result == 0) {
-            _eof = true;
-        } else {
-            _eof = false;
-        }
-
-        return result;
-    }
-
-    int getb() {
-        Exiv2::byte b;
-        return this->read (&b, 1) == 1 ? b : EOF;
-    }
-
-    void transfer(Exiv2::BasicIo &src) {
-        // Does not seem necessary for Read-only support
-    }
-
-    int seek(seek_offset_t offset, Exiv2::BasicIo::Position position) {
-        if (_seekable != NULL && g_seekable_can_seek (_seekable)) {
-            GSeekType t = G_SEEK_SET;
-            switch (position) {
-                case Exiv2::BasicIo::cur:
-                    t = G_SEEK_CUR;
-                    break;
-                case Exiv2::BasicIo::beg:
-                    t = G_SEEK_SET;
-                    break;
-                case Exiv2::BasicIo::end:
-                    t = G_SEEK_END;
-                    break;
-                default:
-                    g_assert_not_reached ();
-                    break;
-            }
-
-            GError *error = NULL;
-            g_seekable_seek (_seekable, offset, t, NULL, &error);
-            if (error != NULL) {
-                g_clear_error(&_error);
-                g_critical ("Failed to seek: %s", error->message);
-                _error = error;
-
-                return -1;
-            }
-
-            return 0;
-        } else {
-            // Can only seek forward here...
-            if (position != Exiv2::BasicIo::cur) {
-                return -1;
-            }
-
-            GError *error = NULL;
-            g_input_stream_skip (_is, offset, NULL, &error);
-            if (error != NULL) {
-                g_clear_error(&_error);
-                _error = error;
-                g_critical("Failed to seek forward: %s", error->message);
-
-                return -1;
-            }
-
-            return 0;
-        }
-    }
-
-    Exiv2::byte *mmap(bool writable) {
-        return NULL;
-    }
-
-    int munmap() {
-        return 0;
-    }
-
-    long tell() const {
-        if (_seekable != NULL && g_seekable_can_seek (_seekable)) {
-            return static_cast<long>(g_seekable_tell (_seekable));
-        } else {
-            return -1;
-        }
-    }
-
-    size_t size() const {
-        return -1;
-    }
-
-    bool isopen() const {
-        return true;
-    }
-
-    int error() const {
-        return _error == nullptr ? 0 : 1;
-    }
-
-    bool eof() const {
-        return _eof;
-    }
-
-    std::string path() const {
-        return "GIO Wrapper";
-    }
-
-#if EXIV2_TEST_VERSION(0,27,99)
-    Exiv2::BasicIo::UniquePtr temporary() const {
-        return Exiv2::BasicIo::UniquePtr(nullptr);
-    }
-#else
-    Exiv2::BasicIo::AutoPtr temporary() const {
-        return Exiv2::BasicIo::AutoPtr(nullptr);
-    }
-#endif
-
-
-private:
-    GInputStream *_is;
-    GSeekable *_seekable;
-    GError *_error;
-    bool _eof;
-}; // class GioIo
-} // Anonymous namespace
 
 G_BEGIN_DECLS
 
@@ -398,7 +210,7 @@ gboolean gexiv2_metadata_from_stream(GExiv2Metadata *self, GInputStream *stream,
     g_return_val_if_fail (GEXIV2_IS_METADATA (self), FALSE);
 
     try {
-        GioIo::ptr_type gio_ptr{new GioIo (stream)};
+        GExiv2::Internal::GioIo::ptr_type gio_ptr{new GExiv2::Internal::GioIo (stream)};
 #if EXIV2_TEST_VERSION(0,27,99)
         self->priv->image = Exiv2::ImageFactory::open (std::move(gio_ptr));
 #else
@@ -557,6 +369,24 @@ gboolean gexiv2_metadata_save_stream (GExiv2Metadata *self, ManagedStreamCallbac
         g_set_error_literal (error, g_quark_from_string ("GExiv2"), e.code (), e.what ());
     }
     
+    return FALSE;
+}
+
+gboolean gexiv2_metadata_to_stream(GExiv2Metadata *self, GIOStream *stream, GError **error) {
+    g_return_val_if_fail (GEXIV2_IS_METADATA (self), FALSE);
+
+    try {
+        GExiv2::Internal::GioRwIo::ptr_type stream_ptr{new GExiv2::Internal::GioRwIo{stream}};
+
+#if EXIV2_TEST_VERSION(0,27,99)
+        return gexiv2_metadata_save_internal (self, Exiv2::ImageFactory::open (std::move(stream_ptr)), error);
+#else
+        return gexiv2_metadata_save_internal (self, Exiv2::ImageFactory::open (stream_ptr), error);
+#endif
+    } catch (Exiv2::Error &e) {
+        g_set_error_literal (error, g_quark_from_string ("GExiv2"), e.code (), e.what ());
+    }
+
     return FALSE;
 }
 

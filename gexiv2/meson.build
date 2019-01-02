@@ -47,6 +47,8 @@ gexiv2 = library('gexiv2',
                   'gexiv2-log-private.h',
                   'gexiv2-metadata-private.h',
                   'gexiv2-stream-io.h',
+                  'gexiv2-metadata-gio.h',
+                  'gexiv2-metadata-gio.cpp',
                   'gexiv2-preview-properties-private.h',
                   'gexiv2-preview-image-private.h'] +
                  gexiv2_headers +
