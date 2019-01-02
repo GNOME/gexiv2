@@ -318,6 +318,18 @@ gboolean		gexiv2_metadata_save_file			(GExiv2Metadata *self, const gchar *path, 
 gboolean		gexiv2_metadata_save_stream			(GExiv2Metadata *self, ManagedStreamCallbacks* cb, GError **error);
 
 /**
+ * gexiv2_metadata_to_stream:
+ * @self: An instance of #GExiv2Metadata
+ * @ios: A #GIOStream for writing the meta-data to
+ * @error: (allow-none): A return location for a #GError or %NULL
+ *
+ * Saves the metadata to the file represented by #ios.
+ *
+ * Returns: Boolean success indicator.
+ */
+gboolean		gexiv2_metadata_to_stream			(GExiv2Metadata *self, GIOStream *ios, GError **error);
+
+/**
  * gexiv2_metadata_has_tag:
  * @self: An instance of #GExiv2Metadata
  * @tag: Exiv2 tag

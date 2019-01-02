@@ -18,8 +18,7 @@ int main(string[] args) {
     foreach (string filename in args[1:args.length]) {
         try {
             GExiv2.Metadata metadata = new GExiv2.Metadata();
-//            metadata.open_path(filename);
-            var file = File.new_for_path (filename);
+            var file = File.new_for_commandline_arg (filename);
             metadata.from_stream (file.read ());
             
             dump_tags(metadata, metadata.get_exif_tags());
