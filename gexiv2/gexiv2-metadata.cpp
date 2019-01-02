@@ -84,7 +84,11 @@ public:
             g_clear_error (&_error);
             _error = error;
 
+#if EXIV2_TEST_VERSION(0,27,0)
+            throw Exiv2::Error(Exiv2::ErrorCode::kerFailedToReadImageData);
+#else
             throw Exiv2::Error(2);
+#endif
             return 0;
         }
 
