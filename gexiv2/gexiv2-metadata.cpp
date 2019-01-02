@@ -49,6 +49,12 @@ public:
     typedef long seek_offset_t;
 #endif
 
+#if EXIV2_TEST_VERSION(0,27,99)
+    using ptr_type = Exiv2::BasicIo::UniquePtr;
+#else
+    using ptr_type = Exiv2::BasicIo::AutoPtr;
+#endif
+
     int open() {
         return 0;
     }
@@ -392,8 +398,12 @@ gboolean gexiv2_metadata_from_stream(GExiv2Metadata *self, GInputStream *stream,
     g_return_val_if_fail (GEXIV2_IS_METADATA (self), FALSE);
 
     try {
-        Exiv2::BasicIo::AutoPtr gio_ptr (new GioIo (stream));
+        GioIo::ptr_type gio_ptr{new GioIo (stream)};
+#if EXIV2_TEST_VERSION(0,27,99)
+        self->priv->image = Exiv2::ImageFactory::open (std::move(gio_ptr));
+#else
         self->priv->image = Exiv2::ImageFactory::open (gio_ptr);
+#endif
 
         return gexiv2_metadata_open_internal (self, error);
     } catch (Exiv2::Error &e) {
