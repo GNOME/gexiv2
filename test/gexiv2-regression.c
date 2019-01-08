@@ -265,6 +265,11 @@ static void test_ggo_xx(void)
     g_free (comment);
 }
 
+static void test_ggo_27(void)
+{
+    gexiv2_metadata_register_xmp_namespace ("gnome", "http://www.gnome.org/xmp");
+}
+
 int main(int argc, char *argv[static argc + 1])
 {
     g_test_init(&argc, &argv, NULL);
@@ -275,6 +280,7 @@ int main(int argc, char *argv[static argc + 1])
     g_test_add_func("/bugs/gnome/gitlab/31", test_ggo_31);
     g_test_add_func("/bugs/gnome/gitlab/32", test_ggo_32);
     g_test_add_func("/bugs/gnome/gitlab/33", test_ggo_33);
+    g_test_add_func("/bugs/gnome/gitlab/27", test_ggo_27);
     g_test_add_func("/bugs/gnome/gitlab/xx", test_ggo_xx);
 
     return g_test_run();
