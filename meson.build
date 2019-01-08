@@ -30,8 +30,8 @@ endif
 python2_available = false
 python3_available = false
 python_gi_test_args = ['-c', 'import gi; print(gi._overridesdir)']
-python2_girdir = get_option('python2-girdir')
-python3_girdir = get_option('python3-girdir')
+python2_girdir = get_option('python2_girdir')
+python3_girdir = get_option('python3_girdir')
 
 if introspection_available
   if python2_girdir != 'no'
