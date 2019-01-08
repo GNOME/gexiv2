@@ -1,3 +1,25 @@
+gexiv2 0.11.0 - 8 Jan 2019
+
+  * Remove autotools
+  * Align Meson options with the rest of GNOME
+  * Prevent additional newlines from Exiv2 logging
+  * Remove VAPI overrides
+  * Adapt to Exiv2 changes in 0.27 and master
+  * Fix several issues with Gtk-Doc
+  * Add support to read Exiv2 meta-data from a GInputStream
+
+
+Bugs fixed in this release:
+ - https://github.com/Exiv2/exiv2/issues/555#issuecomment-440023260
+ - https://gitlab.gnome.org/GNOME/gexiv2/issues/34
+ - https://gitlab.gnome.org/GNOME/gexiv2/issues/36
+ - https://gitlab.gnome.org/GNOME/gexiv2/issues/38
+
+All contributors to this release:
+ - Jens Georg <mail@jensge.org>
+ - Corentin Noël <corentin@elementary.io>
+ - Andre Klapper <a9016009@gmx.de>
+
 gexiv2 0.10.9 - 18 Nov 2018
 
   * Fix check for building on OS X
