@@ -9,7 +9,7 @@ test_env = ['G_SLICE=always-malloc',
             ]
 
 regression_test = executable('gexiv2-regression', 'gexiv2-regression.c',
-                             dependencies : gobject,
+                             dependencies : [gobject, gio],
                              include_directories : include_directories('..'),
                              c_args : '-DSAMPLE_PATH="@0@"'.format(test_sample_path),
                              link_with : gexiv2)
