@@ -196,6 +196,7 @@ static void test_bgo_730136(void)
 
 static void test_bgo_790925(void)
 {
+#if defined(__GNUC__) /* This should include clang */
     g_autoptr(GExiv2Metadata) meta = NULL;
     g_autoptr(GExiv2PreviewImage) image = NULL;
     GExiv2PreviewProperties **props = NULL;
@@ -214,6 +215,7 @@ static void test_bgo_790925(void)
 
     image = gexiv2_metadata_get_preview_image (meta, *props);
     g_assert_nonnull(image);
+#endif
 }
 
 static void test_ggo_xx(void)
