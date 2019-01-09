@@ -215,23 +215,6 @@ esac
 AC_MSG_RESULT([$target_or_host])
 
 #################
-# Check for OS X
-#################
-
-AC_MSG_CHECKING([OS X platform])
-case "$target_or_host" in
-    *-*-darwin*)
-        platform_darwin=yes
-    ;;
-    *)
-        platform_darwin=no
-    ;;
-esac
-AC_MSG_RESULT([$platform_darwin])
-AM_CONDITIONAL(PLATFORM_DARWIN, test "$platform_darwin" = "yes")
-
-
-#################
 # Check for Win32
 #################
 
