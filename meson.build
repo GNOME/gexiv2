@@ -15,11 +15,9 @@ gobject = dependency('gobject-2.0', version : '>= 2.38.0')
 gio = dependency('gio-2.0', version : '>= 2.32.0')
 
 gir = find_program('g-ir-scanner', required: false)
-vapigen = find_program('vapigen', required: false)
-vala = find_program('valac', required: false)
 
 introspection_available = gir.found() and get_option('introspection')
-vapi_available = introspection_available and vapigen.found() and get_option('vapi')
+vapi_available = introspection_available and add_languages('vala', required: get_option('vapi')) and get_option('vapi')
 
 subdir('gexiv2')
 

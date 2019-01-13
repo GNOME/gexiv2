@@ -17,15 +17,11 @@ regression_test = executable('gexiv2-regression', 'gexiv2-regression.c',
 test('regression', regression_test, env : test_env)
 
 if vapi_available
-  valac = find_program('valac')
-  if valac.found()
-    add_languages('vala')
-    executable('gexiv2-dump',
-               'gexiv2-dump.vala',
-               include_directories : include_directories('..'),
-               dependencies : [gobject, vapi, gio],
-               link_with : gexiv2)
-  endif
+  executable('gexiv2-dump',
+             'gexiv2-dump.vala',
+             include_directories : include_directories('..'),
+             dependencies : [gobject, vapi, gio],
+             link_with : gexiv2)
 endif
 
 if python2_available
