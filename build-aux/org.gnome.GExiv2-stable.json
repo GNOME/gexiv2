@@ -35,7 +35,7 @@
                 {
                     "type" : "git",
                     "url" : "https://github.com/Exiv2/exiv2/",
-                    "branch" : "master"
+                    "branch" : "0.27"
                 }
             ]
         },
