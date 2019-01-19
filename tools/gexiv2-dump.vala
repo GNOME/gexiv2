@@ -18,8 +18,7 @@ int main(string[] args) {
     foreach (string filename in args[1:args.length]) {
         try {
             GExiv2.Metadata metadata = new GExiv2.Metadata();
-//            metadata.open_path(filename);
-            var file = File.new_for_path (filename);
+            var file = File.new_for_commandline_arg (filename);
             metadata.from_stream (file.read ());
             
             dump_tags(metadata, metadata.get_exif_tags());
@@ -34,14 +33,13 @@ int main(string[] args) {
 }
 
 void usage() {
-    stdout.printf("usage: gexiv2-dump FILE...\n\n");
+    print("usage: gexiv2-dump FILE...\n\n");
 }
 
 void dump_tags(GExiv2.Metadata metadata, string[] tags) throws Error {
     foreach (string tag in tags) {
-        stdout.printf("%s%*s%s\n",
+        print("%-64s%s\n",
             tag,
-            (64 - tag.length).clamp(1, 64), "",
             metadata.get_tag_interpreted_string(tag)
         );
     }

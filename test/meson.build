@@ -16,14 +16,6 @@ regression_test = executable('gexiv2-regression', 'gexiv2-regression.c',
 
 test('regression', regression_test, env : test_env)
 
-if vapi_available
-  executable('gexiv2-dump',
-             'gexiv2-dump.vala',
-             include_directories : include_directories('..'),
-             dependencies : [gobject, vapi, gio],
-             link_with : gexiv2)
-endif
-
 if python2_available
   python2_test_conf = configuration_data()
   python2_test_conf.set('PYTHON2_PATH', python2.path())

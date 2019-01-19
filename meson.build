@@ -62,3 +62,7 @@ if introspection_available
 endif
 
 subdir('test')
+
+if get_option('tools')
+  subdir('tools')
+endif
