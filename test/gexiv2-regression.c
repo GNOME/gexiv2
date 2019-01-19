@@ -267,7 +267,7 @@ static void test_ggo_xx(void)
 
 static void test_ggo_27(void)
 {
-    gexiv2_metadata_register_xmp_namespace ("gnome", "http://www.gnome.org/xmp");
+    gexiv2_metadata_register_xmp_namespace ("http://www.gnome.org/xmp", "gnome");
 }
 
 int main(int argc, char *argv[static argc + 1])
