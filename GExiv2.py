@@ -21,7 +21,6 @@
 from datetime import datetime
 from fractions import Fraction
 
-from gi.repository import GObject
 from ..overrides import override
 from ..module import get_introspection_module
 
@@ -105,8 +104,8 @@ class Metadata(GExiv2.Metadata):
     
     __setitem__ = GExiv2.Metadata.set_tag_string
 
+
 __all__.append('Metadata')
 
 if not GExiv2.initialize():
     raise RuntimeError("GExiv2 couldn't be initialized")
-
