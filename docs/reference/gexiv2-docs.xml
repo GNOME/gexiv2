@@ -11,8 +11,8 @@
     <title>&package_name; Reference Manual</title>
     <releaseinfo>
       for &package_string;.
-      The latest version of this documentation can be found on-line at
-      <ulink role="online-location" url="http://developer.gnome.org/&package_name;/unstable/">http://developer.gnome.org/&package_name;/unstable</ulink>.
+      The latest version of this documentation can be found online at
+      <ulink role="online-location" url="https://gnome.pages.gitlab.gnome.org/&package_name;/docs/">https://gnome.pages.gitlab.gnome.org/&package_name;/docs</ulink>.
     </releaseinfo>
   </bookinfo>
 
