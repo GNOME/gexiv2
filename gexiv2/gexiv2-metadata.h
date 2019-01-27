@@ -260,6 +260,8 @@ gboolean		gexiv2_metadata_open_stream			(GExiv2Metadata *self, ManagedStreamCall
  * @error: (allow-none): A return location for a #GError or %NULL
  *
  * Read meta-data from a GIO stream
+ *
+ * Returns: Boolean success indicator
  */
 gboolean		gexiv2_metadata_from_stream			(GExiv2Metadata *self, GInputStream* stream, GError **error);
 

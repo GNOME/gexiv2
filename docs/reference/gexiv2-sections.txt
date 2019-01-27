@@ -22,6 +22,7 @@ gexiv2_metadata_free
 gexiv2_metadata_open_path
 gexiv2_metadata_open_buf
 gexiv2_metadata_open_stream
+gexiv2_metadata_from_stream
 gexiv2_metadata_from_app1_segment
 gexiv2_metadata_save_external
 gexiv2_metadata_save_file
