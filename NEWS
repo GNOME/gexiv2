@@ -1,3 +1,22 @@
+gexiv2 0.12.0 - 11 Mar 2019
+
+ * Include a test for https://gitlab.gnome.org/GNOME/shotwell/issues/94
+ * Disable autoptr test when not running on GCC/Clang
+ * Revert symbol hiding script
+ * Improve building the vapi using meson's vala support
+ * Add canary test for https://gitlab.gnome.org/GNOME/gexiv2/issues/27
+ * Promote gexiv2-dump to a tool
+ * Documentation fixes
+ * flake8 fixes for python code
+
+Bugs fixed in this release:
+ - https://gitlab.gnome.org/GNOME/gexiv2/issues/27
+
+All contributors to this release:
+ - Jens Georg <mail@jensge.org>
+ - Chris Mayo <aklhfex@gmail.com>
+ - Marty E. Plummer <hanetzer@startmail.com>
+
 gexiv2 0.11.0 - 8 Jan 2019
 
   * Remove autotools
