@@ -2,6 +2,13 @@ pkg = import('pkgconfig')
 
 as_version = meson.project_version().split('.')
 
+libversion = '2.0.0'
+libversion_arr = libversion.split('.')
+darwin_version_major = libversion_arr[0].to_int()
+darwin_version_minor = libversion_arr[1].to_int()
+darwin_version_micro = libversion_arr[2].to_int()
+darwin_versions = [darwin_version_major + darwin_version_minor + 1, '@0@.@1@'.format(darwin_version_major + darwin_version_minor + 1, darwin_version_micro)]
+
 gexiv2_include_dir = join_paths(get_option('includedir'), 'gexiv2')
 
 config = configuration_data()
@@ -53,7 +60,8 @@ gexiv2 = library('gexiv2',
                  [version_header] +
                  enum_sources,
                  include_directories : include_directories('..'),
-                 version: '2.0.0',
+                 version: libversion,
+                 darwin_versions: darwin_versions,
                  dependencies : [gobject, exiv2, gio],
                  install : true)
 
