@@ -63,11 +63,11 @@ StreamIo::ptr_type StreamIo::temporary () const {
     return ptr_type{new Exiv2::MemIo ()};
 }
 
-long StreamIo::write (const Exiv2::byte* data, long write_count) {
+StreamIo::size_type StreamIo::write (const Exiv2::byte* data, StreamIo::size_type write_count) {
     if ( ! can_write)
         return 0;
     
-    long total_written_bytes = 0;
+    StreamIo::size_type total_written_bytes = 0;
     
     while (write_count > total_written_bytes) {
     
@@ -83,7 +83,7 @@ long StreamIo::write (const Exiv2::byte* data, long write_count) {
     return total_written_bytes;
 }
 
-long StreamIo::write (Exiv2::BasicIo& src) {
+StreamIo::size_type StreamIo::write (Exiv2::BasicIo& src) {
     if ( ! can_write)
         return 0;
     
@@ -173,8 +173,8 @@ Exiv2::DataBuf StreamIo::read (long read_count) {
     return buffer;
 }
 
-long StreamIo::read (Exiv2::byte* buf, long read_count) {
-    long total_read_bytes = 0;
+StreamIo::size_type StreamIo::read (Exiv2::byte* buf, StreamIo::size_type read_count) {
+    StreamIo::size_type total_read_bytes = 0;
 
     while (read_count > total_read_bytes) {
         /* because of a marshalling problem on managed side, we shift the

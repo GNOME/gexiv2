@@ -24,8 +24,10 @@ class StreamIo : public Exiv2::BasicIo {
 public:
 #if EXIV2_TEST_VERSION(0,27,99)
     using ptr_type = Exiv2::BasicIo::UniquePtr;
+    using size_type = size_t;
 #else
     using ptr_type = Exiv2::BasicIo::AutoPtr;
+    using size_type = long;
 #endif
 
 	StreamIo (ManagedStreamCallbacks* cb);
@@ -33,11 +35,11 @@ public:
 	virtual ~StreamIo ();
 	virtual int open ();
 	virtual int close ();
-	virtual long write (const Exiv2::byte* data, long wcount);
-	virtual long write (Exiv2::BasicIo& src);
+	virtual size_type write (const Exiv2::byte* data, size_type wcount);
+	virtual size_type write (Exiv2::BasicIo& src);
 	virtual int putb (Exiv2::byte data);
 	virtual Exiv2::DataBuf read (long rcount);
-	virtual long read (Exiv2::byte* buf, long rcount);
+	virtual size_type read (Exiv2::byte* buf, size_type rcount);
 	virtual int getb ();
 	virtual void transfer (Exiv2::BasicIo& src);
 	virtual int seek (long offset, Position pos);

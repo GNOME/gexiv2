@@ -284,11 +284,11 @@ gchar** gexiv2_metadata_get_xmp_tag_multiple (GExiv2Metadata *self, const gchar*
             it++;
         
         if (it != xmp_data.end()) {
-            int size = it->count ();
+            auto size = it->count ();
             gchar **array = g_new (gchar*, size + 1);
             array[size] = NULL;
             
-            for (int i = 0; i < it->count (); i++)
+            for (decltype(size) i = 0; i < size; i++)
                 array[i] = g_strdup (it->toString (i).c_str ());
             
             return array;

@@ -41,6 +41,11 @@ public:
         , _error{nullptr}
         , _eof{false}
         {}
+#if EXIV2_TEST_VERSION(0,27,99)
+    using size_type = size_t;
+#else
+    using size_type = long;
+#endif
 
     ~GioIo() { g_clear_object (&_is); g_clear_error (&_error); _seekable = NULL;}
 #if defined(_MSC_VER)
@@ -64,13 +69,13 @@ public:
     }
 
     // Writing is not supported
-    long write(const Exiv2::byte *data, long wcount) { return 0; }
-    long write(BasicIo &src) { return 0; }
+    size_type write(const Exiv2::byte *data, size_type wcount) { return 0; }
+    size_type write(BasicIo &src) { return 0; }
     int putb(Exiv2::byte data) { return EOF; }
 
 
     Exiv2::DataBuf read(long rcount) {
-        Exiv2::DataBuf b{rcount};
+        Exiv2::DataBuf b{static_cast<GioIo::size_type>(rcount)};
 
         long bytes_read = this->read(b.pData_, rcount);
         if (bytes_read > 0 && bytes_read != rcount) {
@@ -80,7 +85,7 @@ public:
         return b;
     }
 
-    long read(Exiv2::byte *buf, long rcount) {
+    size_type read(Exiv2::byte *buf, size_type rcount) {
         GError *error = NULL;
         gssize result = 0;
 
