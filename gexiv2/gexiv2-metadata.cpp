@@ -206,6 +206,15 @@ public:
         return "GIO Wrapper";
     }
 
+#ifdef EXV_UNICODE_PATH
+    std::wstring wpath() const {
+        std::string p = path();
+        std::wstring w(p.length(), L' ');
+        std::copy(p.begin(), p.end(), w.begin());
+        return w;
+    }
+#endif
+
 #if EXIV2_TEST_VERSION(0,27,99)
     Exiv2::BasicIo::UniquePtr temporary() const {
         return Exiv2::BasicIo::UniquePtr(nullptr);
