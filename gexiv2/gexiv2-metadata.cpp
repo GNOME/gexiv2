@@ -77,7 +77,7 @@ public:
     Exiv2::DataBuf read(long rcount) {
         Exiv2::DataBuf b{static_cast<GioIo::size_type>(rcount)};
 
-        long bytes_read = this->read(b.pData_, rcount);
+        auto bytes_read = this->read(b.pData_, rcount);
         if (bytes_read > 0 && bytes_read != rcount) {
             b.reset({b.pData_, bytes_read});
         }

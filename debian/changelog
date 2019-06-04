@@ -1,3 +1,9 @@
+gexiv2 (0.12.0-0~jensge0~bionic4) bionic; urgency=medium
+
+  * Import new stable release
+
+ -- Jens Georg <mail@jensge.org>  Tue, 04 Jun 2019 13:29:03 +0200
+
 gexiv2 (0.10.6-0~jensge0~xenial1) xenial; urgency=medium
 
   * Fix missing include file

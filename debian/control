@@ -3,13 +3,11 @@ Priority: extra
 Maintainer: Jens Georg <mail@jensge.org>
 Build-Depends: debhelper (>= 7),
                gtk-doc-tools,
-               autoconf,
-               autotools-dev,
                automake,
                m4,
                libtool,
                libglib2.0-dev,
-               libexiv2-dev,
+               libexiv2-dev (>= 0.26),
                libexpat1-dev,
                gobject-introspection (>= 0.9.12-4~),
                libgirepository1.0-dev (>= 0.9.12),
@@ -17,7 +15,10 @@ Build-Depends: debhelper (>= 7),
                python3-gi,
                python-gi,
                python:any,
-               python3:any
+               python3:any,
+               dh-python,
+               valac,
+               meson
 Standards-Version: 3.9.8
 Section: libs
 Homepage: https://wiki.gnome.org/Projects/gexiv2
