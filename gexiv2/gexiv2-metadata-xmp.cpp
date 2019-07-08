@@ -405,7 +405,7 @@ gboolean gexiv2_metadata_register_xmp_namespace (const gchar* name, const gchar*
 
     try {
         Exiv2::XmpProperties::ns(prefix);
-    } catch (Exiv2::Error& error) {
+    } catch (Exiv2::AnyError& error) {
         // No namespace, OK to register
         Exiv2::XmpProperties::registerNs(name, prefix);
         return TRUE;
