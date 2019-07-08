@@ -1,12 +1,12 @@
 test_sample_path = join_paths(meson.current_source_dir(), 'data')
 python_module_path = join_paths(meson.current_source_dir(), 'python')
 
-test_env = ['G_SLICE=always-malloc',
-            'GI_TYPELIB_PATH=@0@'.format(typelib_path),
-            'PYTHONPATH=@0@'.format(python_module_path),
-            'TEST_DATA_DIR=@0@'.format(test_sample_path),
-            'LD_LIBRARY_PATH=@0@'.format(typelib_path),
-            ]
+test_env = environment()
+test_env.set('G_SLICE', 'always-malloc')
+test_env.set('TEST_DATA_DIR', test_sample_path)
+test_env.prepend('GI_TYPELIB_PATH', typelib_path)
+test_env.prepend('LD_LIBRARY_PATH', typelib_path)
+test_env.prepend('PYTHONPATH', python_module_path)
 
 regression_test = executable('gexiv2-regression', 'gexiv2-regression.c',
                              dependencies : [gobject, gio],
