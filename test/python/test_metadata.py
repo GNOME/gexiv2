@@ -737,6 +737,30 @@ generated the image. When the field is left blank, it is treated as unknown.""")
              ('Exif.GPSInfo.GPSMapDatum', 'WGS-84'),
              ('Exif.GPSInfo.GPSVersionID', '2 0 0 0')])
 
+    def test_bogus_gps_info(self):
+        # Longitude, latitude, altitude
+        self.metadata.set_gps_info(1.0, 1.0, 1.0)
+        bogus_data = '1/0 1/1 1/1'
+        self.metadata.set_tag_string('Exif.GPSInfo.GPSLatitude', bogus_data)
+        self.assertAlmostEqual(self.metadata.get_gps_latitude(), 0.0)
+        self.metadata.set_tag_string('Exif.GPSInfo.GPSLongitude', bogus_data)
+        self.assertAlmostEqual(self.metadata.get_gps_longitude(), 0.0)
+
+        bogus_data = '1/1 1/0 1/1'
+        self.metadata.set_tag_string('Exif.GPSInfo.GPSLatitude', bogus_data)
+        self.assertAlmostEqual(self.metadata.get_gps_latitude(), 1.0)
+        self.metadata.set_tag_string('Exif.GPSInfo.GPSLongitude', bogus_data)
+        self.assertAlmostEqual(self.metadata.get_gps_longitude(), 1.0)
+
+        bogus_data = '1/1 6/1 1/0'
+        self.metadata.set_tag_string('Exif.GPSInfo.GPSLatitude', bogus_data)
+        self.assertAlmostEqual(self.metadata.get_gps_latitude(), 1.1)
+        self.metadata.set_tag_string('Exif.GPSInfo.GPSLongitude', bogus_data)
+        self.assertAlmostEqual(self.metadata.get_gps_longitude(), 1.1)
+
+        self.metadata.set_tag_string('Exif.GPSInfo.GPSAltitude', '1/0')
+        self.assertAlmostEqual(self.metadata.get_gps_altitude(), 0.0)
+
     def test_get_preview_properties(self):
         previews = self.metadata.get_preview_properties()
         self.assertEqual(len(previews), 2)
