@@ -89,7 +89,7 @@ gboolean gexiv2_metadata_get_gps_longitude (GExiv2Metadata *self, gdouble *longi
         return TRUE;
     } catch (Exiv2::Error &e) {
         LOG_ERROR(e);
-    } catch (std::overflow_error &e) {
+    } catch (std::invalid_argument &e) {
         LOG_ERROR(e);
     }
 
@@ -138,7 +138,7 @@ gboolean gexiv2_metadata_get_gps_latitude (GExiv2Metadata *self, gdouble *latitu
         return TRUE;
     } catch (Exiv2::Error &e) {
         LOG_ERROR(e);
-    } catch (std::overflow_error &e) {
+    } catch (std::invalid_argument &e) {
         LOG_ERROR(e);
     }
 
@@ -176,7 +176,7 @@ gboolean gexiv2_metadata_get_gps_altitude (GExiv2Metadata *self, gdouble *altitu
         return TRUE;
     } catch (Exiv2::Error &e) {
         LOG_ERROR(e);
-    } catch (std::overflow_error &e) {
+    } catch (std::invalid_argument &e) {
         LOG_ERROR(e);
     }
 
