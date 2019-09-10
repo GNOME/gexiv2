@@ -728,7 +728,7 @@ generated the image. When the field is left blank, it is treated as unknown.""")
             [(tag, self.metadata.get_tag_string(tag))
              for tag in self.metadata.get_exif_tags()
              if 'GPS' in tag],
-            [('Exif.GPSInfo.GPSAltitude', '10000000/1000000'),
+            [('Exif.GPSInfo.GPSAltitude', '10/1'),
              ('Exif.GPSInfo.GPSAltitudeRef', '0'),
              ('Exif.GPSInfo.GPSLatitude', '48/1 25/1 47999999/1000000'),
              ('Exif.GPSInfo.GPSLatitudeRef', 'N'),
