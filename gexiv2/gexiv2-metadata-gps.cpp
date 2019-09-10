@@ -236,11 +236,10 @@ gboolean gexiv2_metadata_set_gps_info (GExiv2Metadata *self, gdouble longitude, 
             exif_data ["Exif.GPSInfo.GPSAltitudeRef"] = "0";
         else
             exif_data ["Exif.GPSInfo.GPSAltitudeRef"] = "1";
-        
-        deg = (gint) floor (fabs (altitude) * denom);
-        
-        snprintf (buffer, 100, "%d/%d", deg, denom);
-        exif_data ["Exif.GPSInfo.GPSAltitude"] = buffer;
+
+        Exiv2::Rational frac = Exiv2::floatToRationalCast(static_cast<float>(fabs(altitude)));
+
+        exif_data ["Exif.GPSInfo.GPSAltitude"] = frac;
         
         /* set latitude */
         if (latitude < 0)

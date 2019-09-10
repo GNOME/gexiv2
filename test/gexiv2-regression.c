@@ -200,6 +200,31 @@ static void test_bgo_790925(void)
     g_assert_nonnull(image);
 }
 
+static void test_ggo_45(void)
+{
+    GExiv2Metadata *meta = NULL;
+    gboolean result = FALSE;
+    gdouble lon = 0.0, lat = 0.0, alt = 0.0;
+    GError *error = NULL;
+
+    meta = gexiv2_metadata_new();
+    g_assert_nonnull(meta);
+    result = gexiv2_metadata_open_path(meta, SAMPLE_PATH "/no-metadata.jpg", &error);
+    g_assert_no_error(error);
+    g_assert_true(result);
+
+    alt = 2200.0;
+    result = gexiv2_metadata_set_gps_info(meta, lon, lat, alt);
+    g_assert_true(result);
+
+    result = gexiv2_metadata_get_gps_altitude(meta, &alt);
+    g_assert_true(result);
+    g_assert_cmpfloat(alt, ==, 2200.0);
+
+    g_clear_object(&meta);
+
+}
+
 int main(int argc, char *argv[static argc + 1])
 {
     g_test_init(&argc, &argv, NULL);
@@ -210,6 +235,7 @@ int main(int argc, char *argv[static argc + 1])
     g_test_add_func("/bugs/gnome/gitlab/31", test_ggo_31);
     g_test_add_func("/bugs/gnome/gitlab/32", test_ggo_32);
     g_test_add_func("/bugs/gnome/gitlab/33", test_ggo_33);
+    g_test_add_func("/bugs/gnome/gitlab/45", test_ggo_45);
 
     return g_test_run();
 }
