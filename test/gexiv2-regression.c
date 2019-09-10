@@ -270,6 +270,31 @@ static void test_ggo_27(void)
     gexiv2_metadata_register_xmp_namespace ("http://www.gnome.org/xmp", "gnome");
 }
 
+static void test_ggo_45(void)
+{
+    GExiv2Metadata *meta = NULL;
+    gboolean result = FALSE;
+    gdouble lon = 0.0, lat = 0.0, alt = 0.0;
+    GError *error = NULL;
+
+    meta = gexiv2_metadata_new();
+    g_assert_nonnull(meta);
+    result = gexiv2_metadata_open_path(meta, SAMPLE_PATH "/no-metadata.jpg", &error);
+    g_assert_no_error(error);
+    g_assert_true(result);
+
+    alt = 2200.0;
+    result = gexiv2_metadata_set_gps_info(meta, lon, lat, alt);
+    g_assert_true(result);
+
+    result = gexiv2_metadata_get_gps_altitude(meta, &alt);
+    g_assert_true(result);
+    g_assert_cmpfloat_with_epsilon(alt, 2200.0, 1e-5);
+
+    g_clear_object(&meta);
+
+}
+
 int main(int argc, char *argv[static argc + 1])
 {
     g_test_init(&argc, &argv, NULL);
@@ -282,6 +307,7 @@ int main(int argc, char *argv[static argc + 1])
     g_test_add_func("/bugs/gnome/gitlab/33", test_ggo_33);
     g_test_add_func("/bugs/gnome/gitlab/27", test_ggo_27);
     g_test_add_func("/bugs/gnome/gitlab/xx", test_ggo_xx);
+    g_test_add_func("/bugs/gnome/gitlab/45", test_ggo_45);
 
     return g_test_run();
 }
