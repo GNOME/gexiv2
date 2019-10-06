@@ -47,6 +47,8 @@ public:
     using size_type = long;
 #endif
 
+    size_type _size;
+
     ~GioIo() { g_clear_object (&_is); g_clear_error (&_error); _seekable = NULL;}
 #if defined(_MSC_VER)
     typedef int64_t seek_offset_t;
@@ -61,6 +63,14 @@ public:
 #endif
 
     int open() {
+        if (_seekable == nullptr)
+            return 0;
+
+        auto position = tell();
+        seek (0, Exiv2::BasicIo::end);
+        _size = tell();
+        seek (position, Exiv2::BasicIo::beg);
+
         return 0;
     }
 
@@ -187,7 +197,7 @@ public:
     }
 
     size_t size() const {
-        return -1;
+        return static_cast<size_t>(_size);
     }
 
     bool isopen() const {
