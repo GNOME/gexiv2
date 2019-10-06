@@ -163,7 +163,7 @@ typedef enum { /*< flags >*/
  * An object holding all the Exiv2 metadata.  Previews, if present, are also available.
  *
  * As gexiv2 is only a wrapper around Exiv2, it's better to read its documentation to understand
- * the full scope of what it offers: <ulink url="http://exiv2.dyndns.org/"></ulink>
+ * the full scope of what it offers: <ulink url="http://www.exiv2.org/"></ulink>
  *
  * In particular, rather than providing a getter/setter method pair for every metadata value
  * available for images (of which there are thousands), Exiv2 uses a dotted addressing scheme.
@@ -172,7 +172,7 @@ typedef enum { /*< flags >*/
  * therefore gexiv2) to its fullest.
  *
  * A full reference for all supported Exiv2 tags can be found at
- * <ulink url="http://exiv2.dyndns.org/metadata.html"></ulink>
+ * <ulink url="http://www.exiv2.org/metadata.html"></ulink>
  */
 typedef struct _GExiv2Metadata			GExiv2Metadata;
 typedef struct _GExiv2MetadataClass		GExiv2MetadataClass;
@@ -324,7 +324,7 @@ gboolean		gexiv2_metadata_save_stream			(GExiv2Metadata *self, ManagedStreamCall
  * @self: An instance of #GExiv2Metadata
  * @tag: Exiv2 tag
  *
- * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.dyndns.org/metadata.html"></ulink>
+ * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
  *
  * Returns: TRUE if the tag is present.
  */
@@ -337,7 +337,7 @@ gboolean		gexiv2_metadata_has_tag				(GExiv2Metadata *self, const gchar* tag);
  *
  * Removes the Exiv2 tag from the metadata object.
  *
- * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.dyndns.org/metadata.html"></ulink>
+ * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
  *
  * Returns: TRUE if the tag was present.
  */
@@ -355,7 +355,7 @@ void			gexiv2_metadata_clear				(GExiv2Metadata *self);
  * gexiv2_metadata_is_exif_tag:
  * @tag: An Exiv2 tag
  *
- * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.dyndns.org/metadata.html"></ulink>
+ * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
  *
  * Returns: TRUE if the Exiv2 tag is for the EXIF domain.
  */
@@ -365,7 +365,7 @@ gboolean		gexiv2_metadata_is_exif_tag				(const gchar* tag);
  * gexiv2_metadata_is_iptc_tag:
  * @tag: An Exiv2 tag
  *
- * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.dyndns.org/metadata.html"></ulink>
+ * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
  *
  * Returns: TRUE if the Exiv2 tag is for the IPTC domain.
  */
@@ -375,7 +375,7 @@ gboolean		gexiv2_metadata_is_iptc_tag				(const gchar* tag);
  * gexiv2_metadata_is_xmp_tag:
  * @tag: An Exiv2 tag
  *
- * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.dyndns.org/metadata.html"></ulink>
+ * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
  *
  * Returns: TRUE if the Exiv2 tag is for the XMP domain.
  */
@@ -385,7 +385,7 @@ gboolean		gexiv2_metadata_is_xmp_tag				(const gchar* tag);
  * gexiv2_metadata_get_tag_label:
  * @tag: An Exiv2 tag
  *
- * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.dyndns.org/metadata.html"></ulink>
+ * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
  *
  * Returns: (transfer none) (allow-none): The tag's label
  */
@@ -395,7 +395,7 @@ const gchar*	gexiv2_metadata_get_tag_label		(const gchar *tag);
  * gexiv2_metadata_get_tag_description:
  * @tag: An Exiv2 tag
  *
- * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.dyndns.org/metadata.html"></ulink>
+ * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
  *
  * Returns: (transfer none) (allow-none): The tag's description
  */
@@ -406,9 +406,9 @@ const gchar*	gexiv2_metadata_get_tag_description	(const gchar *tag);
  * @tag: An Exiv2 tag
  *
  * The names of the various Exiv2 tag types can be found at Exiv2::TypeId,
- * <ulink url="http://exiv2.dyndns.org/doc/namespaceExiv2.html#5153319711f35fe81cbc13f4b852450c"></ulink>
+ * <ulink url="http://exiv2.org/doc/namespaceExiv2.html#5153319711f35fe81cbc13f4b852450c"></ulink>
  *
- * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.dyndns.org/metadata.html"></ulink>
+ * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
  *
  * Returns: (transfer none) (allow-none): The tag's type name.
  */
@@ -482,7 +482,7 @@ gint			gexiv2_metadata_get_pixel_height	(GExiv2Metadata *self);
  * @self: An instance of #GExiv2Metadata
  * @tag: Exiv2 tag name
  *
- * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.dyndns.org/metadata.html"></ulink>
+ * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
  *
  * Returns: (transfer full) (allow-none): The tag's value as a string
  */
@@ -494,7 +494,7 @@ gchar*			gexiv2_metadata_get_tag_string		(GExiv2Metadata *self, const gchar* tag
  * @tag: Exiv2 tag name
  * @value: The value to set or replace the existing value
  *
- * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.dyndns.org/metadata.html"></ulink>
+ * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
  *
  * Returns: TRUE on success
  */
@@ -506,7 +506,7 @@ gboolean		gexiv2_metadata_set_tag_string		(GExiv2Metadata *self, const gchar* ta
  * @tag: Exiv2 tag name
  * @type: The GExiv2StructureType specifying the type of structure
  *
- * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.dyndns.org/metadata.html"></ulink>
+ * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
  *
  * Returns: TRUE on success
  */
@@ -520,7 +520,7 @@ gboolean gexiv2_metadata_set_xmp_tag_struct (GExiv2Metadata *self, const gchar* 
  * An interpreted string is one fit for user display.  It may display units or use formatting
  * appropriate to the type of data the tag holds.
  *
- * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.dyndns.org/metadata.html"></ulink>
+ * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
  *
  * Returns: (transfer full) (allow-none): The tag's interpreted value as a string
  */
@@ -531,7 +531,7 @@ gchar*			gexiv2_metadata_get_tag_interpreted_string (GExiv2Metadata *self, const
  * @self: An instance of #GExiv2Metadata
  * @tag: Exiv2 tag name
  *
- * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.dyndns.org/metadata.html"></ulink>
+ * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
  *
  * Returns: The tag's value as a glong
  */
@@ -543,7 +543,7 @@ glong			gexiv2_metadata_get_tag_long		(GExiv2Metadata *self, const gchar* tag);
  * @tag: Exiv2 tag name
  * @value: The value to set or replace the existing value
  *
- * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.dyndns.org/metadata.html"></ulink>
+ * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
  *
  * Returns: TRUE on success
  */
@@ -555,7 +555,7 @@ gboolean		gexiv2_metadata_set_tag_long		(GExiv2Metadata *self, const gchar* tag,
  * @self: An instance of #GExiv2Metadata
  * @tag: Exiv2 tag name
  *
- * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.dyndns.org/metadata.html"></ulink>
+ * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
  *
  * Returns: (transfer full) (allow-none) (array zero-terminated=1): The multiple string values of
  * the tag
@@ -568,7 +568,7 @@ gchar**			gexiv2_metadata_get_tag_multiple	(GExiv2Metadata *self, const gchar* t
  * @tag: Exiv2 tag name
  * @values: (array zero-terminated=1): An array of values to set or replace the existing value(s)
  *
- * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.dyndns.org/metadata.html"></ulink>
+ * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
  *
  * Returns: Boolean success value
  */
@@ -579,7 +579,7 @@ gboolean		gexiv2_metadata_set_tag_multiple	(GExiv2Metadata *self, const gchar* t
  * @self: An instance of #GExiv2Metadata
  * @tag: Exiv2 tag name
  *
- * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.dyndns.org/metadata.html"></ulink>
+ * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
  *
  * Returns: (transfer full) (allow-none): The tag's raw value as a byte array
  */
