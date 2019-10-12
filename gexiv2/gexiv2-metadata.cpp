@@ -66,6 +66,9 @@ public:
         if (_seekable == nullptr)
             return 0;
 
+        if (_size >= 0)
+            return 0;
+
         auto position = tell();
         seek (0, Exiv2::BasicIo::end);
         _size = tell();
