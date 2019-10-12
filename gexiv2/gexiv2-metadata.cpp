@@ -40,6 +40,9 @@ public:
         , _seekable(G_IS_SEEKABLE(_is) ? G_SEEKABLE (_is) : NULL)
         , _error{nullptr}
         , _eof{false}
+        , _mmap{}
+        , _size{-1}
+        , _opened{false}
         {}
 #if EXIV2_TEST_VERSION(0,27,99)
     using size_type = size_t;
@@ -47,9 +50,9 @@ public:
     using size_type = long;
 #endif
 
-    size_type _size;
-
-    ~GioIo() { g_clear_object (&_is); g_clear_error (&_error); _seekable = NULL;}
+    ~GioIo() {
+        g_clear_object (&_is); g_clear_error (&_error); _seekable = NULL;
+    }
 #if defined(_MSC_VER)
     typedef int64_t seek_offset_t;
 #else
@@ -63,21 +66,36 @@ public:
 #endif
 
     int open() {
+        if (_opened)
+            return 0;
+
+        _opened = true;
+
+        g_debug ("Called open");
         if (_seekable == nullptr)
             return 0;
 
         if (_size >= 0)
             return 0;
+        g_debug ("IO Stream is seekable, trying to get size");
+
 
         auto position = tell();
         seek (0, Exiv2::BasicIo::end);
         _size = tell();
         seek (position, Exiv2::BasicIo::beg);
 
+        g_debug ("Size is %zd", size());
+
         return 0;
     }
 
     int close() {
+        g_debug ("Called close");
+        _opened = false;
+        // Should we do this?
+        // g_input_stream_close (_is, nullptr, nullptr);
+        //
         return 0;
     }
 
@@ -116,11 +134,7 @@ public:
             return 0;
         }
 
-        if (result == 0) {
-            _eof = true;
-        } else {
-            _eof = false;
-        }
+        _eof = (result == 0);
 
         return result;
     }
@@ -184,10 +198,55 @@ public:
     }
 
     Exiv2::byte *mmap(bool writable) {
-        return NULL;
+        g_debug ("Trying to fake mmap() for %zd bytes", size());
+
+        if (!_mmap.empty())
+            return _mmap.data();
+
+        if (size() <= 0) {
+#if EXIV2_TEST_VERSION(0,27,0)
+            throw Exiv2::Error(Exiv2::ErrorCode::kerCallFailed, path(), Exiv2::strError(), "GioIo::mmap");
+#else
+            throw Exiv2::Error(2, path(), Exiv2::strError(), "GioIo::mmap");
+#endif
+        }
+
+
+        _mmap.resize(size());
+        gsize bytes_read = 0;
+        GError *error = nullptr;
+
+        auto current_position = tell();
+        seek(0, Exiv2::BasicIo::beg);
+
+        auto result = g_input_stream_read_all (_is, reinterpret_cast<void *>(_mmap.data()), size(), &bytes_read, nullptr, &error);
+
+        seek (current_position, Exiv2::BasicIo::beg);
+
+        if (not result) {
+            g_warning ("mmap() failed: %s", error->message);
+            g_clear_error (&error);
+
+#if EXIV2_TEST_VERSION(0,27,0)
+            throw Exiv2::Error(Exiv2::ErrorCode::kerCallFailed, path(), Exiv2::strError(), "GioIo::mmap");
+#else
+            throw Exiv2::Error(2, path(), Exiv2::strError(), "GioIo::mmap");
+#endif
+        }
+
+        if (bytes_read != size()) {
+            g_warning ("mmap() call short read, got %" G_GSIZE_FORMAT ", expected %zd",
+                    bytes_read, size());
+            _mmap.clear();
+
+            return nullptr;
+        }
+
+        return _mmap.data();
     }
 
     int munmap() {
+        _mmap.clear();
         return 0;
     }
 
@@ -244,6 +303,9 @@ private:
     GSeekable *_seekable;
     GError *_error;
     bool _eof;
+    std::vector<Exiv2::byte> _mmap;
+    size_type _size;
+    bool _opened;
 }; // class GioIo
 } // Anonymous namespace
 
