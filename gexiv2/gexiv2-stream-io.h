@@ -39,6 +39,7 @@ public:
 	virtual size_type write (Exiv2::BasicIo& src);
 	virtual int putb (Exiv2::byte data);
 	virtual Exiv2::DataBuf read (long rcount);
+	Exiv2::DataBuf read (size_t rcount);
 	virtual size_type read (Exiv2::byte* buf, size_type rcount);
 	virtual int getb ();
 	virtual void transfer (Exiv2::BasicIo& src);

@@ -163,6 +163,16 @@ int StreamIo::close () {
     return 0;
 }
 
+Exiv2::DataBuf StreamIo::read (size_t read_count) {
+    Exiv2::DataBuf buffer (read_count);
+
+    long read_bytes = read (buffer.pData_, buffer.size_);
+
+    buffer.size_ = read_bytes;
+
+    return buffer;
+}
+
 Exiv2::DataBuf StreamIo::read (long read_count) {
     Exiv2::DataBuf buffer (read_count);
     
