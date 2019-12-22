@@ -86,8 +86,9 @@ public:
     size_type write(BasicIo &src) { return 0; }
     int putb(Exiv2::byte data) { return EOF; }
 
-    Exiv2::DataBuf read(size_t rcount) {
-        Exiv2::DataBuf b{rcount};
+
+    Exiv2::DataBuf read(long rcount) {
+        Exiv2::DataBuf b{static_cast<GioIo::size_type>(rcount)};
 
         auto bytes_read = this->read(b.pData_, rcount);
         if (bytes_read > 0 && bytes_read != rcount) {
@@ -95,10 +96,6 @@ public:
         }
 
         return b;
-    }
-
-    Exiv2::DataBuf read(long rcount) {
-        return read(static_cast<GioIo::size_type> (rcount));
     }
 
     size_type read(Exiv2::byte *buf, size_type rcount) {
