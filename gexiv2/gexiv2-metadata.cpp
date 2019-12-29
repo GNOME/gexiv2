@@ -86,9 +86,12 @@ public:
     size_type write(BasicIo &src) { return 0; }
     int putb(Exiv2::byte data) { return EOF; }
 
-
-    Exiv2::DataBuf read(long rcount) {
-        Exiv2::DataBuf b{static_cast<GioIo::size_type>(rcount)};
+#if EXIV2_TEST_VERSION(0,27,99)
+    Exiv2::DataBuf read(size_t rcount) noexcept {
+#else
+    Exiv2::DataBuf read(long rcount) override {
+#endif
+        Exiv2::DataBuf b{rcount};
 
         auto bytes_read = this->read(b.pData_, rcount);
         if (bytes_read > 0 && bytes_read != rcount) {

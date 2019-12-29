@@ -163,6 +163,18 @@ int StreamIo::close () {
     return 0;
 }
 
+#if EXIV2_TEST_VERSION(0,27,99)
+
+Exiv2::DataBuf StreamIo::read (size_t read_count) noexcept {
+    Exiv2::DataBuf buffer (read_count);
+
+    long read_bytes = read (buffer.pData_, buffer.size_);
+
+    buffer.size_ = read_bytes;
+
+    return buffer;
+}
+#else
 Exiv2::DataBuf StreamIo::read (long read_count) {
     Exiv2::DataBuf buffer (read_count);
     
@@ -172,6 +184,7 @@ Exiv2::DataBuf StreamIo::read (long read_count) {
     
     return buffer;
 }
+#endif
 
 StreamIo::size_type StreamIo::read (Exiv2::byte* buf, StreamIo::size_type read_count) {
     StreamIo::size_type total_read_bytes = 0;

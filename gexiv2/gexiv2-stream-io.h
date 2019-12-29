@@ -38,7 +38,11 @@ public:
 	virtual size_type write (const Exiv2::byte* data, size_type wcount);
 	virtual size_type write (Exiv2::BasicIo& src);
 	virtual int putb (Exiv2::byte data);
-	virtual Exiv2::DataBuf read (long rcount);
+#if EXIV2_TEST_VERSION(0,27,99)
+	Exiv2::DataBuf read (size_t rcount) noexcept override;
+#else
+	Exiv2::DataBuf read (long rcount) override;
+#endif
 	virtual size_type read (Exiv2::byte* buf, size_type rcount);
 	virtual int getb ();
 	virtual void transfer (Exiv2::BasicIo& src);
