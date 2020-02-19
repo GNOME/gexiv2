@@ -1,4 +1,6 @@
 .flatpak:
+  tags:
+    - flatpak
   variables:
       MANIFEST_PATH: "build-aux/org.gnome.GExiv2.json"
   image: registry.gitlab.gnome.org/gnome/gnome-runtime-images/gnome:3.34
@@ -6,7 +8,7 @@
   only:
     - schedules
   script:
-    - flatpak-builder build-dir ${MANIFEST_PATH} --stop-at=gexiv2
+    - flatpak-builder build-dir ${MANIFEST_PATH} --stop-at=gexiv2 --user --disable-rofiles-fuse
     - flatpak build build-dir meson _build
     - flatpak build build-dir ninja -C _build
     - flatpak build build-dir ninja -C _build test
