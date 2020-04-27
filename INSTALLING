@@ -4,20 +4,16 @@
 
     To build and install gexiv2, type the following commands:
 
-    $ ./configure
-    $ make
-    $ make install
-
-    When building from git, you need to run ./autgen.sh to generate the
-    configure script.
+    $ meson builddir && cd builddir
+    $ ninja
+    $ ninja test
 
     * By default, gexiv2 will install under /usr/local.  The configure script
-      can customize the prefix directory.  Run ./configure --help for
+      can customize the prefix directory.  Run 'meson setup --help' for
       instructions and other installation options.
-  
-    * You may need to execute "make install" as root (i.e. sudo make install)
+
+    * You may need to execute 'ninja install' as root (i.e. sudo ninja install)
       if installing to system directories.
 
 
     Copyright 2016 Software Freedom Conservancy Inc.
-
