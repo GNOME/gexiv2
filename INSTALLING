@@ -4,7 +4,7 @@
 
     To build and install gexiv2, type the following commands:
 
-    $ meson builddir && cd builddir
+    $ meson build && cd build
     $ ninja
     $ ninja test
 
