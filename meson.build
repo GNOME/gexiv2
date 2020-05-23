@@ -12,8 +12,10 @@ gnome = import('gnome')
 pkg = import('pkgconfig')
 
 exiv2 = dependency('exiv2', version : '>= 0.26')
-gobject = dependency('gobject-2.0', version : '>= 2.38.0')
-gio = dependency('gio-2.0', version : '>= 2.32.0')
+gobject = dependency('gobject-2.0', version : '>= 2.46.0')
+gio = dependency('gio-2.0', version : '>= 2.46.0')
+cc = meson.get_compiler('c')
+math = cc.find_library('m', required : false)
 
 gir = find_program('g-ir-scanner', required: false)
 

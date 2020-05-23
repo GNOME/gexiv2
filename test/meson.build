@@ -9,7 +9,7 @@ test_env.prepend('LD_LIBRARY_PATH', typelib_path)
 test_env.prepend('PYTHONPATH', python_module_path)
 
 regression_test = executable('gexiv2-regression', 'gexiv2-regression.c',
-                             dependencies : [gobject, gio],
+                             dependencies : [gobject, gio, math],
                              include_directories : include_directories('..'),
                              c_args : '-DSAMPLE_PATH="@0@"'.format(test_sample_path),
                              link_with : gexiv2)

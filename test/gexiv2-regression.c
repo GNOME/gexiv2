@@ -13,6 +13,7 @@
 #include <gexiv2/gexiv2.h>
 
 #include <string.h>
+#include <math.h>
 
 const char LOREM_IPSUM[] =
 "Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet. Lorem ipsum dolor sit amet, consetetur sadipscing elitr, sed diam nonumy eirmod tempor invidunt ut labore et dolore magna aliquyam erat, sed diam voluptua. At vero eos et accusam et justo duo dolores et ea rebum. Stet clita kasd gubergren, no sea takimata sanctus est Lorem ipsum dolor sit amet." \
@@ -289,7 +290,7 @@ static void test_ggo_45(void)
 
     result = gexiv2_metadata_get_gps_altitude(meta, &alt);
     g_assert_true(result);
-    g_assert_cmpfloat_with_epsilon(alt, 2200.0, 1e-5);
+    g_assert_cmpfloat(fabs(alt - 2200.0), <= , 1e-5);
 
     g_clear_object(&meta);
 
