@@ -1,7 +1,7 @@
 project(
     'gexiv2',
     ['c', 'cpp'],
-    version : '0.12.1',
+    version : '0.12.2',
     meson_version : '>=0.48',
     default_options : [
         'cpp_std=c++11'
