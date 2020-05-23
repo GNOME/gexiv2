@@ -1001,11 +1001,27 @@ gboolean		gexiv2_metadata_get_gps_info				(GExiv2Metadata *self, gdouble *longit
  * @latitude: Latitude value to set or replace current value
  * @altitude: Altitude value to set or replace current value
  *
- * Convenience function to query all available GPS information at once.
+ * Convenience function to create a new set of simple GPS data. Warning: Will remove any other
+ * GPS information that is currently set. See gexiv2_metadata_update_gps_info() for
+ * just modifying the GPS data.
  *
  * Returns: (skip): Boolean success value.
  */
 gboolean		gexiv2_metadata_set_gps_info				(GExiv2Metadata *self, gdouble longitude, gdouble latitude, gdouble altitude);
+
+/**
+ * gexiv2_metadata_update_gps_info:
+ * @self: An instance of #GExiv2Metadata
+ * @longitude: Longitude value to set or replace current value
+ * @latitude: Latitude value to set or replace current value
+ * @altitude: Altitude value to set or replace current value
+ *
+ * Convenience function to update longitute, latitude and altitude at once.
+ *
+ * Returns: (skip): Boolean success value.
+ * Since: 0.12.1
+ */
+gboolean		gexiv2_metadata_update_gps_info				(GExiv2Metadata *self, gdouble longitude, gdouble latitude, gdouble altitude);
 
 /**
  * gexiv2_metadata_delete_gps_info:

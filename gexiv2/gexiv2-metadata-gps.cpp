@@ -216,18 +216,36 @@ gboolean gexiv2_metadata_set_gps_info (GExiv2Metadata *self, gdouble longitude, 
 
     try {
         gexiv2_metadata_delete_gps_info (self);
-        
+
+        return gexiv2_metadata_update_gps_info (self, longitude, latitude, altitude);
+    } catch (Exiv2::Error &e) {
+        LOG_ERROR(e);
+    }
+
+    return FALSE;
+}
+
+gboolean gexiv2_metadata_update_gps_info (GExiv2Metadata *self, gdouble longitude, gdouble latitude,
+    gdouble altitude) {
+    g_return_val_if_fail (GEXIV2_IS_METADATA (self), FALSE);
+    g_return_val_if_fail(self->priv->image.get() != NULL, FALSE);
+
+    try {
         Exiv2::ExifData& exif_data = self->priv->image->exifData();
-        
+
         gchar buffer [100];
         gint deg, min, sec;
         gdouble remainder, whole;
         
         const gint denom = 1000000;
         
-        /* set GPS Info Version */
-        exif_data ["Exif.GPSInfo.GPSVersionID"] = "2 0 0 0";
-        
+        Exiv2::ExifKey key ("Exif.GPSInfo.GPSVersionID");
+        Exiv2::ExifData::iterator it = exif_data.findKey (key);
+        if (it == exif_data.end()) {
+            /* set GPS Info Version */
+            exif_data ["Exif.GPSInfo.GPSVersionID"] = "2 0 0 0";
+        }
+
         /* set GPS Info format */
         exif_data ["Exif.GPSInfo.GPSMapDatum"] = "WGS-84";
         
@@ -280,6 +298,7 @@ gboolean gexiv2_metadata_set_gps_info (GExiv2Metadata *self, gdouble longitude, 
 
     return FALSE;
 }
+
 
 void gexiv2_metadata_delete_gps_info (GExiv2Metadata *self) {
     g_return_if_fail(GEXIV2_IS_METADATA (self));

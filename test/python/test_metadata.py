@@ -761,6 +761,44 @@ generated the image. When the field is left blank, it is treated as unknown.""")
         self.metadata.set_tag_string('Exif.GPSInfo.GPSAltitude', '1/0')
         self.assertAlmostEqual(self.metadata.get_gps_altitude(), 0.0)
 
+    def test_overwrite_gps_info(self):
+        self.metadata.set_tag_string('Exif.GPSInfo.GPSDateStamp', '2019:04:25')
+        self.metadata.set_tag_string('Exif.GPSInfo.GPSTimeStamp', '10/1 11/1 50/1')
+        self.metadata.set_tag_string('Exif.GPSInfo.GPSVersionID', '2 2 0 0')
+        self.metadata.set_gps_info(-123.35, 48.43, 10)
+        self.assertEqual(
+            [(tag, self.metadata.get_tag_string(tag))
+             for tag in self.metadata.get_exif_tags()
+             if 'GPS' in tag],
+            [('Exif.GPSInfo.GPSAltitude', '10/1'),
+             ('Exif.GPSInfo.GPSAltitudeRef', '0'),
+             ('Exif.GPSInfo.GPSLatitude', '48/1 25/1 47999999/1000000'),
+             ('Exif.GPSInfo.GPSLatitudeRef', 'N'),
+             ('Exif.GPSInfo.GPSLongitude', '123/1 20/1 59999999/1000000'),
+             ('Exif.GPSInfo.GPSLongitudeRef', 'W'),
+             ('Exif.GPSInfo.GPSMapDatum', 'WGS-84'),
+             ('Exif.GPSInfo.GPSVersionID', '2 0 0 0')])
+
+    def test_update_gps_info(self):
+        self.metadata.set_tag_string('Exif.GPSInfo.GPSDateStamp', '2019:04:25')
+        self.metadata.set_tag_string('Exif.GPSInfo.GPSTimeStamp', '10/1 11/1 50/1')
+        self.metadata.set_tag_string('Exif.GPSInfo.GPSVersionID', '2 2 0 0')
+        self.metadata.update_gps_info(-123.35, 48.43, 10)
+        self.assertEqual(
+            [(tag, self.metadata.get_tag_string(tag))
+             for tag in self.metadata.get_exif_tags()
+             if 'GPS' in tag],
+            [('Exif.GPSInfo.GPSAltitude', '10/1'),
+             ('Exif.GPSInfo.GPSAltitudeRef', '0'),
+             ('Exif.GPSInfo.GPSDateStamp', '2019:04:25'),
+             ('Exif.GPSInfo.GPSLatitude', '48/1 25/1 47999999/1000000'),
+             ('Exif.GPSInfo.GPSLatitudeRef', 'N'),
+             ('Exif.GPSInfo.GPSLongitude', '123/1 20/1 59999999/1000000'),
+             ('Exif.GPSInfo.GPSLongitudeRef', 'W'),
+             ('Exif.GPSInfo.GPSMapDatum', 'WGS-84'),
+             ('Exif.GPSInfo.GPSTimeStamp', '10/1 11/1 50/1'),
+             ('Exif.GPSInfo.GPSVersionID', '2 2 0 0')])
+
     def test_get_preview_properties(self):
         previews = self.metadata.get_preview_properties()
         self.assertEqual(len(previews), 2)
