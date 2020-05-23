@@ -186,12 +186,12 @@ class TestMetadata(unittest.TestCase):
             buf = fd.read()
         metadata = GExiv2.Metadata()
         metadata.open_buf(buf)
-        self.assertEqual(len(metadata.get_exif_tags()), 112)
+        self.assertEqual(len(metadata.get_exif_tags()), 111)
 
     def test_open_path(self):
         metadata = GExiv2.Metadata()
         metadata.open_path(self.get_input_file())
-        self.assertEqual(len(metadata.get_exif_tags()), 112)
+        self.assertEqual(len(metadata.get_exif_tags()), 111)
 
     def test_get_tag_string(self):
         self.assertEqual(
@@ -199,7 +199,7 @@ class TestMetadata(unittest.TestCase):
              for tag in self.metadata.get_exif_tags()
              if len(self.metadata.get_tag_string(tag)) < 100],
             [('Exif.Image.DateTime', '2012:11:02 09:04:27'),
-             ('Exif.Image.ExifTag', '302'),
+             ('Exif.Image.ExifTag', '234'),
              ('Exif.Image.ImageDescription', '          '),
              ('Exif.Image.Make', 'NIKON'),
              ('Exif.Image.Model', 'COOLPIX P310'),
@@ -212,7 +212,7 @@ class TestMetadata(unittest.TestCase):
              ('Exif.Iop.InteroperabilityIndex', 'R98'),
              ('Exif.Iop.InteroperabilityVersion', '48 49 48 48'),
              ('Exif.MakerNote.ByteOrder', 'II'),
-             ('Exif.MakerNote.Offset', '1114'),
+             ('Exif.MakerNote.Offset', '748'),
              ('Exif.Nikon3.0x000a', '7810/1000'),
              ('Exif.Nikon3.0x0026', '257 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0'),
              ('Exif.Nikon3.0x0027', '0 0 0 0 0 0 0 0 0 0 0 0 0 0'),
@@ -239,7 +239,7 @@ class TestMetadata(unittest.TestCase):
              ('Exif.Nikon3.ImageAdjustment', 'NORMAL       '),
              ('Exif.Nikon3.ImageStabilization', 'VR-ON     '),
              ('Exif.Nikon3.NoiseReduction', 'OFF '),
-             ('Exif.Nikon3.Preview', '2496'),
+             ('Exif.Nikon3.Preview', '2480'),
              ('Exif.Nikon3.Quality', 'FINE  '),
              ('Exif.Nikon3.RetouchHistory', '0 0 0 0 0 0 0 0 0 0'),
              ('Exif.Nikon3.Saturation', '0'),
@@ -256,7 +256,7 @@ class TestMetadata(unittest.TestCase):
              ('Exif.NikonAf.AFPoint', '0'),
              ('Exif.NikonAf.AFPointsInFocus', '19'),
              ('Exif.NikonPreview.Compression', '6'),
-             ('Exif.NikonPreview.JPEGInterchangeFormat', '13328'),
+             ('Exif.NikonPreview.JPEGInterchangeFormat', '2586'),
              ('Exif.NikonPreview.JPEGInterchangeFormatLength', '27981'),
              ('Exif.NikonPreview.ResolutionUnit', '2'),
              ('Exif.NikonPreview.XResolution', '300/1'),
@@ -283,7 +283,7 @@ class TestMetadata(unittest.TestCase):
              ('Exif.Photo.FocalLengthIn35mmFilm', '77'),
              ('Exif.Photo.GainControl', '2'),
              ('Exif.Photo.ISOSpeedRatings', '400'),
-             ('Exif.Photo.InteroperabilityTag', '1084'),
+             ('Exif.Photo.InteroperabilityTag', '31334'),
              ('Exif.Photo.LightSource', '0'),
              ('Exif.Photo.MaxApertureValue', '17/10'),
              ('Exif.Photo.MeteringMode', '5'),
@@ -297,7 +297,7 @@ class TestMetadata(unittest.TestCase):
              ('Exif.Photo.SubjectDistanceRange', '0'),
              ('Exif.Photo.WhiteBalance', '0'),
              ('Exif.Thumbnail.Compression', '6'),
-             ('Exif.Thumbnail.JPEGInterchangeFormat', '4084'),
+             ('Exif.Thumbnail.JPEGInterchangeFormat', '31458'),
              ('Exif.Thumbnail.JPEGInterchangeFormatLength', '4534'),
              ('Exif.Thumbnail.ResolutionUnit', '2'),
              ('Exif.Thumbnail.XResolution', '300/1'),
@@ -310,7 +310,7 @@ class TestMetadata(unittest.TestCase):
              for tag in self.metadata.get_exif_tags()
              if len(self.metadata.get_tag_interpreted_string(tag)) < 100],
             [('Exif.Image.DateTime', '2012:11:02 09:04:27'),
-             ('Exif.Image.ExifTag', '302'),
+             ('Exif.Image.ExifTag', '234'),
              ('Exif.Image.ImageDescription', '          '),
              ('Exif.Image.Make', 'NIKON'),
              ('Exif.Image.Model', 'COOLPIX P310'),
@@ -323,7 +323,7 @@ class TestMetadata(unittest.TestCase):
              ('Exif.Iop.InteroperabilityIndex', 'R98'),
              ('Exif.Iop.InteroperabilityVersion', '1.00'),
              ('Exif.MakerNote.ByteOrder', 'II'),
-             ('Exif.MakerNote.Offset', '1114'),
+             ('Exif.MakerNote.Offset', '748'),
              ('Exif.Nikon3.0x000a', '7810/1000'),
              ('Exif.Nikon3.0x0026', '257 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0 0'),
              ('Exif.Nikon3.0x0027', '0 0 0 0 0 0 0 0 0 0 0 0 0 0'),
@@ -350,7 +350,7 @@ class TestMetadata(unittest.TestCase):
              ('Exif.Nikon3.ImageAdjustment', 'NORMAL       '),
              ('Exif.Nikon3.ImageStabilization', 'VR-ON     '),
              ('Exif.Nikon3.NoiseReduction', 'OFF '),
-             ('Exif.Nikon3.Preview', '2496'),
+             ('Exif.Nikon3.Preview', '2480'),
              ('Exif.Nikon3.Quality', 'FINE  '),
              ('Exif.Nikon3.RetouchHistory', 'None'),
              ('Exif.Nikon3.Saturation', '0'),
@@ -367,7 +367,7 @@ class TestMetadata(unittest.TestCase):
              ('Exif.NikonAf.AFPoint', 'Center'),
              ('Exif.NikonAf.AFPointsInFocus', 'Center, Top, Mid-right'),
              ('Exif.NikonPreview.Compression', 'JPEG (old-style)'),
-             ('Exif.NikonPreview.JPEGInterchangeFormat', '13328'),
+             ('Exif.NikonPreview.JPEGInterchangeFormat', '2586'),
              ('Exif.NikonPreview.JPEGInterchangeFormatLength', '27981'),
              ('Exif.NikonPreview.ResolutionUnit', 'inch'),
              ('Exif.NikonPreview.XResolution', '300'),
@@ -394,7 +394,7 @@ class TestMetadata(unittest.TestCase):
              ('Exif.Photo.FocalLengthIn35mmFilm', '77.0 mm'),
              ('Exif.Photo.GainControl', 'High gain up'),
              ('Exif.Photo.ISOSpeedRatings', '400'),
-             ('Exif.Photo.InteroperabilityTag', '1084'),
+             ('Exif.Photo.InteroperabilityTag', '31334'),
              ('Exif.Photo.LightSource', 'Unknown'),
              ('Exif.Photo.MaxApertureValue', 'F1.8'),
              ('Exif.Photo.MeteringMode', 'Multi-segment'),
@@ -408,7 +408,7 @@ class TestMetadata(unittest.TestCase):
              ('Exif.Photo.SubjectDistanceRange', 'Unknown'),
              ('Exif.Photo.WhiteBalance', 'Auto'),
              ('Exif.Thumbnail.Compression', 'JPEG (old-style)'),
-             ('Exif.Thumbnail.JPEGInterchangeFormat', '4084'),
+             ('Exif.Thumbnail.JPEGInterchangeFormat', '31458'),
              ('Exif.Thumbnail.JPEGInterchangeFormatLength', '4534'),
              ('Exif.Thumbnail.ResolutionUnit', 'inch'),
              ('Exif.Thumbnail.XResolution', '300'),
@@ -427,7 +427,7 @@ class TestMetadata(unittest.TestCase):
         self.assertFalse(self.metadata.has_tag('Exif.Image.DateTime'))
 
     def test_clear(self):
-        self.assertEqual(len(self.metadata.get_exif_tags()), 112)
+        self.assertEqual(len(self.metadata.get_exif_tags()), 111)
         self.assertTrue(self.metadata.has_tag('Exif.Image.DateTime'))
         self.assertIsNone(self.metadata.clear())
         self.assertFalse(self.metadata.has_tag('Exif.Image.DateTime'))
@@ -622,14 +622,14 @@ generated the image. When the field is left blank, it is treated as unknown.""")
     def test_set_exif_thumbnail_from_file(self):
         self.metadata.set_exif_thumbnail_from_file(self.get_input_file())
         thumb = self.metadata.get_exif_thumbnail()
-        self.assertEqual(len(thumb), 56080)
+        self.assertEqual(len(thumb), 36660)
 
     def test_set_exif_thumbnail_from_buffer(self):
         with open(self.get_input_file(), 'rb' if PY3K else 'r') as fd:
             buf = fd.read()
         self.metadata.set_exif_thumbnail_from_buffer(buf)
         thumb = self.metadata.get_exif_thumbnail()
-        self.assertEqual(len(thumb), 56080)
+        self.assertEqual(len(thumb), 36660)
 
     def test_erase_exif_thumbnail(self):
         self.metadata.erase_exif_thumbnail()
