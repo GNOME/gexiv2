@@ -1,3 +1,36 @@
+gexiv2 0.12.1 - 23 May 2020
+
+ * Support macOS dylib versioning
+ * Improve compatibility with current exiv2 development versions
+ * Fix compiling on windows
+ * Fix issue with problematic symbol visibility of exiv2
+ * Fix issues with tests overwriting environment variables
+ * Fix exception escaping on division by zero
+ * Fix overflow in altitude fraction conversion
+ * Fix crash with experimental GIO support
+ * Documentation fixes
+ * Add gexiv2_metadata_update_gps_info which will not remove all other GPS
+   information
+
+Bugs fixed in this release:
+ - https://gitlab.gnome.org/GNOME/gexiv2/issues/41
+ - https://gitlab.gnome.org/GNOME/gexiv2/issues/42
+ - https://gitlab.gnome.org/GNOME/gexiv2/issues/45
+ - https://gitlab.gnome.org/GNOME/gexiv2/issues/52
+ - https://gitlab.gnome.org/GNOME/gexiv2/issues/53
+ - https://gitlab.gnome.org/GNOME/gexiv2/issues/54
+ - https://gitlab.gnome.org/GNOME/gexiv2/issues/55
+
+All contributors to this release:
+ - Jens Georg <mail@jensge.org>
+ - Ting-Wei Lan <lantw@src.gnome.org>
+ - Csaba Toth <csaba.toth@telenordigital.com>
+ - Thomas Doczkal <thomas@doczkal.eu>
+ - Thomas Doczkal <thomas@doczkal.de>
+ - Christoph Reiter <reiter.christoph@gmail.com>
+ - Chris Mayo <aklhfex@gmail.com>
+ - Tom Schoonjans <Tom.Schoonjans@diamond.ac.uk>
+
 gexiv2 0.12.0 - 11 Mar 2019
 
  * Include a test for https://gitlab.gnome.org/GNOME/shotwell/issues/94
