@@ -24,8 +24,8 @@
   before_script:
     - dnf update -y --nogpgcheck
     - dnf install -y --nogpgcheck meson gcc-c++ exiv2-devel gobject-introspection-devel
-                                  ninja-build python2-devel pygobject2 vala
-                                  python3-devel pygobject3 gtk-doc
+                                  ninja-build vala python3-devel python3-gobject-base
+				  gtk-doc
     - export LANG=C.UTF-8
   except:
     - schedules
