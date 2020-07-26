@@ -25,7 +25,7 @@
     - dnf update -y --nogpgcheck
     - dnf install -y --nogpgcheck meson gcc-c++ exiv2-devel gobject-introspection-devel
                                   ninja-build vala python3-devel python3-gobject-base
-				  gtk-doc
+                                  gtk-doc
     - export LANG=C.UTF-8
   except:
     - schedules
