@@ -158,6 +158,18 @@ typedef enum { /*< flags >*/
 } GExiv2XmpFormatFlags;
 
 /**
+ * GExiv2ByteOrder:
+ * @GEXIV2_BYTE_ORDER_LITTLE: Use little-endian byte order
+ * @GEXIV2_BYTE_ORDER_BIG: Use big-endian byte order
+ *
+ * Options to control the byte order of binary EXIF data exports
+ */
+typedef enum {
+  GEXIV2_BYTE_ORDER_LITTLE = 0,
+  GEXIV2_BYTE_ORDER_BIG = 1
+} GExiv2ByteOrder;
+
+/**
  * GExiv2Metadata:
  *
  * An object holding all the Exiv2 metadata.  Previews, if present, are also available.
@@ -684,6 +696,16 @@ void			gexiv2_metadata_set_exif_thumbnail_from_buffer (GExiv2Metadata *self, con
  */
 void			gexiv2_metadata_erase_exif_thumbnail (GExiv2Metadata *self);
 
+/**
+ * gexiv2_metadata_get_exif_data:
+ * @self: An instance of #GExiv2Metadata
+ * @byte_order: Whether to export the data in little or big endian format
+ * @error: (allow-none): A return location for a #GError or %NULL
+ *
+ * Returns: (transfer full) (allow-none): The content of the EXIF data or %NULL on error
+ * Since: 0.12.2
+ */
+GBytes *        gexiv2_metadata_get_exif_data (GExiv2Metadata *self, GExiv2ByteOrder byte_order, GError **error);
 
 /*
  * XMP functions

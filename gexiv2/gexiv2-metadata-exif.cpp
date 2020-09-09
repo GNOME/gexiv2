@@ -359,4 +359,40 @@ GBytes* gexiv2_metadata_get_exif_tag_raw (GExiv2Metadata *self, const gchar* tag
     return NULL;
 }
 
+GBytes * gexiv2_metadata_get_exif_data (GExiv2Metadata *self,
+                                        GExiv2ByteOrder byte_order,
+                                        GError **error) {
+    g_return_val_if_fail(GEXIV2_IS_METADATA (self), NULL);
+    g_return_val_if_fail(self->priv->image.get() != NULL, NULL);
+
+    Exiv2::ExifData &exif_data = self->priv->image->exifData();
+
+    if (exif_data.empty()) {
+        return NULL;
+    }
+
+    Exiv2::Blob blob;
+
+    try {
+        Exiv2::ExifParser::encode(blob,
+                                  byte_order == GEXIV2_BYTE_ORDER_LITTLE ?
+                                      Exiv2::littleEndian :
+                                      Exiv2::bigEndian,
+                                  exif_data);
+
+        if (blob.size() <= 0) {
+            return NULL;
+        }
+
+        gpointer data = g_malloc0(blob.size());
+        memcpy(data, blob.data(), blob.size());
+
+        return g_bytes_new_take (data, blob.size());
+    } catch (Exiv2::Error& e) {
+        g_set_error_literal (error, g_quark_from_string ("GExiv2"), e.code (), e.what ());
+    }
+
+    return NULL;
+}
+
 G_END_DECLS
