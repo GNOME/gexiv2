@@ -4,7 +4,7 @@
  * Author(s)
  *  Jim Nelson <jim@yorba.org>
  *
- * This is free software. See COPYING for details.
+ * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
 #include "gexiv2-log-private.h"

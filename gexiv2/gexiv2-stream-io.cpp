@@ -4,7 +4,7 @@
  * Author(s)
  *     Mike Gemuende <mike@gemuende.de>
  *
- * This is free software. See COPYING for details.
+ * SPDX-License-Identifier: GPL-2.0-or-later
  *
  * The class StreamIo is derived from BasicIo to provide usage of a
  * ManagedStream to exiv2.

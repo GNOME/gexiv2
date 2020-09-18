@@ -1,7 +1,7 @@
 /*
  * gexiv2-version.h
  *
- * This is free software. See COPYING for details.
+ * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
 #ifndef __GEXIV2_VERSION_H__

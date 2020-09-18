@@ -4,7 +4,7 @@
  * Author(s)
  * 	Clint Rogers <clinton@yorba.org>
  *
- * This is free software. See COPYING for details.
+ * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
 #include <exiv2/exiv2.hpp>
