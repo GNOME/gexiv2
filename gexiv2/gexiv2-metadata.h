@@ -563,11 +563,41 @@ gboolean		gexiv2_metadata_set_tag_long		(GExiv2Metadata *self, const gchar* tag,
 
 
 /**
+ * gexiv2_metadata_try_get_tag_multiple:
+ * @self: An instance of #GExiv2Metadata
+ * @tag: Exiv2 tag name
+ * @error: (allow-none): A return location for a #GError or %nullptr
+ *
+ * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
+ *
+ * Returns: (transfer full) (allow-none) (array zero-terminated=1): The multiple string values of
+ * the tag
+ */
+gchar**			gexiv2_metadata_try_get_tag_multiple	(GExiv2Metadata *self, const gchar* tag, GError **error);
+
+/**
+ * gexiv2_metadata_try_set_tag_multiple:
+ * @self: An instance of #GExiv2Metadata
+ * @tag: Exiv2 tag name
+ * @values: (array zero-terminated=1): An array of values to set or replace the existing value(s)
+ * @error: (allow-none): A return location for a #GError or %nullptr
+ *
+ * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
+ *
+ * Returns: Boolean success value
+ */
+gboolean		gexiv2_metadata_try_set_tag_multiple	(GExiv2Metadata *self, const gchar* tag, const gchar** values, GError **error);
+
+/**
  * gexiv2_metadata_get_tag_multiple:
  * @self: An instance of #GExiv2Metadata
  * @tag: Exiv2 tag name
  *
  * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
+ *
+ * In case of error, a GLib warning will be logged. Use instead
+ * gexiv2_metadata_try_get_tag_multiple() if you want to avoid this and
+ * control if and how the error is outputted.
  *
  * Returns: (transfer full) (allow-none) (array zero-terminated=1): The multiple string values of
  * the tag
@@ -581,6 +611,10 @@ gchar**			gexiv2_metadata_get_tag_multiple	(GExiv2Metadata *self, const gchar* t
  * @values: (array zero-terminated=1): An array of values to set or replace the existing value(s)
  *
  * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
+ *
+ * In case of error, a GLib warning will be logged. Use instead
+ * gexiv2_metadata_try_set_tag_multiple() if you want to avoid this and
+ * control if and how the error is outputted.
  *
  * Returns: Boolean success value
  */
