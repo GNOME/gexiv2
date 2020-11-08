@@ -97,10 +97,11 @@ gchar** gexiv2_metadata_get_exif_tags (GExiv2Metadata *self) {
     return data;
 }
 
-gchar* gexiv2_metadata_get_exif_tag_string (GExiv2Metadata *self, const gchar* tag) {
+gchar* gexiv2_metadata_get_exif_tag_string (GExiv2Metadata *self, const gchar* tag, GError **error) {
     g_return_val_if_fail(GEXIV2_IS_METADATA (self), NULL);
     g_return_val_if_fail(tag != NULL, NULL);
     g_return_val_if_fail(self->priv->image.get() != NULL, NULL);
+    g_return_val_if_fail(error == nullptr || *error == nullptr, FALSE);
     
     Exiv2::ExifData &exif_data = self->priv->image->exifData();
     
@@ -112,7 +113,7 @@ gchar* gexiv2_metadata_get_exif_tag_string (GExiv2Metadata *self, const gchar* t
         if (it != exif_data.end())
             return g_strdup (it->toString ().c_str ());
     } catch (Exiv2::Error& e) {
-        LOG_ERROR(e);
+        g_set_error_literal (error, g_quark_from_string ("GExiv2"), e.code (), e.what ());
     }
     
     return NULL;
@@ -209,18 +210,19 @@ gchar* gexiv2_metadata_get_exif_tag_interpreted_string (GExiv2Metadata *self, co
     return NULL;
 }
 
-gboolean gexiv2_metadata_set_exif_tag_string (GExiv2Metadata *self, const gchar* tag, const gchar* value) {
+gboolean gexiv2_metadata_set_exif_tag_string (GExiv2Metadata *self, const gchar* tag, const gchar* value, GError **error) {
     g_return_val_if_fail(GEXIV2_IS_METADATA (self), FALSE);
     g_return_val_if_fail(tag != NULL, FALSE);
     g_return_val_if_fail(value != NULL, FALSE);
     g_return_val_if_fail(self->priv->image.get() != NULL, FALSE);
+    g_return_val_if_fail(error == nullptr || *error == nullptr, FALSE);
     
     try {
         self->priv->image->exifData()[tag] = value;
         
         return TRUE;
     } catch (Exiv2::Error& e) {
-        LOG_ERROR(e);
+        g_set_error_literal (error, g_quark_from_string ("GExiv2"), e.code (), e.what ());
     }
     
     return FALSE;

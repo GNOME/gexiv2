@@ -56,7 +56,7 @@ gboolean gexiv2_metadata_get_gps_longitude (GExiv2Metadata *self, gdouble *longi
         double min, sec;
         *longitude = 0.0;
 
-        gchar* longitude_ref = gexiv2_metadata_get_exif_tag_string (self, "Exif.GPSInfo.GPSLongitudeRef");
+        gchar* longitude_ref = gexiv2_metadata_get_exif_tag_string (self, "Exif.GPSInfo.GPSLongitudeRef", nullptr);
         GPointer longitude_ref_guard(longitude_ref);
 
         if (longitude_ref == NULL || longitude_ref[0] == '\0') {
@@ -105,7 +105,7 @@ gboolean gexiv2_metadata_get_gps_latitude (GExiv2Metadata *self, gdouble *latitu
         double min, sec;
         *latitude = 0.0;
 
-        gchar* latitude_ref = gexiv2_metadata_get_exif_tag_string (self, "Exif.GPSInfo.GPSLatitudeRef");
+        gchar* latitude_ref = gexiv2_metadata_get_exif_tag_string (self, "Exif.GPSInfo.GPSLatitudeRef", nullptr);
         GPointer latitude_ref_guard(latitude_ref);
 
         if (latitude_ref == NULL || latitude_ref[0] == '\0') {
@@ -153,7 +153,7 @@ gboolean gexiv2_metadata_get_gps_altitude (GExiv2Metadata *self, gdouble *altitu
     try {
         *altitude = 0.0;
 
-        gchar* altitude_ref = gexiv2_metadata_get_exif_tag_string (self, "Exif.GPSInfo.GPSAltitudeRef");
+        gchar* altitude_ref = gexiv2_metadata_get_exif_tag_string (self, "Exif.GPSInfo.GPSAltitudeRef", nullptr);
         GPointer altitude_ref_guard(altitude_ref);
 
         if (altitude_ref == NULL || altitude_ref[0] == '\0') {

@@ -490,11 +490,40 @@ gint			gexiv2_metadata_get_pixel_width		(GExiv2Metadata *self);
 gint			gexiv2_metadata_get_pixel_height	(GExiv2Metadata *self);
 
 /**
+ * gexiv2_metadata_try_get_tag_string:
+ * @self: An instance of #GExiv2Metadata
+ * @tag: Exiv2 tag name
+ * @error: (allow-none): A return location for a #GError or %nullptr
+ *
+ * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
+ *
+ * Returns: (transfer full) (allow-none): The tag's value as a string
+ */
+gchar*			gexiv2_metadata_try_get_tag_string	(GExiv2Metadata *self, const gchar* tag, GError **error);
+
+/**
+ * gexiv2_metadata_try_set_tag_string:
+ * @self: An instance of #GExiv2Metadata
+ * @tag: Exiv2 tag name
+ * @value: The value to set or replace the existing value
+ * @error: (allow-none): A return location for a #GError or %nullptr
+ *
+ * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
+ *
+ * Returns: TRUE on success
+ */
+gboolean		gexiv2_metadata_try_set_tag_string	(GExiv2Metadata *self, const gchar* tag, const gchar* value, GError **error);
+
+/**
  * gexiv2_metadata_get_tag_string:
  * @self: An instance of #GExiv2Metadata
  * @tag: Exiv2 tag name
  *
  * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
+ *
+ * In case of error, a GLib warning will be logged. Use instead
+ * gexiv2_metadata_try_get_tag_string() if you want to avoid this and
+ * control if and how the error is outputted.
  *
  * Returns: (transfer full) (allow-none): The tag's value as a string
  */
@@ -507,6 +536,10 @@ gchar*			gexiv2_metadata_get_tag_string		(GExiv2Metadata *self, const gchar* tag
  * @value: The value to set or replace the existing value
  *
  * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
+ *
+ * In case of error, a GLib warning will be logged. Use instead
+ * gexiv2_metadata_try_set_tag_string() if you want to avoid this and
+ * control if and how the error is outputted.
  *
  * Returns: TRUE on success
  */
