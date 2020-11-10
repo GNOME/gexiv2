@@ -1015,32 +1015,40 @@ gchar* gexiv2_metadata_get_tag_interpreted_string (GExiv2Metadata *self, const g
     return NULL;
 }
 
-gchar** gexiv2_metadata_get_tag_multiple(GExiv2Metadata *self, const gchar* tag) {
+gchar** gexiv2_metadata_get_tag_multiple(GExiv2Metadata* self, const gchar* tag) {
     g_return_val_if_fail(GEXIV2_IS_METADATA(self), NULL);
     g_return_val_if_fail(tag != NULL, NULL);
+    g_return_val_if_fail(self->priv != NULL, FALSE);
     g_return_val_if_fail(self->priv->image.get() != NULL, NULL);
-    
+
     if (gexiv2_metadata_is_xmp_tag(tag))
         return gexiv2_metadata_get_xmp_tag_multiple(self, tag);
-    
+
+    if (gexiv2_metadata_is_exif_tag(tag))
+        return gexiv2_metadata_get_exif_tag_multiple(self, tag);
+
     if (gexiv2_metadata_is_iptc_tag(tag))
         return gexiv2_metadata_get_iptc_tag_multiple(self, tag);
-    
+
     return NULL;
 }
 
-gboolean gexiv2_metadata_set_tag_multiple(GExiv2Metadata *self, const gchar* tag, const gchar** values) {
+gboolean gexiv2_metadata_set_tag_multiple(GExiv2Metadata* self, const gchar* tag, const gchar** values) {
     g_return_val_if_fail(GEXIV2_IS_METADATA(self), FALSE);
     g_return_val_if_fail(tag != NULL, FALSE);
     g_return_val_if_fail(values != NULL, FALSE);
+    g_return_val_if_fail(self->priv != NULL, FALSE);
     g_return_val_if_fail(self->priv->image.get() != NULL, FALSE);
-    
+
     if (gexiv2_metadata_is_xmp_tag(tag))
         return gexiv2_metadata_set_xmp_tag_multiple(self, tag, values);
-    
+
+    if (gexiv2_metadata_is_exif_tag(tag))
+        return gexiv2_metadata_set_exif_tag_multiple(self, tag, values);
+
     if (gexiv2_metadata_is_iptc_tag(tag))
         return gexiv2_metadata_set_iptc_tag_multiple(self, tag, values);
-    
+
     return FALSE;
 }
 
