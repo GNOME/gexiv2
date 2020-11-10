@@ -526,7 +526,10 @@ gboolean		gexiv2_metadata_try_set_tag_string	(GExiv2Metadata *self, const gchar*
  * control if and how the error is outputted.
  *
  * Returns: (transfer full) (allow-none): The tag's value as a string
+ *
+ * Deprecated: 0.12.2: Use gexiv2_metadata_try_get_tag_string() instead.
  */
+G_DEPRECATED_FOR(gexiv2_metadata_try_get_tag_string)
 gchar*			gexiv2_metadata_get_tag_string		(GExiv2Metadata *self, const gchar* tag);
 
 /**
@@ -542,7 +545,10 @@ gchar*			gexiv2_metadata_get_tag_string		(GExiv2Metadata *self, const gchar* tag
  * control if and how the error is outputted.
  *
  * Returns: TRUE on success
+ *
+ * Deprecated: 0.12.2: Use gexiv2_metadata_try_set_tag_string() instead.
  */
+G_DEPRECATED_FOR(gexiv2_metadata_try_set_tag_string)
 gboolean		gexiv2_metadata_set_tag_string		(GExiv2Metadata *self, const gchar* tag, const gchar* value);
 
 /**
@@ -634,7 +640,10 @@ gboolean		gexiv2_metadata_try_set_tag_multiple	(GExiv2Metadata *self, const gcha
  *
  * Returns: (transfer full) (allow-none) (array zero-terminated=1): The multiple string values of
  * the tag
+ *
+ * Deprecated: 0.12.2: Use gexiv2_metadata_try_get_tag_multiple() instead.
  */
+G_DEPRECATED_FOR(gexiv2_metadata_try_get_tag_multiple)
 gchar**			gexiv2_metadata_get_tag_multiple	(GExiv2Metadata *self, const gchar* tag);
 
 /**
@@ -650,7 +659,10 @@ gchar**			gexiv2_metadata_get_tag_multiple	(GExiv2Metadata *self, const gchar* t
  * control if and how the error is outputted.
  *
  * Returns: Boolean success value
+ *
+ * Deprecated: 0.12.2: Use gexiv2_metadata_try_set_tag_multiple:() instead.
  */
+G_DEPRECATED_FOR(gexiv2_metadata_try_set_tag_multiple)
 gboolean		gexiv2_metadata_set_tag_multiple	(GExiv2Metadata *self, const gchar* tag, const gchar** values);
 
 /**
