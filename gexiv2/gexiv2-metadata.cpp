@@ -23,6 +23,10 @@
 #include <glib-object.h>
 #include <gio/gio.h>
 
+#ifdef G_OS_WIN32
+#include <glib/gwin32.h>
+#endif
+
 #include <exiv2/exiv2.hpp>
 
 #if EXIV2_TEST_VERSION(0,27,99)
@@ -377,7 +381,21 @@ gboolean gexiv2_metadata_open_path (GExiv2Metadata *self, const gchar *path, GEr
         file.append(wfile);
         g_free(wfile);
 #else
+#ifdef G_OS_WIN32
+        char* local_path = g_win32_locale_filename_from_utf8(path);
+        if (local_path == nullptr) {
+            char *msg = g_strdup_printf("Failed to convert \"%s\" to locale \"%s\"", path, g_win32_getlocale());
+            g_set_error_literal(error, G_IO_ERROR, G_IO_ERROR_INVALID_FILENAME, msg);
+
+            g_free(msg);
+
+            return FALSE;
+        }
+        file = local_path;
+        g_free(local_path);
+#else
         file = path;
+#endif
 #endif
         self->priv->image = Exiv2::ImageFactory::open (file);
         
