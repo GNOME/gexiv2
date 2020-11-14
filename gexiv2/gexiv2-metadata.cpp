@@ -261,9 +261,8 @@ static gboolean gexiv2_metadata_open_internal (GExiv2Metadata *self, GError **er
 static gboolean gexiv2_metadata_save_internal (GExiv2Metadata *self, image_ptr image, GError **error);
 
 static void gexiv2_metadata_init (GExiv2Metadata *self) {
-    GExiv2MetadataPrivate *priv;
-    self->priv = priv = (GExiv2MetadataPrivate *) gexiv2_metadata_get_instance_private(self);
-    
+    self->priv = (GExiv2MetadataPrivate*) gexiv2_metadata_get_instance_private(self);
+
     /* Initialize members */
     self->priv->comment = NULL;
     self->priv->mime_type = NULL;
