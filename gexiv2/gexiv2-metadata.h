@@ -623,7 +623,7 @@ void			gexiv2_metadata_clear_exif			(GExiv2Metadata *self);
  *
  * Query @self for a list of available EXIF tags
  *
- * Returns: (transfer full) (array zero-terminated=1): A list of the available EXIF tags in the
+ * Returns: (transfer full) (array zero-terminated=1): A unique list of the available EXIF tags in the
  * loaded image
  */
 gchar**			gexiv2_metadata_get_exif_tags		(GExiv2Metadata *self);
@@ -751,7 +751,7 @@ gchar*			gexiv2_metadata_get_xmp_packet		(GExiv2Metadata *self);
  * gexiv2_metadata_get_xmp_tags:
  * @self: An instance of #GExiv2Metadata
  *
- * Returns: (transfer full) (array zero-terminated=1): A list of the available XMP tags
+ * Returns: (transfer full) (array zero-terminated=1): A unique list of the available XMP tags
  */
 gchar**			gexiv2_metadata_get_xmp_tags		(GExiv2Metadata *self);
 
@@ -801,7 +801,7 @@ void			gexiv2_metadata_clear_iptc			(GExiv2Metadata *self);
  *
  * Query @self for a list of available IPTC tags
  *
- * Returns: (transfer full) (array zero-terminated=1): A list of the available IPTC tags
+ * Returns: (transfer full) (array zero-terminated=1): A unique list of the available IPTC tags
  */
 gchar**			gexiv2_metadata_get_iptc_tags		(GExiv2Metadata *self);
 
@@ -1038,7 +1038,7 @@ gboolean		gexiv2_metadata_set_gps_info				(GExiv2Metadata *self, gdouble longitu
  * @latitude: Latitude value to set or replace current value
  * @altitude: Altitude value to set or replace current value
  *
- * Convenience function to update longitute, latitude and altitude at once.
+ * Convenience function to update longitude, latitude and altitude at once.
  *
  * Returns: (skip): Boolean success value.
  * Since: 0.12.1
