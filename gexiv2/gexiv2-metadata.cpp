@@ -361,9 +361,25 @@ static gboolean gexiv2_metadata_open_internal (GExiv2Metadata* self, GError** er
 
 gboolean gexiv2_metadata_open_path (GExiv2Metadata *self, const gchar *path, GError **error) {
     g_return_val_if_fail (GEXIV2_IS_METADATA (self), FALSE);
-    
+#ifdef EXV_UNICODE_PATH
+    std::wstring file;
+#else
+    std::string file;
+#endif
     try {
-        self->priv->image = Exiv2::ImageFactory::open (path);
+#ifdef EXV_UNICODE_PATH
+        wchar_t* wfile{nullptr};
+        wfile = reinterpret_cast<wchar_t*>(g_utf8_to_utf16(path, -1, nullptr, nullptr, error));
+        // Error is set by g_utf8_to_utf16()
+        if (wfile == nullptr) {
+            return FALSE;
+        }
+        file.append(wfile);
+        g_free(wfile);
+#else
+        file = path;
+#endif
+        self->priv->image = Exiv2::ImageFactory::open (file);
         
         return gexiv2_metadata_open_internal (self, error);
     } catch (Exiv2::Error &e) {
