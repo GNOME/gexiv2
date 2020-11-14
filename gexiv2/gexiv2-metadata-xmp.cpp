@@ -8,11 +8,14 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
-#include "gexiv2-metadata.h"
 #include "gexiv2-metadata-private.h"
-#include <string>
-#include <glib-object.h>
+#include "gexiv2-metadata.h"
+
 #include <exiv2/exiv2.hpp>
+#include <glib-object.h>
+#include <iostream>
+#include <locale>
+#include <string>
 
 G_BEGIN_DECLS
 
@@ -96,14 +99,53 @@ gboolean gexiv2_metadata_clear_xmp_tag(GExiv2Metadata *self, const gchar* tag) {
     return erased;
 }
 
+// Port of the NaturalCollate.vala collation key generation to C++
+// Simplified to assume that all XMP keys are ASCII and not UTF-8
+// Original source:
+// https://gitlab.gnome.org/GNOME/shotwell/-/blob/master/src/NaturalCollate.vala
+static std::string collate_key(const std::string& str) {
+    constexpr char SUPERDIGIT = ':';
+    constexpr char COLLATION_SENTINAL[] = "\x01\x01\x01";
+    constexpr char NUM_SENTINEL = 0x2;
+
+    std::stringstream in{str};
+    std::stringstream out{};
+
+    while (not in.eof()) {
+        // As long as there are no digits, we put them from input to output
+        while (not std::isdigit(in.peek()) && not in.eof()) {
+            out << static_cast<char>(in.get());
+        }
+
+        if (not in.eof()) {
+
+            // We read the number (integer only)...
+            uint64_t number;
+            in >> number;
+
+            std::string to_append(std::to_string(number).length(), SUPERDIGIT);
+
+            // ... and append it together with its length in : to the output
+            out << COLLATION_SENTINAL << NUM_SENTINEL << to_append << number;
+        }
+    }
+
+    // Add a sentinal for good measure (no idea, follows the original code)
+    out << NUM_SENTINEL;
+
+    return out.str();
+}
+
 gchar** gexiv2_metadata_get_xmp_tags (GExiv2Metadata *self) {
     g_return_val_if_fail(GEXIV2_IS_METADATA (self), NULL);
     g_return_val_if_fail(self->priv->image.get() != NULL, NULL);
     
     // get a copy of the original XmpData and sort it by key, preserving the original
     Exiv2::XmpData xmp_data = Exiv2::XmpData(self->priv->image->xmpData());
-    xmp_data.sortByKey ();
-    
+    std::sort(xmp_data.begin(), xmp_data.end(), [](Exiv2::Xmpdatum& a, Exiv2::Xmpdatum& b) {
+        return collate_key(a.key()) <= collate_key(b.key());
+    });
+
     GSList *list = NULL;
     GSList *list_iter;
     gchar** data;
@@ -115,11 +157,12 @@ gchar** gexiv2_metadata_get_xmp_tags (GExiv2Metadata *self) {
             count++;
         }
     }
-    
+
     data = g_new (gchar*, count + 1);
     data[count --] = NULL;
-    for (list_iter = list; list_iter != NULL; list_iter = list_iter->next)
+    for (list_iter = list; list_iter != NULL; list_iter = list_iter->next) {
         data[count--] = static_cast<gchar*>(list_iter->data);
+    }
 
     g_slist_free (list);
 
