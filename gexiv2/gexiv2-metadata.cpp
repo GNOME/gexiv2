@@ -62,7 +62,7 @@ public:
     using ptr_type = Exiv2::BasicIo::AutoPtr;
 #endif
 
-    int open() {
+    int open() override {
         if (_seekable == nullptr)
             return 0;
 
@@ -77,17 +77,15 @@ public:
         return 0;
     }
 
-    int close() {
-        return 0;
-    }
+    int close() override { return 0; }
 
     // Writing is not supported
-    size_type write(const Exiv2::byte *data, size_type wcount) { return 0; }
-    size_type write(BasicIo &src) { return 0; }
-    int putb(Exiv2::byte data) { return EOF; }
+    size_type write(const Exiv2::byte* /*data*/, size_type /*wcount*/) override { return 0; }
+    size_type write(BasicIo& /*src*/) override { return 0; }
+    int putb(Exiv2::byte /*data*/) override { return EOF; }
 
 #if EXIV2_TEST_VERSION(0,27,99)
-    Exiv2::DataBuf read(size_t rcount) noexcept {
+    Exiv2::DataBuf read(size_t rcount) override noexcept {
 #else
     Exiv2::DataBuf read(long rcount) override {
 #endif
@@ -101,7 +99,7 @@ public:
         return b;
     }
 
-    size_type read(Exiv2::byte *buf, size_type rcount) {
+    size_type read(Exiv2::byte* buf, size_type rcount) override {
         GError *error = NULL;
         gssize result = 0;
 
@@ -128,16 +126,16 @@ public:
         return result;
     }
 
-    int getb() {
+    int getb() override {
         Exiv2::byte b;
         return this->read (&b, 1) == 1 ? b : EOF;
     }
 
-    void transfer(Exiv2::BasicIo &src) {
+    void transfer(Exiv2::BasicIo& src) override {
         // Does not seem necessary for Read-only support
     }
 
-    int seek(seek_offset_t offset, Exiv2::BasicIo::Position position) {
+    int seek(seek_offset_t offset, Exiv2::BasicIo::Position position) override {
         if (_seekable != NULL && g_seekable_can_seek (_seekable)) {
             GSeekType t = G_SEEK_SET;
             switch (position) {
@@ -186,15 +184,11 @@ public:
         }
     }
 
-    Exiv2::byte *mmap(bool writable) {
-        return NULL;
-    }
+    Exiv2::byte* mmap(bool writable) override { return NULL; }
 
-    int munmap() {
-        return 0;
-    }
+    int munmap() override { return 0; }
 
-    long tell() const {
+    long tell() const override {
         if (_seekable != NULL && g_seekable_can_seek (_seekable)) {
             return static_cast<long>(g_seekable_tell (_seekable));
         } else {
@@ -202,28 +196,18 @@ public:
         }
     }
 
-    size_t size() const {
-        return static_cast<size_t>(_size);
-    }
+    size_t size() const override { return static_cast<size_t>(_size); }
 
-    bool isopen() const {
-        return true;
-    }
+    bool isopen() const override { return true; }
 
-    int error() const {
-        return _error == nullptr ? 0 : 1;
-    }
+    int error() const override { return _error == nullptr ? 0 : 1; }
 
-    bool eof() const {
-        return _eof;
-    }
+    bool eof() const override { return _eof; }
 
-    std::string path() const {
-        return "GIO Wrapper";
-    }
+    std::string path() const override { return "GIO Wrapper"; }
 
 #ifdef EXV_UNICODE_PATH
-    std::wstring wpath() const {
+    std::wstring wpath() const override {
         std::string p = path();
         std::wstring w(p.length(), L' ');
         std::copy(p.begin(), p.end(), w.begin());
