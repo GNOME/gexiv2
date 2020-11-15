@@ -363,42 +363,58 @@ static gboolean gexiv2_metadata_open_internal (GExiv2Metadata* self, GError** er
     return TRUE;
 }
 
-gboolean gexiv2_metadata_open_path (GExiv2Metadata *self, const gchar *path, GError **error) {
-    g_return_val_if_fail (GEXIV2_IS_METADATA (self), FALSE);
 #ifdef EXV_UNICODE_PATH
-    std::wstring file;
+static std::wstring convert_path(const char* path, GError** error) {
+    wchar_t* wfile{nullptr};
+    wfile = reinterpret_cast<wchar_t*>(g_utf8_to_utf16(path, -1, nullptr, nullptr, error));
+    // Error is set by g_utf8_to_utf16()
+    if (wfile == nullptr) {
+        return {};
+    }
+
+    std::wstring file{wfile};
+    g_free(wfile);
+
+    return file;
+}
 #else
-    std::string file;
-#endif
-    try {
-#ifdef EXV_UNICODE_PATH
-        wchar_t* wfile{nullptr};
-        wfile = reinterpret_cast<wchar_t*>(g_utf8_to_utf16(path, -1, nullptr, nullptr, error));
-        // Error is set by g_utf8_to_utf16()
-        if (wfile == nullptr) {
-            return FALSE;
-        }
-        file.append(wfile);
-        g_free(wfile);
-#else
+static std::string convert_path(const char* path, GError** error) {
 #ifdef G_OS_WIN32
-        char* local_path = g_win32_locale_filename_from_utf8(path);
-        if (local_path == nullptr) {
-            char *msg = g_strdup_printf("Failed to convert \"%s\" to locale \"%s\"", path, g_win32_getlocale());
-            g_set_error_literal(error, G_IO_ERROR, G_IO_ERROR_INVALID_FILENAME, msg);
+    std::string file;
+    char* local_path = g_win32_locale_filename_from_utf8(path);
+    if (local_path == nullptr) {
+        char* msg = g_strdup_printf("Failed to convert \"%s\" to locale \"%s\"", path, g_win32_getlocale());
+        g_set_error_literal(error, G_IO_ERROR, G_IO_ERROR_INVALID_FILENAME, msg);
 
-            g_free(msg);
+        g_free(msg);
+
+        return FALSE;
+    }
+    file = local_path;
+    g_free(local_path);
+
+    return file;
+#else
+    g_return_val_if_fail(error != nullptr && *error == nullptr, std::string());
+
+    return std::string{path};
+#endif
+}
+#endif
+
+gboolean gexiv2_metadata_open_path(GExiv2Metadata* self, const gchar* path, GError** error) {
+    g_return_val_if_fail(GEXIV2_IS_METADATA(self), FALSE);
+    try {
+        GError* inner_error = nullptr;
+
+        auto converted_path = convert_path(path, &inner_error);
+        if (inner_error != nullptr) {
+            g_propagate_error(error, inner_error);
 
             return FALSE;
         }
-        file = local_path;
-        g_free(local_path);
-#else
-        file = path;
-#endif
-#endif
-        self->priv->image = Exiv2::ImageFactory::open (file);
-        
+        self->priv->image = Exiv2::ImageFactory::open(converted_path);
+
         return gexiv2_metadata_open_internal (self, error);
     } catch (Exiv2::Error &e) {
         g_set_error_literal (error, g_quark_from_string ("GExiv2"), e.code (), e.what ());
@@ -569,7 +585,18 @@ gboolean gexiv2_metadata_save_external (GExiv2Metadata *self, const gchar *path,
     g_return_val_if_fail (GEXIV2_IS_METADATA (self), FALSE);
 
     try {
-        return gexiv2_metadata_save_internal (self, Exiv2::ImageFactory::create(Exiv2::ImageType::xmp, path), error);
+        GError* inner_error = nullptr;
+
+        auto local_path = convert_path(path, &inner_error);
+        if (inner_error != nullptr) {
+            g_propagate_error(error, inner_error);
+
+            return FALSE;
+        }
+
+        return gexiv2_metadata_save_internal(self,
+                                             Exiv2::ImageFactory::create(Exiv2::ImageType::xmp, local_path),
+                                             error);
     } catch (Exiv2::Error &e) {
         g_set_error_literal (error, g_quark_from_string ("GExiv2"), e.code (), e.what ());
     }
@@ -581,7 +608,16 @@ gboolean gexiv2_metadata_save_file (GExiv2Metadata *self, const gchar *path, GEr
     g_return_val_if_fail (GEXIV2_IS_METADATA (self), FALSE);
     
     try {
-        return gexiv2_metadata_save_internal (self, Exiv2::ImageFactory::open (path), error);
+        GError* inner_error = nullptr;
+
+        auto local_path = convert_path(path, &inner_error);
+        if (inner_error != nullptr) {
+            g_propagate_error(error, inner_error);
+
+            return FALSE;
+        }
+
+        return gexiv2_metadata_save_internal(self, Exiv2::ImageFactory::open(local_path), error);
     } catch (Exiv2::Error &e) {
         g_set_error_literal (error, g_quark_from_string ("GExiv2"), e.code (), e.what ());
     }
