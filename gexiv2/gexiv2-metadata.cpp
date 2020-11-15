@@ -131,7 +131,7 @@ public:
         return this->read (&b, 1) == 1 ? b : EOF;
     }
 
-    void transfer(Exiv2::BasicIo& src) override {
+    void transfer(Exiv2::BasicIo& /*src*/) override {
         // Does not seem necessary for Read-only support
     }
 
@@ -184,12 +184,12 @@ public:
         }
     }
 
-    Exiv2::byte* mmap(bool writable) override { return NULL; }
+    Exiv2::byte* mmap(bool /*writable*/) override { return nullptr; }
 
     int munmap() override { return 0; }
 
     long tell() const override {
-        if (_seekable != NULL && g_seekable_can_seek (_seekable)) {
+        if (_seekable != nullptr && g_seekable_can_seek (_seekable)) {
             return static_cast<long>(g_seekable_tell (_seekable));
         } else {
             return -1;
