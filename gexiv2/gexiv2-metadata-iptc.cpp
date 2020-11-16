@@ -68,31 +68,31 @@ void gexiv2_metadata_clear_iptc (GExiv2Metadata *self) {
 }
 
 gchar** gexiv2_metadata_get_iptc_tags(GExiv2Metadata* self) {
-    g_return_val_if_fail(GEXIV2_IS_METADATA(self), NULL);
-    g_return_val_if_fail(self->priv != NULL, NULL);
-    g_return_val_if_fail(self->priv->image.get() != NULL, NULL);
+    g_return_val_if_fail(GEXIV2_IS_METADATA(self), nullptr);
+    g_return_val_if_fail(self->priv != nullptr, nullptr);
+    g_return_val_if_fail(self->priv->image.get() != nullptr, nullptr);
 
     // get a copy of the IptcData and sort it by key, preserving the original
     Exiv2::IptcData iptc_data = Exiv2::IptcData(self->priv->image->iptcData());
     iptc_data.sortByKey();
 
-    GSList* list = NULL;
-    GSList* list_iter = NULL;
-    gchar** data = NULL;
+    GSList* list = nullptr;
+    GSList* list_iter = nullptr;
+    gchar** data = nullptr;
     gint count = 0;
-    gchar* previous_tag = NULL; // From previous iteration
+    gchar* previous_tag = nullptr; // From previous iteration
 
-    for (Exiv2::IptcData::iterator it = iptc_data.begin(); it != iptc_data.end(); ++it) {
-        if (it->count() > 0 && g_strcmp0(it->key().c_str(), previous_tag) != 0) {
-            list = g_slist_prepend(list, g_strdup(it->key().c_str()));
+    for (const auto& it : iptc_data) {
+        if (it.count() > 0 && (previous_tag == nullptr || it.key() != previous_tag)) {
+            list = g_slist_prepend(list, g_strdup(it.key().c_str()));
             count++;
             previous_tag = static_cast<gchar*>(list->data);
         }
     }
 
     data = g_new(gchar*, count + 1);
-    data[count--] = NULL;
-    for (list_iter = list; list_iter != NULL; list_iter = list_iter->next)
+    data[count--] = nullptr;
+    for (list_iter = list; list_iter != nullptr; list_iter = list_iter->next)
         data[count--] = static_cast<gchar*>(list_iter->data);
 
     g_slist_free(list);
