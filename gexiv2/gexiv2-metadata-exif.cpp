@@ -119,12 +119,12 @@ gchar* gexiv2_metadata_get_exif_tag_string (GExiv2Metadata *self, const gchar* t
 }
 
 gchar** gexiv2_metadata_get_exif_tag_multiple(GExiv2Metadata* self, const gchar* tag) {
-    g_return_val_if_fail(GEXIV2_IS_METADATA(self), NULL);
-    g_return_val_if_fail(self->priv != NULL, FALSE);
-    g_return_val_if_fail(self->priv->image.get() != NULL, NULL);
-    g_return_val_if_fail(tag != NULL, NULL);
+    g_return_val_if_fail(GEXIV2_IS_METADATA(self), nullptr);
+    g_return_val_if_fail(self->priv != nullptr, nullptr);
+    g_return_val_if_fail(self->priv->image.get() != nullptr, nullptr);
+    g_return_val_if_fail(tag != nullptr, nullptr);
 
-    gchar** array = NULL;
+    gchar** array = nullptr;
 
     try {
         Exiv2::ExifData& exif_data = self->priv->image->exifData();
@@ -136,7 +136,7 @@ gchar** gexiv2_metadata_get_exif_tag_multiple(GExiv2Metadata* self, const gchar*
         if (it != exif_data.end()) {
             array = g_new(gchar*, 2);
             array[0] = g_strdup(it->toString().c_str());
-            array[1] = NULL;
+            array[1] = nullptr;
 
             return array;
         }
@@ -145,17 +145,17 @@ gchar** gexiv2_metadata_get_exif_tag_multiple(GExiv2Metadata* self, const gchar*
     }
 
     array = g_new(gchar*, 1);
-    array[0] = NULL;
+    array[0] = nullptr;
 
     return array;
 }
 
 gboolean gexiv2_metadata_set_exif_tag_multiple(GExiv2Metadata* self, const gchar* tag, const gchar** values) {
     g_return_val_if_fail(GEXIV2_IS_METADATA(self), FALSE);
-    g_return_val_if_fail(tag != NULL, FALSE);
-    g_return_val_if_fail(values != NULL, FALSE);
-    g_return_val_if_fail(self->priv != NULL, FALSE);
-    g_return_val_if_fail(self->priv->image.get() != NULL, FALSE);
+    g_return_val_if_fail(tag != nullptr, FALSE);
+    g_return_val_if_fail(values != nullptr, FALSE);
+    g_return_val_if_fail(self->priv != nullptr, FALSE);
+    g_return_val_if_fail(self->priv->image.get() != nullptr, FALSE);
 
     try {
         Exiv2::ExifData& exif_data = self->priv->image->exifData();
@@ -168,7 +168,7 @@ gboolean gexiv2_metadata_set_exif_tag_multiple(GExiv2Metadata* self, const gchar
         if (values[0]) {
             // Exif tags only store one value, so find the last non NULL one
             const gchar** val_it = values;
-            while (*val_it != NULL) {
+            while (*val_it != nullptr) {
                 ++val_it;
             }
 
