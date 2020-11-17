@@ -1060,7 +1060,7 @@ gchar** gexiv2_metadata_try_get_tag_multiple(GExiv2Metadata *self, const gchar* 
         return gexiv2_metadata_get_xmp_tag_multiple(self, tag, error);
 
     if (gexiv2_metadata_is_exif_tag(tag))
-        return gexiv2_metadata_get_exif_tag_multiple(self, tag);
+        return gexiv2_metadata_get_exif_tag_multiple(self, tag, error);
 
     if (gexiv2_metadata_is_iptc_tag(tag))
         return gexiv2_metadata_get_iptc_tag_multiple(self, tag, error);
@@ -1078,7 +1078,7 @@ gboolean gexiv2_metadata_try_set_tag_multiple(GExiv2Metadata *self, const gchar*
         return gexiv2_metadata_set_xmp_tag_multiple(self, tag, values, error);
 
     if (gexiv2_metadata_is_exif_tag(tag))
-        return gexiv2_metadata_set_exif_tag_multiple(self, tag, values);
+        return gexiv2_metadata_set_exif_tag_multiple(self, tag, values, error);
 
     if (gexiv2_metadata_is_iptc_tag(tag))
         return gexiv2_metadata_set_iptc_tag_multiple(self, tag, values, error);
