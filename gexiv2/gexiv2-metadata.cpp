@@ -89,7 +89,7 @@ public:
     int putb(Exiv2::byte /*data*/) override { return EOF; }
 
 #if EXIV2_TEST_VERSION(0,27,99)
-    Exiv2::DataBuf read(size_t rcount) override noexcept {
+    Exiv2::DataBuf read(size_t rcount) noexcept override {
 #else
     Exiv2::DataBuf read(long rcount) override {
 #endif
