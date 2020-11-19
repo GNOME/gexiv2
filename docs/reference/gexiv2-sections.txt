@@ -8,6 +8,9 @@ gexiv2_log_get_handler
 gexiv2_log_get_default_handler
 gexiv2_log_set_handler
 gexiv2_log_use_glib_logging
+<SUBSECTION Standard>
+GEXIV2_TYPE_GEXIV2_LOG_LEVEL
+gexiv2_gexiv2_log_level_get_type
 </SECTION>
 
 <SECTION>
@@ -17,6 +20,7 @@ GExiv2Orientation
 GExiv2StructureType
 GExiv2XmpFormatFlags
 GExiv2Metadata
+GExiv2ByteOrder
 gexiv2_metadata_new
 gexiv2_metadata_free
 gexiv2_metadata_open_path
@@ -43,13 +47,17 @@ gexiv2_metadata_get_mime_type
 gexiv2_metadata_get_pixel_width
 gexiv2_metadata_get_pixel_height
 gexiv2_metadata_get_tag_string
+gexiv2_metadata_try_get_tag_string
 gexiv2_metadata_set_tag_string
+gexiv2_metadata_try_set_tag_string
 gexiv2_metadata_set_xmp_tag_struct
 gexiv2_metadata_get_tag_interpreted_string
 gexiv2_metadata_get_tag_long
 gexiv2_metadata_set_tag_long
 gexiv2_metadata_get_tag_multiple
+gexiv2_metadata_try_get_tag_multiple
 gexiv2_metadata_set_tag_multiple
+gexiv2_metadata_try_set_tag_multiple
 gexiv2_metadata_get_tag_raw
 gexiv2_metadata_has_exif
 gexiv2_metadata_clear_exif
@@ -57,6 +65,7 @@ gexiv2_metadata_get_exif_tags
 gexiv2_metadata_get_exif_tag_rational
 gexiv2_metadata_set_exif_tag_rational
 gexiv2_metadata_get_exif_thumbnail
+gexiv2_metadata_get_exif_data
 gexiv2_metadata_set_exif_thumbnail_from_file
 gexiv2_metadata_set_exif_thumbnail_from_buffer
 gexiv2_metadata_erase_exif_thumbnail
@@ -89,6 +98,7 @@ gexiv2_metadata_get_gps_latitude
 gexiv2_metadata_get_gps_altitude
 gexiv2_metadata_get_gps_info
 gexiv2_metadata_set_gps_info
+gexiv2_metadata_update_gps_info
 gexiv2_metadata_delete_gps_info
 gexiv2_metadata_get_preview_properties
 gexiv2_metadata_get_preview_image
@@ -113,6 +123,14 @@ GEXIV2_TYPE_METADATA
 GExiv2MetadataClass
 GExiv2MetadataPrivate
 gexiv2_metadata_get_type
+GEXIV2_TYPE_GEXIV2_BYTE_ORDER
+GEXIV2_TYPE_GEXIV2_ORIENTATION
+GEXIV2_TYPE_GEXIV2_XMP_FORMAT_FLAGS
+GEXIV2_TYPE_GEXIV2_STRUCTURE_TYPE
+gexiv2_gexiv2_byte_order_get_type
+gexiv2_gexiv2_orientation_get_type
+gexiv2_gexiv2_structure_type_get_type
+gexiv2_gexiv2_xmp_format_flags_get_type
 </SECTION>
 
 <SECTION>

@@ -493,11 +493,13 @@ gint			gexiv2_metadata_get_pixel_height	(GExiv2Metadata *self);
  * gexiv2_metadata_try_get_tag_string:
  * @self: An instance of #GExiv2Metadata
  * @tag: Exiv2 tag name
- * @error: (allow-none): A return location for a #GError or %nullptr
+ * @error: (allow-none): A return location for a #GError or %NULL
  *
  * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
  *
  * Returns: (transfer full) (allow-none): The tag's value as a string
+ *
+ * Since: 0.12.2
  */
 gchar*			gexiv2_metadata_try_get_tag_string	(GExiv2Metadata *self, const gchar* tag, GError **error);
 
@@ -511,6 +513,8 @@ gchar*			gexiv2_metadata_try_get_tag_string	(GExiv2Metadata *self, const gchar* 
  * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
  *
  * Returns: TRUE on success
+ *
+ * Since: 0.12.2
  */
 gboolean		gexiv2_metadata_try_set_tag_string	(GExiv2Metadata *self, const gchar* tag, const gchar* value, GError **error);
 
@@ -611,6 +615,8 @@ gboolean		gexiv2_metadata_set_tag_long		(GExiv2Metadata *self, const gchar* tag,
  *
  * Returns: (transfer full) (allow-none) (array zero-terminated=1): The multiple string values of
  * the tag
+ *
+ * Since: 0.12.2
  */
 gchar**			gexiv2_metadata_try_get_tag_multiple	(GExiv2Metadata *self, const gchar* tag, GError **error);
 
@@ -624,6 +630,8 @@ gchar**			gexiv2_metadata_try_get_tag_multiple	(GExiv2Metadata *self, const gcha
  * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
  *
  * Returns: Boolean success value
+ *
+ * Since: 0.12.2
  */
 gboolean		gexiv2_metadata_try_set_tag_multiple	(GExiv2Metadata *self, const gchar* tag, const gchar** values, GError **error);
 
@@ -782,6 +790,7 @@ void			gexiv2_metadata_erase_exif_thumbnail (GExiv2Metadata *self);
  * @error: (allow-none): A return location for a #GError or %NULL
  *
  * Returns: (transfer full) (allow-none): The content of the EXIF data or %NULL on error
+ *
  * Since: 0.12.2
  */
 GBytes *        gexiv2_metadata_get_exif_data (GExiv2Metadata *self, GExiv2ByteOrder byte_order, GError **error);
@@ -1120,6 +1129,7 @@ gboolean		gexiv2_metadata_set_gps_info				(GExiv2Metadata *self, gdouble longitu
  * Convenience function to update longitude, latitude and altitude at once.
  *
  * Returns: (skip): Boolean success value.
+ *
  * Since: 0.12.1
  */
 gboolean		gexiv2_metadata_update_gps_info				(GExiv2Metadata *self, gdouble longitude, gdouble latitude, gdouble altitude);
