@@ -275,38 +275,122 @@ gboolean gexiv2_metadata_set_xmp_tag_long (GExiv2Metadata *self, const gchar* ta
     return FALSE;
 }
 
-gchar** gexiv2_metadata_get_xmp_tag_multiple (GExiv2Metadata *self, const gchar* tag, GError **error) {
-    g_return_val_if_fail(GEXIV2_IS_METADATA (self), NULL);
-    g_return_val_if_fail(tag != NULL, NULL);
-    g_return_val_if_fail(self->priv->image.get() != NULL, NULL);
-    g_return_val_if_fail(error == nullptr || *error == nullptr, FALSE);
-    
-    Exiv2::XmpData& xmp_data = self->priv->image->xmpData();
-    
+gchar** gexiv2_metadata_get_xmp_tag_multiple(GExiv2Metadata* self, const gchar* tag, GError** error) {
+    g_return_val_if_fail(GEXIV2_IS_METADATA(self), nullptr);
+    g_return_val_if_fail(tag != nullptr, nullptr);
+    g_return_val_if_fail(self->priv != nullptr, nullptr);
+    g_return_val_if_fail(self->priv->image.get() != nullptr, nullptr);
+    g_return_val_if_fail(error == nullptr || *error == nullptr, nullptr);
+
+    gchar** array = nullptr; // Return value
+
     try {
+        Exiv2::XmpData& xmp_data = self->priv->image->xmpData();
+
+        const Exiv2::XmpKey key = Exiv2::XmpKey(tag);
+        auto it = xmp_data.findKey(key);
+
+        while (it != xmp_data.end() && it->count() == 0 && it->key() != key.key())
+            it++;
+
+        if (it != xmp_data.end()) {
+            if (it->typeId() == Exiv2::TypeId::xmpText) {
+                // xmpText tags only have single value
+                array = g_new(gchar*, 2);
+                array[1] = nullptr;
+
+                array[0] = g_strdup(it->toString().c_str());
+            } else if (it->typeId() == Exiv2::TypeId::langAlt) {
+                // For langAlt types, it->count() returns the number of
+                // items but it->toString(i) ONLY returns the default
+                // value (if any) minus the "lang=x-default " prefix.
+                //
+                // Instead use it->toString() and parse the result to
+                // create the return array.
+                // (Issue #61 - https://gitlab.gnome.org/GNOME/gexiv2/-/issues/61)
+
+                auto num_items = it->count();
+
+                if (!num_items) {
+                    // Empty string
+                    array = g_new(gchar*, 2);
+                    array[1] = nullptr;
+                    array[0] = g_strdup("");
+                } else {
+                    const int SEPARATOR = 2; // ", "
+                    const std::string temp = it->toString();
+                    std::string::size_type pos1 = 0;
+                    std::string::size_type pos2 = temp.find(',', pos1);
+
+                    array = g_new(gchar*, num_items + 1);
+                    array[num_items] = nullptr;
+
+                    for (decltype(num_items) i = 0; i < num_items; i++) {
+                        array[i] = g_strdup(temp.substr(pos1, pos2 - pos1).c_str());
+                        pos1 = pos2 + SEPARATOR;
+                        pos2 = temp.find(',', pos1);
+                    }
+                }
+            } else {
+                // For Xmp structures, cycle through all elements and
+                // add to return array
+
+                auto num_items = it->count();
+
+                array = g_new(gchar*, num_items + 1);
+                array[num_items] = nullptr;
+
+                for (decltype(num_items) i = 0; i < num_items; i++)
+                    array[i] = g_strdup(it->toString(i).c_str());
+            }
+            return array;
+        }
+    } catch (Exiv2::Error& e) {
+        if (array) {
+            g_strfreev(array);
+        }
+        g_set_error_literal(error, g_quark_from_string("GExiv2"), e.code(), e.what());
+    }
+
+    array = g_new(gchar*, 1);
+    array[0] = nullptr;
+
+    return array;
+}
+
+gchar** gexiv2_metadata_get_xmp_tag_multiple_deprecated (GExiv2Metadata *self, const gchar* tag, GError **error) {
+    g_return_val_if_fail(GEXIV2_IS_METADATA (self), nullptr);
+    g_return_val_if_fail(tag != nullptr, nullptr);
+    g_return_val_if_fail(self->priv != nullptr, nullptr);
+    g_return_val_if_fail(self->priv->image.get() != nullptr, nullptr);
+    g_return_val_if_fail(error == nullptr || *error == nullptr, nullptr);
+
+    try {
+        Exiv2::XmpData& xmp_data = self->priv->image->xmpData();
+
         Exiv2::XmpKey key = Exiv2::XmpKey(tag);
         Exiv2::XmpData::iterator it = xmp_data.findKey(key);
 
         while (it != xmp_data.end() && it->count() == 0 && it->key() != key.key())
             it++;
-        
+
         if (it != xmp_data.end()) {
             auto size = it->count ();
             gchar **array = g_new (gchar*, size + 1);
-            array[size] = NULL;
-            
+            array[size] = nullptr;
+
             for (decltype(size) i = 0; i < size; i++)
                 array[i] = g_strdup (it->toString (i).c_str ());
-            
+
             return array;
         }
     } catch (Exiv2::Error& e) {
         g_set_error_literal (error, g_quark_from_string ("GExiv2"), e.code (), e.what ());
     }
-    
+
     gchar **array = g_new (gchar*, 1);
-    array[0] = NULL;
-    
+    array[0] = nullptr;
+
     return array;
 }
 

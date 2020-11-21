@@ -614,7 +614,9 @@ gboolean		gexiv2_metadata_set_tag_long		(GExiv2Metadata *self, const gchar* tag,
  * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
  *
  * Returns: (transfer full) (allow-none) (array zero-terminated=1): The multiple string values of
- * the tag
+ * the tag.  Returns NULL if parameters are NULL or @tag does not begin with recognised type of
+ * metadata ("Exif.", "Xmp." or "Iptc.").  For a well formed @tag, returns array[0] = NULL if @tag
+ * is undefined or is not set in the current metadata.
  *
  * Since: 0.12.2
  */
@@ -647,7 +649,11 @@ gboolean		gexiv2_metadata_try_set_tag_multiple	(GExiv2Metadata *self, const gcha
  * control if and how the error is outputted.
  *
  * Returns: (transfer full) (allow-none) (array zero-terminated=1): The multiple string values of
- * the tag
+ * the tag.  Returns NULL if parameters are NULL or @tag does not begin with recognised type of
+ * metadata ("Exif.", "Xmp." or "Iptc.").  For a well formed @tag, returns array[0] = NULL if @tag
+ * is undefined or is not set in the current metadata.
+ * (Note: <ulink url="https://gitlab.gnome.org/GNOME/gexiv2/-/issues/61">xmpText/langAlt bug</ulink>
+ *  is fixed in gexiv2_metadata_try_get_tag_multiple())
  *
  * Deprecated: 0.12.2: Use gexiv2_metadata_try_get_tag_multiple() instead.
  */

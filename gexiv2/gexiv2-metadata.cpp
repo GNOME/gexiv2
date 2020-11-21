@@ -1126,15 +1126,21 @@ gboolean gexiv2_metadata_try_set_tag_multiple(GExiv2Metadata *self, const gchar*
     return FALSE;
 }
 
-gchar** gexiv2_metadata_get_tag_multiple(GExiv2Metadata *self, const gchar* tag) {
-    gchar  **tags  = nullptr;
-    GError  *error = nullptr;
+gchar** gexiv2_metadata_get_tag_multiple(GExiv2Metadata* self, const gchar* tag) {
+    gchar** tags = nullptr;
+    GError* error = nullptr;
 
     g_return_val_if_fail(GEXIV2_IS_METADATA(self), nullptr);
     g_return_val_if_fail(tag != nullptr, nullptr);
+    g_return_val_if_fail(self->priv != nullptr, nullptr);
     g_return_val_if_fail(self->priv->image.get() != nullptr, nullptr);
 
-    tags = gexiv2_metadata_try_get_tag_multiple(self, tag, &error);
+    if (gexiv2_metadata_is_xmp_tag(tag))
+        tags = gexiv2_metadata_get_xmp_tag_multiple_deprecated(self, tag, &error);
+    else if (gexiv2_metadata_is_exif_tag(tag))
+        tags = gexiv2_metadata_get_exif_tag_multiple(self, tag, &error);
+    else if (gexiv2_metadata_is_iptc_tag(tag))
+        tags = gexiv2_metadata_get_iptc_tag_multiple(self, tag, &error);
 
     if (error) {
         g_warning("%s", error->message);
