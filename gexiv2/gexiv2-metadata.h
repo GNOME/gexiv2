@@ -455,14 +455,39 @@ gboolean		gexiv2_metadata_is_iptc_tag				(const gchar* tag);
 gboolean		gexiv2_metadata_is_xmp_tag				(const gchar* tag);
 
 /**
+ * gexiv2_metadata_try_get_tag_label:
+ * @tag: An Exiv2 tag
+ * @error: (allow-none): A return location for a #GError or %NULL
+ *
+ * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
+ *
+ * Returns: (transfer none) (allow-none): The tag's label
+ */
+const gchar*	gexiv2_metadata_try_get_tag_label		(const gchar *tag, GError **error);
+
+/**
  * gexiv2_metadata_get_tag_label:
  * @tag: An Exiv2 tag
  *
  * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
  *
  * Returns: (transfer none) (allow-none): The tag's label
+ *
+ * Deprecated: 0.12.2: Use gexiv2_metadata_try_get_tag_label() instead.
  */
+G_DEPRECATED_FOR(gexiv2_metadata_try_get_tag_label)
 const gchar*	gexiv2_metadata_get_tag_label		(const gchar *tag);
+
+/**
+ * gexiv2_metadata_try_get_tag_description:
+ * @tag: An Exiv2 tag
+ * @error: (allow-none): A return location for a #GError or %NULL
+ *
+ * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
+ *
+ * Returns: (transfer none) (allow-none): The tag's description
+ */
+const gchar*	gexiv2_metadata_try_get_tag_description	(const gchar *tag, GError **error);
 
 /**
  * gexiv2_metadata_get_tag_description:
@@ -471,8 +496,25 @@ const gchar*	gexiv2_metadata_get_tag_label		(const gchar *tag);
  * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
  *
  * Returns: (transfer none) (allow-none): The tag's description
+ *
+ * Deprecated: 0.12.2: Use gexiv2_metadata_try_get_tag_description() instead.
  */
+G_DEPRECATED_FOR(gexiv2_metadata_try_get_tag_description)
 const gchar*	gexiv2_metadata_get_tag_description	(const gchar *tag);
+
+/**
+ * gexiv2_metadata_try_get_tag_type:
+ * @tag: An Exiv2 tag
+ * @error: (allow-none): A return location for a #GError or %NULL
+ *
+ * The names of the various Exiv2 tag types can be found at Exiv2::TypeId,
+ * <ulink url="http://exiv2.org/doc/namespaceExiv2.html#5153319711f35fe81cbc13f4b852450c"></ulink>
+ *
+ * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
+ *
+ * Returns: (transfer none) (allow-none): The tag's type name.
+ */
+const gchar*	gexiv2_metadata_try_get_tag_type	(const gchar *tag, GError **error);
 
 /**
  * gexiv2_metadata_get_tag_type:
@@ -484,7 +526,10 @@ const gchar*	gexiv2_metadata_get_tag_description	(const gchar *tag);
  * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
  *
  * Returns: (transfer none) (allow-none): The tag's type name.
+ *
+ * Deprecated: 0.12.2: Use gexiv2_metadata_try_get_tag_type() instead.
  */
+G_DEPRECATED_FOR(gexiv2_metadata_try_get_tag_type)
 const gchar*	gexiv2_metadata_get_tag_type	(const gchar *tag);
 
 /**
@@ -617,7 +662,20 @@ G_DEPRECATED_FOR(gexiv2_metadata_try_set_tag_string)
 gboolean		gexiv2_metadata_set_tag_string		(GExiv2Metadata *self, const gchar* tag, const gchar* value);
 
 /**
- * gexiv2_metadata_set_tag_struct:
+ * gexiv2_metadata_try_set_xmp_tag_struct:
+ * @self: An instance of #GExiv2Metadata
+ * @tag: Exiv2 tag name
+ * @type: The GExiv2StructureType specifying the type of structure
+ * @error: (allow-none): A return location for a #GError or %nullptr
+ *
+ * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
+ *
+ * Returns: TRUE on success
+ */
+gboolean gexiv2_metadata_try_set_xmp_tag_struct (GExiv2Metadata *self, const gchar* tag, GExiv2StructureType type, GError **error);
+
+/**
+ * gexiv2_metadata_set_xmp_tag_struct:
  * @self: An instance of #GExiv2Metadata
  * @tag: Exiv2 tag name
  * @type: The GExiv2StructureType specifying the type of structure
@@ -625,8 +683,26 @@ gboolean		gexiv2_metadata_set_tag_string		(GExiv2Metadata *self, const gchar* ta
  * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
  *
  * Returns: TRUE on success
+ *
+ * Deprecated: 0.12.2: Use gexiv2_metadata_try_set_xmp_tag_struct() instead.
  */
+G_DEPRECATED_FOR(gexiv2_metadata_try_set_xmp_tag_struct)
 gboolean gexiv2_metadata_set_xmp_tag_struct (GExiv2Metadata *self, const gchar* tag, GExiv2StructureType type);
+
+/**
+ * gexiv2_metadata_try_get_tag_interpreted_string:
+ * @self: An instance of #GExiv2Metadata
+ * @tag: Exiv2 tag name
+ * @error: (allow-none): A return location for a #GError or %nullptr
+ *
+ * An interpreted string is one fit for user display.  It may display units or use formatting
+ * appropriate to the type of data the tag holds.
+ *
+ * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
+ *
+ * Returns: (transfer full) (allow-none): The tag's interpreted value as a string
+ */
+gchar*			gexiv2_metadata_try_get_tag_interpreted_string (GExiv2Metadata *self, const gchar* tag, GError **error);
 
 /**
  * gexiv2_metadata_get_tag_interpreted_string:
@@ -639,8 +715,23 @@ gboolean gexiv2_metadata_set_xmp_tag_struct (GExiv2Metadata *self, const gchar* 
  * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
  *
  * Returns: (transfer full) (allow-none): The tag's interpreted value as a string
+ *
+ * Deprecated: 0.12.2: Use gexiv2_metadata_try_get_tag_interpreted_string() instead.
  */
+G_DEPRECATED_FOR(gexiv2_metadata_try_get_tag_interpreted_string)
 gchar*			gexiv2_metadata_get_tag_interpreted_string (GExiv2Metadata *self, const gchar* tag);
+
+/**
+ * gexiv2_metadata_try_get_tag_long:
+ * @self: An instance of #GExiv2Metadata
+ * @tag: Exiv2 tag name
+ * @error: (allow-none): A return location for a #GError or %nullptr
+ *
+ * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
+ *
+ * Returns: The tag's value as a glong
+ */
+glong			gexiv2_metadata_try_get_tag_long	(GExiv2Metadata *self, const gchar* tag, GError **error);
 
 /**
  * gexiv2_metadata_get_tag_long:
@@ -650,8 +741,24 @@ gchar*			gexiv2_metadata_get_tag_interpreted_string (GExiv2Metadata *self, const
  * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
  *
  * Returns: The tag's value as a glong
+ *
+ * Deprecated: 0.12.2: Use gexiv2_metadata_try_get_tag_long() instead.
  */
+G_DEPRECATED_FOR(gexiv2_metadata_try_get_tag_long)
 glong			gexiv2_metadata_get_tag_long		(GExiv2Metadata *self, const gchar* tag);
+
+/**
+ * gexiv2_metadata_try_set_tag_long:
+ * @self: An instance of #GExiv2Metadata
+ * @tag: Exiv2 tag name
+ * @value: The value to set or replace the existing value
+ * @error: (allow-none): A return location for a #GError or %nullptr
+ *
+ * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
+ *
+ * Returns: TRUE on success
+ */
+gboolean		gexiv2_metadata_try_set_tag_long	(GExiv2Metadata *self, const gchar* tag, glong value, GError **error);
 
 /**
  * gexiv2_metadata_set_tag_long:
@@ -662,7 +769,10 @@ glong			gexiv2_metadata_get_tag_long		(GExiv2Metadata *self, const gchar* tag);
  * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
  *
  * Returns: TRUE on success
+ *
+ * Deprecated: 0.12.2: Use gexiv2_metadata_try_set_tag_long() instead.
  */
+G_DEPRECATED_FOR(gexiv2_metadata_try_set_tag_long)
 gboolean		gexiv2_metadata_set_tag_long		(GExiv2Metadata *self, const gchar* tag, glong value);
 
 /**
@@ -734,10 +844,22 @@ gchar**			gexiv2_metadata_get_tag_multiple	(GExiv2Metadata *self, const gchar* t
  *
  * Returns: Boolean success value
  *
- * Deprecated: 0.12.2: Use gexiv2_metadata_try_set_tag_multiple:() instead.
+ * Deprecated: 0.12.2: Use gexiv2_metadata_try_set_tag_multiple() instead.
  */
 G_DEPRECATED_FOR(gexiv2_metadata_try_set_tag_multiple)
 gboolean		gexiv2_metadata_set_tag_multiple	(GExiv2Metadata *self, const gchar* tag, const gchar** values);
+
+/**
+ * gexiv2_metadata_try_get_tag_raw:
+ * @self: An instance of #GExiv2Metadata
+ * @tag: Exiv2 tag name
+ * @error: (allow-none): A return location for a #GError or %NULL
+ *
+ * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
+ *
+ * Returns: (transfer full) (allow-none): The tag's raw value as a byte array
+ */
+GBytes*			gexiv2_metadata_try_get_tag_raw		(GExiv2Metadata *self, const gchar* tag, GError **error);
 
 /**
  * gexiv2_metadata_get_tag_raw:
@@ -747,7 +869,10 @@ gboolean		gexiv2_metadata_set_tag_multiple	(GExiv2Metadata *self, const gchar* t
  * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
  *
  * Returns: (transfer full) (allow-none): The tag's raw value as a byte array
+ *
+ * Deprecated: 0.12.2: Use gexiv2_metadata_try_get_tag_raw() instead.
  */
+G_DEPRECATED_FOR(gexiv2_metadata_try_get_tag_raw)
 GBytes*			gexiv2_metadata_get_tag_raw			(GExiv2Metadata *self, const gchar* tag);
 
 /*
@@ -782,6 +907,36 @@ void			gexiv2_metadata_clear_exif			(GExiv2Metadata *self);
 gchar**			gexiv2_metadata_get_exif_tags		(GExiv2Metadata *self);
 
 /**
+ * gexiv2_metadata_try_get_exif_tag_rational:
+ * @self: An instance of #GExiv2Metadata
+ * @tag: (in): The tag you want the rational value for
+ * @nom: (out): The numerator
+ * @den: (out): The denominator
+ * @error: (allow-none): A return location for a #GError or %NULL
+ *
+ * Fetch EXIF @tag represented by a fraction. @nom will contain the numerator,
+ * @den the denominator of the fraction on successful return.
+ *
+ * Returns: (skip): Boolean success value
+ */
+gboolean		gexiv2_metadata_try_get_exif_tag_rational (GExiv2Metadata *self, const gchar* tag, gint* nom, gint* den, GError **error);
+
+/**
+ * gexiv2_metadata_try_set_exif_tag_rational:
+ * @self: An instance of #GExiv2Metadata
+ * @tag: (in): The Exiv2 tag
+ * @nom: Rational numerator
+ * @den: Rational denominator
+ * @error: (allow-none): A return location for a #GError or %NULL
+ *
+ * Set EXIF @tag represented by a fraction, with @nom being the numerator,
+ * @den the denominator of the fraction.
+ *
+ * Returns: (skip): Boolean success value
+ */
+gboolean		gexiv2_metadata_try_set_exif_tag_rational (GExiv2Metadata *self, const gchar* tag, gint nom, gint den, GError **error);
+
+/**
  * gexiv2_metadata_get_exif_tag_rational:
  * @self: An instance of #GExiv2Metadata
  * @tag: (in): The tag you want the rational value for
@@ -792,7 +947,10 @@ gchar**			gexiv2_metadata_get_exif_tags		(GExiv2Metadata *self);
  * @den the denominator of the fraction on successful return.
  *
  * Returns: (skip): Boolean success value
+ *
+ * Deprecated: 0.12.2: Use gexiv2_metadata_try_get_exif_tag_rational() instead.
  */
+G_DEPRECATED_FOR(gexiv2_metadata_try_get_exif_tag_rational)
 gboolean		gexiv2_metadata_get_exif_tag_rational (GExiv2Metadata *self, const gchar* tag, gint* nom, gint* den);
 
 /**
@@ -806,7 +964,10 @@ gboolean		gexiv2_metadata_get_exif_tag_rational (GExiv2Metadata *self, const gch
  * @den the denominator of the fraction.
  *
  * Returns: (skip): Boolean success value
+ *
+ * Deprecated: 0.12.2: Use gexiv2_metadata_try_set_exif_tag_rational() instead.
  */
+G_DEPRECATED_FOR(gexiv2_metadata_try_set_exif_tag_rational)
 gboolean		gexiv2_metadata_set_exif_tag_rational (GExiv2Metadata *self, const gchar* tag, gint nom, gint den);
 
 /**
@@ -882,6 +1043,19 @@ gboolean		gexiv2_metadata_has_xmp				(GExiv2Metadata *self);
 void			gexiv2_metadata_clear_xmp			(GExiv2Metadata *self);
 
 /**
+ * gexiv2_metadata_try_generate_xmp_packet:
+ * @self: An instance of #GExiv2Metadata
+ * @xmp_format_flags: One of #GExiv2XmpFormatFlags
+ * @padding: The padding (FIXME: Add documentation)
+ * @error: (allow-none): A return location for a #GError or %NULL
+ *
+ * Encode the XMP packet as a %NULL-terminated string.
+ *
+ * Returns: (transfer full) (allow-none): Encode the XMP packet and return as a %NULL-terminated string.
+ */
+gchar*		gexiv2_metadata_try_generate_xmp_packet	(GExiv2Metadata *self, GExiv2XmpFormatFlags xmp_format_flags, guint32 padding, GError **error);
+
+/**
  * gexiv2_metadata_generate_xmp_packet:
  * @self: An instance of #GExiv2Metadata
  * @xmp_format_flags: One of #GExiv2XmpFormatFlags
@@ -890,15 +1064,30 @@ void			gexiv2_metadata_clear_xmp			(GExiv2Metadata *self);
  * Encode the XMP packet as a %NULL-terminated string.
  *
  * Returns: (transfer full) (allow-none): Encode the XMP packet and return as a %NULL-terminated string.
+ *
+ * Deprecated: 0.12.2: Use gexiv2_metadata_try_generate_xmp_packet() instead.
  */
+G_DEPRECATED_FOR(gexiv2_metadata_try_generate_xmp_packet)
 gchar*		gexiv2_metadata_generate_xmp_packet	(GExiv2Metadata *self, GExiv2XmpFormatFlags xmp_format_flags, guint32 padding);
+
+/**
+ * gexiv2_metadata_try_get_xmp_packet:
+ * @self: An instance of #GExiv2Metadata
+ * @error: (allow-none): A return location for a #GError or %NULL
+ *
+ * Returns: (transfer full) (allow-none): The currently-encoded XMP packet (see gexiv2_metadata_generate_xmp_packet).
+ */
+gchar*			gexiv2_metadata_try_get_xmp_packet	(GExiv2Metadata *self, GError **error);
 
 /**
  * gexiv2_metadata_get_xmp_packet:
  * @self: An instance of #GExiv2Metadata
  *
  * Returns: (transfer full) (allow-none): The currently-encoded XMP packet (see gexiv2_metadata_generate_xmp_packet).
+ *
+ * Deprecated: 0.12.2: Use gexiv2_metadata_try_get_xmp_packet() instead.
  */
+G_DEPRECATED_FOR(gexiv2_metadata_try_get_xmp_packet)
 gchar*			gexiv2_metadata_get_xmp_packet		(GExiv2Metadata *self);
 
 /**
@@ -1133,6 +1322,43 @@ gint			gexiv2_metadata_get_iso_speed		(GExiv2Metadata *self);
  */
 
 /**
+ * gexiv2_metadata_try_get_gps_longitude:
+ * @self: An instance of #GExiv2Metadata
+ * @longitude: (out): Variable to store the longitude value
+ * @error: (allow-none): A return location for a #GError or %NULL
+ *
+ * Query the longitude stored in the GPS tags of @self
+ *
+ * Returns: (skip): Boolean success value
+ */
+gboolean		gexiv2_metadata_try_get_gps_longitude			(GExiv2Metadata *self, gdouble *longitude, GError **error);
+
+/**
+ * gexiv2_metadata_try_get_gps_latitude:
+ * @self: An instance of #GExiv2Metadata
+ * @latitude: (out): Variable to store the latitude value
+ * @error: (allow-none): A return location for a #GError or %NULL
+ *
+ * Query the latitude stored in the GPS tags of @self
+ *
+ * Returns: (skip): Boolean success value
+ */
+gboolean		gexiv2_metadata_try_get_gps_latitude			(GExiv2Metadata *self, gdouble *latitude, GError **error);
+
+/**
+ * gexiv2_metadata_try_get_gps_altitude:
+ * @self: An instance of #GExiv2Metadata
+ * @altitude: (out): Variable to store the altitude value
+ * @error: (allow-none): A return location for a #GError or %NULL
+ *
+ * Convenience function to query the altitude stored in the GPS tags of the
+ * image
+ *
+ * Returns: (skip): Boolean success value
+ */
+gboolean		gexiv2_metadata_try_get_gps_altitude		(GExiv2Metadata *self, gdouble *altitude, GError **error);
+
+/**
  * gexiv2_metadata_get_gps_longitude:
  * @self: An instance of #GExiv2Metadata
  * @longitude: (out): Variable to store the longitude value
@@ -1140,7 +1366,10 @@ gint			gexiv2_metadata_get_iso_speed		(GExiv2Metadata *self);
  * Query the longitude stored in the GPS tags of @self
  *
  * Returns: (skip): Boolean success value
+ *
+ * Deprecated: 0.12.2: Use gexiv2_metadata_try_get_gps_longitude() instead.
  */
+G_DEPRECATED_FOR(gexiv2_metadata_try_get_gps_longitude)
 gboolean		gexiv2_metadata_get_gps_longitude			(GExiv2Metadata *self, gdouble *longitude);
 
 /**
@@ -1151,7 +1380,10 @@ gboolean		gexiv2_metadata_get_gps_longitude			(GExiv2Metadata *self, gdouble *lo
  * Query the latitude stored in the GPS tags of @self
  *
  * Returns: (skip): Boolean success value
+ *
+ * Deprecated: 0.12.2: Use gexiv2_metadata_try_get_gps_latitude() instead.
  */
+G_DEPRECATED_FOR(gexiv2_metadata_try_get_gps_latitude)
 gboolean		gexiv2_metadata_get_gps_latitude			(GExiv2Metadata *self, gdouble *latitude);
 
 /**
@@ -1163,8 +1395,25 @@ gboolean		gexiv2_metadata_get_gps_latitude			(GExiv2Metadata *self, gdouble *lat
  * image
  *
  * Returns: (skip): Boolean success value
+ *
+ * Deprecated: 0.12.2: Use gexiv2_metadata_try_get_gps_altitude() instead.
  */
+G_DEPRECATED_FOR(gexiv2_metadata_try_get_gps_altitude)
 gboolean		gexiv2_metadata_get_gps_altitude			(GExiv2Metadata *self, gdouble *altitude);
+
+/**
+ * gexiv2_metadata_try_get_gps_info:
+ * @self: An instance of #GExiv2Metadata
+ * @longitude: (out): Storage for longitude value
+ * @latitude: (out): Storage for latitude value
+ * @altitude: (out): Storage for altitude value
+ * @error: (allow-none): A return location for a #GError or %NULL
+ *
+ * Convenience function to query all available GPS information at once.
+ *
+ * Returns: (skip): Boolean success value.
+ */
+gboolean		gexiv2_metadata_try_get_gps_info			(GExiv2Metadata *self, gdouble *longitude, gdouble *latitude, gdouble *altitude, GError **error);
 
 /**
  * gexiv2_metadata_get_gps_info:
@@ -1176,8 +1425,27 @@ gboolean		gexiv2_metadata_get_gps_altitude			(GExiv2Metadata *self, gdouble *alt
  * Convenience function to query all available GPS information at once.
  *
  * Returns: (skip): Boolean success value.
+ *
+ * Deprecated: 0.12.2: Use gexiv2_metadata_try_get_gps_info() instead.
  */
+G_DEPRECATED_FOR(gexiv2_metadata_try_get_gps_info)
 gboolean		gexiv2_metadata_get_gps_info				(GExiv2Metadata *self, gdouble *longitude, gdouble *latitude, gdouble *altitude);
+
+/**
+ * gexiv2_metadata_try_set_gps_info:
+ * @self: An instance of #GExiv2Metadata
+ * @longitude: Longitude value to set or replace current value
+ * @latitude: Latitude value to set or replace current value
+ * @altitude: Altitude value to set or replace current value
+ * @error: (allow-none): A return location for a #GError or %NULL
+ *
+ * Convenience function to create a new set of simple GPS data. Warning: Will remove any other
+ * GPS information that is currently set. See gexiv2_metadata_update_gps_info() for
+ * just modifying the GPS data.
+ *
+ * Returns: (skip): Boolean success value.
+ */
+gboolean		gexiv2_metadata_try_set_gps_info			(GExiv2Metadata *self, gdouble longitude, gdouble latitude, gdouble altitude, GError **error);
 
 /**
  * gexiv2_metadata_set_gps_info:
@@ -1191,8 +1459,27 @@ gboolean		gexiv2_metadata_get_gps_info				(GExiv2Metadata *self, gdouble *longit
  * just modifying the GPS data.
  *
  * Returns: (skip): Boolean success value.
+ *
+ * Deprecated: 0.12.2: Use gexiv2_metadata_try_set_gps_info() instead.
  */
+G_DEPRECATED_FOR(gexiv2_metadata_try_set_gps_info)
 gboolean		gexiv2_metadata_set_gps_info				(GExiv2Metadata *self, gdouble longitude, gdouble latitude, gdouble altitude);
+
+/**
+ * gexiv2_metadata_try_update_gps_info:
+ * @self: An instance of #GExiv2Metadata
+ * @longitude: Longitude value to set or replace current value
+ * @latitude: Latitude value to set or replace current value
+ * @altitude: Altitude value to set or replace current value
+ * @error: (allow-none): A return location for a #GError or %NULL
+ *
+ * Convenience function to update longitude, latitude and altitude at once.
+ *
+ * Returns: (skip): Boolean success value.
+ *
+ * Since: 0.12.1
+ */
+gboolean		gexiv2_metadata_try_update_gps_info			(GExiv2Metadata *self, gdouble longitude, gdouble latitude, gdouble altitude, GError **error);
 
 /**
  * gexiv2_metadata_update_gps_info:
@@ -1206,15 +1493,29 @@ gboolean		gexiv2_metadata_set_gps_info				(GExiv2Metadata *self, gdouble longitu
  * Returns: (skip): Boolean success value.
  *
  * Since: 0.12.1
+ *
+ * Deprecated: 0.12.2: Use gexiv2_metadata_try_update_gps_info() instead.
  */
+G_DEPRECATED_FOR(gexiv2_metadata_try_update_gps_info)
 gboolean		gexiv2_metadata_update_gps_info				(GExiv2Metadata *self, gdouble longitude, gdouble latitude, gdouble altitude);
+
+/**
+ * gexiv2_metadata_try_delete_gps_info:
+ * @self: An instance of #GExiv2Metadata
+ *
+ * Removes all GPS metadata from the loaded image
+ */
+void			gexiv2_metadata_try_delete_gps_info			(GExiv2Metadata *self, GError **error);
 
 /**
  * gexiv2_metadata_delete_gps_info:
  * @self: An instance of #GExiv2Metadata
  *
  * Removes all GPS metadata from the loaded image
+ *
+ * Deprecated: 0.12.2: Use gexiv2_metadata_try_delete_gps_info() instead.
  */
+G_DEPRECATED_FOR(gexiv2_metadata_try_delete_gps_info)
 void			gexiv2_metadata_delete_gps_info			(GExiv2Metadata *self);
 
 /*

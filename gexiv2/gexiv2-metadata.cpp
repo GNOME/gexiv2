@@ -745,7 +745,7 @@ GExiv2Orientation gexiv2_metadata_get_orientation (GExiv2Metadata *self) {
         // Because some camera set a wrong standard exif orientation tag,
         // We need to check makernote tags first!
         if (gexiv2_metadata_has_exif_tag(self, "Exif.MinoltaCs7D.Rotation")) {
-            long orientation = gexiv2_metadata_get_exif_tag_long(self, "Exif.MinoltaCs7D.Rotation");
+            long orientation = gexiv2_metadata_get_exif_tag_long(self, "Exif.MinoltaCs7D.Rotation", nullptr);
             switch (orientation) {
                 case 76:
                     return GEXIV2_ORIENTATION_ROT_90;
@@ -759,7 +759,7 @@ GExiv2Orientation gexiv2_metadata_get_orientation (GExiv2Metadata *self) {
         }
 
         if (gexiv2_metadata_has_exif_tag(self, "Exif.MinoltaCs5D.Rotation")) {
-            long orientation = gexiv2_metadata_get_exif_tag_long(self, "Exif.MinoltaCs5D.Rotation");
+            long orientation = gexiv2_metadata_get_exif_tag_long(self, "Exif.MinoltaCs5D.Rotation", nullptr);
             switch (orientation) {
                 case 76:
                     return GEXIV2_ORIENTATION_ROT_90;
@@ -774,7 +774,7 @@ GExiv2Orientation gexiv2_metadata_get_orientation (GExiv2Metadata *self) {
         }
         
         GExiv2Orientation orientation = (GExiv2Orientation) gexiv2_metadata_get_exif_tag_long(self,
-            "Exif.Image.Orientation");
+            "Exif.Image.Orientation", nullptr);
         if (orientation >= GEXIV2_ORIENTATION_MIN && orientation <= GEXIV2_ORIENTATION_MAX)
             return orientation;
     }
@@ -782,7 +782,7 @@ GExiv2Orientation gexiv2_metadata_get_orientation (GExiv2Metadata *self) {
     GExiv2Orientation orientation = GEXIV2_ORIENTATION_UNSPECIFIED;
     if (gexiv2_metadata_has_xmp_tag(self, "Xmp.tiff.ImageWidth")) {
         orientation = (GExiv2Orientation) gexiv2_metadata_get_xmp_tag_long(self,
-            "Xmp.tiff.ImageWidth");
+            "Xmp.tiff.ImageWidth", nullptr);
     }
     
     return (orientation < GEXIV2_ORIENTATION_MIN || orientation > GEXIV2_ORIENTATION_MAX)
@@ -846,18 +846,18 @@ gint gexiv2_metadata_get_metadata_pixel_width (GExiv2Metadata *self) {
     
     if (gexiv2_metadata_has_exif(self)) {
         if (gexiv2_metadata_has_exif_tag(self, "Exif.Photo.PixelXDimension"))
-            return gexiv2_metadata_get_exif_tag_long(self, "Exif.Photo.PixelXDimension");
+            return gexiv2_metadata_get_exif_tag_long(self, "Exif.Photo.PixelXDimension", nullptr);
         
         if (gexiv2_metadata_has_exif_tag(self, "Exif.Image.ImageWidth"))
-            return gexiv2_metadata_get_exif_tag_long(self, "Exif.Image.ImageWidth");
+            return gexiv2_metadata_get_exif_tag_long(self, "Exif.Image.ImageWidth", nullptr);
     }
     
     if (gexiv2_metadata_has_xmp(self)) {
         if (gexiv2_metadata_has_xmp_tag(self, "Xmp.tiff.ImageWidth"))
-            return gexiv2_metadata_get_xmp_tag_long(self, "Xmp.tiff.ImageWidth");
+            return gexiv2_metadata_get_xmp_tag_long(self, "Xmp.tiff.ImageWidth", nullptr);
         
         if (gexiv2_metadata_has_xmp_tag(self, "Xmp.exif.PixelXDimension"))
-            return gexiv2_metadata_get_xmp_tag_long(self, "Xmp.exif.PixelXDimension");
+            return gexiv2_metadata_get_xmp_tag_long(self, "Xmp.exif.PixelXDimension", nullptr);
     }
     
     return -1;
@@ -869,18 +869,18 @@ gint gexiv2_metadata_get_metadata_pixel_height (GExiv2Metadata *self) {
     
     if (gexiv2_metadata_has_exif(self)) {
         if (gexiv2_metadata_has_exif_tag(self, "Exif.Photo.PixelYDimension"))
-            return gexiv2_metadata_get_exif_tag_long(self, "Exif.Photo.PixelYDimension");
+            return gexiv2_metadata_get_exif_tag_long(self, "Exif.Photo.PixelYDimension", nullptr);
         
         if (gexiv2_metadata_has_exif_tag(self, "Exif.Image.ImageLength"))
-            return gexiv2_metadata_get_exif_tag_long(self, "Exif.Image.ImageLength");
+            return gexiv2_metadata_get_exif_tag_long(self, "Exif.Image.ImageLength", nullptr);
     }
     
     if (gexiv2_metadata_has_xmp(self)) {
         if (gexiv2_metadata_has_xmp_tag(self, "Xmp.tiff.ImageHeight"))
-            return gexiv2_metadata_get_xmp_tag_long(self, "Xmp.tiff.ImageHeight");
+            return gexiv2_metadata_get_xmp_tag_long(self, "Xmp.tiff.ImageHeight", nullptr);
             
         if (gexiv2_metadata_has_xmp_tag(self, "Xmp.exif.PixelYDimension"))
-            return gexiv2_metadata_get_xmp_tag_long(self, "Xmp.exif.PixelYDimension");
+            return gexiv2_metadata_get_xmp_tag_long(self, "Xmp.exif.PixelYDimension", nullptr);
     }
     
     return -1;
@@ -920,37 +920,37 @@ gchar* gexiv2_metadata_get_comment (GExiv2Metadata *self) {
     if (str != NULL && *str != '\0')
         return g_strdup(str);
     
-    str = gexiv2_metadata_get_exif_tag_interpreted_string (self, "Exif.Image.ImageDescription");
+    str = gexiv2_metadata_get_exif_tag_interpreted_string (self, "Exif.Image.ImageDescription", NULL);
     if (str != NULL && *str != '\0')
         return str;
     else
         g_free (str);
     
-    str = gexiv2_metadata_get_exif_tag_interpreted_string (self, "Exif.Photo.UserComment");
+    str = gexiv2_metadata_get_exif_tag_interpreted_string (self, "Exif.Photo.UserComment", NULL);
     if (str != NULL && *str != '\0')
         return str;
     else
         g_free (str);
     
-    str = gexiv2_metadata_get_exif_tag_interpreted_string (self, "Exif.Image.XPComment");
+    str = gexiv2_metadata_get_exif_tag_interpreted_string (self, "Exif.Image.XPComment", NULL);
     if (str != NULL && *str != '\0')
         return str;
     else
         g_free (str);
     
-    str = gexiv2_metadata_get_iptc_tag_interpreted_string (self, "Iptc.Application2.Caption");
+    str = gexiv2_metadata_get_iptc_tag_interpreted_string (self, "Iptc.Application2.Caption", NULL);
     if (str != NULL && *str != '\0')
         return str;
     else
         g_free (str);
     
-    str = gexiv2_metadata_get_xmp_tag_interpreted_string (self, "Xmp.dc.description");
+    str = gexiv2_metadata_get_xmp_tag_interpreted_string (self, "Xmp.dc.description", NULL);
     if (str != NULL && *str != '\0')
         return str;
     else
         g_free (str);
     
-    str = gexiv2_metadata_get_xmp_tag_interpreted_string (self, "Xmp.acdsee.notes");
+    str = gexiv2_metadata_get_xmp_tag_interpreted_string (self, "Xmp.acdsee.notes", NULL);
     if (str != NULL && *str != '\0')
         return str;
     else
@@ -1074,21 +1074,39 @@ gboolean gexiv2_metadata_set_tag_string (GExiv2Metadata *self, const gchar* tag,
     return success;
 }
 
-gchar* gexiv2_metadata_get_tag_interpreted_string (GExiv2Metadata *self, const gchar* tag) {
+gchar* gexiv2_metadata_try_get_tag_interpreted_string (GExiv2Metadata *self, const gchar* tag, GError **error) {
     g_return_val_if_fail(GEXIV2_IS_METADATA (self), NULL);
     g_return_val_if_fail(tag != NULL, NULL);
     g_return_val_if_fail(self->priv->image.get() != NULL, NULL);
     
     if (gexiv2_metadata_is_xmp_tag(tag))
-        return gexiv2_metadata_get_xmp_tag_interpreted_string (self, tag);
+        return gexiv2_metadata_get_xmp_tag_interpreted_string (self, tag, error);
         
     if (gexiv2_metadata_is_exif_tag(tag))
-        return gexiv2_metadata_get_exif_tag_interpreted_string (self, tag);
+        return gexiv2_metadata_get_exif_tag_interpreted_string (self, tag, error);
         
     if (gexiv2_metadata_is_iptc_tag(tag))
-        return gexiv2_metadata_get_iptc_tag_interpreted_string (self, tag);
+        return gexiv2_metadata_get_iptc_tag_interpreted_string (self, tag, error);
     
     return NULL;
+}
+
+gchar* gexiv2_metadata_get_tag_interpreted_string (GExiv2Metadata *self, const gchar* tag) {
+    gchar  *value;
+    GError *error = nullptr;
+
+    g_return_val_if_fail(GEXIV2_IS_METADATA (self), nullptr);
+    g_return_val_if_fail(tag != nullptr, nullptr);
+    g_return_val_if_fail(self->priv->image.get() != nullptr, nullptr);
+
+    value = gexiv2_metadata_try_get_tag_interpreted_string(self, tag, &error);
+
+    if (error) {
+        g_warning("%s", error->message);
+        g_clear_error(&error);
+    }
+
+    return value;
 }
 
 gchar** gexiv2_metadata_try_get_tag_multiple(GExiv2Metadata *self, const gchar* tag, GError **error) {
@@ -1169,36 +1187,72 @@ gboolean gexiv2_metadata_set_tag_multiple(GExiv2Metadata *self, const gchar* tag
     return success;
 }
 
-glong gexiv2_metadata_get_tag_long(GExiv2Metadata *self, const gchar* tag) {
+glong gexiv2_metadata_try_get_tag_long(GExiv2Metadata *self, const gchar* tag, GError **error) {
     g_return_val_if_fail(GEXIV2_IS_METADATA(self), 0);
     g_return_val_if_fail(tag != NULL, 0);
     g_return_val_if_fail(self->priv->image.get() != NULL, 0);
     
     if (gexiv2_metadata_is_xmp_tag(tag))
-        return gexiv2_metadata_get_xmp_tag_long(self, tag);
+        return gexiv2_metadata_get_xmp_tag_long(self, tag, error);
     
     if (gexiv2_metadata_is_exif_tag(tag))
-        return gexiv2_metadata_get_exif_tag_long(self, tag);
+        return gexiv2_metadata_get_exif_tag_long(self, tag, error);
     
     return 0;
 }
 
-gboolean gexiv2_metadata_set_tag_long(GExiv2Metadata *self, const gchar* tag, glong value) {
+glong gexiv2_metadata_get_tag_long(GExiv2Metadata *self, const gchar* tag) {
+    GError *error   = nullptr;
+    glong   value;
+
+    g_return_val_if_fail(GEXIV2_IS_METADATA(self), FALSE);
+    g_return_val_if_fail(tag != nullptr, FALSE);
+    g_return_val_if_fail(self->priv->image.get() != nullptr, FALSE);
+
+    value = gexiv2_metadata_try_get_tag_long(self, tag, &error);
+
+    if (error) {
+        g_warning("%s", error->message);
+        g_clear_error(&error);
+    }
+
+    return value;
+}
+
+gboolean gexiv2_metadata_try_set_tag_long(GExiv2Metadata *self, const gchar* tag, glong value, GError **error) {
     g_return_val_if_fail(GEXIV2_IS_METADATA(self), FALSE);
     g_return_val_if_fail(tag != NULL, FALSE);
     g_return_val_if_fail(self->priv->image.get() != NULL, 0);
     
     if (gexiv2_metadata_is_xmp_tag(tag))
-        return gexiv2_metadata_set_xmp_tag_long(self, tag, value);
+        return gexiv2_metadata_set_xmp_tag_long(self, tag, value, error);
     
     if (gexiv2_metadata_is_exif_tag(tag))
-        return gexiv2_metadata_set_exif_tag_long(self, tag, value);
+        return gexiv2_metadata_set_exif_tag_long(self, tag, value, error);
     
     return FALSE;
 }
 
+gboolean gexiv2_metadata_set_tag_long(GExiv2Metadata *self, const gchar* tag, glong value) {
+    GError   *error   = nullptr;
+    gboolean  success = FALSE;
+
+    g_return_val_if_fail(GEXIV2_IS_METADATA(self), FALSE);
+    g_return_val_if_fail(tag != nullptr, FALSE);
+    g_return_val_if_fail(self->priv->image.get() != nullptr, FALSE);
+
+    success = gexiv2_metadata_try_set_tag_long(self, tag, value, &error);
+
+    if (error) {
+        g_warning("%s", error->message);
+        g_clear_error(&error);
+    }
+
+    return success;
+}
+
 gboolean gexiv2_metadata_get_exposure_time (GExiv2Metadata *self, gint *nom, gint *den) {
-    return gexiv2_metadata_get_exif_tag_rational (self, "Exif.Photo.ExposureTime", nom, den);
+    return gexiv2_metadata_try_get_exif_tag_rational (self, "Exif.Photo.ExposureTime", nom, den, nullptr);
 }
 
 gdouble gexiv2_metadata_get_fnumber (GExiv2Metadata *self) {
@@ -1221,7 +1275,7 @@ gdouble gexiv2_metadata_get_focal_length (GExiv2Metadata *self) {
 }
 
 gint gexiv2_metadata_get_iso_speed (GExiv2Metadata *self) {
-    return (gint) gexiv2_metadata_get_exif_tag_long (self, "Exif.Photo.ISOSpeedRatings");
+    return (gint) gexiv2_metadata_get_exif_tag_long (self, "Exif.Photo.ISOSpeedRatings", NULL);
 }
 
 GExiv2PreviewProperties** gexiv2_metadata_get_preview_properties (GExiv2Metadata *self) {
@@ -1295,66 +1349,132 @@ void gexiv2_metadata_erase_exif_thumbnail (GExiv2Metadata *self) {
     thumb.erase();
 }
 
-const gchar* gexiv2_metadata_get_tag_label (const gchar *tag) {
-    g_return_val_if_fail(tag != NULL, NULL);
+const gchar* gexiv2_metadata_try_get_tag_label (const gchar *tag, GError **error) {
+    g_return_val_if_fail(tag != nullptr, nullptr);
     
     if (gexiv2_metadata_is_xmp_tag(tag))
-        return gexiv2_metadata_get_xmp_tag_label(tag);
+        return gexiv2_metadata_get_xmp_tag_label(tag, error);
     
     if (gexiv2_metadata_is_exif_tag(tag))
-        return gexiv2_metadata_get_exif_tag_label(tag);
+        return gexiv2_metadata_get_exif_tag_label(tag, error);
     
     if (gexiv2_metadata_is_iptc_tag(tag))
-        return gexiv2_metadata_get_iptc_tag_label(tag);
+        return gexiv2_metadata_get_iptc_tag_label(tag, error);
     
-    return NULL;
+    return nullptr;
+}
+
+const gchar* gexiv2_metadata_get_tag_label (const gchar *tag) {
+    const gchar *value;
+    GError      *error = nullptr;
+
+    g_return_val_if_fail(tag != nullptr, nullptr);
+
+    value = gexiv2_metadata_try_get_tag_label(tag, &error);
+
+    if (error) {
+        g_warning("%s", error->message);
+        g_clear_error(&error);
+    }
+
+    return value;
+}
+
+const gchar* gexiv2_metadata_try_get_tag_description (const gchar *tag, GError **error) {
+    g_return_val_if_fail(tag != nullptr, nullptr);
+    
+    if (gexiv2_metadata_is_xmp_tag(tag))
+        return gexiv2_metadata_get_xmp_tag_description(tag, error);
+    
+    if (gexiv2_metadata_is_exif_tag(tag))
+        return gexiv2_metadata_get_exif_tag_description(tag, error);
+    
+    if (gexiv2_metadata_is_iptc_tag(tag))
+        return gexiv2_metadata_get_iptc_tag_description(tag, error);
+    
+    return nullptr;
 }
 
 const gchar* gexiv2_metadata_get_tag_description (const gchar *tag) {
+    const gchar *value;
+    GError      *error = nullptr;
+
+    g_return_val_if_fail(tag != nullptr, nullptr);
+
+    value = gexiv2_metadata_try_get_tag_description(tag, &error);
+
+    if (error) {
+        g_warning("%s", error->message);
+        g_clear_error(&error);
+    }
+
+    return value;
+}
+
+const gchar* gexiv2_metadata_try_get_tag_type (const gchar *tag, GError **error) {
     g_return_val_if_fail(tag != NULL, NULL);
     
     if (gexiv2_metadata_is_xmp_tag(tag))
-        return gexiv2_metadata_get_xmp_tag_description(tag);
+        return gexiv2_metadata_get_xmp_tag_type(tag, error);
     
     if (gexiv2_metadata_is_exif_tag(tag))
-        return gexiv2_metadata_get_exif_tag_description(tag);
+        return gexiv2_metadata_get_exif_tag_type(tag, error);
     
     if (gexiv2_metadata_is_iptc_tag(tag))
-        return gexiv2_metadata_get_iptc_tag_description(tag);
+        return gexiv2_metadata_get_iptc_tag_type(tag, error);
     
     return NULL;
 }
 
 const gchar* gexiv2_metadata_get_tag_type (const gchar *tag) {
-    g_return_val_if_fail(tag != NULL, NULL);
-    
-    if (gexiv2_metadata_is_xmp_tag(tag))
-        return gexiv2_metadata_get_xmp_tag_type(tag);
-    
-    if (gexiv2_metadata_is_exif_tag(tag))
-        return gexiv2_metadata_get_exif_tag_type(tag);
-    
-    if (gexiv2_metadata_is_iptc_tag(tag))
-        return gexiv2_metadata_get_iptc_tag_type(tag);
-    
-    return NULL;
+    const gchar *value;
+    GError      *error = nullptr;
+
+    g_return_val_if_fail(tag != nullptr, nullptr);
+
+    value = gexiv2_metadata_try_get_tag_type(tag, &error);
+
+    if (error) {
+        g_warning("%s", error->message);
+        g_clear_error(&error);
+    }
+
+    return value;
 }
 
-GBytes* gexiv2_metadata_get_tag_raw(GExiv2Metadata *self, const gchar* tag) {
+GBytes* gexiv2_metadata_try_get_tag_raw(GExiv2Metadata *self, const gchar* tag, GError **error) {
     g_return_val_if_fail(GEXIV2_IS_METADATA (self), NULL);
     g_return_val_if_fail(tag != NULL, NULL);
     g_return_val_if_fail(self->priv->image.get() != NULL, NULL);
 
     if (gexiv2_metadata_is_xmp_tag(tag))
-        return gexiv2_metadata_get_xmp_tag_raw(self, tag);
+        return gexiv2_metadata_get_xmp_tag_raw(self, tag, error);
 
     if (gexiv2_metadata_is_exif_tag(tag))
-        return gexiv2_metadata_get_exif_tag_raw(self, tag);
+        return gexiv2_metadata_get_exif_tag_raw(self, tag, error);
 
     if (gexiv2_metadata_is_iptc_tag(tag))
-        return gexiv2_metadata_get_iptc_tag_raw(self, tag);
+        return gexiv2_metadata_get_iptc_tag_raw(self, tag, error);
 
     return NULL;
+}
+
+GBytes* gexiv2_metadata_get_tag_raw(GExiv2Metadata *self, const gchar* tag) {
+    GBytes *value;
+    GError *error = nullptr;
+
+    g_return_val_if_fail(GEXIV2_IS_METADATA (self), nullptr);
+    g_return_val_if_fail(tag != nullptr, nullptr);
+    g_return_val_if_fail(self->priv->image.get() != nullptr, nullptr);
+
+    value = gexiv2_metadata_try_get_tag_raw(self, tag, &error);
+
+    if (error) {
+        g_warning("%s", error->message);
+        g_clear_error(&error);
+    }
+
+    return value;
 }
 
 G_END_DECLS

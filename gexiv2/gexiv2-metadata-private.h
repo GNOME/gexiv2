@@ -48,11 +48,6 @@ struct _GExiv2MetadataPrivate
     GExiv2PreviewProperties **preview_properties;
 };
 
-#ifndef __GTK_DOC_IGNORE__
-#define LOG_ERROR(e) \
-    g_warning("%s", e.what());
-#endif
-
 /* private EXIF functions */
 
 G_GNUC_INTERNAL gboolean		gexiv2_metadata_has_exif_tag		(GExiv2Metadata *self, const gchar* tag);
@@ -64,14 +59,14 @@ G_GNUC_INTERNAL gboolean gexiv2_metadata_set_exif_tag_multiple(GExiv2Metadata* s
                                                                const gchar* tag,
                                                                const gchar** values,
                                                                GError** error);
-G_GNUC_INTERNAL gchar*			gexiv2_metadata_get_exif_tag_interpreted_string (GExiv2Metadata *self, const gchar* tag);
-G_GNUC_INTERNAL glong			gexiv2_metadata_get_exif_tag_long	(GExiv2Metadata *self, const gchar* tag);
-G_GNUC_INTERNAL gboolean		gexiv2_metadata_set_exif_tag_long	(GExiv2Metadata *self, const gchar* tag, glong value);
+G_GNUC_INTERNAL gchar*			gexiv2_metadata_get_exif_tag_interpreted_string (GExiv2Metadata *self, const gchar* tag, GError **error);
+G_GNUC_INTERNAL glong			gexiv2_metadata_get_exif_tag_long	(GExiv2Metadata *self, const gchar* tag, GError **error);
+G_GNUC_INTERNAL gboolean		gexiv2_metadata_set_exif_tag_long	(GExiv2Metadata *self, const gchar* tag, glong value, GError **error);
 G_GNUC_INTERNAL gdouble			gexiv2_metadata_get_exif_tag_rational_as_double (GExiv2Metadata *self, const gchar* tag, gdouble def);
-G_GNUC_INTERNAL const gchar*	gexiv2_metadata_get_exif_tag_label	(const gchar* tag);
-G_GNUC_INTERNAL const gchar*	gexiv2_metadata_get_exif_tag_description (const gchar* tag);
-G_GNUC_INTERNAL const gchar*	gexiv2_metadata_get_exif_tag_type (const gchar* tag);
-G_GNUC_INTERNAL GBytes*			gexiv2_metadata_get_exif_tag_raw	(GExiv2Metadata *self, const gchar* tag);
+G_GNUC_INTERNAL const gchar*	gexiv2_metadata_get_exif_tag_label	(const gchar* tag, GError **error);
+G_GNUC_INTERNAL const gchar*	gexiv2_metadata_get_exif_tag_description (const gchar* tag, GError **error);
+G_GNUC_INTERNAL const gchar*	gexiv2_metadata_get_exif_tag_type (const gchar* tag, GError **error);
+G_GNUC_INTERNAL GBytes*			gexiv2_metadata_get_exif_tag_raw	(GExiv2Metadata *self, const gchar* tag, GError **error);
 
 /* private XMP functions */
 
@@ -79,18 +74,18 @@ G_GNUC_INTERNAL gboolean		gexiv2_metadata_clear_xmp_tag		(GExiv2Metadata *self, 
 G_GNUC_INTERNAL gboolean		gexiv2_metadata_has_xmp_tag			(GExiv2Metadata *self, const gchar* tag);
 G_GNUC_INTERNAL gchar*			gexiv2_metadata_get_xmp_tag_string	(GExiv2Metadata *self, const gchar* tag, GError **error);
 G_GNUC_INTERNAL gboolean		gexiv2_metadata_set_xmp_tag_string	(GExiv2Metadata *self, const gchar* tag, const gchar* value, GError **error);
-G_GNUC_INTERNAL gchar*			gexiv2_metadata_get_xmp_tag_interpreted_string (GExiv2Metadata *self, const gchar* tag);
-G_GNUC_INTERNAL glong			gexiv2_metadata_get_xmp_tag_long	(GExiv2Metadata *self, const gchar* tag);
-G_GNUC_INTERNAL gboolean		gexiv2_metadata_set_xmp_tag_long	(GExiv2Metadata *self, const gchar* tag, glong value);
+G_GNUC_INTERNAL gchar*			gexiv2_metadata_get_xmp_tag_interpreted_string (GExiv2Metadata *self, const gchar* tag, GError **error);
+G_GNUC_INTERNAL glong			gexiv2_metadata_get_xmp_tag_long	(GExiv2Metadata *self, const gchar* tag, GError **error);
+G_GNUC_INTERNAL gboolean		gexiv2_metadata_set_xmp_tag_long	(GExiv2Metadata *self, const gchar* tag, glong value, GError **error);
 G_GNUC_INTERNAL gchar**			gexiv2_metadata_get_xmp_tag_multiple (GExiv2Metadata *self, const gchar* tag, GError **error);
 G_GNUC_INTERNAL gchar**			gexiv2_metadata_get_xmp_tag_multiple_deprecated (GExiv2Metadata *self, const gchar* tag, GError **error);
 G_GNUC_INTERNAL gboolean		gexiv2_metadata_set_xmp_tag_multiple (GExiv2Metadata *self, const gchar* tag, const gchar** values, GError **error);
 
-G_GNUC_INTERNAL const gchar*	gexiv2_metadata_get_xmp_tag_label		(const gchar* tag);
-G_GNUC_INTERNAL const gchar*	gexiv2_metadata_get_xmp_tag_description	(const gchar* tag);
-G_GNUC_INTERNAL const gchar*	gexiv2_metadata_get_xmp_tag_type	(const gchar* tag);
+G_GNUC_INTERNAL const gchar*	gexiv2_metadata_get_xmp_tag_label		(const gchar* tag, GError **error);
+G_GNUC_INTERNAL const gchar*	gexiv2_metadata_get_xmp_tag_description	(const gchar* tag, GError **error);
+G_GNUC_INTERNAL const gchar*	gexiv2_metadata_get_xmp_tag_type	(const gchar* tag, GError **error);
 
-G_GNUC_INTERNAL GBytes*			gexiv2_metadata_get_xmp_tag_raw		(GExiv2Metadata *self, const gchar* tag);
+G_GNUC_INTERNAL GBytes*			gexiv2_metadata_get_xmp_tag_raw		(GExiv2Metadata *self, const gchar* tag, GError **error);
 
 /* private IPTC functions */
 
@@ -98,15 +93,15 @@ G_GNUC_INTERNAL gboolean		gexiv2_metadata_clear_iptc_tag		(GExiv2Metadata *self,
 G_GNUC_INTERNAL gboolean		gexiv2_metadata_has_iptc_tag		(GExiv2Metadata *self, const gchar* tag);
 G_GNUC_INTERNAL gchar*			gexiv2_metadata_get_iptc_tag_string	(GExiv2Metadata *self, const gchar* tag, GError **error);
 G_GNUC_INTERNAL gboolean		gexiv2_metadata_set_iptc_tag_string	(GExiv2Metadata *self, const gchar* tag, const gchar* value, GError **error);
-G_GNUC_INTERNAL gchar*			gexiv2_metadata_get_iptc_tag_interpreted_string (GExiv2Metadata *self, const gchar* tag);
+G_GNUC_INTERNAL gchar*			gexiv2_metadata_get_iptc_tag_interpreted_string (GExiv2Metadata *self, const gchar* tag, GError **error);
 G_GNUC_INTERNAL gchar**			gexiv2_metadata_get_iptc_tag_multiple	(GExiv2Metadata *self, const gchar* tag, GError **error);
 G_GNUC_INTERNAL gboolean		gexiv2_metadata_set_iptc_tag_multiple	(GExiv2Metadata *self, const gchar* tag, const gchar** values, GError **error);
 
-G_GNUC_INTERNAL const gchar*	gexiv2_metadata_get_iptc_tag_label	(const gchar* tag);
-G_GNUC_INTERNAL const gchar*	gexiv2_metadata_get_iptc_tag_description	(const gchar* tag);
-G_GNUC_INTERNAL const gchar*	gexiv2_metadata_get_iptc_tag_type	(const gchar* tag);
+G_GNUC_INTERNAL const gchar*	gexiv2_metadata_get_iptc_tag_label	(const gchar* tag, GError **error);
+G_GNUC_INTERNAL const gchar*	gexiv2_metadata_get_iptc_tag_description	(const gchar* tag, GError **error);
+G_GNUC_INTERNAL const gchar*	gexiv2_metadata_get_iptc_tag_type	(const gchar* tag, GError **error);
 
-G_GNUC_INTERNAL GBytes*			gexiv2_metadata_get_iptc_tag_raw	(GExiv2Metadata *self, const gchar* tag);
+G_GNUC_INTERNAL GBytes*			gexiv2_metadata_get_iptc_tag_raw	(GExiv2Metadata *self, const gchar* tag, GError **error);
 
 G_END_DECLS
 
