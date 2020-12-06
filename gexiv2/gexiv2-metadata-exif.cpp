@@ -67,15 +67,17 @@ void gexiv2_metadata_clear_exif (GExiv2Metadata *self) {
     self->priv->image->exifData().clear ();
 }
 
-gchar** gexiv2_metadata_get_exif_tags (GExiv2Metadata *self) {
-    g_return_val_if_fail(GEXIV2_IS_METADATA (self), NULL);
-    g_return_val_if_fail(self->priv->image.get() != NULL, NULL);
-    
+gchar** gexiv2_metadata_get_exif_tags(GExiv2Metadata* self) {
+    g_return_val_if_fail(GEXIV2_IS_METADATA(self), nullptr);
+    g_return_val_if_fail(self->priv->image.get() != nullptr, nullptr);
+
     // get a copy of the ExifData and sort it by tags, preserving sort of original
     Exiv2::ExifData exif_data = Exiv2::ExifData(self->priv->image->exifData());
     exif_data.sortByKey();
-    
-    GSList *list = NULL;
+    // FIXME: Use detail::sortMetadata(exif_data);
+    // Something is not right in ExifData that makes std::sort fail
+
+    GSList* list = nullptr;
     GSList *list_iter;
     gchar** data;
     gint count = 0;

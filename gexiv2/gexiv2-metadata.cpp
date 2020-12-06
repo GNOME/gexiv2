@@ -238,6 +238,46 @@ private:
 }; // class GioIo
 } // Anonymous namespace
 
+// -----------------------------------------------------------------------------
+// Misc internal helper functions
+
+// Port of the NaturalCollate.vala collation key generation to C++
+// Simplified to assume that all XMP keys are ASCII and not UTF-8
+// Original source:
+// https://gitlab.gnome.org/GNOME/shotwell/-/blob/master/src/NaturalCollate.vala
+std::string detail::collate_key(const std::string& str) {
+    constexpr char SUPERDIGIT = ':';
+    constexpr char COLLATION_SENTINAL[] = "\x01\x01\x01";
+    constexpr char NUM_SENTINEL = 0x2;
+
+    std::stringstream in{str};
+    std::stringstream out{};
+
+    while (not in.eof()) {
+        // As long as there are no digits, we put them from input to output
+        while (not std::isdigit(in.peek()) && not in.eof()) {
+            out << static_cast<char>(in.get());
+        }
+
+        if (not in.eof()) {
+
+            // We read the number (integer only)...
+            uint64_t number;
+            in >> number;
+
+            std::string to_append(std::to_string(number).length(), SUPERDIGIT);
+
+            // ... and append it together with its length in : to the output
+            out << COLLATION_SENTINAL << NUM_SENTINEL << to_append << number;
+        }
+    }
+
+    // Add a sentinal for good measure (no idea, follows the original code)
+    out << NUM_SENTINEL;
+
+    return out.str();
+}
+
 G_BEGIN_DECLS
 
 G_DEFINE_TYPE_WITH_CODE (GExiv2Metadata, gexiv2_metadata, G_TYPE_OBJECT, G_ADD_PRIVATE (GExiv2Metadata));

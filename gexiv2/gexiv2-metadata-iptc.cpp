@@ -74,7 +74,7 @@ gchar** gexiv2_metadata_get_iptc_tags(GExiv2Metadata* self) {
 
     // get a copy of the IptcData and sort it by key, preserving the original
     Exiv2::IptcData iptc_data = Exiv2::IptcData(self->priv->image->iptcData());
-    iptc_data.sortByKey();
+    detail::sortMetadata(iptc_data);
 
     GSList* list = nullptr;
     GSList* list_iter = nullptr;

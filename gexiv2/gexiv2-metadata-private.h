@@ -10,8 +10,23 @@
 #ifndef GEXIV2_METADATA_PRIVATE_H
 #define GEXIV2_METADATA_PRIVATE_H
 
-#include <gexiv2/gexiv2-metadata.h>
+#include <algorithm>
 #include <exiv2/exiv2.hpp>
+#include <gexiv2/gexiv2-metadata.h>
+
+// Internal C++ functions, outside of G_BEGIN_DECLS
+// FIXME: Do we really need G_BEGIN_DECLS/END_DECLS for internal header?
+
+namespace detail {
+G_GNUC_INTERNAL std::string collate_key(const std::string& string);
+
+template<typename T>
+G_GNUC_INTERNAL void sortMetadata(T& container) {
+    std::sort(container.begin(), container.end(), [](Exiv2::Metadatum& a, Exiv2::Metadatum& b) {
+        return collate_key(a.key()) < collate_key(b.key());
+    });
+}
+}; // namespace detail
 
 G_BEGIN_DECLS
 
