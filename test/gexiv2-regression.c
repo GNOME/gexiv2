@@ -296,6 +296,37 @@ static void test_ggo_45(void)
 
 }
 
+static void test_ggo_58(void) {
+    GExiv2Metadata* meta = NULL;
+    gboolean result = FALSE;
+    GError* error = NULL;
+
+    meta = gexiv2_metadata_new();
+    g_assert_nonnull(meta);
+
+    result = gexiv2_metadata_open_path(meta, SAMPLE_PATH "/no-metadata.jpg", &error);
+    g_assert_no_error(error);
+    g_assert_true(result);
+
+    for (int i = 0; i < 20; i++) {
+        char* key = g_strdup_printf("Xmp.xmpMM.History[%d]", i);
+        result = gexiv2_metadata_try_set_tag_string(meta, key, "value", &error);
+        g_free(key);
+        g_assert(result);
+        g_assert_no_error(error);
+    }
+
+    char** tags = gexiv2_metadata_get_xmp_tags(meta);
+    for (int i = 0; i < 20; i++) {
+        char* key = g_strdup_printf("Xmp.xmpMM.History[%d]", i);
+        g_assert_cmpstr(tags[i], ==, key);
+        g_free(key);
+    }
+    g_strfreev(tags);
+
+    g_clear_object(&meta);
+}
+
 int main(int argc, char *argv[static argc + 1])
 {
     g_test_init(&argc, &argv, NULL);
@@ -309,6 +340,7 @@ int main(int argc, char *argv[static argc + 1])
     g_test_add_func("/bugs/gnome/gitlab/27", test_ggo_27);
     g_test_add_func("/bugs/gnome/gitlab/xx", test_ggo_xx);
     g_test_add_func("/bugs/gnome/gitlab/45", test_ggo_45);
+    g_test_add_func("/bugs/gnome/gitlab/58", test_ggo_58);
 
     return g_test_run();
 }
