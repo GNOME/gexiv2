@@ -66,7 +66,7 @@ static void test_ggo_32 (void)
     g_assert_no_error(error);
     g_assert_true(result);
 
-    gexiv2_metadata_try_set_tag_long(meta, "Exif.Image.ImageLength", 1234, NULL);
+    gexiv2_metadata_set_tag_long(meta, "Exif.Image.ImageLength", 1234);
 
     pixel_height = gexiv2_metadata_get_metadata_pixel_height(meta);
     g_assert_cmpint(pixel_height, ==, 1234);
@@ -92,31 +92,31 @@ static void test_ggo_33 (void)
 
     /* Check all the width tags and check that they have the same value */
     gexiv2_metadata_set_metadata_pixel_width(meta, 1234);
-    pixels = gexiv2_metadata_try_get_tag_long(meta, "Exif.Photo.PixelXDimension", NULL);
+    pixels = gexiv2_metadata_get_tag_long(meta, "Exif.Photo.PixelXDimension");
     g_assert_cmpint(pixels, ==, 1234);
 
-    pixels = gexiv2_metadata_try_get_tag_long(meta, "Exif.Image.ImageWidth", NULL);
+    pixels = gexiv2_metadata_get_tag_long(meta, "Exif.Image.ImageWidth");
     g_assert_cmpint(pixels, ==, 1234);
 
-    pixels = gexiv2_metadata_try_get_tag_long(meta, "Xmp.tiff.ImageWidth", NULL);
+    pixels = gexiv2_metadata_get_tag_long(meta, "Xmp.tiff.ImageWidth");
     g_assert_cmpint(pixels, ==, 1234);
 
-    pixels = gexiv2_metadata_try_get_tag_long(meta, "Xmp.exif.PixelXDimension", NULL);
+    pixels = gexiv2_metadata_get_tag_long(meta, "Xmp.exif.PixelXDimension");
     g_assert_cmpint(pixels, ==, 1234);
 
 
     /* Check all the height tags and check that they have the same value */
     gexiv2_metadata_set_metadata_pixel_height(meta, 4321);
-    pixels = gexiv2_metadata_try_get_tag_long(meta, "Exif.Photo.PixelYDimension", NULL);
+    pixels = gexiv2_metadata_get_tag_long(meta, "Exif.Photo.PixelYDimension");
     g_assert_cmpint(pixels, ==, 4321);
 
-    pixels = gexiv2_metadata_try_get_tag_long(meta, "Exif.Image.ImageLength", NULL);
+    pixels = gexiv2_metadata_get_tag_long(meta, "Exif.Image.ImageLength");
     g_assert_cmpint(pixels, ==, 4321);
 
-    pixels = gexiv2_metadata_try_get_tag_long(meta, "Xmp.tiff.ImageLength", NULL);
+    pixels = gexiv2_metadata_get_tag_long(meta, "Xmp.tiff.ImageLength");
     g_assert_cmpint(pixels, ==, 4321);
 
-    pixels = gexiv2_metadata_try_get_tag_long(meta, "Xmp.exif.PixelYDimension", NULL);
+    pixels = gexiv2_metadata_get_tag_long(meta, "Xmp.exif.PixelYDimension");
     g_assert_cmpint(pixels, ==, 4321);
 
     g_clear_object(&meta);
@@ -156,7 +156,7 @@ static void test_bgo_775249(void)
     result = gexiv2_metadata_open_path(meta, SAMPLE_PATH "/CaorVN.jpeg", &error);
     g_assert_no_error(error);
     g_assert_true(result);
-    g_assert_true(gexiv2_metadata_try_get_gps_info(meta, &lon, &lat, &alt, NULL));
+    g_assert_true(gexiv2_metadata_get_gps_info(meta, &lon, &lat, &alt));
 
     g_assert_cmpfloat(lon, ==, -1.508425);
 
@@ -187,7 +187,7 @@ static void test_bgo_730136(void)
     g_assert_no_error(error);
     g_assert_true(result);
 
-    raw_tag = gexiv2_metadata_try_get_tag_raw (meta, "Exif.Image.Artist", NULL);
+    raw_tag = gexiv2_metadata_get_tag_raw (meta, "Exif.Image.Artist");
     g_assert_nonnull (raw_tag);
     g_assert_cmpmem (g_bytes_get_data(raw_tag, NULL), g_bytes_get_size(raw_tag),
                      test_bgo_730136_artist_data, sizeof(test_bgo_730136_artist_data));
@@ -285,10 +285,10 @@ static void test_ggo_45(void)
     g_assert_true(result);
 
     alt = 2200.0;
-    result = gexiv2_metadata_try_set_gps_info(meta, lon, lat, alt, NULL);
+    result = gexiv2_metadata_set_gps_info(meta, lon, lat, alt);
     g_assert_true(result);
 
-    result = gexiv2_metadata_try_get_gps_altitude(meta, &alt, NULL);
+    result = gexiv2_metadata_get_gps_altitude(meta, &alt);
     g_assert_true(result);
     g_assert_cmpfloat(fabs(alt - 2200.0), <= , 1e-5);
 

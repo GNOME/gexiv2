@@ -40,7 +40,7 @@ void dump_tags(GExiv2.Metadata metadata, string[] tags) throws Error {
     foreach (string tag in tags) {
         print("%-64s%s\n",
             tag,
-            metadata.try_get_tag_interpreted_string(tag)
+            metadata.get_tag_interpreted_string(tag)
         );
     }
 }
