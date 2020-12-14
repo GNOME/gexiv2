@@ -462,6 +462,8 @@ gboolean		gexiv2_metadata_is_xmp_tag				(const gchar* tag);
  * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
  *
  * Returns: (transfer none) (allow-none): The tag's label
+ *
+ * Since: 0.12.2
  */
 const gchar*	gexiv2_metadata_try_get_tag_label		(const gchar *tag, GError **error);
 
@@ -486,6 +488,8 @@ const gchar*	gexiv2_metadata_get_tag_label		(const gchar *tag);
  * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
  *
  * Returns: (transfer none) (allow-none): The tag's description
+ *
+ * Since: 0.12.2
  */
 const gchar*	gexiv2_metadata_try_get_tag_description	(const gchar *tag, GError **error);
 
@@ -513,6 +517,8 @@ const gchar*	gexiv2_metadata_get_tag_description	(const gchar *tag);
  * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
  *
  * Returns: (transfer none) (allow-none): The tag's type name.
+ *
+ * Since: 0.12.2
  */
 const gchar*	gexiv2_metadata_try_get_tag_type	(const gchar *tag, GError **error);
 
@@ -671,6 +677,8 @@ gboolean		gexiv2_metadata_set_tag_string		(GExiv2Metadata *self, const gchar* ta
  * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
  *
  * Returns: TRUE on success
+ *
+ * Since: 0.12.2
  */
 gboolean gexiv2_metadata_try_set_xmp_tag_struct (GExiv2Metadata *self, const gchar* tag, GExiv2StructureType type, GError **error);
 
@@ -701,6 +709,8 @@ gboolean gexiv2_metadata_set_xmp_tag_struct (GExiv2Metadata *self, const gchar* 
  * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
  *
  * Returns: (transfer full) (allow-none): The tag's interpreted value as a string
+ *
+ * Since: 0.12.2
  */
 gchar*			gexiv2_metadata_try_get_tag_interpreted_string (GExiv2Metadata *self, const gchar* tag, GError **error);
 
@@ -730,6 +740,8 @@ gchar*			gexiv2_metadata_get_tag_interpreted_string (GExiv2Metadata *self, const
  * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
  *
  * Returns: The tag's value as a glong
+ *
+ * Since: 0.12.2
  */
 glong			gexiv2_metadata_try_get_tag_long	(GExiv2Metadata *self, const gchar* tag, GError **error);
 
@@ -757,6 +769,8 @@ glong			gexiv2_metadata_get_tag_long		(GExiv2Metadata *self, const gchar* tag);
  * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
  *
  * Returns: TRUE on success
+ *
+ * Since: 0.12.2
  */
 gboolean		gexiv2_metadata_try_set_tag_long	(GExiv2Metadata *self, const gchar* tag, glong value, GError **error);
 
@@ -858,6 +872,8 @@ gboolean		gexiv2_metadata_set_tag_multiple	(GExiv2Metadata *self, const gchar* t
  * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
  *
  * Returns: (transfer full) (allow-none): The tag's raw value as a byte array
+ *
+ * Since: 0.12.2
  */
 GBytes*			gexiv2_metadata_try_get_tag_raw		(GExiv2Metadata *self, const gchar* tag, GError **error);
 
@@ -918,6 +934,8 @@ gchar**			gexiv2_metadata_get_exif_tags		(GExiv2Metadata *self);
  * @den the denominator of the fraction on successful return.
  *
  * Returns: (skip): Boolean success value
+ *
+ * Since: 0.12.2
  */
 gboolean		gexiv2_metadata_try_get_exif_tag_rational (GExiv2Metadata *self, const gchar* tag, gint* nom, gint* den, GError **error);
 
@@ -933,6 +951,8 @@ gboolean		gexiv2_metadata_try_get_exif_tag_rational (GExiv2Metadata *self, const
  * @den the denominator of the fraction.
  *
  * Returns: (skip): Boolean success value
+ *
+ * Since: 0.12.2
  */
 gboolean		gexiv2_metadata_try_set_exif_tag_rational (GExiv2Metadata *self, const gchar* tag, gint nom, gint den, GError **error);
 
@@ -1052,6 +1072,8 @@ void			gexiv2_metadata_clear_xmp			(GExiv2Metadata *self);
  * Encode the XMP packet as a %NULL-terminated string.
  *
  * Returns: (transfer full) (allow-none): Encode the XMP packet and return as a %NULL-terminated string.
+ *
+ * Since: 0.12.2
  */
 gchar*		gexiv2_metadata_try_generate_xmp_packet	(GExiv2Metadata *self, GExiv2XmpFormatFlags xmp_format_flags, guint32 padding, GError **error);
 
@@ -1076,6 +1098,8 @@ gchar*		gexiv2_metadata_generate_xmp_packet	(GExiv2Metadata *self, GExiv2XmpForm
  * @error: (allow-none): A return location for a #GError or %NULL
  *
  * Returns: (transfer full) (allow-none): The currently-encoded XMP packet (see gexiv2_metadata_generate_xmp_packet).
+ *
+ * Since: 0.12.2
  */
 gchar*			gexiv2_metadata_try_get_xmp_packet	(GExiv2Metadata *self, GError **error);
 
@@ -1330,6 +1354,8 @@ gint			gexiv2_metadata_get_iso_speed		(GExiv2Metadata *self);
  * Query the longitude stored in the GPS tags of @self
  *
  * Returns: (skip): Boolean success value
+ *
+ * Since: 0.12.2
  */
 gboolean		gexiv2_metadata_try_get_gps_longitude			(GExiv2Metadata *self, gdouble *longitude, GError **error);
 
@@ -1342,6 +1368,8 @@ gboolean		gexiv2_metadata_try_get_gps_longitude			(GExiv2Metadata *self, gdouble
  * Query the latitude stored in the GPS tags of @self
  *
  * Returns: (skip): Boolean success value
+ *
+ * Since: 0.12.2
  */
 gboolean		gexiv2_metadata_try_get_gps_latitude			(GExiv2Metadata *self, gdouble *latitude, GError **error);
 
@@ -1355,6 +1383,8 @@ gboolean		gexiv2_metadata_try_get_gps_latitude			(GExiv2Metadata *self, gdouble 
  * image
  *
  * Returns: (skip): Boolean success value
+ *
+ * Since: 0.12.2
  */
 gboolean		gexiv2_metadata_try_get_gps_altitude		(GExiv2Metadata *self, gdouble *altitude, GError **error);
 
@@ -1412,6 +1442,8 @@ gboolean		gexiv2_metadata_get_gps_altitude			(GExiv2Metadata *self, gdouble *alt
  * Convenience function to query all available GPS information at once.
  *
  * Returns: (skip): Boolean success value.
+ *
+ * Since: 0.12.2
  */
 gboolean		gexiv2_metadata_try_get_gps_info			(GExiv2Metadata *self, gdouble *longitude, gdouble *latitude, gdouble *altitude, GError **error);
 
@@ -1444,6 +1476,8 @@ gboolean		gexiv2_metadata_get_gps_info				(GExiv2Metadata *self, gdouble *longit
  * just modifying the GPS data.
  *
  * Returns: (skip): Boolean success value.
+ *
+ * Since: 0.12.2
  */
 gboolean		gexiv2_metadata_try_set_gps_info			(GExiv2Metadata *self, gdouble longitude, gdouble latitude, gdouble altitude, GError **error);
 
@@ -1477,7 +1511,7 @@ gboolean		gexiv2_metadata_set_gps_info				(GExiv2Metadata *self, gdouble longitu
  *
  * Returns: (skip): Boolean success value.
  *
- * Since: 0.12.1
+ * Since: 0.12.2
  */
 gboolean		gexiv2_metadata_try_update_gps_info			(GExiv2Metadata *self, gdouble longitude, gdouble latitude, gdouble altitude, GError **error);
 
@@ -1504,6 +1538,8 @@ gboolean		gexiv2_metadata_update_gps_info				(GExiv2Metadata *self, gdouble long
  * @self: An instance of #GExiv2Metadata
  *
  * Removes all GPS metadata from the loaded image
+ *
+ * Since: 0.12.2
  */
 void			gexiv2_metadata_try_delete_gps_info			(GExiv2Metadata *self, GError **error);
 
