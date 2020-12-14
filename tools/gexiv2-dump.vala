@@ -38,10 +38,14 @@ void usage() {
 
 void dump_tags(GExiv2.Metadata metadata, string[] tags) throws Error {
     foreach (string tag in tags) {
-        print("%-64s%s\n",
-            tag,
-            metadata.get_tag_interpreted_string(tag)
-        );
+        try {
+            print("%-64s%s\n",
+                tag,
+                metadata.try_get_tag_interpreted_string(tag)
+            );
+        } catch (Error err) {
+            stderr.printf("Unable to get the interpreted string for metadata tag %s: %s\n", tag, err.message);
+        }
     }
 }
 
