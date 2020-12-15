@@ -871,6 +871,15 @@ gboolean        gexiv2_metadata_unregister_xmp_namespace (const gchar* name);
  */
 void            gexiv2_metadata_unregister_all_xmp_namespaces (void);
 
+/**
+ * gexiv2_metadata_get_xmp_namespace_for_tag:
+ * @tag: (in): Full tag name or XMP namespace identifier
+ * Returns: (transfer full): %NULL if there was no namespace registered for the tag, the URI of the namespace otherwise.
+ *
+ * Since: 0.12.2
+ */
+char* gexiv2_metadata_get_xmp_namespace_for_tag(const char* tag);
+
 /* IPTC functions */
 
 /**

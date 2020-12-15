@@ -530,4 +530,35 @@ void gexiv2_metadata_unregister_all_xmp_namespaces (void) {
     Exiv2::XmpProperties::unregisterNs();
 }
 
+char* gexiv2_metadata_get_xmp_namespace_for_tag(const char* tag) {
+    g_return_val_if_fail(tag != nullptr, nullptr);
+    g_return_val_if_fail(strlen(tag) != 0, nullptr);
+
+    char** list = nullptr;
+    char* result = nullptr;
+
+    try {
+        list = g_strsplit(tag, ".", 3);
+        const char* name = nullptr;
+        if (g_strv_length(list) == 0) {
+            g_assert_not_reached();
+        }
+        if (g_strv_length(list) == 1) {
+            name = list[0];
+        } else  {
+            name = list[1];
+        }
+
+        auto info = Exiv2::XmpProperties::ns(name);
+
+        result = g_strdup(info.c_str());
+    } catch (Exiv2::Error&) {
+        // No such namespace
+    }
+
+    g_clear_pointer(&list, g_strfreev);
+
+    return result;
+}
+
 G_END_DECLS
