@@ -508,7 +508,7 @@ gchar*			gexiv2_metadata_try_get_tag_string	(GExiv2Metadata *self, const gchar* 
  * @self: An instance of #GExiv2Metadata
  * @tag: Exiv2 tag name
  * @value: The value to set or replace the existing value
- * @error: (allow-none): A return location for a #GError or %nullptr
+ * @error: (allow-none): A return location for a #GError or %NULL
  *
  * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
  *
@@ -604,12 +604,11 @@ glong			gexiv2_metadata_get_tag_long		(GExiv2Metadata *self, const gchar* tag);
  */
 gboolean		gexiv2_metadata_set_tag_long		(GExiv2Metadata *self, const gchar* tag, glong value);
 
-
 /**
  * gexiv2_metadata_try_get_tag_multiple:
  * @self: An instance of #GExiv2Metadata
  * @tag: Exiv2 tag name
- * @error: (allow-none): A return location for a #GError or %nullptr
+ * @error: (allow-none): A return location for a #GError or %NULL
  *
  * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
  *
@@ -627,7 +626,7 @@ gchar**			gexiv2_metadata_try_get_tag_multiple	(GExiv2Metadata *self, const gcha
  * @self: An instance of #GExiv2Metadata
  * @tag: Exiv2 tag name
  * @values: (array zero-terminated=1): An array of values to set or replace the existing value(s)
- * @error: (allow-none): A return location for a #GError or %nullptr
+ * @error: (allow-none): A return location for a #GError or %NULL
  *
  * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
  *
