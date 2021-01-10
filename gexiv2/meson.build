@@ -75,6 +75,7 @@ pc_deps = ['glib-2.0', 'gobject-2.0', 'gio-2.0']
 
 pkg.generate(
     description : 'GObject bindings for exiv2',
+    url : 'https://wiki.gnome.org/Projects/gexiv2',
     libraries : gexiv2,
     version : meson.project_version(),
     name : 'GExiv2',
