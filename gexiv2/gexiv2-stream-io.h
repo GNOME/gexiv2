@@ -32,33 +32,33 @@ public:
 
 	StreamIo (ManagedStreamCallbacks* cb);
 
-	virtual ~StreamIo ();
-	virtual int open ();
-	virtual int close ();
-	virtual size_type write (const Exiv2::byte* data, size_type wcount);
-	virtual size_type write (Exiv2::BasicIo& src);
-	virtual int putb (Exiv2::byte data);
+	~StreamIo ();
+	int open () override;
+	int close () override;
+	size_type write (const Exiv2::byte* data, size_type wcount) override;
+	size_type write (Exiv2::BasicIo& src) override;
+	int putb (Exiv2::byte data) override;
 #if EXIV2_TEST_VERSION(0,27,99)
 	Exiv2::DataBuf read (size_t rcount) noexcept override;
 #else
 	Exiv2::DataBuf read (long rcount) override;
 #endif
-	virtual size_type read (Exiv2::byte* buf, size_type rcount);
-	virtual int getb ();
-	virtual void transfer (Exiv2::BasicIo& src);
-	virtual int seek (long offset, Position pos);
-	virtual Exiv2::byte* mmap (bool isWriteable = false);
-	virtual int munmap ();
-	virtual long tell () const;
-	virtual size_t size () const;
-	virtual bool isopen () const;
-	virtual int error () const;
-	virtual bool eof () const;
-	virtual std::string path () const;
+	size_type read (Exiv2::byte* buf, size_type rcount) override;
+	int getb () override;
+	void transfer (Exiv2::BasicIo& src) override;
+	int seek (long offset, Position pos) override;
+	Exiv2::byte* mmap (bool isWriteable = false) override;
+	int munmap () override;
+	long tell () const override;
+	size_t size () const override;
+	bool isopen () const override;
+	int error () const override;
+	bool eof () const override;
+	std::string path () const override;
 #ifdef EXV_UNICODE_PATH
-	virtual std::wstring wpath () const;
+	std::wstring wpath () const override;
 #endif
-	virtual ptr_type temporary () const;
+	ptr_type temporary () const;
 
 private:
 	/* stream callbacks */
