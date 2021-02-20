@@ -672,7 +672,7 @@ gboolean		gexiv2_metadata_set_tag_string		(GExiv2Metadata *self, const gchar* ta
  * @self: An instance of #GExiv2Metadata
  * @tag: Exiv2 tag name
  * @type: The GExiv2StructureType specifying the type of structure
- * @error: (allow-none): A return location for a #GError or %nullptr
+ * @error: (allow-none): A return location for a #GError or %NULL
  *
  * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
  *
@@ -701,7 +701,7 @@ gboolean gexiv2_metadata_set_xmp_tag_struct (GExiv2Metadata *self, const gchar* 
  * gexiv2_metadata_try_get_tag_interpreted_string:
  * @self: An instance of #GExiv2Metadata
  * @tag: Exiv2 tag name
- * @error: (allow-none): A return location for a #GError or %nullptr
+ * @error: (allow-none): A return location for a #GError or %NULL
  *
  * An interpreted string is one fit for user display.  It may display units or use formatting
  * appropriate to the type of data the tag holds.
@@ -735,7 +735,7 @@ gchar*			gexiv2_metadata_get_tag_interpreted_string (GExiv2Metadata *self, const
  * gexiv2_metadata_try_get_tag_long:
  * @self: An instance of #GExiv2Metadata
  * @tag: Exiv2 tag name
- * @error: (allow-none): A return location for a #GError or %nullptr
+ * @error: (allow-none): A return location for a #GError or %NULL
  *
  * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
  *
@@ -764,7 +764,7 @@ glong			gexiv2_metadata_get_tag_long		(GExiv2Metadata *self, const gchar* tag);
  * @self: An instance of #GExiv2Metadata
  * @tag: Exiv2 tag name
  * @value: The value to set or replace the existing value
- * @error: (allow-none): A return location for a #GError or %nullptr
+ * @error: (allow-none): A return location for a #GError or %NULL
  *
  * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
  *
