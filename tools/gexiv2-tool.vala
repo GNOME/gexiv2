@@ -108,8 +108,7 @@ int main(string[] args) {
 
         // Try to open the user's file
         GExiv2.Metadata metadata = new GExiv2.Metadata();
-        var file = File.new_for_commandline_arg(args[1]);
-        metadata.from_stream(file.read());
+        metadata.from_path(args[1]);
 
         // Get tag names from file
         var exif_tags = metadata.get_exif_tags();
