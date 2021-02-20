@@ -102,7 +102,9 @@ G_BEGIN_DECLS
  * <ulink url="http://jpegclub.org/exif_orientation.html"></ulink>
  */
 typedef enum {
-	GEXIV2_ORIENTATION_MIN			= 0, /*< skip >*/
+	/*< private >*/
+	GEXIV2_ORIENTATION_MIN			= 0,
+	/*< public >*/
 	GEXIV2_ORIENTATION_UNSPECIFIED	= 0,
 	GEXIV2_ORIENTATION_NORMAL		= 1,
 	GEXIV2_ORIENTATION_HFLIP		= 2,
@@ -112,7 +114,8 @@ typedef enum {
 	GEXIV2_ORIENTATION_ROT_90		= 6,
 	GEXIV2_ORIENTATION_ROT_90_VFLIP	= 7,
 	GEXIV2_ORIENTATION_ROT_270		= 8,
-	GEXIV2_ORIENTATION_MAX			= 8 /*< skip >*/
+	/*< private >*/
+	GEXIV2_ORIENTATION_MAX			= 8
 } GExiv2Orientation;
 
 /**
