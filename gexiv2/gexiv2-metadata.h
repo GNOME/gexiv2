@@ -1536,6 +1536,7 @@ gboolean		gexiv2_metadata_update_gps_info				(GExiv2Metadata *self, gdouble long
 /**
  * gexiv2_metadata_try_delete_gps_info:
  * @self: An instance of #GExiv2Metadata
+ * @error: (allow-none): A return location for a #GError or %NULL
  *
  * Removes all GPS metadata from the loaded image
  *
