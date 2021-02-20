@@ -1,3 +1,34 @@
+gexiv2 0.12.2 - 20 Feb 2021
+ 
+ * Introduce gexiv2_metadata_get_exif_data
+ * Clarify License of C/C++ code
+ * Documentation clean-up
+ * Fix filename handling for windows
+ * Fix _get_iptc_tags returning duplicates
+ * Add _get_multiple() for all tag domains
+ * Introduce a set of new functions that will pass on Exiv2's exception
+   instead of silently dropping a warning to the console
+ * Fix XMP tags sort order
+ * Fix xmpText/altLang handling for _get_tag_multiple()
+ * Add XMP namespace lookup
+ * Windows compatibility fixes
+
+Bugs fixed in this release:
+ - https://gitlab.gnome.org/GNOME/gexiv2/issues/10
+ - https://gitlab.gnome.org/GNOME/gexiv2/issues/57
+ - https://gitlab.gnome.org/GNOME/gexiv2/issues/58
+ - https://gitlab.gnome.org/GNOME/gexiv2/issues/59
+ - https://gitlab.gnome.org/GNOME/gexiv2/issues/59
+ - https://gitlab.gnome.org/GNOME/gexiv2/issues/60
+ - https://gitlab.gnome.org/GNOME/gexiv2/issues/61
+ - https://gitlab.gnome.org/GNOME/gexiv2/issues/63
+
+All contributors to this release:
+ - Jens Georg <mail@jensge.org>
+ - postscript-dev <43813-postscript-dev@users.noreply.gitlab.gnome.org>
+ - Jehan <jehan@girinstud.io>
+ - Olav Vitters <olav@vitters.nl>
+
 gexiv2 0.12.1 - 23 May 2020
 
  * Support macOS dylib versioning
