@@ -19,7 +19,9 @@
 
 /**
  * SECTION: gexiv2-metadata
+ * @title: Generic image metadata handling
  * @short_description: Class to handle the various image metadata standards
+ * @include: gexiv2/gexiv2.h
  *
  * #GExiv2Metadata is a generic object that provides everything from simple
  * aggregated accessors to common data such as image comments up to
@@ -28,10 +30,42 @@
  */
 
 /**
+ * SECTION: gexiv2-metadata-xmp
+ * @short_description: Functionality specific to the XMP familiy of metadata information
+ * @title: Functions related to XMP metadata
+ * @include: gexiv2/gexiv2.h
+ *
+ * While being part of #GExiv2Metadata, these functions are dealing with specific
+ * aspects of XMP
+ */
+
+/**
+ * SECTION: gexiv2-metadata-exif
+ * @short_description: Functionality specific to the EXIF familiy of metadata information
+ * @title: Functions related to EXIF metadata
+ * @include: gexiv2/gexiv2.h
+ *
+ * While being part of #GExiv2Metadata, these functions are dealing with specific
+ * aspects of EXIF
+ */
+
+/**
+ * SECTION: gexiv2-metadata-iptc
+ * @short_description: Functionality specific to the IPTC familiy of metadata information
+ * @title: Functions related to IPTC metadata
+ * @include: gexiv2/gexiv2.h
+ *
+ * While being part of #GExiv2Metadata, these functions are dealing with specific
+ * aspects of IPTC
+ */
+
+/**
  * SECTION: gexiv2-preview-image
+ * @title: Preview images
  * @short_description: Class describing preview images (or thumbnails) that
  * are part of the metadata.
  * @see_also: #GExiv2Metadata #GExiv2PreviewProperties
+ * @include: gexiv2/gexiv2.h
  *
  * #GExiv2PreviewImage is an accessor to the preview images contained in
  * the image's metadata. This could be anything from a thumbnail to a
@@ -53,12 +87,36 @@
 
 /**
  * SECTION: gexiv2-preview-properties
+ * @title: Properties of preview images
  * @short_description: Class describing properties of a preview image
  * @see_also: #GExiv2Metadata #GExiv2PreviewProperties
  *
  * Metadata can contain multiple preview images. #GExiv2PreviewProperties are
  * used to describe the available image without the need of fetching the whole
  * image from the metadata.
+ */
+
+/**
+ * SECTION: gexiv2-version
+ * @title: Library version information
+ * @short_description: Utilities for querying the library version
+ *
+ * Provides macros and functions to query the version of the GExiv2 library during compile- and runtime.
+ */
+
+/**
+ * SECTION: gexiv2-io
+ * @title: Reading and writing metadata
+ * @short_description: How to read and write metadata from files and memory
+ */
+
+/**
+ * SECTION: gexiv2-convenience
+ * @title: High-level functions for specific information
+ * @short_description: A set of helper functions to simplify accessing specific information
+ *
+ * The functions in this section will use several individual tags to provide or set
+ * the required information while trying to follow the MWG recommendations
  */
 
 G_BEGIN_DECLS

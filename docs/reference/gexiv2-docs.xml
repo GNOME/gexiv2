@@ -17,13 +17,18 @@
   </bookinfo>
 
   <chapter>
-      <title>GExiv2</title>
-      <xi:include href="xml/gexiv2-log.xml"/>
+      <title>GExiv2 image metadata handling library</title>
+      <xi:include href="xml/gexiv2-startup.xml"/>
       <xi:include href="xml/gexiv2-metadata.xml"/>
+      <xi:include href="xml/gexiv2-io.xml"/>
+      <xi:include href="xml/gexiv2-convenience.xml"/>
+      <xi:include href="xml/gexiv2-metadata-exif.xml"/>
+      <xi:include href="xml/gexiv2-metadata-xmp.xml"/>
+      <xi:include href="xml/gexiv2-metadata-iptc.xml"/>
       <xi:include href="xml/gexiv2-preview-image.xml"/>
       <xi:include href="xml/gexiv2-preview-properties.xml"/>
-      <xi:include href="xml/gexiv2-startup.xml"/>
       <xi:include href="xml/gexiv2-version.xml"/>
+      <xi:include href="xml/gexiv2-log.xml"/>
 
   </chapter>
   <index id="api-index-full">
