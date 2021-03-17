@@ -288,6 +288,20 @@ const gchar* gexiv2_metadata_get_iptc_tag_type (const gchar* tag, GError **error
     return NULL;
 }
 
+gboolean gexiv2_metadata_iptc_tag_supports_multiple_values(const gchar* tag, GError** error) {
+    g_return_val_if_fail(tag != nullptr, FALSE);
+    g_return_val_if_fail(error == nullptr || *error == nullptr, FALSE);
+
+    try {
+        const Exiv2::IptcKey key(tag); // Check to see if @tag is valid
+        return (Exiv2::IptcDataSets::dataSetRepeatable(key.tag(), key.record()) ? TRUE : FALSE);
+    } catch (Exiv2::Error& e) {
+        g_set_error_literal(error, g_quark_from_string("GExiv2"), e.code(), e.what());
+    }
+
+    return FALSE;
+}
+
 GBytes* gexiv2_metadata_get_iptc_tag_raw (GExiv2Metadata *self, const gchar* tag, GError **error) {
     g_return_val_if_fail(GEXIV2_IS_METADATA (self), NULL);
     g_return_val_if_fail(tag != NULL, NULL);

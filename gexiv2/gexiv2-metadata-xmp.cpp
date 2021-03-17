@@ -525,6 +525,47 @@ const gchar* gexiv2_metadata_get_xmp_tag_type (const gchar* tag, GError **error)
     return NULL;
 }
 
+gboolean gexiv2_metadata_xmp_tag_supports_multiple_values(GExiv2Metadata* self, const gchar* tag, GError** error) {
+    g_return_val_if_fail(GEXIV2_IS_METADATA(self), FALSE);
+    g_return_val_if_fail(self->priv != nullptr, FALSE);
+    g_return_val_if_fail(self->priv->image.get() != nullptr, FALSE);
+    g_return_val_if_fail(tag != nullptr, FALSE);
+    g_return_val_if_fail(error == nullptr || *error == nullptr, FALSE);
+
+    try {
+        const Exiv2::XmpKey key(tag); // Check tag is in correct format
+        const gchar* type = gexiv2_metadata_get_xmp_tag_type(tag, error);
+
+        if (error != nullptr && *error != nullptr) {
+            g_set_error_literal(error, g_quark_from_string("GExiv2"), (*error)->code, (*error)->message);
+            return FALSE;
+        }
+
+        if (type == nullptr)
+            throw Exiv2::Error(Exiv2::ErrorCode::kerInvalidKey, tag);
+
+        // If @tag has a valid familyName and groupName, Exiv2 will return
+        // "XmpText" even if the tagName has never been added (e.g.
+        // "Xmp.dc.TagDoesNotExist").
+        // For consistency with the `_supports_multiple_values` Exif and Iptc functions,
+        // check if @tag exists - Note: all built-in tags have a label.
+        const auto& xmp_data = self->priv->image->xmpData();
+
+        if (g_ascii_strcasecmp(type, "XmpText") == 0 && gexiv2_metadata_get_xmp_tag_label(tag, error) == nullptr &&
+            xmp_data.findKey(key) == xmp_data.end()) {
+            throw Exiv2::Error(Exiv2::ErrorCode::kerInvalidKey, tag);
+        }
+
+        if (g_ascii_strcasecmp(type, "XmpAlt") == 0 || g_ascii_strcasecmp(type, "XmpBag") == 0 ||
+            g_ascii_strcasecmp(type, "XmpSeq") == 0 || g_ascii_strcasecmp(type, "LangAlt") == 0) {
+            return TRUE;
+        }
+    } catch (Exiv2::Error& e) {
+        g_set_error_literal(error, g_quark_from_string("GExiv2"), e.code(), e.what());
+    }
+    return FALSE;
+}
+
 GBytes* gexiv2_metadata_get_xmp_tag_raw (GExiv2Metadata *self, const gchar* tag, GError **error) {
     g_return_val_if_fail(GEXIV2_IS_METADATA (self), NULL);
     g_return_val_if_fail(tag != NULL, NULL);

@@ -536,6 +536,21 @@ G_DEPRECATED_FOR(gexiv2_metadata_try_get_tag_type)
 const gchar*	gexiv2_metadata_get_tag_type	(const gchar *tag);
 
 /**
+ * gexiv2_metadata_try_tag_supports_multiple_values:
+ * @self: An instance of #GExiv2Metadata
+ * @tag: An Exiv2 tag
+ * @error: (allow-none): A return location for a #GError or %NULL
+ *
+ * The Exiv2 Tag Reference can be found at <ulink url="https://www.exiv2.org/metadata.html"></ulink>
+ *
+ * Returns: Whether @tag is capable of storing multiple values or not. If @tag is undefined
+ * (i.e. not built-in and not added to @self), then @error is set and %FALSE is returned.
+ *
+ * Since: 0.12.2
+ */
+gboolean gexiv2_metadata_try_tag_supports_multiple_values(GExiv2Metadata* self, const gchar* tag, GError** error);
+
+/**
  * gexiv2_metadata_get_supports_exif:
  * @self: An instance of #GExiv2Metadata
  *

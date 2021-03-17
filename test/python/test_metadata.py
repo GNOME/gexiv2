@@ -32,7 +32,7 @@ PY3K = sys.version_info[0] == 3
 
 import gi
 gi.require_version('GExiv2', '0.10')
-from gi.repository import GExiv2
+from gi.repository import GExiv2, GLib
 from fractions import Fraction
 
 
@@ -185,6 +185,7 @@ class TestMetadata(unittest.TestCase):
                        'stop_emission',
                        'stop_emission_by_name',
                        'thaw_notify',
+                       'try_tag_supports_multiple_values',
                        'try_delete_gps_info',
                        'try_generate_xmp_packet',
                        'try_get_exif_tag_rational',
@@ -721,6 +722,41 @@ generated the image. When the field is left blank, it is treated as unknown.""")
         self.metadata.set_tag_string('Iptc.Application2.City', 'Copenhagen')
         self.assertEqual(
             self.metadata.get_iptc_tags(), ['Iptc.Application2.City'])
+
+    def test_try_tag_supports_multiple_values(self):
+        # Test different types of built-in/added tags for Exif/Iptc/Xmp
+         
+        # Add a new xmpText string
+        self.metadata.set_tag_string('Xmp.dc.NewXmpTextValue', 'New Value')
+        
+        ### Test Exif tags
+        self.assertFalse(self.metadata.try_tag_supports_multiple_values('Exif.Image.Model'))
+        self.assertRaises(GLib.GError,self.metadata.try_tag_supports_multiple_values,'Exif.Madeup.Orientation')
+        self.assertRaises(GLib.GError,self.metadata.try_tag_supports_multiple_values,'Exif.Image.MadeUp')
+        self.assertRaises(GLib.GError,self.metadata.try_tag_supports_multiple_values,'Exif.MadeUp.MadeUp')
+
+        ### Test Iptc tags
+        self.assertTrue(self.metadata.try_tag_supports_multiple_values('Iptc.Application2.Keywords'))
+        self.assertFalse(self.metadata.try_tag_supports_multiple_values('Iptc.Envelope.ServiceId'))
+        self.assertRaises(GLib.GError,self.metadata.try_tag_supports_multiple_values,'Iptc.Madeup.Keywords')
+        self.assertRaises(GLib.GError,self.metadata.try_tag_supports_multiple_values,'Iptc.Application2.Madeup')
+        self.assertRaises(GLib.GError,self.metadata.try_tag_supports_multiple_values,'Iptc.Madeup.MadeUp')
+
+        ### Test Xmp tags
+        self.assertFalse(self.metadata.try_tag_supports_multiple_values('Xmp.xmpMM.InstanceID'))
+        self.assertTrue(self.metadata.try_tag_supports_multiple_values('Xmp.dc.subject'))
+        self.assertTrue(self.metadata.try_tag_supports_multiple_values('Xmp.photoshop.TextLayers'))
+        self.assertTrue(self.metadata.try_tag_supports_multiple_values('Xmp.xmpRights.UsageTerms'))
+        self.assertRaises(GLib.GError,self.metadata.try_tag_supports_multiple_values,'Xmp.MadeUp.subject')
+        self.assertRaises(GLib.GError,self.metadata.try_tag_supports_multiple_values,'Xmp.dc.MadeUp')
+        self.assertRaises(GLib.GError,self.metadata.try_tag_supports_multiple_values,'Xmp.MadeUp.MadeUp')
+        self.assertFalse(self.metadata.try_tag_supports_multiple_values('Xmp.dc.NewXmpTextValue'))
+
+        ### Test Other tags
+        self.assertRaises(GLib.GError,self.metadata.try_tag_supports_multiple_values, '')
+        self.assertRaises(GLib.GError,self.metadata.try_tag_supports_multiple_values,'MadeUp.dc.subject')
+        self.assertRaises(GLib.GError,self.metadata.try_tag_supports_multiple_values,'MadeUp.MadeUp.subject')
+        self.assertRaises(GLib.GError,self.metadata.try_tag_supports_multiple_values,'MadeUp.MadeUp.MadeUp')
 
     def test_delete_gps_info(self):
         # Longitude, latitude, altitude

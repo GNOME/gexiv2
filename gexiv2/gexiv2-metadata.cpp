@@ -1438,6 +1438,29 @@ const gchar* gexiv2_metadata_get_tag_type (const gchar *tag) {
     return value;
 }
 
+gboolean gexiv2_metadata_try_tag_supports_multiple_values(GExiv2Metadata* self, const gchar* tag, GError** error) {
+    g_return_val_if_fail(GEXIV2_IS_METADATA(self), FALSE);
+    g_return_val_if_fail(self->priv != nullptr, FALSE);
+    g_return_val_if_fail(self->priv->image.get() != nullptr, FALSE);
+    g_return_val_if_fail(tag != nullptr, FALSE);
+    g_return_val_if_fail(error == nullptr || *error == nullptr, FALSE);
+
+    if (gexiv2_metadata_is_iptc_tag(tag) == TRUE)
+        return gexiv2_metadata_iptc_tag_supports_multiple_values(tag, error);
+
+    if (gexiv2_metadata_is_xmp_tag(tag) == TRUE)
+        return gexiv2_metadata_xmp_tag_supports_multiple_values(self, tag, error);
+
+    if (gexiv2_metadata_is_exif_tag(tag) == TRUE)
+        return gexiv2_metadata_exif_tag_supports_multiple_values(tag, error);
+
+    // Invalid tag (Family name)
+    Exiv2::Error e(Exiv2::ErrorCode::kerInvalidKey, tag);
+    g_set_error_literal(error, g_quark_from_string("GExiv2"), e.code(), e.what());
+
+    return FALSE;
+}
+
 GBytes* gexiv2_metadata_try_get_tag_raw(GExiv2Metadata *self, const gchar* tag, GError **error) {
     g_return_val_if_fail(GEXIV2_IS_METADATA (self), NULL);
     g_return_val_if_fail(tag != NULL, NULL);
