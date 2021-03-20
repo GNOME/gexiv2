@@ -625,6 +625,8 @@ gint			gexiv2_metadata_get_pixel_height	(GExiv2Metadata *self);
  *
  * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
  *
+ * Tags that support multiple values are returned as a single string, with elements separated by ", ".
+ *
  * Returns: (transfer full) (allow-none): The tag's value as a string
  *
  * Since: 0.12.2
@@ -637,6 +639,9 @@ gchar*			gexiv2_metadata_try_get_tag_string	(GExiv2Metadata *self, const gchar* 
  * @tag: Exiv2 tag name
  * @value: The value to set or replace the existing value
  * @error: (allow-none): A return location for a #GError or %NULL
+ *
+ * If a tag supports multiple values, then @value is added to any existing values. For single
+ * tags, @value replaces the value.
  *
  * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
  *
@@ -652,6 +657,8 @@ gboolean		gexiv2_metadata_try_set_tag_string	(GExiv2Metadata *self, const gchar*
  * @tag: Exiv2 tag name
  *
  * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
+ *
+ * Tags that support multiple values are returned as a single string, with elements separated by ", ".
  *
  * In case of error, a GLib warning will be logged. Use instead
  * gexiv2_metadata_try_get_tag_string() if you want to avoid this and
@@ -671,6 +678,9 @@ gchar*			gexiv2_metadata_get_tag_string		(GExiv2Metadata *self, const gchar* tag
  * @value: The value to set or replace the existing value
  *
  * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
+ *
+ * If a tag supports multiple values, then @value is added to any existing values. For single
+ * value tags, @value replaces the value.
  *
  * In case of error, a GLib warning will be logged. Use instead
  * gexiv2_metadata_try_set_tag_string() if you want to avoid this and
@@ -722,6 +732,8 @@ gboolean gexiv2_metadata_set_xmp_tag_struct (GExiv2Metadata *self, const gchar* 
  * An interpreted string is one fit for user display.  It may display units or use formatting
  * appropriate to the type of data the tag holds.
  *
+ * Tags that support multiple values are returned as a single string, with elements separated by ", ".
+ *
  * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
  *
  * Returns: (transfer full) (allow-none): The tag's interpreted value as a string
@@ -737,6 +749,8 @@ gchar*			gexiv2_metadata_try_get_tag_interpreted_string (GExiv2Metadata *self, c
  *
  * An interpreted string is one fit for user display.  It may display units or use formatting
  * appropriate to the type of data the tag holds.
+ *
+ * Tags that support multiple values are returned as a single string, with elements separated by ", ".
  *
  * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
  *
@@ -814,8 +828,8 @@ gboolean		gexiv2_metadata_set_tag_long		(GExiv2Metadata *self, const gchar* tag,
  * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
  *
  * Returns: (transfer full) (allow-none) (array zero-terminated=1): The multiple string values of
- * the tag.  Returns NULL if parameters are NULL or @tag does not begin with recognised type of
- * metadata ("Exif.", "Xmp." or "Iptc.").  For a well formed @tag, returns array[0] = NULL if @tag
+ * @tag.  Returns %NULL if parameters are %NULL or @tag does not begin with recognised type of
+ * metadata ("Exif.", "Xmp." or "Iptc.").  For a well formed @tag, returns array[0] = %NULL if @tag
  * is undefined or is not set in the current metadata.
  *
  * Since: 0.12.2
@@ -830,6 +844,10 @@ gchar**			gexiv2_metadata_try_get_tag_multiple	(GExiv2Metadata *self, const gcha
  * @error: (allow-none): A return location for a #GError or %NULL
  *
  * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
+ *
+ * All previous @tag values are erased. For multiple value tags, each of the non %NULL
+ * entries in @values is stored. For single value tags, only the last non %NULL value
+ * is assigned.
  *
  * Returns: Boolean success value
  *
@@ -849,8 +867,8 @@ gboolean		gexiv2_metadata_try_set_tag_multiple	(GExiv2Metadata *self, const gcha
  * control if and how the error is outputted.
  *
  * Returns: (transfer full) (allow-none) (array zero-terminated=1): The multiple string values of
- * the tag.  Returns NULL if parameters are NULL or @tag does not begin with recognised type of
- * metadata ("Exif.", "Xmp." or "Iptc.").  For a well formed @tag, returns array[0] = NULL if @tag
+ * the tag.  Returns %NULL if parameters are %NULL or @tag does not begin with recognised type of
+ * metadata ("Exif.", "Xmp." or "Iptc.").  For a well formed @tag, returns array[0] = %NULL if @tag
  * is undefined or is not set in the current metadata.
  * (Note: <ulink url="https://gitlab.gnome.org/GNOME/gexiv2/-/issues/61">xmpText/langAlt bug</ulink>
  *  is fixed in gexiv2_metadata_try_get_tag_multiple())
@@ -867,6 +885,10 @@ gchar**			gexiv2_metadata_get_tag_multiple	(GExiv2Metadata *self, const gchar* t
  * @values: (array zero-terminated=1): An array of values to set or replace the existing value(s)
  *
  * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
+ *
+ * All previous @tag values are erased. For multiple value tags, each of the non %NULL
+ * entries in @values is stored. For single value tags, only the last non %NULL value
+ * is assigned.
  *
  * In case of error, a GLib warning will be logged. Use instead
  * gexiv2_metadata_try_set_tag_multiple() if you want to avoid this and
@@ -887,6 +909,8 @@ gboolean		gexiv2_metadata_set_tag_multiple	(GExiv2Metadata *self, const gchar* t
  *
  * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
  *
+ * Tags that support multiple values are returned as a single string, with elements separated by ", ".
+ *
  * Returns: (transfer full) (allow-none): The tag's raw value as a byte array
  *
  * Since: 0.12.2
@@ -899,6 +923,8 @@ GBytes*			gexiv2_metadata_try_get_tag_raw		(GExiv2Metadata *self, const gchar* t
  * @tag: Exiv2 tag name
  *
  * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
+ *
+ * Tags that support multiple values are returned as a single string, with elements separated by ", ".
  *
  * Returns: (transfer full) (allow-none): The tag's raw value as a byte array
  *

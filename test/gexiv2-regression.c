@@ -327,6 +327,141 @@ static void test_ggo_58(void) {
     g_clear_object(&meta);
 }
 
+/* Regression test for https://gitlab.gnome.org/GNOME/gexiv2/issues/62 */
+static void test_ggo_62(void){
+    GExiv2Metadata* meta = NULL;
+    gboolean result = FALSE;
+    gchar* value = NULL;
+    gchar** values = NULL;
+    GBytes *raw_value = NULL;
+    GError* error = NULL;
+    const gchar* IPTC_REPEATABLE_TAG = "Iptc.Application2.Keywords";
+    const gchar* IPTC_NON_REPEATABLE_TAG = "Iptc.Application2.Category";
+
+    // Output tags
+    const gchar* NR_OUTPUT_SINGLE = "NR 2";
+    const gchar* NR_OUTPUT_MULTIPLE[] = {
+    		"NR 2",
+			NULL
+    };
+
+	// == "NR 2"
+    const gchar NR_OUTPUT_RAW[] = {
+        0x4e, 0x52, 0x20, 0x32
+    };
+
+    const gchar* R_OUTPUT_SINGLE = "R 1a, R 1b, R 2";
+    const gchar* R_OUTPUT_MULTIPLE[] = {
+    		"R 1a",
+    		"R 1b",
+    		"R 2",
+			NULL
+    };
+
+    // == "R 1a, R 1b, R 2"
+    const gchar R_OUTPUT_RAW[] = {
+        0x52, 0x20, 0x31, 0x61, 0x2c, 0x20,
+        0x52, 0x20, 0x31, 0x62, 0x2c, 0x20,
+        0x52, 0x20, 0x32
+    };
+
+
+    //// Setup
+    meta = gexiv2_metadata_new();
+    g_assert_nonnull(meta);
+
+    result = gexiv2_metadata_open_path(meta, SAMPLE_PATH "/no-metadata.jpg", &error);
+    g_assert_no_error(error);
+    g_assert_true(result);
+
+
+    //// Test setting/getting Non-Repeatable Iptc tag
+    // Setting
+    values = g_new(gchar*, 3);
+    values[0] = g_strdup("NR 1a");
+    values[1] = g_strdup("NR 1b");
+    values[2] = NULL;
+    result = gexiv2_metadata_try_set_tag_multiple(meta, IPTC_NON_REPEATABLE_TAG, (const gchar**)values, &error);
+    g_assert_no_error(error);
+    g_assert_true(result);
+    g_strfreev (values);
+
+    result = gexiv2_metadata_try_set_tag_string(meta, IPTC_NON_REPEATABLE_TAG, "NR 2", &error);
+    g_assert_no_error(error);
+    g_assert_true(result);
+
+    // Getting
+    value = gexiv2_metadata_try_get_tag_string(meta, IPTC_NON_REPEATABLE_TAG, &error);
+    g_assert_no_error(error);
+    g_assert_nonnull(value);
+    g_assert_cmpstr(value, ==, NR_OUTPUT_SINGLE);
+    g_free (value);
+
+    value = gexiv2_metadata_try_get_tag_interpreted_string(meta, IPTC_NON_REPEATABLE_TAG, &error);
+    g_assert_no_error(error);
+    g_assert_nonnull(value);
+    g_assert_cmpstr(value, ==, NR_OUTPUT_SINGLE);
+    g_free (value);
+
+    values = gexiv2_metadata_try_get_tag_multiple(meta, IPTC_NON_REPEATABLE_TAG, &error);
+    g_assert_no_error(error);
+    g_assert_nonnull(values);
+    g_assert_true (g_strv_equal ((const gchar**)values, NR_OUTPUT_MULTIPLE));
+    g_assert_null(values[1]);
+    g_strfreev (values);
+
+    raw_value = gexiv2_metadata_try_get_tag_raw(meta, IPTC_NON_REPEATABLE_TAG, &error);
+    g_assert_nonnull (raw_value);
+    g_assert_cmpmem (g_bytes_get_data(raw_value, NULL), g_bytes_get_size(raw_value),
+                     NR_OUTPUT_RAW, sizeof(NR_OUTPUT_RAW));
+    g_clear_pointer (&raw_value, g_bytes_unref);
+
+
+    //// Test setting/getting Repeatable Iptc tag
+    // Setting
+    values = g_new(gchar*, 3);
+    values[0] = g_strdup("R 1a");
+    values[1] = g_strdup("R 1b");
+    values[2] = NULL;
+    result = gexiv2_metadata_try_set_tag_multiple(meta, IPTC_REPEATABLE_TAG, (const gchar**)values, &error);
+    g_assert_no_error(error);
+    g_assert_true(result);
+    g_strfreev (values);
+
+    result = gexiv2_metadata_try_set_tag_string(meta, IPTC_REPEATABLE_TAG, "R 2", &error);
+    g_assert_no_error(error);
+    g_assert_true(result);
+
+    // Getting
+    value = gexiv2_metadata_try_get_tag_string(meta, IPTC_REPEATABLE_TAG, &error);
+    g_assert_no_error(error);
+    g_assert_nonnull(value);
+    g_assert_cmpstr(value, ==, R_OUTPUT_SINGLE);
+    g_free (value);
+
+    value = gexiv2_metadata_try_get_tag_interpreted_string(meta, IPTC_REPEATABLE_TAG, &error);
+    g_assert_no_error(error);
+    g_assert_nonnull(value);
+    g_assert_cmpstr(value, ==, R_OUTPUT_SINGLE);
+    g_free (value);
+
+    values = gexiv2_metadata_try_get_tag_multiple(meta, IPTC_REPEATABLE_TAG, &error);
+    g_assert_no_error(error);
+    g_assert_nonnull(values);
+    g_assert_true (g_strv_equal ((const gchar**)values, R_OUTPUT_MULTIPLE));
+    g_strfreev (values);
+
+    raw_value = gexiv2_metadata_try_get_tag_raw(meta, IPTC_REPEATABLE_TAG, &error);
+    g_assert_nonnull (raw_value);
+    g_assert_cmpmem (g_bytes_get_data(raw_value, NULL), g_bytes_get_size(raw_value),
+                     R_OUTPUT_RAW, sizeof(R_OUTPUT_RAW));
+    g_clear_pointer (&raw_value, g_bytes_unref);
+
+
+    //// Cleanup
+    g_clear_object(&meta);
+}
+
 int main(int argc, char *argv[static argc + 1])
 {
     g_test_init(&argc, &argv, NULL);
@@ -341,6 +476,7 @@ int main(int argc, char *argv[static argc + 1])
     g_test_add_func("/bugs/gnome/gitlab/xx", test_ggo_xx);
     g_test_add_func("/bugs/gnome/gitlab/45", test_ggo_45);
     g_test_add_func("/bugs/gnome/gitlab/58", test_ggo_58);
+    g_test_add_func("/bugs/gnome/gitlab/62", test_ggo_62);
 
     return g_test_run();
 }

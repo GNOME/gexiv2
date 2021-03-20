@@ -101,64 +101,136 @@ gchar** gexiv2_metadata_get_iptc_tags(GExiv2Metadata* self) {
 }
 
 gchar* gexiv2_metadata_get_iptc_tag_string (GExiv2Metadata *self, const gchar* tag, GError **error) {
-    g_return_val_if_fail(GEXIV2_IS_METADATA (self), NULL);
-    g_return_val_if_fail(tag != NULL, NULL);
-    g_return_val_if_fail(self->priv->image.get() != NULL, NULL);
+    g_return_val_if_fail(GEXIV2_IS_METADATA (self), nullptr);
+    g_return_val_if_fail(tag != nullptr, nullptr);
+    g_return_val_if_fail(self->priv != nullptr, nullptr);
+    g_return_val_if_fail(self->priv->image.get() != nullptr, nullptr);
     g_return_val_if_fail(error == nullptr || *error == nullptr, FALSE);
     
-    Exiv2::IptcData& iptc_data = self->priv->image->iptcData();
-    
     try {
-        Exiv2::IptcData::iterator it = iptc_data.findKey(Exiv2::IptcKey(tag));
-        while (it != iptc_data.end() && it->count() == 0)
-            it++;
-        
-        if (it != iptc_data.end())
-            return g_strdup (it->toString ().c_str ());
-    } catch (Exiv2::Error& e) {
-        g_set_error_literal (error, g_quark_from_string ("GExiv2"), e.code (), e.what ());
-    }
-    
-    return NULL;
-}
+        const auto& iptc_data = self->priv->image->iptcData();
+    	const Exiv2::IptcKey key(tag);
+        auto it = iptc_data.findKey(key);
 
-gchar* gexiv2_metadata_get_iptc_tag_interpreted_string (GExiv2Metadata *self, const gchar* tag, GError **error) {
-    g_return_val_if_fail(GEXIV2_IS_METADATA (self), NULL);
-    g_return_val_if_fail(tag != NULL, NULL);
-    g_return_val_if_fail(self->priv->image.get() != NULL, NULL);
-    g_return_val_if_fail(error == nullptr || *error == nullptr, FALSE);
-    
-    Exiv2::IptcData& iptc_data = self->priv->image->iptcData();
-    
-    try {
-        Exiv2::IptcData::iterator it = iptc_data.findKey(Exiv2::IptcKey(tag));
         while (it != iptc_data.end() && it->count() == 0)
             it++;
-        
+
         if (it != iptc_data.end()) {
-            std::ostringstream os;
-            it->write (os);
-            
-            return g_strdup (os.str ().c_str ());
+        	std::ostringstream os;
+
+        	// Iptc allows Repeatable tags (multi-value) and Non-Repeatable tags
+        	// (single value). Repeatable tags are not grouped together, but exist as
+        	// separate entries with the same tag name.
+        	if (!Exiv2::IptcDataSets::dataSetRepeatable(key.tag(), key.record())) {
+                return g_strdup (it->toString ().c_str ());
+        	}
+            const gchar* SEPARATOR = ", ";
+            gboolean add_separator = FALSE;
+
+            for (; it != iptc_data.end(); ++it) {
+                if (it->key() == tag) {
+                    if (add_separator == TRUE) {
+                    	os << SEPARATOR;
+                    }
+                    os << it->toString();
+                    add_separator = TRUE;
+                }
+            }
+            return g_strdup (os.str().c_str());
         }
     } catch (Exiv2::Error& e) {
         g_set_error_literal (error, g_quark_from_string ("GExiv2"), e.code (), e.what ());
     }
     
-    return NULL;
+    return nullptr;
+}
+
+gchar* gexiv2_metadata_get_iptc_tag_interpreted_string (GExiv2Metadata *self, const gchar* tag, GError **error) {
+    g_return_val_if_fail(GEXIV2_IS_METADATA (self), nullptr);
+    g_return_val_if_fail(tag != nullptr, nullptr);
+    g_return_val_if_fail(self->priv != nullptr, nullptr);
+    g_return_val_if_fail(self->priv->image.get() != nullptr, nullptr);
+    g_return_val_if_fail(error == nullptr || *error == nullptr, FALSE);
+    
+    try {
+        const auto& iptc_data = self->priv->image->iptcData();
+        const Exiv2::IptcKey key(tag);
+        auto it = iptc_data.findKey(key);
+
+        while (it != iptc_data.end() && it->count() == 0)
+            it++;
+
+        if (it != iptc_data.end()) {
+        	std::ostringstream os;
+
+        	// Iptc allows Repeatable tags (multi-value) and Non-Repeatable tags
+        	// (single value). Repeatable tags are not grouped together, but exist as
+        	// separate entries with the same tag name.
+        	if (!Exiv2::IptcDataSets::dataSetRepeatable(key.tag(), key.record())) {
+                it->write (os);
+                return g_strdup (os.str().c_str());
+        	}
+            const gchar* SEPARATOR = ", ";
+            gboolean add_separator = FALSE;
+
+            for (; it != iptc_data.end(); ++it) {
+                if (it->key() == tag) {
+                    if (add_separator == TRUE) {
+                    	os << SEPARATOR;
+                    }
+                    it->write(os);
+                    add_separator = TRUE;
+                }
+            }
+            return g_strdup (os.str().c_str());
+        }
+    } catch (Exiv2::Error& e) {
+        g_set_error_literal (error, g_quark_from_string ("GExiv2"), e.code (), e.what ());
+    }
+    
+    return nullptr;
 }
 
 gboolean gexiv2_metadata_set_iptc_tag_string (GExiv2Metadata *self, const gchar* tag,
     const gchar* value, GError **error) {
     g_return_val_if_fail (GEXIV2_IS_METADATA (self), FALSE);
-    g_return_val_if_fail(tag != NULL, FALSE);
-    g_return_val_if_fail(value != NULL, FALSE);
-    g_return_val_if_fail(self->priv->image.get() != NULL, FALSE);
+    g_return_val_if_fail(tag != nullptr, FALSE);
+    g_return_val_if_fail(value != nullptr, FALSE);
+    g_return_val_if_fail(self->priv != nullptr, FALSE);
+    g_return_val_if_fail(self->priv->image.get() != nullptr, FALSE);
     g_return_val_if_fail(error == nullptr || *error == nullptr, FALSE);
     
     try {
-        self->priv->image->iptcData()[tag] = value;
-        
+        const Exiv2::IptcKey key(tag);
+        auto& iptc_data = self->priv->image->iptcData();
+
+    	// Iptc allows Repeatable tags (multi-value) and Non-Repeatable tags
+    	// (single value). Repeatable tags are not grouped together, but exist as
+    	// separate entries with the same tag name.
+        if (!Exiv2::IptcDataSets::dataSetRepeatable(key.tag(), key.record())) {
+            iptc_data[tag] = value;
+            return TRUE;
+        }
+
+        // Repeatable values can be any type
+       	GError** error = nullptr;
+      	const gchar* type = gexiv2_metadata_get_iptc_tag_type(tag, error);
+
+        if (error != nullptr && *error != nullptr) {
+            g_set_error_literal (error, g_quark_from_string ("GExiv2"), (*error)->code, (*error)->message);
+            return FALSE;
+        }
+
+        if (type == nullptr)
+            throw Exiv2::Error(Exiv2::ErrorCode::kerInvalidKey, tag);
+
+        auto v = Exiv2::Value::create(Exiv2::TypeInfo::typeId(static_cast<const std::string>(type)));
+
+
+
+        if (v->read(static_cast<const std::string>(value)) != 0 || iptc_data.add(key,v.get()) != 0)
+         	return FALSE;
+
         return TRUE;
     } catch (Exiv2::Error& e) {
         g_set_error_literal (error, g_quark_from_string ("GExiv2"), e.code (), e.what ());
@@ -209,17 +281,22 @@ gchar** gexiv2_metadata_get_iptc_tag_multiple (GExiv2Metadata *self, const gchar
 gboolean gexiv2_metadata_set_iptc_tag_multiple (GExiv2Metadata *self, const gchar* tag,
     const gchar** values, GError **error) {
     g_return_val_if_fail (GEXIV2_IS_METADATA (self), FALSE);
-    g_return_val_if_fail(tag != NULL, FALSE);
-    g_return_val_if_fail(values != NULL, FALSE);
-    g_return_val_if_fail(self->priv->image.get() != NULL, FALSE);
+    g_return_val_if_fail(tag != nullptr, FALSE);
+    g_return_val_if_fail(values != nullptr, FALSE);
+    g_return_val_if_fail(self->priv != nullptr, FALSE);
+    g_return_val_if_fail(self->priv->image.get() != nullptr, FALSE);
     g_return_val_if_fail(error == nullptr || *error == nullptr, FALSE);
-    
-    Exiv2::IptcData& iptc_data = self->priv->image->iptcData();
-    
+
     try {
+        auto& iptc_data = self->priv->image->iptcData();
+
+    	// Iptc allows Repeatable tags (multi-value) and Non-Repeatable tags
+    	// (single value). Repeatable tags are not grouped together, but exist as
+    	// separate entries with the same tag name.
+
         /* first clear all existing ... */
-        Exiv2::IptcKey iptc_key(tag);
-        Exiv2::IptcData::iterator iptc_it = iptc_data.begin();
+        const Exiv2::IptcKey iptc_key(tag);
+        auto iptc_it = iptc_data.begin();
         while (iptc_it != iptc_data.end()) {
             if (iptc_it->count() > 0 && iptc_key.key () == iptc_it->key ())
                 iptc_it = iptc_data.erase (iptc_it);
@@ -227,17 +304,43 @@ gboolean gexiv2_metadata_set_iptc_tag_multiple (GExiv2Metadata *self, const gcha
                 ++iptc_it;
         }
         
-        /* ... and then set the others */
-        auto iptc_value = Exiv2::Value::create(Exiv2::string);
-            
-        const gchar **it = values;
-        while (*it != NULL) {
-            iptc_value->read (static_cast<const std::string>(*it));
-            iptc_data.add (iptc_key, iptc_value.get());
-            
-            ++it;
+        if (!Exiv2::IptcDataSets::dataSetRepeatable(iptc_key.tag(), iptc_key.record())) {
+        	// Skip to last value and assign
+            const gchar** val_it = values;
+            while (*val_it != nullptr) {
+                val_it++;
+            }
+
+            --val_it;
+            iptc_data[tag] = static_cast<const std::string>(*val_it);
+
+            return TRUE;
         }
-        
+
+        // Repeatable values can be any type
+    	GError** error = nullptr;
+    	const gchar* type = gexiv2_metadata_get_iptc_tag_type(tag, error);
+
+        if (error != nullptr && *error != nullptr) {
+            g_set_error_literal (error, g_quark_from_string ("GExiv2"), (*error)->code, (*error)->message);
+            return FALSE;
+        }
+
+        if (type == nullptr)
+            throw Exiv2::Error(Exiv2::ErrorCode::kerInvalidKey, tag);
+
+        auto v = Exiv2::Value::create(Exiv2::TypeInfo::typeId(static_cast<const std::string>(type)));
+
+        // Add each value separately
+        const gchar** val_it = values;
+        while (*val_it != nullptr) {
+
+            if (v->read(static_cast<const std::string>(*val_it)) != 0 || iptc_data.add(iptc_key,v.get()) != 0) {
+            	return FALSE;
+            }
+            val_it++;
+        }
+
         return TRUE;
     } catch (Exiv2::Error& e) {
         g_set_error_literal (error, g_quark_from_string ("GExiv2"), e.code (), e.what ());
@@ -303,31 +406,64 @@ gboolean gexiv2_metadata_iptc_tag_supports_multiple_values(const gchar* tag, GEr
 }
 
 GBytes* gexiv2_metadata_get_iptc_tag_raw (GExiv2Metadata *self, const gchar* tag, GError **error) {
-    g_return_val_if_fail(GEXIV2_IS_METADATA (self), NULL);
-    g_return_val_if_fail(tag != NULL, NULL);
-    g_return_val_if_fail(self->priv->image.get() != NULL, NULL);
+    g_return_val_if_fail(GEXIV2_IS_METADATA (self), nullptr);
+    g_return_val_if_fail(tag != nullptr, nullptr);
+    g_return_val_if_fail(self->priv != nullptr, nullptr);
+    g_return_val_if_fail(self->priv->image.get() != nullptr, nullptr);
     g_return_val_if_fail(error == nullptr || *error == nullptr, FALSE);
 
-    Exiv2::IptcData& iptc_data = self->priv->image->iptcData();
-
     try {
-        Exiv2::IptcData::iterator it = iptc_data.findKey(Exiv2::IptcKey(tag));
+        const auto& iptc_data = self->priv->image->iptcData();
+        const Exiv2::IptcKey key(tag);
+        auto it = iptc_data.findKey(key);
+
         while (it != iptc_data.end() && it->count() == 0)
             it++;
 
         if (it != iptc_data.end()) {
-            long size = it->size();
-            if( size > 0 ) {
-                gpointer data = g_malloc(size);
-                it->copy((Exiv2::byte*)data, Exiv2::invalidByteOrder);
-                return g_bytes_new_take(data, size);
+        	// Iptc allows Repeatable tags (multi-value) and Non-Repeatable tags
+        	// (single value). Repeatable tags are not grouped together, but exist as
+        	// separate entries with the same tag name.
+        	if (!Exiv2::IptcDataSets::dataSetRepeatable(key.tag(), key.record())) {
+                long size = it->size();
+                if( size > 0 ) {
+                    gpointer data = g_malloc(size);
+                    it->copy(static_cast<Exiv2::byte*>(data), Exiv2::invalidByteOrder);
+                    return g_bytes_new_take(data, size);
+                }
+        	}
+
+        	// Create return string by extracting raw value from Exiv2 and
+        	// adding separators (if needed).
+        	std::ostringstream os;
+            long size = 0;
+            gpointer temp_str = nullptr;
+            gboolean add_separator = FALSE;
+            const gchar* SEPARATOR = ", ";
+            const int seperator_length = strlen(SEPARATOR);
+
+            for (; it != iptc_data.end(); ++it) {
+            	size = it->size();
+            	if (it->key() == tag && size > 0) {
+            		if (add_separator == TRUE) {
+            			os.write(SEPARATOR, seperator_length);
+            		}
+            		temp_str = g_malloc(size);
+                 	it->copy(static_cast<Exiv2::byte*>(temp_str), Exiv2::invalidByteOrder);
+        			os.write(static_cast<const char*>(temp_str), size);
+                    g_free(temp_str);
+
+                    add_separator = TRUE;
+                }
             }
+
+            return g_bytes_new_static((os.str().c_str() ), os.str().length());
         }
     } catch (Exiv2::Error& e) {
         g_set_error_literal (error, g_quark_from_string ("GExiv2"), e.code (), e.what ());
     }
 
-    return NULL;
+    return nullptr;
 }
 
 G_END_DECLS
