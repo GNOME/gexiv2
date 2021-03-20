@@ -543,6 +543,10 @@ const gchar*	gexiv2_metadata_get_tag_type	(const gchar *tag);
  *
  * The Exiv2 Tag Reference can be found at <ulink url="https://www.exiv2.org/metadata.html"></ulink>
  *
+ * Multiple value tags are Xmp tags of type "XmpAlt", "XmpBag", "XmpSeq" or "LangAlt", or Iptc
+ * tags marked as Repeatable (which can be of any Iptc type). There are no multiple value Exif
+ * tags.
+ *
  * Returns: Whether @tag is capable of storing multiple values or not. If @tag is undefined
  * (i.e. not built-in and not added to @self), then @error is set and %FALSE is returned.
  *
