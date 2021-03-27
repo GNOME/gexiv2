@@ -30,7 +30,8 @@
                 "-DCMAKE_INSTALL_LIBDIR=lib",
                 "-DEXIV2_BUILD_EXIV2_COMMAND=OFF",
                 "-DEXIV2_BUILD_SAMPLES=OFF",
-                "-DEXIV2_BUILD_UNIT_TESTS=OFF"
+                "-DEXIV2_BUILD_UNIT_TESTS=OFF",
+                "-DEXIV2_ENABLE_BMFF=On"
             ],
             "sources" : [
                 {
