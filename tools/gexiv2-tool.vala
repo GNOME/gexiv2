@@ -178,12 +178,12 @@ void print_tag(GExiv2.Metadata metadata, string tag, bool print_details) throws 
     if (print_details) {
         print("%-64s%s\n", "Tag", tag);
         print("%-64s%s\n", "  Value", metadata.try_get_tag_string(tag));
-        print("%-64s%s\n", "  Interpreted value", metadata.get_tag_interpreted_string(tag));
-        print("%-64s%s\n", "  Label", GExiv2.Metadata.get_tag_label(tag));
-        print("%-64s%s\n", "  Type", GExiv2.Metadata.get_tag_type(tag));
-        print("%-64s%s\n", "  Description", GExiv2.Metadata.get_tag_description(tag));
+        print("%-64s%s\n", "  Interpreted value", metadata.try_get_tag_interpreted_string(tag));
+        print("%-64s%s\n", "  Label", GExiv2.Metadata.try_get_tag_label(tag));
+        print("%-64s%s\n", "  Type", GExiv2.Metadata.try_get_tag_type(tag));
+        print("%-64s%s\n", "  Description", GExiv2.Metadata.try_get_tag_description(tag));
     } else {
-        print("%-64s%s\n", tag, metadata.get_tag_interpreted_string(tag));
+        print("%-64s%s\n", tag, metadata.try_get_tag_interpreted_string(tag));
     }
 }
 
