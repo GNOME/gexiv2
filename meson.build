@@ -17,6 +17,14 @@ gio = dependency('gio-2.0', version : '>= 2.46.0')
 cc = meson.get_compiler('c')
 math = cc.find_library('m', required : false)
 
+bmff_test = '''#include <exiv2/exiv2.h>
+#ifndef EXV_ENABLE_BMFF
+#error No BMFF support in exiv2
+#endif
+'''
+
+bmff_available = cc.compiles(bmff_test, name : 'BMFF support in exiv2', dependencies : [exiv2])
+
 gir = find_program('g-ir-scanner', required: false)
 
 introspection_available = gir.found() and get_option('introspection')
