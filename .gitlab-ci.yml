@@ -34,10 +34,10 @@ stages:
   - test
   - deploy
 
-    #exiv2-master:on-schedule:
-    #extends: .flatpak
-    #variables:
-    #    MANIFEST_PATH: "build-aux/org.gnome.GExiv2.json"
+exiv2-master:on-schedule:
+    extends: .flatpak
+    variables:
+        MANIFEST_PATH: "build-aux/org.gnome.GExiv2.json"
 
 exiv2-stable:on-schedule:
     extends: .flatpak
