@@ -46,7 +46,7 @@ public:
         , _eof{false}
         {}
 #if EXIV2_TEST_VERSION(0,27,99)
-    using size_type = size_t;
+    using size_type = long;
 #else
     using size_type = long;
 #endif
@@ -88,11 +88,7 @@ public:
     size_type write(BasicIo& /*src*/) override { return 0; }
     int putb(Exiv2::byte /*data*/) override { return EOF; }
 
-#if EXIV2_TEST_VERSION(0,27,99)
-    Exiv2::DataBuf read(size_t rcount) noexcept override {
-#else
-    Exiv2::DataBuf read(long rcount) override {
-#endif
+    Exiv2::DataBuf read(size_type rcount) override {
         Exiv2::DataBuf b{rcount};
 
         auto bytes_read = this->read(b.pData_, rcount);

@@ -24,7 +24,7 @@ class StreamIo : public Exiv2::BasicIo {
 public:
 #if EXIV2_TEST_VERSION(0,27,99)
     using ptr_type = Exiv2::BasicIo::UniquePtr;
-    using size_type = size_t;
+    using size_type = long;
 #else
     using ptr_type = Exiv2::BasicIo::AutoPtr;
     using size_type = long;
@@ -38,12 +38,8 @@ public:
 	size_type write (const Exiv2::byte* data, size_type wcount) override;
 	size_type write (Exiv2::BasicIo& src) override;
 	int putb (Exiv2::byte data) override;
-#if EXIV2_TEST_VERSION(0,27,99)
-	Exiv2::DataBuf read (size_t rcount) noexcept override;
-#else
-	Exiv2::DataBuf read (long rcount) override;
-#endif
-	size_type read (Exiv2::byte* buf, size_type rcount) override;
+    Exiv2::DataBuf read (size_type rcount) override;
+    size_type read (Exiv2::byte* buf, size_type rcount) override;
 	int getb () override;
 	void transfer (Exiv2::BasicIo& src) override;
 	int seek (long offset, Position pos) override;
