@@ -13,7 +13,23 @@ darwin_version_minor = libversion_arr[1].to_int()
 darwin_version_micro = libversion_arr[2].to_int()
 darwin_versions = [darwin_version_major + darwin_version_minor + 1, '@0@.@1@'.format(darwin_version_major + darwin_version_minor + 1, darwin_version_micro)]
 
+# We need python to generate the error header
+prog_python = import('python').find_installation('python3')
+
+exiv2_error_header = exiv2.get_variable(pkgconfig: 'includedir') / 'exiv2/error.hpp'
+
 gexiv2_include_dir = join_paths(get_option('includedir'), 'gexiv2')
+
+# Will create a meson warning, see https://github.com/mesonbuild/meson/issues/12811
+gexiv2_error_h = custom_target(
+    'gexiv2-error.h',
+    output: 'gexiv2-error.h',
+    input: meson.project_source_root() / 'build-aux/build-error-enum.py',
+    capture: true,
+    command: [prog_python, '@INPUT@', exiv2_error_header],
+    install: true,
+    install_dir : gexiv2_include_dir
+)
 
 config = configuration_data()
 config.set('GEXIV2_MAJOR_VERSION', as_version[0])
@@ -34,11 +50,12 @@ gexiv2_headers = gexiv2_enum_headers + ['gexiv2.h',
                   'gexiv2-startup.h']
 
 enum_sources = gnome.mkenums('gexiv2-enums',
-                             sources : gexiv2_enum_headers,
+                             sources : gexiv2_enum_headers + [gexiv2_error_h],
                              h_template : 'gexiv2-enums.h.template',
                              c_template : 'gexiv2-enums.cpp.template',
-                             identifier_prefix : 'gexiv2',
-                             symbol_prefix : 'GExiv2',
+                             depends: gexiv2_error_h,
+                             identifier_prefix : 'GExiv2',
+                             symbol_prefix : 'gexiv2',
                              install_header : true,
                              install_dir : gexiv2_include_dir)
 
@@ -55,11 +72,13 @@ gexiv2 = library('gexiv2',
                   'gexiv2-preview-image.cpp',
                   'gexiv2-log.cpp',
                   'gexiv2-startup.cpp',
+                  'gexiv2-error.cpp',
                   'gexiv2-log-private.h',
                   'gexiv2-metadata-private.h',
                   'gexiv2-stream-io.h',
                   'gexiv2-preview-properties-private.h',
-                  'gexiv2-preview-image-private.h'] +
+                  'gexiv2-preview-image-private.h',
+                  gexiv2_error_h] +
                  gexiv2_headers +
                  [version_header, config_h] +
                  enum_sources,

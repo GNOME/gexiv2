@@ -3,7 +3,7 @@ project(
     ['c', 'cpp'],
     version : '0.14.2',
     license: 'GPL-2.0-or-later',
-    meson_version : '>=0.51',
+    meson_version : '>=0.56',
     default_options : [
         'cpp_std=c++17'
     ]
@@ -101,7 +101,7 @@ if get_option('vapi')
   if get_option('introspection') == false
     error('\'vapi\' build option requires \'introspection\' to be enabled.')
   endif
-  vapi_available = add_languages('vala', required: true)
+  vapi_available = add_languages('vala', required: true, native: false)
 endif
 
 subdir('gexiv2')
