@@ -16,6 +16,10 @@ test/gexiv2-dump
 test/python/gi
 *.pyc
 __pycache__
+.flatpak-builder
+_build
+*.user
+.vscode
 
 # Autotools files.
 Makefile.in
