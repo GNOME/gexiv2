@@ -23,7 +23,9 @@ G_BEGIN_DECLS
 /**
  * gexiv2_initialize:
  *
- * gexiv2 requires initialization before its methods are used.  In particular, this call must be
+ * Initializes GExvi2.
+ *
+ * GExiv2 requires initialization before its methods are used.  In particular, this call must be
  * made in a thread-safe fashion.  Best practice is to call from the application's main thread and
  * not to use any Gexiv2 code until it has returned.
  *

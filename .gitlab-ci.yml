@@ -36,7 +36,7 @@ include:
     - component: "gitlab.gnome.org/GNOME/citemplates/release-service@master"
       inputs:
         dist-job-name: build-fedora@x86_64
-        # gupnp tags are always of the format {PROJECT_NAME}-{version}
+        # gexiv2 tags are always of the format {PROJECT_NAME}-{version}
         tarball-artifact-path: "build/meson-dist/${CI_COMMIT_TAG}.tar.xz"
     - project: "GNOME/citemplates"
       file: "templates/default-rules.yml"
@@ -91,7 +91,7 @@ check-merge-request:
 .build-template: &build
   stage: build
   script:
-      - meson setup . ${MESON_BUILD_DIR} --prefix=/usr -Db_coverage=true -Dtests=true --werror ${MESON_EXTRA_ARGS}
+      - meson setup . ${MESON_BUILD_DIR} --prefix=/usr -Db_coverage=true -Dtests=true -Dgtk_doc=true --werror ${MESON_EXTRA_ARGS}
       - ninja -C ${MESON_BUILD_DIR}
       - if [[ "${MESON_BUILD_DIR}" = "build" ]] ;
         then
@@ -104,9 +104,9 @@ check-merge-request:
 
 .gexiv2.fedora@common:
   variables:
-    BASE_TAG: '2025-01-26.0'
+    BASE_TAG: '2025-02-01.0'
     FDO_UPSTREAM_REPO: GNOME/gexiv2
-    FDO_DISTRIBUTION_PACKAGES: 'clang clang-analyzer libcxx-devel gcovr git libasan libubsan python3-gobject python3-pip xmlto gobject-introspection-devel gtk-doc vala ninja-build python3-devel gtk-doc exiv2-devel'
+    FDO_DISTRIBUTION_PACKAGES: 'clang clang-analyzer gcovr git libasan libubsan python3-gobject python3-pip xmlto gobject-introspection-devel gi-docgen vala ninja-build python3-devel exiv2-devel'
     FDO_DISTRIBUTION_EXEC: |
       dnf clean all &&
       pip3 install meson
@@ -221,7 +221,7 @@ static-scan:
   needs:
     - build-fedora-container@x86_64
   script:
-    - meson --buildtype=debug _scan_build
+    - meson --buildtype=debug _scan_build -Dintrospection=false -Dvapi=false
     - ninja -C _scan_build scan-build
   artifacts:
     paths:
@@ -254,23 +254,18 @@ coverity:
     changes:
       - po/*.po
 
-pages:
+docs:
   extends:
     - .fdo.distribution-image@fedora
     - .gexiv2.fedora:41@x86_64
-  stage: deploy
+  stage: build
   script:
       - meson doc-build -Dgtk_doc=true
-      - ninja -C doc-build
-      - ninja -C doc-build gexiv2-doc
-      - mkdir -p public
-      - mv doc-build/docs/reference/html public/docs
+      - ninja -C doc-build docs/reference/GExiv2
+      - mv doc-build/docs/reference/GExiv2 docs
   artifacts:
     paths:
-      - public
+      - docs
   needs:
     - build-fedora-container@x86_64
-  rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
-    - if: $CI_COMMIT_BRANCH == /^wip\/.*\/ci.*$/
 

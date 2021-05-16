@@ -40,6 +40,15 @@ typedef struct _GExiv2PreviewPropertiesPrivate	GExiv2PreviewPropertiesPrivate;
 
 G_DEFINE_AUTOPTR_CLEANUP_FUNC(GExiv2PreviewProperties, g_object_unref)
 
+/**
+ * GExiv2PreviewProperties:
+ *
+ * Properties of a preview image.
+ *
+ * Metadata can contain multiple preview images. [class@GExiv2.PreviewProperties] are
+ * used to describe the available image without the need of fetching the whole
+ * image from the metadata.
+ */
 struct _GExiv2PreviewProperties
 {
 	GObject parent_instance;
@@ -62,7 +71,9 @@ GType 			gexiv2_preview_properties_get_type			(void);
 
 /**
  * gexiv2_preview_properties_get_mime_type:
- * @self: An instance of #GExiv2PreviewProperties
+ * @self: An instance of [class@GExiv2.PreviewProperties]
+ *
+ * Get the preview image's content-type.
  *
  * Returns: (transfer none): The preview image's MIME type.
  */
@@ -70,7 +81,9 @@ const gchar*	gexiv2_preview_properties_get_mime_type		(GExiv2PreviewProperties *
 
 /**
  * gexiv2_preview_properties_get_extension:
- * @self: An instance of #GExiv2PreviewProperties
+ * @self: An instance of [class@GExiv2.PreviewProperties]
+ *
+ * Get the recommended file extension for the preview image.
  *
  * Returns: (transfer none): The recommended file extension for the preview image.
  */
@@ -78,7 +91,9 @@ const gchar*	gexiv2_preview_properties_get_extension		(GExiv2PreviewProperties *
 
 /**
  * gexiv2_preview_properties_get_size:
- * @self: An instance of #GExiv2PreviewProperties
+ * @self: An instance of [class@GExiv2.PreviewProperties]
+ *
+ * Returns the size of the preview image in bytes.
  *
  * Returns: The preview image size in bytes.
  */
@@ -86,7 +101,9 @@ guint32			gexiv2_preview_properties_get_size			(GExiv2PreviewProperties *self);
 
 /**
  * gexiv2_preview_properties_get_width:
- * @self: An instance of #GExiv2PreviewProperties
+ * @self: An instance of [class@GExiv2.PreviewProperties]
+ *
+ * Get the preview image's display width in pixels
  *
  * Returns: The preview image's display width in pixels.
  */
@@ -94,7 +111,9 @@ guint32			gexiv2_preview_properties_get_width			(GExiv2PreviewProperties *self);
 
 /**
  * gexiv2_preview_properties_get_height:
- * @self: An instance of #GExiv2PreviewProperties
+ * @self: An instance of [class@GExiv2.PreviewProperties]
+ *
+ * Get the preview image's display height in pixels.
  *
  * Returns: The preview image's display height in pixels.
  */

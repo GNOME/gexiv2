@@ -1,9 +1,0 @@
-gexiv2_metadata_get_type
-gexiv2_preview_image_get_type
-gexiv2_preview_properties_get_type
-gexiv2_gexiv2_byte_order_get_type
-gexiv2_gexiv2_log_level_get_type
-gexiv2_gexiv2_orientation_get_type
-gexiv2_gexiv2_structure_type_get_type
-gexiv2_gexiv2_xmp_format_flags_get_type
-

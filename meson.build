@@ -43,6 +43,13 @@ endif
 
 subdir('gexiv2')
 
+gidocgen_dep = dependency('gi-docgen', version: '>= 2021.1',
+                          fallback: ['gi-docgen', 'dummy_dep'],
+                          native: true,
+                          required: get_option('gtk_doc') and get_option('introspection'),
+                          disabler: true
+                      )
+
 if get_option('gtk_doc')
   subdir('docs')
 endif
@@ -63,4 +70,8 @@ endif
 
 if get_option('tools')
   subdir('tools')
+endif
+
+if not meson.is_subproject()
+  meson.add_dist_script('build-aux/dist-docs.py')
 endif
