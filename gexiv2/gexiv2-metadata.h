@@ -328,14 +328,11 @@ gboolean		gexiv2_metadata_open_stream			(GExiv2Metadata *self, ManagedStreamCall
 
 /**
  * gexiv2_metadata_from_stream:
- * @self: An instance of #GExiv2Metadata
- * @stream: A #GInputStream to get meta-data from
- * @error: (allow-none): A return location for a #GError or %NULL
  *
- * Read meta-data from a GIO stream
+ * This function does not work and will be removed in a future release.
  *
- * Returns: Boolean success indicator
  */
+G_DEPRECATED
 gboolean		gexiv2_metadata_from_stream			(GExiv2Metadata *self, GInputStream* stream, GError **error);
 
 /**
