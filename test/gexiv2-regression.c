@@ -327,6 +327,22 @@ static void test_ggo_58(void) {
     g_clear_object(&meta);
 }
 
+// Regression test for https://gitlab.gnome.org/GNOME/gexiv2/issues/66
+static void test_ggo_66(void) {
+    GExiv2Metadata* meta = NULL;
+    gboolean result = FALSE;
+    GError* error = NULL;
+
+    meta = gexiv2_metadata_new();
+    g_assert_nonnull(meta);
+
+    result = gexiv2_metadata_open_path(meta, SAMPLE_PATH "/partial_xml.txt", &error);
+    g_assert_nonnull(error);
+    g_assert_false(result);
+
+    g_clear_object(&meta);
+}
+
 /* Regression test for https://gitlab.gnome.org/GNOME/gexiv2/issues/62 */
 static void test_ggo_62(void){
     GExiv2Metadata* meta = NULL;
@@ -477,6 +493,7 @@ int main(int argc, char *argv[static argc + 1])
     g_test_add_func("/bugs/gnome/gitlab/45", test_ggo_45);
     g_test_add_func("/bugs/gnome/gitlab/58", test_ggo_58);
     g_test_add_func("/bugs/gnome/gitlab/62", test_ggo_62);
+    g_test_add_func("/bugs/gnome/gitlab/60", test_ggo_66);
 
     return g_test_run();
 }
