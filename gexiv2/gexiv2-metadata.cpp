@@ -455,7 +455,12 @@ gboolean gexiv2_metadata_open_path(GExiv2Metadata* self, const gchar* path, GErr
     } catch (Exiv2::Error &e) {
         g_set_error_literal (error, g_quark_from_string ("GExiv2"), e.code (), e.what ());
     }
-    
+#ifdef EXV_UNICODE_PATH
+    catch (Exiv2::WError &e) {
+        g_set_error_literal (error, g_quark_from_string ("GExiv2"), e.code (), e.what ());
+    }
+#endif
+
     return FALSE;
 }
 
@@ -636,6 +641,11 @@ gboolean gexiv2_metadata_save_external (GExiv2Metadata *self, const gchar *path,
     } catch (Exiv2::Error &e) {
         g_set_error_literal (error, g_quark_from_string ("GExiv2"), e.code (), e.what ());
     }
+#ifdef EXV_UNICODE_PATH
+    catch (Exiv2::WError &e) {
+        g_set_error_literal (error, g_quark_from_string ("GExiv2"), e.code (), e.what ());
+    }
+#endif
 
     return FALSE;
 }
@@ -657,6 +667,11 @@ gboolean gexiv2_metadata_save_file (GExiv2Metadata *self, const gchar *path, GEr
     } catch (Exiv2::Error &e) {
         g_set_error_literal (error, g_quark_from_string ("GExiv2"), e.code (), e.what ());
     }
+#ifdef EXV_UNICODE_PATH
+    catch (Exiv2::WError &e) {
+        g_set_error_literal (error, g_quark_from_string ("GExiv2"), e.code (), e.what ());
+    }
+#endif
     
     return FALSE;
 }
