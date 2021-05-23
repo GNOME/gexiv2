@@ -18,22 +18,6 @@
     paths:
       - "${CI_PROJECT_DIR}/_build/meson-logs"
 
-.fedora:
-  image: fedora:latest
-
-  before_script:
-    - dnf update -y --nogpgcheck
-    - dnf install -y --nogpgcheck meson gcc-c++ exiv2-devel gobject-introspection-devel
-                                  ninja-build vala python3-devel python3-gobject-base
-                                  gtk-doc
-    - export LANG=C.UTF-8
-  except:
-    - schedules
-stages:
-  - build
-  - test
-  - deploy
-
 exiv2-master:on-schedule:
     extends: .flatpak
     variables:
@@ -49,40 +33,190 @@ exiv2-oldstable:on-schedule:
     variables:
         MANIFEST_PATH: "build-aux/org.gnome.GExiv2-oldstable.json"
 
-build-job:
-  extends: .fedora
+include:
+    - remote: "https://gitlab.freedesktop.org/freedesktop/ci-templates/-/raw/290b79e0e78eab67a83766f4e9691be554fc4afd/templates/ci-fairy.yml"
+    - remote: 'https://gitlab.freedesktop.org/freedesktop/ci-templates/-/raw/290b79e0e78eab67a83766f4e9691be554fc4afd/templates/fedora.yml'
+
+variables:
+    MESON_TEST_TIMEOUT_MULTIPLIER: 3
+
+stages:
+    - review
+    - prepare
+    - build
+    - test
+    - analysis
+    - website
+
+.check-template: &check
+  extends:
+    - .fdo.ci-fairy
+  artifacts:
+    expire_in: 1 week
+    paths:
+      - check-junit-report.xml
+    reports:
+      junit: check-junit-report.xml
+
+check-commit-log:
+  variables:
+    GIT_DEPTH: "100"
+  stage: review
+  script:
+    - if [[ x"$CI_MERGE_REQUEST_TARGET_BRANCH_NAME" != "x" ]] ;
+      then
+        ci-fairy check-commits --junit-xml=check-junit-report.xml ;
+      else
+        echo "Not a merge request" ;
+      fi
+  <<: *check
+
+check-merge-request:
+  variables:
+    GIT_STRATEGY: none
+  stage: review
+  script:
+    - if [[ x"$CI_MERGE_REQUEST_TARGET_BRANCH_NAME" != "x" ]] ;
+      then
+        ci-fairy check-merge-request --require-allow-collaboration --junit-xml=check-junit-report.xml ;
+      else
+        echo "Not a merge request" ;
+      fi
+  <<: *check
+
+.build-template: &build
   stage: build
   script:
-    - meson --prefix /usr --libdir /usr/lib64 --buildtype debug --werror _build .
-    - ninja -C _build
-  except:
-    - tags
+      - meson . build --prefix=/usr -Db_coverage=true --werror
+      - ninja -C build
   artifacts:
-    when: on_failure
-    name: "gexiv2-_${CI_COMMIT_REF_NAME}"
-    paths:
-      - "${CI_PROJECT_DIR}/_build/meson-logs"
+      expire_in: 1 day
+      paths:
+          - build
 
-test:
-  extends: .fedora
+.gexiv2.fedora@common:
+  variables:
+    BASE_TAG: '2021-05-22.2'
+    FDO_UPSTREAM_REPO: GNOME/gexiv2
+    FDO_DISTRIBUTION_PACKAGES: 'clang clang-analyzer gcovr git libasan libubsan python3-gobject python3-pip xmlto gobject-introspection-devel gtk-doc vala ninja-build python3-devel gtk-doc'
+    FDO_DISTRIBUTION_EXEC: |
+      dnf clean all &&
+      pip3 install meson
+
+.gexiv2.fedora:34@x86_64:
+  extends: .gexiv2.fedora@common
+  variables:
+    FDO_DISTRIBUTION_VERSION: 34
+    FDO_DISTRIBUTION_TAG: "x86_64-${BASE_TAG}"
+
+build-fedora-container@x86_64:
+  extends:
+    - .fdo.container-build@fedora
+    - .gexiv2.fedora:34@x86_64
+  stage: prepare
+  variables:
+    GIT_STRATEGY: none
+
+
+build-fedora@x86_64:
+    extends:
+        - .fdo.distribution-image@fedora
+        - .gexiv2.fedora:34@x86_64
+    needs:
+        - build-fedora-container@x86_64
+    <<: *build
+
+
+.test-template: &test
   stage: test
+  variables:
+    G_SLICE: "always-malloc"
+    MALLOC_CHECK_: "3"
   script:
-    - meson _build .
-    - ninja -C _build test
+    - cd build
+    - |
+      # Remove the many "CI_" variables from the environment. Meson dumps the
+      # whole environment for every failed test, and that gives a whole
+      # screenful of junk each time unless we strip these.
+      unset $(env|grep -o '^CI_[^=]*')
+      env LANG=C.UTF-8 LC_ALL=C.UTF-8 meson test --print-errorlogs ${MESON_TEST_EXTRA_ARGS}
+  after_script:
+    - |
+      echo "Distribution: "
+      echo
+      egrep '^NAME=|^VERSION=' /etc/os-release
+      echo
+      echo "Test suite settings:"
+      echo
+      echo "G_MESSAGES_DEBUG: ${G_MESSAGES_DEBUG}"
+      echo "MESON_TEST_EXTRA_ARGS: ${MESON_TEST_EXTRA_ARGS}"
+      echo
+      echo "These values can be set at https://gitlab.gnome.org/GNOME/gexiv2/pipelines/new"
+  artifacts:
+    expire_in: 1 day
+    when: always
+    paths:
+    - build
+    reports:
+      junit: "build/meson-logs/testlog.junit.xml"
 
-# FIXME: Run gtkdoc-check when we can. See:
-# https://github.com/mesonbuild/meson/issues/3580
+test-fedora@x86_64:
+  extends:
+    - .fdo.distribution-image@fedora
+    - .gexiv2.fedora:34@x86_64
+  needs:
+    - build-fedora@x86_64
+  <<: *test
+
+coverage-analysis:
+  extends:
+    - .fdo.distribution-image@fedora
+    - .gexiv2.fedora:34@x86_64
+  stage: analysis
+  allow_failure: true
+  script:
+    - cd build
+    - mkdir -p coveragereport
+    - gcovr --html-details --print-summary --root=.. --exclude=../build --exclude=../subprojects --exclude=../docs/reference --exclude=../tests --exclude=../tools --exclude=../examples --output coveragereport/index.html
+  coverage: '/^lines: (\d+\.\d+\%)/'
+  artifacts:
+    when: always
+    paths:
+    - build/coveragereport
+  needs:
+    - test-fedora@x86_64
+
+static-scan:
+  extends:
+    - .fdo.distribution-image@fedora
+    - .gexiv2.fedora:34@x86_64
+  stage: analysis
+  needs:
+    - build-fedora-container@x86_64
+  script:
+    - meson --buildtype=debug _scan_build
+    - ninja -C _scan_build scan-build
+  artifacts:
+    paths:
+      - _scan_build/meson-logs
+  allow_failure: true
 
 pages:
-  stage: deploy
-  extends: .fedora
-  only:
-    - master
+  extends:
+    - .fdo.distribution-image@fedora
+    - .gexiv2.fedora:34@x86_64
+  stage: website
   script:
-    - meson -Dgtk_doc=true _build .
-    - ninja -C _build test gexiv2-doc
-    - mkdir -p public/
-    - mv _build/docs/reference/html/ public/docs/
+      - meson doc-build -Dgtk_doc=true
+      - ninja -C doc-build gexiv2-doc
+      - mkdir -p public
+      - mv doc-build/doc/html public/docs
   artifacts:
     paths:
       - public
+  needs:
+    - build-fedora-container@x86_64
+  only:
+    - master
+    - /^wip\/.*\/ci.*$/
+
