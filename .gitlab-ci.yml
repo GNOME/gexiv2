@@ -96,9 +96,9 @@ check-merge-request:
 
 .gexiv2.fedora@common:
   variables:
-    BASE_TAG: '2021-05-22.2'
+    BASE_TAG: '2021-05-24.0'
     FDO_UPSTREAM_REPO: GNOME/gexiv2
-    FDO_DISTRIBUTION_PACKAGES: 'clang clang-analyzer gcovr git libasan libubsan python3-gobject python3-pip xmlto gobject-introspection-devel gtk-doc vala ninja-build python3-devel gtk-doc'
+    FDO_DISTRIBUTION_PACKAGES: 'clang clang-analyzer gcovr git libasan libubsan python3-gobject python3-pip xmlto gobject-introspection-devel gtk-doc vala ninja-build python3-devel gtk-doc exiv2-devel'
     FDO_DISTRIBUTION_EXEC: |
       dnf clean all &&
       pip3 install meson
