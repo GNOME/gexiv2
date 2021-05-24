@@ -210,7 +210,7 @@ pages:
       - meson doc-build -Dgtk_doc=true
       - ninja -C doc-build gexiv2-doc
       - mkdir -p public
-      - mv doc-build/doc/html public/docs
+      - mv doc-build/docs/reference/html public/docs
   artifacts:
     paths:
       - public
