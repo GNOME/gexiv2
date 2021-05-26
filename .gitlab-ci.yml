@@ -264,7 +264,7 @@ pages:
       - ninja -C doc-build
       - ninja -C doc-build gexiv2-doc
       - mkdir -p public
-      - mv doc-build/docs/reference/html public/docs
+      - mv doc-build/docs/reference/GExiv2 public/gi-docgen
   artifacts:
     paths:
       - public
@@ -273,4 +273,5 @@ pages:
   rules:
     - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
     - if: $CI_COMMIT_BRANCH == /^wip\/.*\/ci.*$/
+    - /^wip\/.*doc.*$/
 
