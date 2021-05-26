@@ -109,7 +109,7 @@ check-merge-request:
     FDO_DISTRIBUTION_PACKAGES: 'clang clang-analyzer libcxx-devel gcovr git libasan libubsan python3-gobject python3-pip xmlto gobject-introspection-devel gtk-doc vala ninja-build python3-devel gtk-doc exiv2-devel'
     FDO_DISTRIBUTION_EXEC: |
       dnf clean all &&
-      pip3 install meson
+      pip3 install meson markdown toml typogrify
 
 .gexiv2.fedora:41@x86_64:
   extends: .gexiv2.fedora@common
