@@ -261,8 +261,7 @@ pages:
   stage: deploy
   script:
       - meson doc-build -Dgtk_doc=true
-      - ninja -C doc-build
-      - ninja -C doc-build gexiv2-doc
+      - ninja -C doc-build docs/reference/GExiv2
       - mkdir -p public
       - mv doc-build/docs/reference/GExiv2 public/gi-docgen
   artifacts:
