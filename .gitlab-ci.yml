@@ -107,6 +107,8 @@ check-merge-request:
       paths:
           - ${MESON_BUILD_DIR}
 
+
+
 .gexiv2.fedora@common:
   variables:
     BASE_TAG: '2025-01-26.0'
@@ -139,6 +141,38 @@ build-fedora@x86_64:
     variables:
         MESON_BUILD_DIR: 'build'
     <<: *build
+
+build-msys2-mingw64@x86_64:
+  only:
+    - branches
+  stage: build
+  needs: []
+  tags:
+    - win32-ps
+  variables:
+    CHERE_INVOKING: "yes"
+  script:
+    - C:\msys64\usr\bin\pacman --noconfirm -Syyuu
+    - C:\msys64\usr\bin\pacman --noconfirm -Suy
+    - C:\mysy64\usr\bin\pacman --noconfirm -S --needed
+      base-devel
+      mingw-w64-x86_64-toolchain
+      mingw-w64-x86_64-gcc
+      mingw-w64-x86_64-gobject-introspection
+      mingw-w64-x86_64-gtk-doc
+      mingw-w64-x86_64-meson
+      mingw-w64-x86_64-ninja
+      mingw-w64-x86_64-python-gobject
+      mingw-w64-x86_64-vala
+    - meson --buildtype debug build
+    - cd build
+    - ninja
+    - meson test
+  artifacts:
+    name: "${env:CI_JOB_NAME}-${env:CI_COMMIT_REF_NAME}"
+    when: always
+    paths:
+      - "${CI_PROJECT_DIR}/build/meson-logs"
 
 #build-fedora-clang@x86_64:
 #    extends:
