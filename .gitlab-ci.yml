@@ -107,6 +107,8 @@ check-merge-request:
       paths:
           - ${MESON_BUILD_DIR}
 
+
+
 .gexiv2.fedora@common:
   variables:
     BASE_TAG: '2025-01-26.0'
@@ -140,38 +142,24 @@ build-fedora@x86_64:
         MESON_BUILD_DIR: 'build'
     <<: *build
 
-#build-fedora-clang@x86_64:
-#    extends:
-#        - .fdo.distribution-image@fedora
-#        - .gexiv2.fedora:41@x86_64
-#    needs:
-#        - build-fedora-container@x86_64
-#    variables:
-#        MESON_EXTRA_ARGS: '--cross-file=build-aux/x86_64-linux-clang.txt'
-#        MESON_BUILD_DIR: 'build-clang-libcxx'
-#    <<: *build
-
-build-fedora-w32@x86_64:
-    extends:
-        - .fdo.distribution-image@fedora
-        - .gexiv2.fedora:41@x86_64
-    needs:
-        - build-fedora-container@x86_64
-    variables:
-        MESON_EXTRA_ARGS: '--cross-file=build-aux/i686-w64-mingw32.txt -Dintrospection=false -Dvapi=false -Dpython3=false'
-        MESON_BUILD_DIR: 'build-w32'
-    <<: *build
-
-build-fedora-w64@x86_64:
-    extends:
-        - .fdo.distribution-image@fedora
-        - .gexiv2.fedora:41@x86_64
-    needs:
-        - build-fedora-container@x86_64
-    variables:
-        MESON_EXTRA_ARGS: '--cross-file=build-aux/x86_64-w64-mingw32.txt -Dintrospection=false -Dvapi=false -Dpython3=false'
-        MESON_BUILD_DIR: 'build-w64'
-    <<: *build
+build-msys2-ucrt64@x86_64:
+  only:
+    - branches
+  stage: build
+  needs: []
+  tags:
+    - win32-ps
+  variables:
+    CHERE_INVOKING: "yes"
+    MSYSTEM: "UCRT64"
+  script:
+    - C:\msys64\usr\bin\pacman --noconfirm -Syyuu
+    - C:\msys64\usr\bin\bash -lc "bash -x ./.gitlab-ci/test-ucrt.sh"
+  artifacts:
+    name: "${env:CI_JOB_NAME}-${env:CI_COMMIT_REF_NAME}"
+    when: always
+    paths:
+      - "${CI_PROJECT_DIR}/build/meson-logs"
 
 .test-template: &test
   stage: test
@@ -212,16 +200,6 @@ test-fedora@x86_64:
   variables:
     MESON_BUILD_DIR: 'build'
   <<: *test
-
-#test-fedora-clang@x86_64:
-#  extends:
-#    - .fdo.distribution-image@fedora
-#    - .gexiv2.fedora:41@x86_64
-#  needs:
-#    - build-fedora-clang@x86_64
-#  variables:
-#    MESON_BUILD_DIR: 'build-clang'
-#  <<: *test
 
 coverage-analysis:
   extends:
