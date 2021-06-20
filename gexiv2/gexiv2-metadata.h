@@ -17,18 +17,6 @@
 #include <gexiv2/gexiv2-preview-image.h>
 
 /**
- * SECTION: gexiv2-metadata
- * @title: Generic image metadata handling
- * @short_description: Class to handle the various image metadata standards
- * @include: gexiv2/gexiv2.h
- *
- * #GExiv2Metadata is a generic object that provides everything from simple
- * aggregated accessors to common data such as image comments up to
- * fine-grained access to specific tags of a specific format, be it EXIF, IPTC
- * or XMP
- */
-
-/**
  * SECTION: gexiv2-metadata-xmp
  * @short_description: Functionality specific to the XMP familiy of metadata information
  * @title: Functions related to XMP metadata
@@ -232,19 +220,22 @@ typedef enum {
 /**
  * GExiv2Metadata:
  *
- * An object holding all the Exiv2 metadata.  Previews, if present, are also available.
+ * An object holding all the Exiv2 metadata. Previews, if present, are also available.
+ *
+ * It is a generic object that provides everything from simple aggregated accessors
+ * to common data such as image comments up to fine-grained access to specific tags of a
+ * specfic format, be it EXIF, IPTC or XMP.
  *
  * As gexiv2 is only a wrapper around Exiv2, it's better to read its documentation to understand
- * the full scope of what it offers: <ulink url="http://www.exiv2.org/"></ulink>
+ * the full scope of what it offers: <http://www.exiv2.org/>
  *
  * In particular, rather than providing a getter/setter method pair for every metadata value
  * available for images (of which there are thousands), Exiv2 uses a dotted addressing scheme.
  * For example, to access a photo's EXIF Orientation field, the caller passes to Exiv2
- * "Exif.Photo.Orientation".  These <emphasis>tags</emphasis> (in Exiv2 parlance) are key to using Exiv2 (and
+ * "Exif.Photo.Orientation".  These *tags* (in Exiv2 parlance) are key to using Exiv2 (and
  * therefore gexiv2) to its fullest.
  *
- * A full reference for all supported Exiv2 tags can be found at
- * <ulink url="http://www.exiv2.org/metadata.html"></ulink>
+ * A full reference for all supported Exiv2 tags can be found at <http://www.exiv2.org/metadata.html>
  */
 typedef struct _GExiv2Metadata			GExiv2Metadata;
 typedef struct _GExiv2MetadataClass		GExiv2MetadataClass;
@@ -272,6 +263,12 @@ GType 			gexiv2_metadata_get_type			(void);
 /**
  * gexiv2_metadata_new:
  *
+ * Create an empty Metadata object.
+ *
+ * To use it, either use the many setter functions to popuplate the data from
+ * scratch or use [method@GExiv2.Metadata.open_path] or
+ * [method@GExiv2.Metadata.open_buf] to populate it from an existing file.
+ *
  * Returns: (transfer full): A fully constructed #GExiv2Metadata ready to be used
  */
 GExiv2Metadata* gexiv2_metadata_new					(void);
@@ -293,7 +290,10 @@ void			gexiv2_metadata_free				(GExiv2Metadata *self);
  * @path: Path to the file you want to open
  * @error: (allow-none): A return location for a #GError or %NULL
  *
- * The file must be an image format supported by Exiv2.
+ * Populate metadata from @path.
+ *
+ * The file must be an image format supported by Exiv2. If called multiple times,
+ * current metadata will be replaced by the content of the last file opened.
  *
  * Returns: Boolean success indicator
  *
@@ -308,7 +308,10 @@ gboolean		gexiv2_metadata_open_path			(GExiv2Metadata *self, const gchar *path, 
  * @n_data: (skip): The length of the buffer
  * @error: (allow-none): A return location for a #GError or %NULL
  *
- * The buffer must be an image format supported by Exiv2.
+ * Populate metadata from a memory buffer.
+ *
+ * The buffer must be an image format supported by Exiv2. If called multiple times,
+ * current metadata will be replaced by the content of the last file opened.
  *
  * Returns: Boolean success indicator
  *
@@ -389,10 +392,11 @@ GBytes* gexiv2_metadata_as_bytes(GExiv2Metadata* self, GBytes* bytes, GError** e
  * @self: An instance of #GExiv2Metadata
  * @tag: Exiv2 tag
  *
- * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
+ * Check for presence of a tag.
  *
- * Returns: TRUE if the tag is present.
+ * The Exiv2 Tag Reference can be found at <http://exiv2.org/metadata.html>
  *
+ * Returns: %TRUE if the tag is present.
  * Deprecated: 0.14.0: Use gexiv2_metadata_try_has_tag() instead.
  */
 G_DEPRECATED_FOR(gexiv2_metadata_try_has_tag)
@@ -419,9 +423,9 @@ gboolean gexiv2_metadata_try_has_tag(GExiv2Metadata* self, const gchar* tag, GEr
  *
  * Removes the Exiv2 tag from the metadata object.
  *
- * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
+ * The Exiv2 Tag Reference can be found at <http://exiv2.org/metadata.html>
  *
- * Returns: TRUE if the tag was present.
+ * Returns: %TRUE if the tag was present.
  *
  * Deprecated: 0.14.0: Use gexiv2_metadata_try_clear_tag() instead.
  */
@@ -456,7 +460,9 @@ void			gexiv2_metadata_clear				(GExiv2Metadata *self);
  * gexiv2_metadata_is_exif_tag:
  * @tag: An Exiv2 tag
  *
- * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
+ * Check whether @tag is from the EXIF domain of tags.
+ *
+ * The Exiv2 Tag Reference can be found at <http://exiv2.org/metadata.html>
  *
  * Returns: TRUE if the Exiv2 tag is for the EXIF domain.
  */
@@ -466,7 +472,9 @@ gboolean		gexiv2_metadata_is_exif_tag				(const gchar* tag);
  * gexiv2_metadata_is_iptc_tag:
  * @tag: An Exiv2 tag
  *
- * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
+ * Check whether @tag is from the IPTC domain of tags.
+ *
+ * The Exiv2 Tag Reference can be found at <http://exiv2.org/metadata.html>
  *
  * Returns: TRUE if the Exiv2 tag is for the IPTC domain.
  */
@@ -476,7 +484,9 @@ gboolean		gexiv2_metadata_is_iptc_tag				(const gchar* tag);
  * gexiv2_metadata_is_xmp_tag:
  * @tag: An Exiv2 tag
  *
- * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
+ * Check whether @tag is from the XMP domain of tags.
+ *
+ * The Exiv2 Tag Reference can be found at <http://exiv2.org/metadata.html>
  *
  * Returns: TRUE if the Exiv2 tag is for the XMP domain.
  */
@@ -487,7 +497,9 @@ gboolean		gexiv2_metadata_is_xmp_tag				(const gchar* tag);
  * @tag: An Exiv2 tag
  * @error: (allow-none): A return location for a #GError or %NULL
  *
- * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
+ * Get Exiv2's label for this tag.
+ *
+ * The Exiv2 Tag Reference can be found at <http://exiv2.org/metadata.html>
  *
  * Returns: (transfer none) (allow-none): The tag's label
  *
@@ -499,7 +511,9 @@ const gchar*	gexiv2_metadata_try_get_tag_label		(const gchar *tag, GError **erro
  * gexiv2_metadata_get_tag_label:
  * @tag: An Exiv2 tag
  *
- * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
+ * Get Exiv2's label for this tag.
+ *
+ * The Exiv2 Tag Reference can be found at <http://exiv2.org/metadata.html>
  *
  * Returns: (transfer none) (allow-none): The tag's label
  *
@@ -513,7 +527,9 @@ const gchar*	gexiv2_metadata_get_tag_label		(const gchar *tag);
  * @tag: An Exiv2 tag
  * @error: (allow-none): A return location for a #GError or %NULL
  *
- * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
+ * Get Exiv2's description for a tag.
+ *
+ * The Exiv2 Tag Reference can be found at <http://exiv2.org/metadata.html>
  *
  * Returns: (transfer none) (allow-none): The tag's description
  *
@@ -525,7 +541,9 @@ const gchar*	gexiv2_metadata_try_get_tag_description	(const gchar *tag, GError *
  * gexiv2_metadata_get_tag_description:
  * @tag: An Exiv2 tag
  *
- * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
+ * Get Exiv2's description for a tag.
+ *
+ * The Exiv2 Tag Reference can be found at <http://exiv2.org/metadata.html>
  *
  * Returns: (transfer none) (allow-none): The tag's description
  *
@@ -539,10 +557,12 @@ const gchar*	gexiv2_metadata_get_tag_description	(const gchar *tag);
  * @tag: An Exiv2 tag
  * @error: (allow-none): A return location for a #GError or %NULL
  *
- * The names of the various Exiv2 tag types can be found at Exiv2::TypeId,
- * <ulink url="http://exiv2.org/doc/namespaceExiv2.html#a5153319711f35fe81cbc13f4b852450c"></ulink>
+ * Get Exiv2's type name of a tag.
  *
- * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
+ * The names of the various Exiv2 tag types can be found at Exiv2::TypeId,
+ * <http://exiv2.org/doc/namespaceExiv2.html#a5153319711f35fe81cbc13f4b852450c>
+ *
+ * The Exiv2 Tag Reference can be found at <http://exiv2.org/metadata.html>
  *
  * Returns: (transfer none) (allow-none): The tag's type name.
  *
@@ -554,10 +574,12 @@ const gchar*	gexiv2_metadata_try_get_tag_type	(const gchar *tag, GError **error)
  * gexiv2_metadata_get_tag_type:
  * @tag: An Exiv2 tag
  *
- * The names of the various Exiv2 tag types can be found at Exiv2::TypeId,
- * <ulink url="http://exiv2.org/doc/namespaceExiv2.html#a5153319711f35fe81cbc13f4b852450c"></ulink>
+ * Get Exiv2's type name of a tag.
  *
- * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
+ * The names of the various Exiv2 tag types can be found at Exiv2::TypeId,
+ * <http://exiv2.org/doc/namespaceExiv2.html#a5153319711f35fe81cbc13f4b852450c>
+ *
+ * The Exiv2 Tag Reference can be found at <http://exiv2.org/metadata.html>
  *
  * Returns: (transfer none) (allow-none): The tag's type name.
  *
@@ -572,11 +594,13 @@ const gchar*	gexiv2_metadata_get_tag_type	(const gchar *tag);
  * @tag: An Exiv2 tag
  * @error: (allow-none): A return location for a #GError or %NULL
  *
- * The Exiv2 Tag Reference can be found at <ulink url="https://www.exiv2.org/metadata.html"></ulink>
+ * Check whether a tag supports multiple values.
  *
  * Multiple value tags are Xmp tags of type "XmpAlt", "XmpBag", "XmpSeq" or "LangAlt", or Iptc
  * tags marked as Repeatable (which can be of any Iptc type). There are no multiple value Exif
  * tags.
+ *
+ * The Exiv2 Tag Reference can be found at <http://exiv2.org/metadata.html>
  *
  * Returns: Whether @tag is capable of storing multiple values or not. If @tag is undefined
  * (i.e. not built-in and not added to @self), then @error is set and %FALSE is returned.
@@ -589,7 +613,7 @@ gboolean gexiv2_metadata_try_tag_supports_multiple_values(GExiv2Metadata* self, 
  * gexiv2_metadata_get_supports_exif:
  * @self: An instance of #GExiv2Metadata
  *
- * Query @self whether it supports writing EXIF metadata.
+ * Query whether the currently loaded image supports writing of EXIF metadata.
  *
  * Returns: %TRUE if the loaded image type supports writing EXIF metadata.
  */
@@ -599,7 +623,7 @@ gboolean		gexiv2_metadata_get_supports_exif	(GExiv2Metadata *self);
  * gexiv2_metadata_get_supports_iptc:
  * @self: An instance of #GExiv2Metadata
  *
- * Query @self whether it supports writing IPTC metadata.
+ * Query whether the currently loaded image supports writing of IPTC metadata.
  *
  * Returns: %TRUE if the loaded image type supports writing IPTC metadata.
  */
@@ -609,7 +633,7 @@ gboolean		gexiv2_metadata_get_supports_iptc	(GExiv2Metadata *self);
  * gexiv2_metadata_get_supports_xmp:
  * @self: An instance of #GExiv2Metadata
  *
- * Query @self whether it supports writing XMP metadata.
+ * Query whether the currently loaded image supports writing of XMP metadata.
  *
  * Returns: %TRUE if the loaded image type supports writing XMP metadata.
  */
@@ -629,9 +653,9 @@ const gchar*	gexiv2_metadata_get_mime_type		(GExiv2Metadata *self);
  * gexiv2_metadata_get_pixel_width:
  * @self: An instance of #GExiv2Metadata
  *
- * Get the <emphasis>actual</emphasis> unoriented display width in pixels of the loaded
+ * Get the *actual* unoriented display width in pixels of the loaded
  * image. May be different than the width reported by various metadata tags,
- * i.e. "Exif.Photo.PixelXDimension".
+ * i.e. `Exif.Photo.PixelXDimension`.
  *
  * Returns: Pixel width of current image
  */
@@ -641,8 +665,8 @@ gint			gexiv2_metadata_get_pixel_width		(GExiv2Metadata *self);
  * gexiv2_metadata_get_pixel_height:
  * @self: An instance of #GExiv2Metadata
  *
- * Get the <emphasis>actual</emphasis> unoriented display height in pixels of the loaded image.  This may
- * be different than the height reported by various metadata tags, i.e. "Exif.Photo.PixelYDimension".
+ * Get the *actual* unoriented display height in pixels of the loaded image.  This may
+ * be different than the height reported by various metadata tags, i.e. `Exif.Photo.PixelYDimension`.
  *
  * Returns: Pixel height of current image
  */
@@ -654,9 +678,11 @@ gint			gexiv2_metadata_get_pixel_height	(GExiv2Metadata *self);
  * @tag: Exiv2 tag name
  * @error: (allow-none): A return location for a #GError or %NULL
  *
- * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
+ * Get a string representationf a tag.
  *
  * Tags that support multiple values are returned as a single string, with elements separated by ", ".
+ *
+ * The Exiv2 Tag Reference can be found at <http://exiv2.org/metadata.html>
  *
  * Returns: (transfer full) (allow-none): The tag's value as a string
  *
@@ -671,10 +697,12 @@ gchar*			gexiv2_metadata_try_get_tag_string	(GExiv2Metadata *self, const gchar* 
  * @value: The value to set or replace the existing value
  * @error: (allow-none): A return location for a #GError or %NULL
  *
+ * Set the value of a tag using a string.
+ *
  * If a tag supports multiple values, then @value is added to any existing values. For single
  * tags, @value replaces the value.
  *
- * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
+ * The Exiv2 Tag Reference can be found at <http://exiv2.org/metadata.html>
  *
  * Returns: TRUE on success
  *
