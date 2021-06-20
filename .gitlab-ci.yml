@@ -219,5 +219,4 @@ pages:
   only:
     - master
     - /^wip\/.*\/ci.*$/
-    - /^wip\/.*doc.*$/
 
