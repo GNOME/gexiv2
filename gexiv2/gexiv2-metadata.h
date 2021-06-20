@@ -951,7 +951,8 @@ gboolean		gexiv2_metadata_set_tag_multiple	(GExiv2Metadata *self, const gchar* t
  *
  * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
  *
- * Tags that support multiple values are returned as a single string, with elements separated by ", ".
+ * Tags that support multiple values may be returned as a single byte array, with records separated
+ * by 4x INFORMATION SEPARATOR FOUR (ASCII 0x1c)
  *
  * Returns: (transfer full) (allow-none): The tag's raw value as a byte array
  *
@@ -966,7 +967,8 @@ GBytes*			gexiv2_metadata_try_get_tag_raw		(GExiv2Metadata *self, const gchar* t
  *
  * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
  *
- * Tags that support multiple values are returned as a single string, with elements separated by ", ".
+ * Tags that support multiple values may bereturned as a single byte array, with records separated
+ * by 4x INFORMATION SEPARATOR FOUR (ASCII 0x1c)
  *
  * Returns: (transfer full) (allow-none): The tag's raw value as a byte array
  *

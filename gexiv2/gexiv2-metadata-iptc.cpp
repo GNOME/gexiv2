@@ -436,29 +436,29 @@ GBytes* gexiv2_metadata_get_iptc_tag_raw (GExiv2Metadata *self, const gchar* tag
 
         	// Create return string by extracting raw value from Exiv2 and
         	// adding separators (if needed).
-        	std::ostringstream os;
-            long size = 0;
-            gpointer temp_str = nullptr;
-            gboolean add_separator = FALSE;
-            const gchar* SEPARATOR = ", ";
-            const int seperator_length = strlen(SEPARATOR);
+            bool add_separator = false;
+
+            // Define record separarator as 4x INFORMATION SEPARATOR FOUR
+            constexpr guint8 SEPARATOR[] = {28, 28, 28, 28};
+            constexpr int seperator_length = sizeof(SEPARATOR);
+
+            GByteArray* concatenated_raw_arrays = g_byte_array_new();
 
             for (; it != iptc_data.end(); ++it) {
-            	size = it->size();
+                auto size = it->size();
             	if (it->key() == tag && size > 0) {
-            		if (add_separator == TRUE) {
-            			os.write(SEPARATOR, seperator_length);
+                    if (add_separator) {
+                        g_byte_array_append(concatenated_raw_arrays, SEPARATOR, seperator_length);
             		}
-            		temp_str = g_malloc(size);
-                 	it->copy(static_cast<Exiv2::byte*>(temp_str), Exiv2::invalidByteOrder);
-        			os.write(static_cast<const char*>(temp_str), size);
-                    g_free(temp_str);
-
-                    add_separator = TRUE;
+                    auto old_size = concatenated_raw_arrays->len;
+                    g_byte_array_set_size(concatenated_raw_arrays, old_size + size);
+                    it->copy(static_cast<Exiv2::byte*>(concatenated_raw_arrays->data + old_size),
+                             Exiv2::invalidByteOrder);
+                    add_separator = true;
                 }
             }
 
-            return g_bytes_new_static((os.str().c_str() ), os.str().length());
+            return g_byte_array_free_to_bytes(concatenated_raw_arrays);
         }
     } catch (Exiv2::Error& e) {
         g_set_error_literal (error, g_quark_from_string ("GExiv2"), e.code (), e.what ());
