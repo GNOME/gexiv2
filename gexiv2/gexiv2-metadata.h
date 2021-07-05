@@ -509,7 +509,7 @@ const gchar*	gexiv2_metadata_get_tag_description	(const gchar *tag);
  * @error: (allow-none): A return location for a #GError or %NULL
  *
  * The names of the various Exiv2 tag types can be found at Exiv2::TypeId,
- * <ulink url="http://exiv2.org/doc/namespaceExiv2.html#5153319711f35fe81cbc13f4b852450c"></ulink>
+ * <ulink url="http://exiv2.org/doc/namespaceExiv2.html#a5153319711f35fe81cbc13f4b852450c"></ulink>
  *
  * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
  *
@@ -524,7 +524,7 @@ const gchar*	gexiv2_metadata_try_get_tag_type	(const gchar *tag, GError **error)
  * @tag: An Exiv2 tag
  *
  * The names of the various Exiv2 tag types can be found at Exiv2::TypeId,
- * <ulink url="http://exiv2.org/doc/namespaceExiv2.html#5153319711f35fe81cbc13f4b852450c"></ulink>
+ * <ulink url="http://exiv2.org/doc/namespaceExiv2.html#a5153319711f35fe81cbc13f4b852450c"></ulink>
  *
  * The Exiv2 Tag Reference can be found at <ulink url="http://exiv2.org/metadata.html"></ulink>
  *
