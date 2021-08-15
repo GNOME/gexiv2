@@ -550,7 +550,7 @@ const gchar*	gexiv2_metadata_get_tag_type	(const gchar *tag);
  * Returns: Whether @tag is capable of storing multiple values or not. If @tag is undefined
  * (i.e. not built-in and not added to @self), then @error is set and %FALSE is returned.
  *
- * Since: 0.12.2
+ * Since: 0.14.0
  */
 gboolean gexiv2_metadata_try_tag_supports_multiple_values(GExiv2Metadata* self, const gchar* tag, GError** error);
 
