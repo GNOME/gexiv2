@@ -218,7 +218,7 @@ void print_all_xmp_namespaces(string[] xmp_tags) throws Error {
 
         // Only output one example of a groupName's namespace
         if (last_groupName != groupName) {
-            print("Xmp ns: %-56s%s\n", groupName, GExiv2.Metadata.get_xmp_namespace_for_tag(groupName));
+            print("Xmp ns: %-56s%s\n", groupName, GExiv2.Metadata.try_get_xmp_namespace_for_tag(groupName));
             last_groupName = groupName;
         }
     }

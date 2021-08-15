@@ -119,9 +119,23 @@ guint32			gexiv2_preview_image_get_height			(GExiv2PreviewImage *self);
  * @path: (in): The file path to write the preview image to.
  *
  * Returns: The number of bytes written to the file.
+ *
+ * Deprecated: 0.14.0: Use gexiv2_preview_image_try_write_file() instead.
  */
+G_DEPRECATED_FOR(gexiv2_preview_image_try_write_file)
 glong			gexiv2_preview_image_write_file			(GExiv2PreviewImage *self, const gchar *path);
 
+/**
+ * gexiv2_preview_image_try_write_file:
+ * @self: An instance of #GExiv2PreviewImage
+ * @path: (in): The file path to write the preview image to.
+ * @error: (allow-none): A return location for a #GError or %NULL
+ *
+ * Returns: The number of bytes written to the file.
+ *
+ * Since: 0.14.0
+ */
+glong gexiv2_preview_image_try_write_file(GExiv2PreviewImage* self, const gchar* path, GError** error);
 
 G_END_DECLS
 

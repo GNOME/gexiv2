@@ -185,14 +185,25 @@ class TestMetadata(unittest.TestCase):
                        'stop_emission',
                        'stop_emission_by_name',
                        'thaw_notify',
+                       'try_clear_tag',
                        'try_tag_supports_multiple_values',
                        'try_delete_gps_info',
+                       'try_erase_exif_thumbnail',
                        'try_generate_xmp_packet',
+                       'try_get_comment',
                        'try_get_exif_tag_rational',
+                       'try_get_exposure_time',
+                       'try_get_fnumber',
+                       'try_get_focal_length',
                        'try_get_gps_altitude',
                        'try_get_gps_info',
                        'try_get_gps_latitude',
                        'try_get_gps_longitude',
+                       'try_get_iso_speed',
+                       'try_get_metadata_pixel_height',
+                       'try_get_metadata_pixel_width',
+                       'try_get_orientation',
+                       'try_get_preview_image',
                        'try_get_tag_description',
                        'try_get_tag_interpreted_string',
                        'try_get_tag_label',
@@ -201,13 +212,23 @@ class TestMetadata(unittest.TestCase):
                        'try_get_tag_raw',
                        'try_get_tag_string',
                        'try_get_tag_type',
+                       'try_get_xmp_namespace_for_tag',
                        'try_get_xmp_packet',
+                       'try_has_tag',
+                       'try_register_xmp_namespace',
+                       'try_set_comment',
                        'try_set_exif_tag_rational',
+                       'try_set_exif_thumbnail_from_buffer',
                        'try_set_gps_info',
+                       'try_set_metadata_pixel_height',
+                       'try_set_metadata_pixel_width',
+                       'try_set_orientation',
                        'try_set_tag_long',
                        'try_set_tag_multiple',
                        'try_set_tag_string',
                        'try_set_xmp_tag_struct',
+                       'try_unregister_all_xmp_namespaces',
+                       'try_unregister_xmp_namespace',
                        'try_update_gps_info',
                        'unref',
                        'unregister_all_xmp_namespaces',
@@ -215,6 +236,88 @@ class TestMetadata(unittest.TestCase):
                        'update_gps_info',
                        'watch_closure',
                        'weak_ref']:
+            self.assertIn(method, methods)
+
+        preview_properties = GExiv2.PreviewProperties()
+        methods = [m for m in dir(preview_properties) if not m.startswith('_')]
+        for method in ['bind_property',
+                       'bind_property_full',
+                       'chain',
+                       'connect',
+                       'connect_after',
+                       'connect_object',
+                       'connect_object_after',
+                       'disconnect',
+                       'disconnect_by_func',
+                       'emit',
+                       'emit_stop_by_name',
+                       'force_floating',
+                       'freeze_notify',
+                       'g_type_instance',
+                       'get_extension',
+                       'get_height',
+                       'get_mime_type',
+                       'get_qdata',
+                       'get_size',
+                       'get_width',
+                       'interface_find_property',
+                       'interface_install_property',
+                       'interface_list_properties',
+                       'notify',
+                       'ref_count',
+                       'ref_sink',
+                       'replace_data',
+                       'replace_qdata',
+                       'set_property',
+                       'steal_data',
+                       'steal_qdata',
+                       'thaw_notify',
+                       'unref',
+                       'watch_closure',
+                       'weak_ref'
+                       ]:
+            self.assertIn(method, methods)
+
+        preview_image = GExiv2.PreviewImage()
+        methods = [m for m in dir(preview_image) if not m.startswith('_')]
+        for method in ['bind_property',
+                       'bind_property_full',
+                       'chain',
+                       'connect',
+                       'connect_after',
+                       'connect_object',
+                       'connect_object_after',
+                       'disconnect',
+                       'disconnect_by_func',
+                       'emit',
+                       'emit_stop_by_name',
+                       'force_floating',
+                       'freeze_notify',
+                       'g_type_instance',
+                       'get_data',
+                       'get_extension',
+                       'get_mime_type',
+                       'get_height',
+                       'get_width',
+                       'get_qdata',
+                       'interface_find_property',
+                       'interface_install_property',
+                       'interface_list_properties',
+                       'notify',
+                       'ref_count',
+                       'ref_sink',
+                       'replace_data',
+                       'replace_qdata',
+                       'set_property',
+                       'steal_data',
+                       'steal_qdata',
+                       'thaw_notify',
+                       'try_write_file',
+                       'unref',
+                       'watch_closure',
+                       'write_file',
+                       'weak_ref'
+                       ]:
             self.assertIn(method, methods)
 
     def test_open_buf(self):
@@ -911,3 +1014,22 @@ generated the image. When the field is left blank, it is treated as unknown.""")
         self.assertEqual(self.metadata.get_comment(), 'Lego Dragon, Copenhagen.')
         self.metadata.clear_comment()
         self.assertEqual(self.metadata.get_comment().strip(), '')
+
+    def test_try_get_xmp_namespace_for_tag(self):
+        self.assertEqual(self.metadata.try_get_xmp_namespace_for_tag('dc'), 'http://purl.org/dc/elements/1.1/')
+        self.assertEqual(self.metadata.try_get_xmp_namespace_for_tag('Xmp.dc.subject'), 'http://purl.org/dc/elements/1.1/')
+        self.assertEqual(self.metadata.try_get_xmp_namespace_for_tag('Xmp.dc.MadeUp'), 'http://purl.org/dc/elements/1.1/')
+
+        # Invalid "familyName"
+        self.assertEqual(self.metadata.get_xmp_namespace_for_tag('xmp.dc.subject'), None)
+        self.assertEqual(self.metadata.get_xmp_namespace_for_tag('MadeUp.dc.subject'), None)
+        self.assertEqual(self.metadata.get_xmp_namespace_for_tag('.dc.subject'), None)
+
+        # Invalid "groupName"
+        self.assertEqual(self.metadata.get_xmp_namespace_for_tag('MadeUp'), None)
+        self.assertEqual(self.metadata.get_xmp_namespace_for_tag('Xmp.MadeUp.subject'), None)
+        self.assertEqual(self.metadata.get_xmp_namespace_for_tag('Xmp..subject'), None)
+
+        # Missing "tagName"
+        self.assertEqual(self.metadata.get_xmp_namespace_for_tag('Xmp.dc'), None)
+        self.assertEqual(self.metadata.get_xmp_namespace_for_tag('Xmp.dc.'), None)

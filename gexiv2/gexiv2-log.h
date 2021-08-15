@@ -17,8 +17,8 @@
  * @title: Logging functionality
  * @short_description: Utility functions related to GExiv2's and Exiv2's logging.
  *
- * The functions in this modules can be used do configure the log level of
- * GExiv2 and Exiv2 in terms of what to log (see gexiv2_log_set_level()) and
+ * The functions in this modules can be used to configure the log level of
+ * GExiv2 and Exiv2, in terms of what to log (see gexiv2_log_set_level()) and
  * how. Either a custom log handler can be used or GLib's logging mechanisms.
  */
 

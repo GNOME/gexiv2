@@ -62,7 +62,10 @@ G_GNUC_INTERNAL gboolean gexiv2_metadata_set_exif_tag_multiple(GExiv2Metadata* s
 G_GNUC_INTERNAL gchar*			gexiv2_metadata_get_exif_tag_interpreted_string (GExiv2Metadata *self, const gchar* tag, GError **error);
 G_GNUC_INTERNAL glong			gexiv2_metadata_get_exif_tag_long	(GExiv2Metadata *self, const gchar* tag, GError **error);
 G_GNUC_INTERNAL gboolean		gexiv2_metadata_set_exif_tag_long	(GExiv2Metadata *self, const gchar* tag, glong value, GError **error);
-G_GNUC_INTERNAL gdouble			gexiv2_metadata_get_exif_tag_rational_as_double (GExiv2Metadata *self, const gchar* tag, gdouble def);
+G_GNUC_INTERNAL gdouble gexiv2_metadata_get_exif_tag_rational_as_double(GExiv2Metadata* self,
+                                                                        const gchar* tag,
+                                                                        gdouble def,
+                                                                        GError** error);
 
 G_GNUC_INTERNAL const gchar*	gexiv2_metadata_get_exif_tag_label	(const gchar* tag, GError **error);
 G_GNUC_INTERNAL const gchar*	gexiv2_metadata_get_exif_tag_description (const gchar* tag, GError **error);

@@ -11,7 +11,7 @@
 
 G_BEGIN_DECLS
 
-static GExiv2LogHandler installed_handler = NULL;
+static GExiv2LogHandler installed_handler = nullptr;
 
 static GExiv2LogLevel exiv2_level_to_gexiv2_level(Exiv2::LogMsg::Level level) {
     switch (level) {
@@ -54,7 +54,7 @@ static Exiv2::LogMsg::Level gexiv2_level_to_exiv2_level(GExiv2LogLevel level) {
 }
 
 static void log_handler_converter(int level, const char *msg) {
-    if (installed_handler != NULL)
+    if (installed_handler != nullptr)
         installed_handler(exiv2_level_to_gexiv2_level((Exiv2::LogMsg::Level) level), msg);
     else
         Exiv2::LogMsg::defaultHandler(level, msg);
@@ -101,7 +101,7 @@ void gexiv2_log_set_level(GExiv2LogLevel level) {
 }
 
 GExiv2LogHandler gexiv2_log_get_handler(void) {
-    return (installed_handler != NULL) ? installed_handler : default_log_handler;
+    return (installed_handler != nullptr) ? installed_handler : default_log_handler;
 }
 
 GExiv2LogHandler gexiv2_log_get_default_handler(void) {
@@ -109,8 +109,8 @@ GExiv2LogHandler gexiv2_log_get_default_handler(void) {
 }
 
 void gexiv2_log_set_handler(GExiv2LogHandler handler) {
-    g_return_if_fail(handler != NULL);
-    
+    g_return_if_fail(handler != nullptr);
+
     installed_handler = handler;
     Exiv2::LogMsg::setHandler(log_handler_converter);
 }
@@ -120,7 +120,7 @@ void gexiv2_log_use_glib_logging(void) {
 }
 
 gboolean gexiv2_log_is_handler_installed(void) {
-    return (installed_handler != NULL);
+    return (installed_handler != nullptr);
 }
 
 G_END_DECLS

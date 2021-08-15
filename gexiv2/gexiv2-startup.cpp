@@ -12,7 +12,7 @@
 #include "gexiv2-version.h"
 
 gboolean gexiv2_initialize(void) {
-#ifdef EXV_ENABLE_BMFF
+#if EXIV2_TEST_VERSION(0, 27, 4)
     Exiv2::enableBMFF();
 #endif
 

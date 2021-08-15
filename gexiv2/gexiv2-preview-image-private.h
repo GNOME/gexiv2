@@ -22,8 +22,9 @@ struct _GExiv2PreviewImagePrivate
     gchar *extension;
 };
 
-G_GNUC_INTERNAL GExiv2PreviewImage* gexiv2_preview_image_new (Exiv2::PreviewManager *manager,
-   const Exiv2::PreviewProperties &props);
+G_GNUC_INTERNAL GExiv2PreviewImage* gexiv2_preview_image_new(Exiv2::PreviewManager* manager,
+                                                             const Exiv2::PreviewProperties& props,
+                                                             GError** error);
 
 G_END_DECLS
 
