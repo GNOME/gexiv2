@@ -13,8 +13,6 @@ Build-Depends: debhelper (>= 7),
                libgirepository1.0-dev (>= 0.9.12),
                gir1.2-glib-2.0,
                python3-gi,
-               python-gi,
-               python:any,
                python3:any,
                dh-python,
                valac,
@@ -74,17 +72,6 @@ Description: GObject introspection data for the GExiv2 library.
  .
  It can be used by packages using the GIRepository format to generate
  dynamic bindings.
-
-Package: python-gexiv2
-Architecture: any
-Depends: gir1.2-gexiv2-0.10 (= ${binary:Version}),
-         libgexiv2-2 (= ${binary:Version}),
-         python-gi,
-         ${python:Depends},
-         ${misc:Depends}
-Description: GExiv2 GObject introspection overrides for Python (Python2)
- gexiv2 is a GObject-based wrapper around the Exiv2 library. It makes the basic
- features of Exiv2 available to GNOME applications.
 
 Package: python3-gexiv2
 Architecture: any

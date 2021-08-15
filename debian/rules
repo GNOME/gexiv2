@@ -15,7 +15,7 @@ export DEB_BUILD_MAINT_OPTIONS = hardening=+all
 
 
 %:
-	dh $@  --parallel --with gir --with python2 --with python3
+	dh $@  --parallel --with gir --with python3
 
 
 # dh_make generated override targets

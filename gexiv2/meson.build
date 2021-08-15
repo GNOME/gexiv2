@@ -75,7 +75,7 @@ pc_deps = ['glib-2.0', 'gobject-2.0', 'gio-2.0']
 
 pkg.generate(
     description : 'GObject bindings for exiv2',
-    url : 'https://wiki.gnome.org/Projects/gexiv2',
+    url : project_url,
     libraries : gexiv2,
     version : meson.project_version(),
     name : 'GExiv2',
@@ -87,7 +87,8 @@ pkg.generate(
 # set unconditionally
 typelib_path = meson.current_build_dir()
 
-if introspection_available
+vapi = disabler()
+if get_option('introspection')
   gir = gnome.generate_gir(gexiv2,
       sources : ['gexiv2-preview-properties.h',
                  'gexiv2-preview-image.h',
@@ -98,7 +99,7 @@ if introspection_available
                  enum_sources.get(1)
                  ],
       namespace : 'GExiv2',
-      nsversion : '0.10',
+      nsversion : project_api_version,
       symbol_prefix : 'gexiv2',
       identifier_prefix : 'GExiv2',
       export_packages : 'gexiv2',
@@ -106,7 +107,7 @@ if introspection_available
       header : 'gexiv2/gexiv2.h',
       install : true)
 
-    if vapi_available
+    if get_option('vapi')
         vapi = gnome.generate_vapi('gexiv2',
                                sources : gir.get(0),
                                install : true,

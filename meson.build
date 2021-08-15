@@ -2,11 +2,17 @@ project(
     'gexiv2',
     ['c', 'cpp'],
     version : '0.13.0',
-    meson_version : '>=0.48',
+    license: 'GPL-2.0-or-later',
+    meson_version : '>=0.51',
     default_options : [
         'cpp_std=c++11'
     ]
 )
+
+project_api_version = '0.10'
+message('Project API version: ' + project_api_version)
+
+project_url = 'https://wiki.gnome.org/Projects/gexiv2'
 
 gnome = import('gnome')
 pkg = import('pkgconfig')
@@ -16,6 +22,7 @@ gobject = dependency('gobject-2.0', version : '>= 2.46.0')
 gio = dependency('gio-2.0', version : '>= 2.46.0')
 cc = meson.get_compiler('c')
 math = cc.find_library('m', required : false)
+python3 = import('python').find_installation('python3', modules: 'gi', required: get_option('python3'))
 
 bmff_test = '''#include <exiv2/exiv2.h>
 #ifndef EXV_ENABLE_BMFF
@@ -25,10 +32,14 @@ bmff_test = '''#include <exiv2/exiv2.h>
 
 bmff_available = cc.compiles(bmff_test, name : 'BMFF support in exiv2', dependencies : [exiv2])
 
-gir = find_program('g-ir-scanner', required: false)
+find_program('g-ir-scanner', required: get_option('introspection'))
 
-introspection_available = gir.found() and get_option('introspection')
-vapi_available = introspection_available and add_languages('vala', required: get_option('vapi')) and get_option('vapi')
+if get_option('vapi')
+  if get_option('introspection') == false
+    error('\'vapi\' build option requires \'introspection\' to be enabled.')
+  endif
+  vapi_available = add_languages('vala', required: true)
+endif
 
 subdir('gexiv2')
 
@@ -36,40 +47,24 @@ if get_option('gtk_doc')
   subdir('docs')
 endif
 
-python2_available = false
-python3_available = false
-python_gi_test_args = ['-c', 'import gi; print(gi._overridesdir)']
-python2_girdir = get_option('python2_girdir')
-python3_girdir = get_option('python3_girdir')
-
-if introspection_available
-  if python2_girdir != 'no'
-    python2 = find_program('python2', required : false)
-    if python2.found()
-      py2gi = run_command(python2, python_gi_test_args)
-      if py2gi.returncode() == 0
-        python2_available = true
-        if python2_girdir == 'auto'
-          python2_girdir = py2gi.stdout().strip()
-        endif
-        install_data('GExiv2.py', install_dir : python2_girdir)
-      endif
-    endif
+if get_option('python3') == false
+    warning('\'python3\' is disabled, any Python tests will not be run.')
+else
+  if get_option('introspection') == false
+    error('Build option \'python3\' requires \'introspection\' to be enabled.')
   endif
 
-  if python3_girdir != 'no'
-    python3 = find_program('python3', required : false)
-    if python3.found()
-      py3gi = run_command(python3, python_gi_test_args)
-      if py3gi.returncode() == 0
-        python3_available = true
-        if python3_girdir == 'auto'
-          python3_girdir = py3gi.stdout().strip()
-        endif
-        install_data('GExiv2.py', install_dir : python3_girdir)
-      endif
+  girdir = get_option('python3_girdir')
+  if girdir == 'auto'
+    python3_output = run_command(python3, ['-c', 'import gi; print(gi._overridesdir)'])
+    if python3_output.returncode() != 0
+      error('Finding the Python 3 gi/override path: ' + python3_output.stderr())
     endif
+    girdir = python3_output.stdout().strip()
   endif
+  
+  message('Installing \'GExiv2.py\' into \'' + girdir + '\'')
+  python3.install_sources('GExiv2.py', subdir : girdir)
 endif
 
 subdir('test')

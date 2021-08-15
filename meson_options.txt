@@ -2,5 +2,5 @@ option('gtk_doc', type: 'boolean', value: false, description: 'Enable or disable
 option('introspection', type: 'boolean', value : true, description: 'Enable or disable GObject Introspection')
 option('vapi', type: 'boolean', value: true, description: 'Enable or disable generation of vala vapi file')
 option('tools', type: 'boolean', value: true, description: 'Enable or disable building the commandline tools')
-option('python2_girdir', type: 'string', value : 'auto', description : 'Installation dir for PyGObject2 overrides (default = auto, no disables python2)')
-option('python3_girdir', type: 'string', value : 'auto', description : 'Installation dir for PyGObject3 overrides (default = auto, no disables python3)')
+option('python3_girdir', type: 'string', value : 'auto', description : 'Installation dir for PyGObject3 overrides (default = auto)')
+option('python3', type: 'boolean', value : true, description : 'Enable or disable using Python 3 (and PyGObject module)')

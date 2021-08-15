@@ -22,17 +22,7 @@
 import unittest
 import os
 
-
-# Workaround pkutil.extend_path in dist-packages/gi/overrides/__init__.py
-# not helping us here for obscure reasons when using python2 (the following
-# is useless in python3).
-import gi.overrides
-gi.overrides.__path__.append(os.path.join(os.path.dirname(__file__),
-                                          'gi', 'overrides'))
-gi.overrides.__path__.append(os.path.join(os.path.dirname(__file__), '..', '..'))
-
-
-gi.require_version('GExiv2', '0.10')
+gi.require_version('GExiv2', '@PROJECT_API_VERSION@')
 from gi.repository import GExiv2
 
 
