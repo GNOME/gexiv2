@@ -1,3 +1,18 @@
+gexiv2 0.12.3 - 15 Aug 2021
+
+ * Enable Exiv2's BMFF support if available
+ * Catch WError on windows
+ * Deprecate gexiv2_metadata_from_stream
+
+Bugs fixed in this release:
+ - https://gitlab.gnome.org/GNOME/gexiv2/issues/66
+
+All contributors to this release:
+ - postscript-dev <postscript-dev@outlook.com>
+ - Jens Georg <mail@jensge.org>
+ - Peter Kovář <peter.kovar@reflexion.tv>
+
+
 gexiv2 0.12.2 - 20 Feb 2021
  
  * Introduce gexiv2_metadata_get_exif_data
