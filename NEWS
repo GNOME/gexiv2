@@ -1,3 +1,28 @@
+gexiv2 0.13.0 - 15 Aug 2021
+
+ * Enable BMFF support if enabled in exiv2 version
+ * Update gexiv2-dump tool
+ * Mark gexiv2_metadata_from_stream as deprecated; it is fundamentally broken
+ * More additions to API and _try versions that support GErorr if exiv2 might throw
+ * Some additions to gexiv2-tool
+ * Changes in build configuration
+
+Bugs fixed in this release:
+ - https://gitlab.gnome.org/GNOME/gexiv2/issues/140
+ - https://gitlab.gnome.org/GNOME/gexiv2/issues/62
+ - https://gitlab.gnome.org/GNOME/gexiv2/issues/62
+ - https://gitlab.gnome.org/GNOME/gexiv2/issues/66
+
+Merge requests included in this release:
+ - https://gitlab.gnome.org/GNOME/gexiv2/merge_requests/54
+ - https://gitlab.gnome.org/GNOME/gexiv2/merge_requests/59
+ - https://gitlab.gnome.org/GNOME/gexiv2/merge_requests/51
+
+All contributors to this release:
+ - postscript-dev <postscript-dev@outlook.com>
+ - Jens Georg <mail@jensge.org>
+ - Peter Kovář <peter.kovar@reflexion.tv>
+
 gexiv2 0.12.2 - 20 Feb 2021
  
  * Introduce gexiv2_metadata_get_exif_data

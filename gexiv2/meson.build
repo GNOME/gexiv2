@@ -2,7 +2,11 @@ pkg = import('pkgconfig')
 
 as_version = meson.project_version().split('.')
 
-libversion = '2.0.0'
+soversion = 2
+library_minor = as_version[0].to_int() * 100 + as_version[1].to_int()
+library_micro = as_version[2].to_int()
+
+libversion = '@0@.@1@.@2@'.format(soversion, library_minor, library_micro)
 libversion_arr = libversion.split('.')
 darwin_version_major = libversion_arr[0].to_int()
 darwin_version_minor = libversion_arr[1].to_int()
