@@ -15,15 +15,16 @@ exiv2 = dependency('exiv2', version : '>= 0.26')
 gobject = dependency('gobject-2.0', version : '>= 2.46.0')
 gio = dependency('gio-2.0', version : '>= 2.46.0')
 cc = meson.get_compiler('c')
+cpp = meson.get_compiler('cpp')
 math = cc.find_library('m', required : false)
 
-bmff_test = '''#include <exiv2/exiv2.h>
+bmff_test = '''#include <exiv2/exiv2.hpp>
 #ifndef EXV_ENABLE_BMFF
 #error No BMFF support in exiv2
 #endif
 '''
 
-bmff_available = cc.compiles(bmff_test, name : 'BMFF support in exiv2', dependencies : [exiv2])
+bmff_available = cpp.compiles(bmff_test, name : 'BMFF support in exiv2', dependencies : [exiv2])
 
 gir = find_program('g-ir-scanner', required: false)
 
