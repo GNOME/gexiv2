@@ -41,7 +41,7 @@ int main(void) {
 private_pdata = cpp.compiles(private_pdata_test, name : 'DataBuf is sealead in exiv2', dependencies : [exiv2])
 
 build_config = configuration_data ()
-build_config.set10('EXIV2_DATABUF_HAS_PRIVATE_PDATA', private_pdata)
+build_config.set('EXIV2_DATABUF_HAS_PRIVATE_PDATA', private_pdata)
 config_h = configure_file(
   output: 'config.h',
   configuration: build_config
