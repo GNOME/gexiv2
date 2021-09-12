@@ -7,6 +7,7 @@
   stage: build
   only:
     - schedules
+    - merge_requests
   script:
     - flatpak-builder build-dir ${MANIFEST_PATH} --stop-at=gexiv2 --user --disable-rofiles-fuse
     - flatpak build build-dir meson _build -Dtests=true
