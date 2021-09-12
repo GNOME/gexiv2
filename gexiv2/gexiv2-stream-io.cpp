@@ -11,14 +11,15 @@
  */
 
 #include "gexiv2-stream-io.h"
+
 #include "gexiv2-managed-stream.h"
 
+#include <config.h>
+#include <exception>
 #include <exiv2/exiv2.hpp>
 #include <gio/gio.h>
 #include <glib.h>
 #include <stdio.h>
-
-#include <exception>
 
 StreamIo::StreamIo (ManagedStreamCallbacks* callbacks)
     : cb (callbacks), memio(nullptr), is_open (FALSE), can_write(FALSE) {
@@ -165,11 +166,14 @@ int StreamIo::close () {
 
 Exiv2::DataBuf StreamIo::read (size_type read_count) {
     Exiv2::DataBuf buffer (read_count);
-    
+#ifdef EXIV2_DATABUF_HAS_PRIVATE_PDATA
+    long read_bytes = read(buffer.data(), read_count);
+    buffer.resize(read_bytes);
+#else
     long read_bytes = read (buffer.pData_, buffer.size_);
-
     buffer.size_ = read_bytes;
-    
+#endif
+
     return buffer;
 }
 

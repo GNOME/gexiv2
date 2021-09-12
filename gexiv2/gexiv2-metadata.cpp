@@ -9,19 +9,22 @@
  */
 
 #include "gexiv2-metadata.h"
-#include "gexiv2-metadata-private.h"
-#include "gexiv2-stream-io.h"
-#include "gexiv2-managed-stream.h"
-#include "gexiv2-preview-properties.h"
-#include "gexiv2-preview-properties-private.h"
-#include "gexiv2-preview-image.h"
-#include "gexiv2-preview-image-private.h"
-#include "gexiv2-log.h"
+
 #include "gexiv2-log-private.h"
-#include <string>
+#include "gexiv2-log.h"
+#include "gexiv2-managed-stream.h"
+#include "gexiv2-metadata-private.h"
+#include "gexiv2-preview-image-private.h"
+#include "gexiv2-preview-image.h"
+#include "gexiv2-preview-properties-private.h"
+#include "gexiv2-preview-properties.h"
+#include "gexiv2-stream-io.h"
+
 #include <cmath>
-#include <glib-object.h>
+#include <config.h>
 #include <gio/gio.h>
+#include <glib-object.h>
+#include <string>
 
 #ifdef G_OS_WIN32
 #include <glib/gwin32.h>
@@ -91,9 +94,17 @@ public:
     Exiv2::DataBuf read(size_type rcount) override {
         Exiv2::DataBuf b{rcount};
 
+#ifdef EXIV2_DATABUF_HAS_PRIVATE_PDATA
+        auto bytes_read = this->read(b.data(), rcount);
+#else
         auto bytes_read = this->read(b.pData_, rcount);
+#endif
         if (bytes_read > 0 && bytes_read != rcount) {
+#ifdef EXIV2_DATABUF_HAS_PRIVATE_PDATA
+            b.reset({b.data(), bytes_read});
+#else
             b.reset({b.pData_, bytes_read});
+#endif
         }
 
         return b;
@@ -1691,6 +1702,12 @@ gboolean gexiv2_metadata_get_exif_thumbnail (GExiv2Metadata *self, guint8** buff
     g_return_val_if_fail(self->priv->image.get() != nullptr, FALSE);
 
     Exiv2::ExifThumb thumb = Exiv2::ExifThumb(self->priv->image->exifData());
+#ifdef EXIV2_DATABUF_HAS_PRIVATE_PDATA
+    auto buf = thumb.copy();
+    *buffer = reinterpret_cast<guint8*>(g_malloc(buf.size()));
+    std::copy(buf.begin(), buf.end(), *buffer);
+    *size = buf.size();
+#else
     Exiv2::DataBuf data = thumb.copy();
     if (data.pData_ == nullptr)
         return FALSE;
@@ -1698,6 +1715,7 @@ gboolean gexiv2_metadata_get_exif_thumbnail (GExiv2Metadata *self, guint8** buff
     *buffer = (guint8*) g_malloc(data.size_);
     memcpy(*buffer, data.pData_, data.size_);
     *size = data.size_;
+#endif
 
     return TRUE;
 }
