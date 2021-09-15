@@ -6,8 +6,9 @@ A clear and concise description of what the bug is.
 
 Steps to reproduce the behavior:
 
-1. Provide the image/text with which you observed the issue. Images 
-   are usually named PoC.
+1. Provide the image/text with which you observed the issue.
+   When attaching the image, please compress it using
+   Zip or gz or similar to prevent Gitlab from stripping the meta-data.
 2. Provide the exact command to reproduce the issue.
 3. Mention the branch/commit in which you observed the issue (i.e. 
    `master`, `gexiv2-0.12.1`, `commit 6aa98376`)
