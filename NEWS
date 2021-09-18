@@ -1,4 +1,11 @@
-gexiv2 0.13.0 - 15 Aug 2021
+gexiv2 0.14.0 - 18 Sep 2021 (stable)
+
+ * Fix BMFF compile test
+
+All contributors to this release:
+ - Matt Turner <mattst88@gmail.com>
+
+gexiv2 0.13.0 - 15 Aug 2021 (development)
 
  * Enable BMFF support if enabled in exiv2 version
  * Update gexiv2-dump tool
