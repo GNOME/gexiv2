@@ -30,8 +30,8 @@ import tempfile
 
 PY3K = sys.version_info[0] == 3
 
-import gi
-gi.require_version('GExiv2', '@PROJECT_API_VERSION@')
+import gi.overrides
+gi.overrides.__path__.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
 from gi.repository import GExiv2, GLib
 from fractions import Fraction
 

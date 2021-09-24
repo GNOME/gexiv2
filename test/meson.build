@@ -1,12 +1,11 @@
 test_sample_path = join_paths(meson.current_source_dir(), 'data')
-python_module_path = join_paths(meson.current_build_dir(), 'python')
 
 test_env = environment()
 test_env.set('G_SLICE', 'always-malloc')
 test_env.set('TEST_DATA_DIR', test_sample_path)
 test_env.prepend('GI_TYPELIB_PATH', typelib_path)
 test_env.prepend('LD_LIBRARY_PATH', typelib_path)
-test_env.prepend('PYTHONPATH', python_module_path)
+test_env.prepend('PYTHONPATH', join_paths(meson.current_source_dir(), 'python'))
 
 regression_test = executable('gexiv2-regression', 'gexiv2-regression.c',
                              dependencies : [gobject, gio, math],
@@ -19,11 +18,5 @@ regression_test = executable('gexiv2-regression', 'gexiv2-regression.c',
 
 test('regression', regression_test, env : test_env)
 
-subdir('python')
-
-python3_test_conf = configuration_data()
-python3_test_conf.set('PYTHON3_PATH', python3.path())
-python3_test = configure_file(input: 'python3-test.in',
-                              output : 'python3-test',
-                              configuration: python3_test_conf)
-test('python3', find_program(python3_test), env : test_env)
+test('python3-gexiv2', python3, args: ['-m', 'unittest', 'gexiv2'], env: test_env)
+test('python3-metadata', python3, args: ['-m', 'unittest', 'test_metadata'], env: test_env)
