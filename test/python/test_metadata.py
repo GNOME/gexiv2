@@ -28,8 +28,6 @@ import shutil
 import unittest
 import tempfile
 
-PY3K = sys.version_info[0] == 3
-
 import gi.overrides
 gi.overrides.__path__.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
 from gi.repository import GExiv2, GLib
@@ -321,7 +319,7 @@ class TestMetadata(unittest.TestCase):
             self.assertIn(method, methods)
 
     def test_open_buf(self):
-        with open(self.get_input_file(), 'rb' if PY3K else 'r') as fd:
+        with open(self.get_input_file(), 'rb') as fd:
             buf = fd.read()
         metadata = GExiv2.Metadata()
         metadata.open_buf(buf)
@@ -764,7 +762,7 @@ generated the image. When the field is left blank, it is treated as unknown.""")
         self.assertEqual(len(thumb), 36660)
 
     def test_set_exif_thumbnail_from_buffer(self):
-        with open(self.get_input_file(), 'rb' if PY3K else 'r') as fd:
+        with open(self.get_input_file(), 'rb') as fd:
             buf = fd.read()
         self.metadata.set_exif_thumbnail_from_buffer(buf)
         thumb = self.metadata.get_exif_thumbnail()
@@ -773,7 +771,7 @@ generated the image. When the field is left blank, it is treated as unknown.""")
     def test_erase_exif_thumbnail(self):
         self.metadata.erase_exif_thumbnail()
         thumb = self.metadata.get_exif_thumbnail()
-        self.assertEqual(thumb, b'' if PY3K else '')
+        self.assertEqual(thumb, b'')
 
     def test_has_xmp(self):
         self.assertFalse(self.metadata.has_xmp())
