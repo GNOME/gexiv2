@@ -7,6 +7,7 @@
     $ meson build && cd build
     $ ninja
     $ ninja test
+    $ ninja install
 
     * By default, gexiv2 will install under /usr/local.  The configure script
       can customize the prefix directory.  Run 'meson setup --help' for
