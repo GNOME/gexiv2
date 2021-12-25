@@ -59,6 +59,8 @@ int main(string[] args) {
     var program_name = extract_filename(args[0]);
     print_single_tag = "";
 
+    GExiv2.initialize();
+
     // Setup and parse program parameters
     OptionContext opt_context;
     try {
