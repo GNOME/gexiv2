@@ -1,8 +1,7 @@
+# gexiv2
+A GObject-based Exiv2 wrapper
 
-    gexiv2 - A GObject-based Exiv2 wrapper
-    --------------------------------------
-
-  * Introduction
+## Introduction
 
     gexiv2 is a GObject-based wrapper around the Exiv2 library.  It makes the
     basic features of Exiv2 available to GNOME applications.
@@ -11,12 +10,12 @@
     gexiv2's development and to make sure you're running the latest version.
 
 
-  * Installation & Licensing
+## Installation & Licensing
 
     Please consult the INSTALL and COPYING files for more information.
 
 
-  * Contacting the developers
+## Contacting the developers
 
     gexiv2 project page:        https://wiki.gnome.org/Projects/gexiv2
 
