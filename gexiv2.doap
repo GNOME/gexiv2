@@ -14,9 +14,8 @@
 
   <maintainer>
     <foaf:Person>
-      <foaf:name>Jens Georg</foaf:name>
-      <foaf:mbox rdf:resource="mailto:mail@jensge.org" />
-      <gnome:userid>jensgeorg</gnome:userid>
+      <foaf:name>Nobody</foaf:name>
+      <gnome:userid>root</gnome:userid>
     </foaf:Person>
   </maintainer>
 
