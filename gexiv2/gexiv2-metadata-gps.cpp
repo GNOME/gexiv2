@@ -245,21 +245,24 @@ gboolean gexiv2_metadata_get_gps_altitude (GExiv2Metadata *self, gdouble *altitu
 
 gboolean gexiv2_metadata_try_get_gps_info (GExiv2Metadata *self, gdouble *longitude, gdouble *latitude,
     gdouble *altitude, GError **error) {
-    gboolean result = TRUE;
+    gboolean result = FALSE;
 
     if (!gexiv2_metadata_try_get_gps_longitude (self, longitude, error)) {
         *longitude = 0.0;
-        result = FALSE;
+    } else {
+        result = TRUE;
     }
 
-    if (result && !gexiv2_metadata_try_get_gps_latitude (self, latitude, error)) {
+    if (!gexiv2_metadata_try_get_gps_latitude (self, latitude, error)) {
         *latitude = 0.0;
-        result = FALSE;
+    } else {
+        result = TRUE;
     }
 
-    if (result && !gexiv2_metadata_try_get_gps_altitude (self, altitude, error)) {
+    if (!gexiv2_metadata_try_get_gps_altitude (self, altitude, error)) {
         *altitude = 0.0;
-        result = FALSE;
+    } else {
+        result = TRUE;
     }
 
     return result;
