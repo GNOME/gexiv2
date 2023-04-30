@@ -57,7 +57,9 @@ else
   python3 = disabler()
 endif
 
-subdir('test')
+if get_option('tests')
+  subdir('test')
+endif
 
 if get_option('tools')
   subdir('tools')
