@@ -96,23 +96,23 @@ check-merge-request:
 
 .gexiv2.fedora@common:
   variables:
-    BASE_TAG: '2021-05-24.0'
+    BASE_TAG: '2023-04-30.0'
     FDO_UPSTREAM_REPO: GNOME/gexiv2
     FDO_DISTRIBUTION_PACKAGES: 'clang clang-analyzer gcovr git libasan libubsan python3-gobject python3-pip xmlto gobject-introspection-devel gtk-doc vala ninja-build python3-devel gtk-doc exiv2-devel'
     FDO_DISTRIBUTION_EXEC: |
       dnf clean all &&
       pip3 install meson
 
-.gexiv2.fedora:34@x86_64:
+.gexiv2.fedora:38@x86_64:
   extends: .gexiv2.fedora@common
   variables:
-    FDO_DISTRIBUTION_VERSION: 34
+    FDO_DISTRIBUTION_VERSION: 38
     FDO_DISTRIBUTION_TAG: "x86_64-${BASE_TAG}"
 
 build-fedora-container@x86_64:
   extends:
     - .fdo.container-build@fedora
-    - .gexiv2.fedora:34@x86_64
+    - .gexiv2.fedora:38@x86_64
   stage: prepare
   variables:
     GIT_STRATEGY: none
@@ -121,7 +121,7 @@ build-fedora-container@x86_64:
 build-fedora@x86_64:
     extends:
         - .fdo.distribution-image@fedora
-        - .gexiv2.fedora:34@x86_64
+        - .gexiv2.fedora:38@x86_64
     needs:
         - build-fedora-container@x86_64
     <<: *build
@@ -163,7 +163,7 @@ build-fedora@x86_64:
 test-fedora@x86_64:
   extends:
     - .fdo.distribution-image@fedora
-    - .gexiv2.fedora:34@x86_64
+    - .gexiv2.fedora:38@x86_64
   needs:
     - build-fedora@x86_64
   <<: *test
@@ -171,7 +171,7 @@ test-fedora@x86_64:
 coverage-analysis:
   extends:
     - .fdo.distribution-image@fedora
-    - .gexiv2.fedora:34@x86_64
+    - .gexiv2.fedora:38@x86_64
   stage: analysis
   allow_failure: true
   script:
@@ -189,7 +189,7 @@ coverage-analysis:
 static-scan:
   extends:
     - .fdo.distribution-image@fedora
-    - .gexiv2.fedora:34@x86_64
+    - .gexiv2.fedora:38@x86_64
   stage: analysis
   needs:
     - build-fedora-container@x86_64
@@ -204,7 +204,7 @@ static-scan:
 pages:
   extends:
     - .fdo.distribution-image@fedora
-    - .gexiv2.fedora:34@x86_64
+    - .gexiv2.fedora:38@x86_64
   stage: website
   script:
       - meson doc-build -Dgtk_doc=true
