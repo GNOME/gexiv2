@@ -208,6 +208,7 @@ pages:
   stage: website
   script:
       - meson doc-build -Dgtk_doc=true
+      - ninja -C doc-build
       - ninja -C doc-build gexiv2-doc
       - mkdir -p public
       - mv doc-build/docs/reference/html public/docs
