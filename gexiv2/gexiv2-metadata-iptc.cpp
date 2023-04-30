@@ -288,6 +288,9 @@ gboolean gexiv2_metadata_set_iptc_tag_multiple (GExiv2Metadata *self, const gcha
     g_return_val_if_fail(self->priv->image.get() != nullptr, FALSE);
     g_return_val_if_fail(error == nullptr || *error == nullptr, FALSE);
 
+    if (values[0] == nullptr)
+        return TRUE;
+
     try {
         auto& iptc_data = self->priv->image->iptcData();
 

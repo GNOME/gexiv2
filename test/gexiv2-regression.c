@@ -478,6 +478,30 @@ static void test_ggo_62(void){
     g_clear_object(&meta);
 }
 
+// Regression test for https://gitlab.gnome.org/GNOME/gexiv2/issues/70
+static void test_ggo_70(void) {
+    GExiv2Metadata *meta = NULL;
+    gboolean result = FALSE;
+    GError *error = NULL;
+    gchar** values = NULL;
+
+    meta = gexiv2_metadata_new();
+    g_assert_nonnull(meta);
+
+    result = gexiv2_metadata_open_path (meta, SAMPLE_PATH "/no-metadata.jpg", &error);
+    g_assert_no_error(error);
+    g_assert_true(result);
+
+    values = g_new (gchar*, 1);
+    values[0] = NULL;
+    result = gexiv2_metadata_try_set_tag_multiple(meta, "Iptc.Application2.Urgency", (const gchar**)values, &error);
+    g_assert_no_error(error);
+    g_assert_true(result);
+
+    g_free(values);
+    g_clear_object(&meta);
+}
+
 int main(int argc, char *argv[static argc + 1])
 {
     g_test_init(&argc, &argv, NULL);
@@ -494,6 +518,7 @@ int main(int argc, char *argv[static argc + 1])
     g_test_add_func("/bugs/gnome/gitlab/58", test_ggo_58);
     g_test_add_func("/bugs/gnome/gitlab/62", test_ggo_62);
     g_test_add_func("/bugs/gnome/gitlab/60", test_ggo_66);
+    g_test_add_func("/bugs/gnome/gitlab/70", test_ggo_70);
 
     return g_test_run();
 }
