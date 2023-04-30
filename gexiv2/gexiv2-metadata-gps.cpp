@@ -90,7 +90,7 @@ gboolean gexiv2_metadata_try_get_gps_longitude (GExiv2Metadata *self, gdouble *l
 
         return TRUE;
     } catch (Exiv2::Error &e) {
-        g_set_error_literal(error, g_quark_from_string("GExiv2"), e.code(), e.what());
+        g_set_error_literal(error, g_quark_from_string("GExiv2"), static_cast<int>(e.code()), e.what());
     } catch (std::invalid_argument &e) {
         g_set_error_literal(error, g_quark_from_string("GExiv2"), 0, e.what());
     }
@@ -141,7 +141,7 @@ gboolean gexiv2_metadata_try_get_gps_latitude (GExiv2Metadata *self, gdouble *la
 
         return TRUE;
     } catch (Exiv2::Error &e) {
-        g_set_error_literal(error, g_quark_from_string("GExiv2"), e.code(), e.what());
+        g_set_error_literal(error, g_quark_from_string("GExiv2"), static_cast<int>(e.code()), e.what());
     } catch (std::invalid_argument &e) {
         g_set_error_literal(error, g_quark_from_string("GExiv2"), 0, e.what());
     }
@@ -181,7 +181,7 @@ gboolean gexiv2_metadata_try_get_gps_altitude (GExiv2Metadata *self, gdouble *al
 
         return TRUE;
     } catch (Exiv2::Error &e) {
-        g_set_error_literal(error, g_quark_from_string("GExiv2"), e.code(), e.what());
+        g_set_error_literal(error, g_quark_from_string("GExiv2"), static_cast<int>(e.code()), e.what());
     } catch (std::invalid_argument &e) {
         g_set_error_literal(error, g_quark_from_string("GExiv2"), 0, e.what());
     }
@@ -300,7 +300,7 @@ gboolean gexiv2_metadata_try_set_gps_info (GExiv2Metadata *self, gdouble longitu
 
         return gexiv2_metadata_try_update_gps_info (self, longitude, latitude, altitude, error);
     } catch (Exiv2::Error &e) {
-        g_set_error_literal(error, g_quark_from_string("GExiv2"), e.code(), e.what());
+        g_set_error_literal(error, g_quark_from_string("GExiv2"), static_cast<int>(e.code()), e.what());
     }
 
     return FALSE;
@@ -393,7 +393,7 @@ gboolean gexiv2_metadata_try_update_gps_info (GExiv2Metadata *self, gdouble long
         
         return TRUE;
     } catch (Exiv2::Error &e) {
-        g_set_error_literal(error, g_quark_from_string("GExiv2"), e.code(), e.what());
+        g_set_error_literal(error, g_quark_from_string("GExiv2"), static_cast<int>(e.code()), e.what());
     }
 
     return FALSE;
@@ -434,7 +434,7 @@ void gexiv2_metadata_try_delete_gps_info (GExiv2Metadata *self, GError **error) 
                 ++exif_it;
         }
     } catch (Exiv2::Error& e) {
-        g_set_error_literal(error, g_quark_from_string("GExiv2"), e.code(), e.what());
+        g_set_error_literal(error, g_quark_from_string("GExiv2"), static_cast<int>(e.code()), e.what());
     }
     
     /* FIXME: two blocks shall ensure to erase in xmp data, if erasing in exif
@@ -454,7 +454,7 @@ void gexiv2_metadata_try_delete_gps_info (GExiv2Metadata *self, GError **error) 
         
     } catch (Exiv2::Error& e) {
         if (error && *error == nullptr)
-            g_set_error_literal(error, g_quark_from_string("GExiv2"), e.code(), e.what());
+            g_set_error_literal(error, g_quark_from_string("GExiv2"), static_cast<int>(e.code()), e.what());
     }
 }
 

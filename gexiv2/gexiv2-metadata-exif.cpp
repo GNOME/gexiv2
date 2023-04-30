@@ -116,7 +116,7 @@ gchar* gexiv2_metadata_get_exif_tag_string (GExiv2Metadata *self, const gchar* t
         if (it != exif_data.end())
             return g_strdup (it->toString ().c_str ());
     } catch (Exiv2::Error& e) {
-        g_set_error_literal (error, g_quark_from_string ("GExiv2"), e.code (), e.what ());
+        g_set_error_literal(error, g_quark_from_string("GExiv2"), static_cast<int>(e.code()), e.what());
     }
 
     return nullptr;
@@ -146,7 +146,7 @@ gchar** gexiv2_metadata_get_exif_tag_multiple(GExiv2Metadata* self, const gchar*
             return array;
         }
     } catch (Exiv2::Error& e) {
-        g_set_error_literal(error, g_quark_from_string("GExiv2"), e.code(), e.what());
+        g_set_error_literal(error, g_quark_from_string("GExiv2"), static_cast<int>(e.code()), e.what());
     }
 
     array = g_new(gchar*, 1);
@@ -187,7 +187,7 @@ gboolean gexiv2_metadata_set_exif_tag_multiple(GExiv2Metadata* self,
         }
         return TRUE;
     } catch (Exiv2::Error& e) {
-        g_set_error_literal(error, g_quark_from_string("GExiv2"), e.code(), e.what());
+        g_set_error_literal(error, g_quark_from_string("GExiv2"), static_cast<int>(e.code()), e.what());
     }
 
     return FALSE;
@@ -214,7 +214,7 @@ gchar* gexiv2_metadata_get_exif_tag_interpreted_string (GExiv2Metadata *self, co
             return g_strdup (os.str ().c_str ());
         }
     } catch (Exiv2::Error& e) {
-        g_set_error_literal(error, g_quark_from_string("GExiv2"), e.code(), e.what());
+        g_set_error_literal(error, g_quark_from_string("GExiv2"), static_cast<int>(e.code()), e.what());
     }
 
     return nullptr;
@@ -232,7 +232,7 @@ gboolean gexiv2_metadata_set_exif_tag_string (GExiv2Metadata *self, const gchar*
         
         return TRUE;
     } catch (Exiv2::Error& e) {
-        g_set_error_literal (error, g_quark_from_string ("GExiv2"), e.code (), e.what ());
+        g_set_error_literal(error, g_quark_from_string("GExiv2"), static_cast<int>(e.code()), e.what());
     }
     
     return FALSE;
@@ -255,7 +255,7 @@ glong gexiv2_metadata_get_exif_tag_long (GExiv2Metadata *self, const gchar* tag,
         if (it != exif_data.end())
             return it->toLong ();
     } catch (Exiv2::Error& e) {
-        g_set_error_literal(error, g_quark_from_string("GExiv2"), e.code(), e.what());
+        g_set_error_literal(error, g_quark_from_string("GExiv2"), static_cast<int>(e.code()), e.what());
     }
     
     return 0;
@@ -272,7 +272,7 @@ gboolean gexiv2_metadata_set_exif_tag_long (GExiv2Metadata *self, const gchar* t
         
         return TRUE;
     } catch (Exiv2::Error& e) {
-        g_set_error_literal(error, g_quark_from_string("GExiv2"), e.code(), e.what());
+        g_set_error_literal(error, g_quark_from_string("GExiv2"), static_cast<int>(e.code()), e.what());
     }
     
     return FALSE;
@@ -303,7 +303,7 @@ gboolean gexiv2_metadata_try_get_exif_tag_rational (GExiv2Metadata *self, const 
             return TRUE;
         }
     } catch (Exiv2::Error& e) {
-        g_set_error_literal(error, g_quark_from_string("GExiv2"), e.code(), e.what());
+        g_set_error_literal(error, g_quark_from_string("GExiv2"), static_cast<int>(e.code()), e.what());
     }
     
     return FALSE;
@@ -324,7 +324,7 @@ gboolean gexiv2_metadata_try_set_exif_tag_rational (GExiv2Metadata *self, const 
         
         return TRUE;
     } catch (Exiv2::Error& e) {
-        g_set_error_literal(error, g_quark_from_string("GExiv2"), e.code(), e.what());
+        g_set_error_literal(error, g_quark_from_string("GExiv2"), static_cast<int>(e.code()), e.what());
     }
     
     return FALSE;
@@ -413,7 +413,7 @@ const gchar* gexiv2_metadata_get_exif_tag_label (const gchar* tag, GError **erro
         Exiv2::ExifKey key(tag);
         return g_intern_string(key.tagLabel().c_str());
     } catch (Exiv2::Error& e) {
-        g_set_error_literal(error, g_quark_from_string("GExiv2"), e.code(), e.what());
+        g_set_error_literal(error, g_quark_from_string("GExiv2"), static_cast<int>(e.code()), e.what());
     }
     
     return NULL;
@@ -427,7 +427,7 @@ const gchar* gexiv2_metadata_get_exif_tag_description (const gchar* tag, GError 
         Exiv2::ExifKey key(tag);
         return g_intern_string(key.tagDesc().c_str());
     } catch (Exiv2::Error& e) {
-        g_set_error_literal(error, g_quark_from_string("GExiv2"), e.code(), e.what());
+        g_set_error_literal(error, g_quark_from_string("GExiv2"), static_cast<int>(e.code()), e.what());
     }
     
     return NULL;
@@ -441,7 +441,7 @@ const gchar* gexiv2_metadata_get_exif_tag_type (const gchar* tag, GError **error
         Exiv2::ExifKey key(tag);
         return Exiv2::TypeInfo::typeName(key.defaultTypeId());
     } catch (Exiv2::Error& e) {
-        g_set_error_literal(error, g_quark_from_string("GExiv2"), e.code(), e.what());
+        g_set_error_literal(error, g_quark_from_string("GExiv2"), static_cast<int>(e.code()), e.what());
     }
     
     return NULL;
@@ -455,7 +455,7 @@ gboolean gexiv2_metadata_exif_tag_supports_multiple_values (const gchar* tag, GE
     	// Exif does not support multiple values, but still check if @tag is valid
         const Exiv2::ExifKey key(tag);
     } catch (Exiv2::Error& e) {
-        g_set_error_literal(error, g_quark_from_string("GExiv2"), e.code(), e.what());
+        g_set_error_literal(error, g_quark_from_string("GExiv2"), static_cast<int>(e.code()), e.what());
     }
 
     return FALSE;
@@ -484,7 +484,7 @@ GBytes* gexiv2_metadata_get_exif_tag_raw (GExiv2Metadata *self, const gchar* tag
             }
         }
     } catch (Exiv2::Error& e) {
-        g_set_error_literal(error, g_quark_from_string ("GExiv2"), e.code(), e.what());
+        g_set_error_literal(error, g_quark_from_string("GExiv2"), static_cast<int>(e.code()), e.what());
     }
 
     return nullptr;
@@ -522,7 +522,7 @@ GBytes * gexiv2_metadata_get_exif_data (GExiv2Metadata *self,
 
         return g_bytes_new_take (data, blob.size());
     } catch (Exiv2::Error& e) {
-        g_set_error_literal(error, g_quark_from_string("GExiv2"), e.code(), e.what());
+        g_set_error_literal(error, g_quark_from_string("GExiv2"), static_cast<int>(e.code()), e.what());
     }
 
     return nullptr;

@@ -406,7 +406,7 @@ static void gexiv2_metadata_init_internal(GExiv2Metadata* self, GError** error) 
         if (priv->preview_manager)
             delete priv->preview_manager;
 
-        g_set_error_literal(error, g_quark_from_string("GExiv2"), e.code(), e.what());
+        g_set_error_literal(error, g_quark_from_string("GExiv2"), static_cast<int>(e.code()), e.what());
     }
 }
 
@@ -427,7 +427,7 @@ static gboolean gexiv2_metadata_open_internal (GExiv2Metadata* self, GError** er
 
         return !(error && *error);
     } catch (Exiv2::Error& e) {
-        g_set_error_literal(error, g_quark_from_string("GExiv2"), e.code(), e.what());
+        g_set_error_literal(error, g_quark_from_string("GExiv2"), static_cast<int>(e.code()), e.what());
     }
 
     return FALSE;
@@ -487,11 +487,11 @@ gboolean gexiv2_metadata_open_path(GExiv2Metadata* self, const gchar* path, GErr
 
         return gexiv2_metadata_open_internal (self, error);
     } catch (Exiv2::Error &e) {
-        g_set_error_literal (error, g_quark_from_string ("GExiv2"), e.code (), e.what ());
+        g_set_error_literal (error, g_quark_from_string ("GExiv2"), static_cast<int>(e.code()), e.what ());
     }
 #ifdef EXV_UNICODE_PATH
     catch (Exiv2::WError &e) {
-        g_set_error_literal (error, g_quark_from_string ("GExiv2"), e.code (), e.what ());
+        g_set_error_literal (error, g_quark_from_string ("GExiv2"), static_cast<int>(e.code()), e.what ());
     }
 #endif
 
@@ -514,7 +514,7 @@ gboolean gexiv2_metadata_open_buf(GExiv2Metadata* self, const guint8* data, glon
 
 gboolean gexiv2_metadata_open_stream (GExiv2Metadata *self, ManagedStreamCallbacks* cb, GError **error) {
     g_return_val_if_fail (GEXIV2_IS_METADATA (self), FALSE);
-    
+
     try {
         StreamIo::ptr_type stream_ptr{new StreamIo (cb)};
 #if EXIV2_TEST_VERSION(0,27,99)
@@ -525,7 +525,7 @@ gboolean gexiv2_metadata_open_stream (GExiv2Metadata *self, ManagedStreamCallbac
         
         return gexiv2_metadata_open_internal (self, error);
     } catch (Exiv2::Error &e) {
-        g_set_error_literal (error, g_quark_from_string ("GExiv2"), e.code (), e.what ());
+        g_set_error_literal (error, g_quark_from_string ("GExiv2"), static_cast<int>(e.code()), e.what ());
     }
     
     return FALSE;
@@ -544,7 +544,7 @@ gboolean gexiv2_metadata_from_stream(GExiv2Metadata *self, GInputStream *stream,
 
         return gexiv2_metadata_open_internal (self, error);
     } catch (Exiv2::Error &e) {
-        g_set_error_literal (error, g_quark_from_string ("GExiv2"), e.code(), e.what());
+        g_set_error_literal(error, g_quark_from_string("GExiv2"), static_cast<int>(e.code()), e.what());
     }
 
     return FALSE;
@@ -595,7 +595,7 @@ gboolean gexiv2_metadata_from_app1_segment(GExiv2Metadata* self, const guint8* d
         return TRUE;
     } catch (Exiv2::Error &e) {
         delete self->priv->image.release();
-        g_set_error_literal(error, g_quark_from_string("GExiv2"), e.code(), e.what());
+        g_set_error_literal(error, g_quark_from_string("GExiv2"), static_cast<int>(e.code()), e.what());
     }
     return FALSE;
 }
@@ -664,7 +664,7 @@ static gboolean gexiv2_metadata_save_internal (GExiv2Metadata *self, image_ptr i
 
         return TRUE;
     } catch (Exiv2::Error& e) {
-        g_set_error_literal(error, g_quark_from_string("GExiv2"), e.code(), e.what());
+        g_set_error_literal(error, g_quark_from_string("GExiv2"), static_cast<int>(e.code()), e.what());
     }
     return FALSE;
 }
@@ -686,11 +686,11 @@ gboolean gexiv2_metadata_save_external (GExiv2Metadata *self, const gchar *path,
                                              Exiv2::ImageFactory::create(Exiv2::ImageType::xmp, local_path),
                                              error);
     } catch (Exiv2::Error &e) {
-        g_set_error_literal (error, g_quark_from_string ("GExiv2"), e.code (), e.what ());
+        g_set_error_literal (error, g_quark_from_string ("GExiv2"), static_cast<int>(e.code()), e.what ());
     }
 #ifdef EXV_UNICODE_PATH
     catch (Exiv2::WError &e) {
-        g_set_error_literal (error, g_quark_from_string ("GExiv2"), e.code (), e.what ());
+        g_set_error_literal (error, g_quark_from_string ("GExiv2"), static_cast<int>(e.code()), e.what ());
     }
 #endif
 
@@ -712,11 +712,11 @@ gboolean gexiv2_metadata_save_file (GExiv2Metadata *self, const gchar *path, GEr
 
         return gexiv2_metadata_save_internal(self, Exiv2::ImageFactory::open(local_path), error);
     } catch (Exiv2::Error &e) {
-        g_set_error_literal (error, g_quark_from_string ("GExiv2"), e.code (), e.what ());
+        g_set_error_literal (error, g_quark_from_string ("GExiv2"), static_cast<int>(e.code()), e.what ());
     }
 #ifdef EXV_UNICODE_PATH
     catch (Exiv2::WError &e) {
-        g_set_error_literal (error, g_quark_from_string ("GExiv2"), e.code (), e.what ());
+        g_set_error_literal (error, g_quark_from_string ("GExiv2"), static_cast<int>(e.code()), e.what ());
     }
 #endif
     
@@ -724,8 +724,8 @@ gboolean gexiv2_metadata_save_file (GExiv2Metadata *self, const gchar *path, GEr
 }
 
 gboolean gexiv2_metadata_save_stream (GExiv2Metadata *self, ManagedStreamCallbacks* cb, GError **error) {
-    g_return_val_if_fail (GEXIV2_IS_METADATA (self), FALSE);
-    
+    g_return_val_if_fail(GEXIV2_IS_METADATA(self), FALSE);
+
     try {
         StreamIo::ptr_type stream_ptr{new StreamIo (cb)};
         
@@ -735,7 +735,7 @@ gboolean gexiv2_metadata_save_stream (GExiv2Metadata *self, ManagedStreamCallbac
         return gexiv2_metadata_save_internal (self, Exiv2::ImageFactory::open (stream_ptr), error);
 #endif
     } catch (Exiv2::Error &e) {
-        g_set_error_literal (error, g_quark_from_string ("GExiv2"), e.code (), e.what ());
+        g_set_error_literal (error, g_quark_from_string ("GExiv2"), static_cast<int>(e.code()), e.what ());
     }
     
     return FALSE;
@@ -772,7 +772,7 @@ gboolean gexiv2_metadata_try_has_tag(GExiv2Metadata* self, const gchar* tag, GEr
 
     // Invalid "familyName"
     Exiv2::Error e(Exiv2::ErrorCode::kerInvalidKey, tag);
-    g_set_error_literal(error, g_quark_from_string("GExiv2"), e.code(), e.what());
+    g_set_error_literal(error, g_quark_from_string("GExiv2"), static_cast<int>(e.code()), e.what());
 
     return FALSE;
 }
@@ -808,7 +808,7 @@ gboolean gexiv2_metadata_try_clear_tag(GExiv2Metadata* self, const gchar* tag, G
 
     // Invalid "familyName"
     Exiv2::Error e(Exiv2::ErrorCode::kerInvalidKey, tag);
-    g_set_error_literal(error, g_quark_from_string("GExiv2"), e.code(), e.what());
+    g_set_error_literal(error, g_quark_from_string("GExiv2"), static_cast<int>(e.code()), e.what());
 
     return FALSE;
 }
@@ -965,7 +965,7 @@ void gexiv2_metadata_try_set_orientation(GExiv2Metadata* self, GExiv2Orientation
         gexiv2_metadata_clear_exif_tag(self, "Exif.MinoltaCs7D.Rotation");
         gexiv2_metadata_clear_exif_tag(self, "Exif.MinoltaCs5D.Rotation");
     } catch (Exiv2::Error& e) {
-        g_set_error_literal(error, g_quark_from_string("GExiv2"), e.code(), e.what());
+        g_set_error_literal(error, g_quark_from_string("GExiv2"), static_cast<int>(e.code()), e.what());
     }
 }
 
@@ -1086,7 +1086,7 @@ void gexiv2_metadata_try_set_metadata_pixel_width(GExiv2Metadata* self, gint wid
         xmp_data["Xmp.tiff.ImageWidth"] = static_cast<uint32_t>(width);
         xmp_data["Xmp.exif.PixelXDimension"] = static_cast<uint32_t>(width);
     } catch (Exiv2::Error& e) {
-        g_set_error_literal(error, g_quark_from_string("GExiv2"), e.code(), e.what());
+        g_set_error_literal(error, g_quark_from_string("GExiv2"), static_cast<int>(e.code()), e.what());
     }
 }
 
@@ -1115,7 +1115,7 @@ void gexiv2_metadata_try_set_metadata_pixel_height(GExiv2Metadata* self, gint he
         xmp_data["Xmp.tiff.ImageLength"] = static_cast<uint32_t>(height);
         xmp_data["Xmp.exif.PixelYDimension"] = static_cast<uint32_t>(height);
     } catch (Exiv2::Error& e) {
-        g_set_error_literal(error, g_quark_from_string("GExiv2"), e.code(), e.what());
+        g_set_error_literal(error, g_quark_from_string("GExiv2"), static_cast<int>(e.code()), e.what());
     }
 }
 
@@ -1237,7 +1237,7 @@ void gexiv2_metadata_try_set_comment(GExiv2Metadata* self, const gchar* comment,
         /* Do not need to write to acdsee properties, just read from them */
         // xmp_data ["Xmp.acdsee.notes"] = comment;
     } catch (Exiv2::Error& e) {
-        g_set_error_literal(error, g_quark_from_string("GExiv2"), e.code(), e.what());
+        g_set_error_literal(error, g_quark_from_string("GExiv2"), static_cast<int>(e.code()), e.what());
     }
 }
 
@@ -1284,7 +1284,7 @@ gchar* gexiv2_metadata_try_get_tag_string (GExiv2Metadata *self, const gchar* ta
 
     // Invalid "familyName"
     Exiv2::Error e(Exiv2::ErrorCode::kerInvalidKey, tag);
-    g_set_error_literal(error, g_quark_from_string("GExiv2"), e.code(), e.what());
+    g_set_error_literal(error, g_quark_from_string("GExiv2"), static_cast<int>(e.code()), e.what());
 
     return nullptr;
 }
@@ -1306,7 +1306,7 @@ gboolean gexiv2_metadata_try_set_tag_string (GExiv2Metadata *self, const gchar* 
 
     // Invalid "familyName"
     Exiv2::Error e(Exiv2::ErrorCode::kerInvalidKey, tag);
-    g_set_error_literal(error, g_quark_from_string("GExiv2"), e.code(), e.what());
+    g_set_error_literal(error, g_quark_from_string("GExiv2"), static_cast<int>(e.code()), e.what());
 
     return FALSE;
 }
@@ -1364,7 +1364,7 @@ gchar* gexiv2_metadata_try_get_tag_interpreted_string (GExiv2Metadata *self, con
 
     // Invalid "familyName"
     Exiv2::Error e(Exiv2::ErrorCode::kerInvalidKey, tag);
-    g_set_error_literal(error, g_quark_from_string("GExiv2"), e.code(), e.what());
+    g_set_error_literal(error, g_quark_from_string("GExiv2"), static_cast<int>(e.code()), e.what());
 
     return nullptr;
 }
@@ -1404,7 +1404,7 @@ gchar** gexiv2_metadata_try_get_tag_multiple(GExiv2Metadata *self, const gchar* 
 
     // Invalid "familyName"
     Exiv2::Error e(Exiv2::ErrorCode::kerInvalidKey, tag);
-    g_set_error_literal(error, g_quark_from_string("GExiv2"), e.code(), e.what());
+    g_set_error_literal(error, g_quark_from_string("GExiv2"), static_cast<int>(e.code()), e.what());
 
     return nullptr;
 }
@@ -1427,7 +1427,7 @@ gboolean gexiv2_metadata_try_set_tag_multiple(GExiv2Metadata *self, const gchar*
 
     // Invalid "familyName"
     Exiv2::Error e(Exiv2::ErrorCode::kerInvalidKey, tag);
-    g_set_error_literal(error, g_quark_from_string("GExiv2"), e.code(), e.what());
+    g_set_error_literal(error, g_quark_from_string("GExiv2"), static_cast<int>(e.code()), e.what());
 
     return FALSE;
 }
@@ -1470,7 +1470,7 @@ gchar** gexiv2_metadata_get_tag_multiple(GExiv2Metadata* self, const gchar* tag)
 
     // Invalid "familyName"
     Exiv2::Error e(Exiv2::ErrorCode::kerInvalidKey, tag);
-    g_set_error_literal(&error, g_quark_from_string("GExiv2"), e.code(), e.what());
+    g_set_error_literal(&error, g_quark_from_string("GExiv2"), static_cast<int>(e.code()), e.what());
     g_warning("%s", error->message);
     g_clear_error(&error);
 
@@ -1510,7 +1510,7 @@ glong gexiv2_metadata_try_get_tag_long(GExiv2Metadata *self, const gchar* tag, G
 
     // Invalid "familyName"
     Exiv2::Error e(Exiv2::ErrorCode::kerInvalidKey, tag);
-    g_set_error_literal(error, g_quark_from_string("GExiv2"), e.code(), e.what());
+    g_set_error_literal(error, g_quark_from_string("GExiv2"), static_cast<int>(e.code()), e.what());
 
     return 0;
 }
@@ -1547,7 +1547,7 @@ gboolean gexiv2_metadata_try_set_tag_long(GExiv2Metadata *self, const gchar* tag
 
     // Invalid "familyName"
     Exiv2::Error e(Exiv2::ErrorCode::kerInvalidKey, tag);
-    g_set_error_literal(error, g_quark_from_string("GExiv2"), e.code(), e.what());
+    g_set_error_literal(error, g_quark_from_string("GExiv2"), static_cast<int>(e.code()), e.what());
 
     return FALSE;
 }
@@ -1731,7 +1731,7 @@ gboolean gexiv2_metadata_set_exif_thumbnail_from_file(GExiv2Metadata* self, cons
         
         return TRUE;
     } catch (Exiv2::Error &e) {
-        g_set_error_literal (error, g_quark_from_string ("GExiv2"), e.code (), e.what ());
+        g_set_error_literal (error, g_quark_from_string ("GExiv2"), static_cast<int>(e.code()), e.what ());
     }
     
     return FALSE;
@@ -1763,7 +1763,7 @@ void gexiv2_metadata_try_set_exif_thumbnail_from_buffer(GExiv2Metadata* self,
         Exiv2::ExifThumb thumb = Exiv2::ExifThumb(self->priv->image->exifData());
         thumb.setJpegThumbnail(buffer, size);
     } catch (Exiv2::Error& e) {
-        g_set_error_literal(error, g_quark_from_string("GExiv2"), e.code(), e.what());
+        g_set_error_literal(error, g_quark_from_string("GExiv2"), static_cast<int>(e.code()), e.what());
     }
 }
 
@@ -1787,7 +1787,7 @@ void gexiv2_metadata_try_erase_exif_thumbnail(GExiv2Metadata* self, GError** err
         Exiv2::ExifThumb thumb = Exiv2::ExifThumb(self->priv->image->exifData());
         thumb.erase();
     } catch (Exiv2::Error& e) {
-        g_set_error_literal(error, g_quark_from_string("GExiv2"), e.code(), e.what());
+        g_set_error_literal(error, g_quark_from_string("GExiv2"), static_cast<int>(e.code()), e.what());
     }
 }
 
@@ -1806,7 +1806,7 @@ const gchar* gexiv2_metadata_try_get_tag_label (const gchar *tag, GError **error
 
     // Invalid "familyName"
     Exiv2::Error e(Exiv2::ErrorCode::kerInvalidKey, tag);
-    g_set_error_literal(error, g_quark_from_string("GExiv2"), e.code(), e.what());
+    g_set_error_literal(error, g_quark_from_string("GExiv2"), static_cast<int>(e.code()), e.what());
 
     return nullptr;
 }
@@ -1842,7 +1842,7 @@ const gchar* gexiv2_metadata_try_get_tag_description (const gchar *tag, GError *
 
     // Invalid "familyName"
     Exiv2::Error e(Exiv2::ErrorCode::kerInvalidKey, tag);
-    g_set_error_literal(error, g_quark_from_string("GExiv2"), e.code(), e.what());
+    g_set_error_literal(error, g_quark_from_string("GExiv2"), static_cast<int>(e.code()), e.what());
 
     return nullptr;
 }
@@ -1878,7 +1878,7 @@ const gchar* gexiv2_metadata_try_get_tag_type (const gchar *tag, GError **error)
 
     // Invalid "familyName"
     Exiv2::Error e(Exiv2::ErrorCode::kerInvalidKey, tag);
-    g_set_error_literal(error, g_quark_from_string("GExiv2"), e.code(), e.what());
+    g_set_error_literal(error, g_quark_from_string("GExiv2"), static_cast<int>(e.code()), e.what());
 
     return nullptr;
 }
@@ -1917,7 +1917,7 @@ gboolean gexiv2_metadata_try_tag_supports_multiple_values(GExiv2Metadata* self, 
 
     // Invalid tag (Family name)
     Exiv2::Error e(Exiv2::ErrorCode::kerInvalidKey, tag);
-    g_set_error_literal(error, g_quark_from_string("GExiv2"), e.code(), e.what());
+    g_set_error_literal(error, g_quark_from_string("GExiv2"), static_cast<int>(e.code()), e.what());
 
     return FALSE;
 }
@@ -1939,7 +1939,7 @@ GBytes* gexiv2_metadata_try_get_tag_raw(GExiv2Metadata *self, const gchar* tag, 
 
     // Invalid "familyName"
     Exiv2::Error e(Exiv2::ErrorCode::kerInvalidKey, tag);
-    g_set_error_literal(error, g_quark_from_string("GExiv2"), e.code(), e.what());
+    g_set_error_literal(error, g_quark_from_string("GExiv2"), static_cast<int>(e.code()), e.what());
 
     return nullptr;
 }
