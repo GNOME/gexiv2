@@ -20,6 +20,18 @@
         "*.a"
     ],
     "modules" : [
+        {   
+            "name" : "inih",
+            "buildsystem" : "meson",
+            "sources" : [
+                {
+                    "type": "git",
+                    "url" : "https://github.com/benhoyt/inih",
+                    "tag" : "r56",
+                    "commit" : "5e1d9e2625842dddb3f9c086a50f22e4f45dfc2b"
+                }
+            ]
+        },
         {
             "name" : "exiv2",
             "cleanup" : [
