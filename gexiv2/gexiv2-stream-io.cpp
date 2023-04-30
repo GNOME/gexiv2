@@ -139,7 +139,7 @@ int StreamIo::seek (long offset, Position position) {
     return 0;
 }
 
-long StreamIo::tell () const {
+StreamIo::size_type StreamIo::tell() const {
     return cb->Position (cb->handle);
 }
 
@@ -213,12 +213,22 @@ bool StreamIo::eof () const {
     return (cb->Length (cb->handle) == cb->Position (cb->handle));
 }
 
+#if EXIV2_TEST_VERSION(0, 27, 99)
+const std::string& StreamIo::path() const noexcept {
+#else
 std::string StreamIo::path () const {
-    return "managed stream";
+#endif
+    static std::string info{"managed stream"};
+
+    return info;
 }
 
 #ifdef EXV_UNICODE_PATH
+#if EXIV2_TEST_VERSION(0, 27, 99)
+const std::wstring& StreamIo::wpath() const noexcept {
+#else
 std::wstring StreamIo::wpath() const {
+#endif
     std::string p = path();
     std::wstring w(p.length(), L' ');
     std::copy(p.begin(), p.end(), w.begin());

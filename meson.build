@@ -37,6 +37,8 @@ private_pdata_test = '''#include <exiv2/exiv2.hpp>
 int main(void) {
   Exiv2::DataBuf buf;
   std::cout << buf.c_data() << std::endl;
+
+  return 0;
 }'''
 private_pdata = cpp.compiles(private_pdata_test, name : 'DataBuf is sealead in exiv2', dependencies : [exiv2])
 
@@ -80,6 +82,7 @@ config_h = configure_file(
   output: 'config.h',
   configuration: build_config
 )
+
 
 find_program('g-ir-scanner', required: get_option('introspection'))
 

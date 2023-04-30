@@ -49,7 +49,7 @@ public:
         , _eof{false}
         {}
 #if EXIV2_TEST_VERSION(0,27,99)
-    using size_type = long;
+    using size_type = size_t;
 #else
     using size_type = long;
 #endif
@@ -69,6 +69,9 @@ public:
     using ptr_type = Exiv2::BasicIo::AutoPtr;
 #endif
 
+#if EXIV2_TEST_VERSION(0, 27, 99)
+    void populateFakeData() override{};
+#endif
     int open() override {
         if (_seekable == nullptr)
             return 0;
@@ -101,7 +104,7 @@ public:
 #endif
         if (bytes_read > 0 && bytes_read != rcount) {
 #ifdef EXIV2_DATABUF_HAS_PRIVATE_PDATA
-            b.reset({b.data(), bytes_read});
+            b = Exiv2::DataBuf{b};
 #else
             b.reset({b.pData_, bytes_read});
 #endif
@@ -199,7 +202,7 @@ public:
 
     int munmap() override { return 0; }
 
-    long tell() const override {
+    size_type tell() const override {
         if (_seekable != nullptr && g_seekable_can_seek (_seekable)) {
             return static_cast<long>(g_seekable_tell (_seekable));
         } else {
@@ -215,10 +218,21 @@ public:
 
     bool eof() const override { return _eof; }
 
+#if EXIV2_TEST_VERSION(0, 27, 99)
+    const std::string& path() const noexcept override {
+        static std::string info{"GIO Wrapper"};
+        return info;
+    }
+#else
     std::string path() const override { return "GIO Wrapper"; }
+#endif
 
 #ifdef EXV_UNICODE_PATH
+#ifdef EXIV2_TEST_VERSION(0, 27, 99)
+    const std::wstring& wpath() const noexcept override {
+#else
     std::wstring wpath() const override {
+#endif
         std::string p = path();
         std::wstring w(p.length(), L' ');
         std::copy(p.begin(), p.end(), w.begin());
