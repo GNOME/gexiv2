@@ -40,6 +40,15 @@ int main(void) {
 }'''
 private_pdata = cpp.compiles(private_pdata_test, name : 'DataBuf is sealead in exiv2', dependencies : [exiv2])
 
+has_any_error_test = '''#include <exiv2/exiv2.hpp>
+#include <iostream>
+int main(void) {
+  Exiv2::AnyError *e;
+
+  return 0;
+}'''
+has_any_error = cpp.compiles(has_any_error_test, name : 'AnyError exists in exiv2', dependencies : [exiv2])
+
 xmpdatum_has_to_long_test = '''#include <exiv2/exiv2.hpp>
 #include <iostream>
 int main(void) {
@@ -64,6 +73,7 @@ exifdatum_has_to_long = cpp.compiles(exifdatum_has_to_long_test, name: 'Exifdatu
 
 build_config = configuration_data ()
 build_config.set('EXIV2_DATABUF_HAS_PRIVATE_PDATA', private_pdata)
+build_config.set('EXIV2_HAS_ANY_ERROR', has_any_error)
 build_config.set('EXIV2_XMPDATUM_HAS_TO_LONG', xmpdatum_has_to_long)
 build_config.set('EXIV2_EXIFDATUM_HAS_TO_LONG', exifdatum_has_to_long)
 config_h = configure_file(

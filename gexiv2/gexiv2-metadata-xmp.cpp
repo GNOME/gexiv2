@@ -629,14 +629,20 @@ gboolean gexiv2_metadata_try_register_xmp_namespace(const gchar* name, const gch
     g_return_val_if_fail(prefix != nullptr, FALSE);
     g_return_val_if_fail(error == nullptr || *error == nullptr, FALSE);
 
+#if defined(EXIV2_HAS_ANY_ERROR)
+    using Exiv2ErrorProxy = Exiv2::AnyError;
+#else
+    using Exiv2ErrorProxy = Exiv2::Error;
+#endif
+
     try {
         Exiv2::XmpProperties::ns(prefix);
-    } catch (Exiv2::AnyError& e1) {
+    } catch (Exiv2ErrorProxy& e1) {
         // No namespace, OK to register
         try {
             Exiv2::XmpProperties::registerNs(name, prefix);
             return TRUE;
-        } catch (Exiv2::AnyError& e2) {
+        } catch (Exiv2ErrorProxy& e2) {
             g_set_error_literal(error, g_quark_from_string("GExiv2"), static_cast<int>(e2.code()), e2.what());
         }
     }
