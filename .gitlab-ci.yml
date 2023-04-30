@@ -9,7 +9,7 @@
     - schedules
   script:
     - flatpak-builder build-dir ${MANIFEST_PATH} --stop-at=gexiv2 --user --disable-rofiles-fuse
-    - flatpak build build-dir meson _build
+    - flatpak build build-dir meson _build -Dtests=true
     - flatpak build build-dir ninja -C _build
     - flatpak build build-dir ninja -C _build test
   artifacts:
@@ -87,7 +87,7 @@ check-merge-request:
 .build-template: &build
   stage: build
   script:
-      - meson . build --prefix=/usr -Db_coverage=true --werror
+      - meson . build --prefix=/usr -Db_coverage=true -Dtests=true --werror
       - ninja -C build
   artifacts:
       expire_in: 1 day
