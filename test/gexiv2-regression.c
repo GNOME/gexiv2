@@ -502,6 +502,32 @@ static void test_ggo_70(void) {
     g_clear_object(&meta);
 }
 
+static void test_ggo_69(void) {
+    GExiv2Metadata* meta = NULL;
+    gboolean result = FALSE;
+    char* packet = NULL;
+    GError* error = NULL;
+
+    meta = gexiv2_metadata_new();
+    g_assert_nonnull(meta);
+    result = gexiv2_metadata_open_path(meta, SAMPLE_PATH "/no-metadata.jpg", &error);
+    g_assert_no_error(error);
+    g_assert_true(result);
+
+    result = gexiv2_metadata_try_set_tag_string(meta, "Xmp.dc.description", "some description", &error);
+    g_assert_no_error(error);
+    g_assert_true(result);
+
+    packet = gexiv2_metadata_try_generate_xmp_packet(meta, GEXIV2_OMIT_PACKET_WRAPPER, 0, &error);
+
+    g_assert_nonnull(packet);
+    g_assert_no_error(error);
+    g_assert(!g_str_has_prefix(packet, "<?xpacket"));
+
+    g_free(packet);
+    g_object_unref(meta);
+}
+
 int main(int argc, char *argv[static argc + 1])
 {
     g_test_init(&argc, &argv, NULL);
@@ -518,6 +544,7 @@ int main(int argc, char *argv[static argc + 1])
     g_test_add_func("/bugs/gnome/gitlab/58", test_ggo_58);
     g_test_add_func("/bugs/gnome/gitlab/62", test_ggo_62);
     g_test_add_func("/bugs/gnome/gitlab/60", test_ggo_66);
+    g_test_add_func("/bugs/gnome/gitlab/69", test_ggo_69);
     g_test_add_func("/bugs/gnome/gitlab/70", test_ggo_70);
 
     return g_test_run();

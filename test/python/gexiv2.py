@@ -52,6 +52,14 @@ class TestGexiv2(unittest.TestCase):
         self.assertEqual(la, 48.631806166666664)
         self.assertEqual(alt, -0.926000)
 
+    def test_xmp_packet_formatting(self):
+        sample = 'CaorVN.jpeg'
+        md = GExiv2.Metadata()
+        md.open_path(self.get_sample_path(sample))
+
+        packet = md.try_generate_xmp_packet(GExiv2.XmpFormatFlags.OMIT_PACKET_WRAPPER, 0);
+        self.assertEqual(packet.startswith("<?xpacket"), False)
+
 
 if __name__ == '__main__':
     unittest.main()

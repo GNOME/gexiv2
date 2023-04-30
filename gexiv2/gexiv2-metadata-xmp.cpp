@@ -39,16 +39,19 @@ gchar *gexiv2_metadata_try_generate_xmp_packet(GExiv2Metadata *self,
     g_return_val_if_fail(GEXIV2_IS_METADATA (self), NULL);
     g_return_val_if_fail(self->priv->image.get() != NULL, NULL);
     g_return_val_if_fail(error == nullptr || *error == nullptr, nullptr);
-    
-    Exiv2::XmpData &xmp_data = self->priv->image->xmpData();
+
+    auto const& xmp_data = self->priv->image->xmpData();
+
     try {
-        if (Exiv2::XmpParser::encode(self->priv->image->xmpPacket(), xmp_data, xmp_format_flags, padding) == 0)
-          return g_strdup(self->priv->image->xmpPacket().c_str());
+        std::string packet;
+        if (Exiv2::XmpParser::encode(packet, xmp_data, xmp_format_flags, padding) == 0) {
+            return g_strdup(packet.c_str());
+        }
     } catch (Exiv2::Error& e) {
         g_set_error_literal(error, g_quark_from_string("GExiv2"), e.code(), e.what());
     }
-    
-    return NULL;
+
+    return nullptr;
 }
 
 gchar *gexiv2_metadata_generate_xmp_packet(GExiv2Metadata *self,
