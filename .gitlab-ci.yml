@@ -3,7 +3,7 @@
     - flatpak
   variables:
       MANIFEST_PATH: "build-aux/org.gnome.GExiv2.json"
-  image: registry.gitlab.gnome.org/gnome/gnome-runtime-images/gnome:40
+  image: registry.gitlab.gnome.org/gnome/gnome-runtime-images/gnome:44
   stage: build
   only:
     - schedules
