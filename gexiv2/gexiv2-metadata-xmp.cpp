@@ -8,6 +8,8 @@
  * SPDX-License-Identifier: GPL-2.0-or-later
  */
 
+#include <config.h>
+
 #include "gexiv2-metadata-private.h"
 #include "gexiv2-metadata.h"
 
@@ -313,9 +315,14 @@ glong gexiv2_metadata_get_xmp_tag_long (GExiv2Metadata *self, const gchar* tag, 
         Exiv2::XmpData::iterator it = xmp_data.findKey(Exiv2::XmpKey(tag));
         while (it != xmp_data.end() && it->count() == 0)
             it++;
-        
+
+#ifdef EXIV2_XMPDATUM_HAS_TO_LONG
         if (it != xmp_data.end())
             return it->toLong ();
+#else
+        if (it != xmp_data.end())
+            return static_cast<glong>(it->toInt64());
+#endif
     } catch (Exiv2::Error& e) {
         g_set_error_literal(error, g_quark_from_string("GExiv2"), static_cast<int>(e.code()), e.what());
     }
