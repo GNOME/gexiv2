@@ -18,5 +18,7 @@ regression_test = executable('gexiv2-regression', 'gexiv2-regression.c',
 
 test('regression', regression_test, env : test_env)
 
-test('python3-gexiv2', python3, args: ['-m', 'unittest', 'gexiv2'], env: test_env)
-test('python3-metadata', python3, args: ['-m', 'unittest', 'test_metadata'], env: test_env)
+if get_option('python3')
+  test('python3-gexiv2', python3, args: ['-m', 'unittest', 'gexiv2'], env: test_env)
+  test('python3-metadata', python3, args: ['-m', 'unittest', 'test_metadata'], env: test_env)
+endif
