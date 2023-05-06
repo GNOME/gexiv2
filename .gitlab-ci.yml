@@ -3,10 +3,11 @@
     - flatpak
   variables:
       MANIFEST_PATH: "build-aux/org.gnome.GExiv2.json"
-  image: registry.gitlab.gnome.org/gnome/gnome-runtime-images/gnome:44
+  image: quay.io/gnome_infrastructure/gnome-runtime-images:gnome-44
   stage: build
   only:
     - schedules
+    - merge_requests
   script:
     - flatpak-builder build-dir ${MANIFEST_PATH} --stop-at=gexiv2 --user --disable-rofiles-fuse
     - flatpak build build-dir meson _build -Dtests=true

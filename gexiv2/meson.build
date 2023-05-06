@@ -61,7 +61,7 @@ gexiv2 = library('gexiv2',
                   'gexiv2-preview-properties-private.h',
                   'gexiv2-preview-image-private.h'] +
                  gexiv2_headers +
-                 [version_header] +
+                 [version_header, config_h] +
                  enum_sources,
                  include_directories : include_directories('..'),
                  version: libversion,

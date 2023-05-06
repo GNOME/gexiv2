@@ -66,7 +66,7 @@ GExiv2PreviewImage* gexiv2_preview_image_new(Exiv2::PreviewManager* manager,
 
         g_object_unref(self);
 
-        g_set_error_literal(error, g_quark_from_string("GExiv2"), e.code(), e.what());
+        g_set_error_literal(error, g_quark_from_string("GExiv2"), static_cast<int>(e.code()), e.what());
     }
     return nullptr;
 }
@@ -141,7 +141,7 @@ glong gexiv2_preview_image_try_write_file(GExiv2PreviewImage* self, const gchar*
     try {
         return self->priv->image->writeFile(path);
     } catch (Exiv2::Error& e) {
-        g_set_error_literal(error, g_quark_from_string("GExiv2"), e.code(), e.what());
+        g_set_error_literal(error, g_quark_from_string("GExiv2"), static_cast<int>(e.code()), e.what());
     }
     return -1;
 }
