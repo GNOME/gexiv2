@@ -5,7 +5,7 @@ project(
     license: 'GPL-2.0-or-later',
     meson_version : '>=0.51',
     default_options : [
-        'cpp_std=c++11'
+        'cpp_std=c++17'
     ]
 )
 
