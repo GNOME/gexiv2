@@ -1,3 +1,26 @@
+gexiv2 0.14.1 - 5 May 2023 (stable)
+
+ * Clean-up python support
+ * Drop python2 support
+ * Add option for building tests
+ * Only run python tests when python is enabled
+ * Fix get_gps_info() return data with unset altitude
+ * Fix generate_xmp_packet() ignoring its parameters
+ * Fix gexiv2-tool to call initialize()
+
+Bugs fixed in this release:
+ - Addresses https://gitlab.gnome.org/GNOME/gexiv2/-/issues/72
+ - https://gitlab.gnome.org/GNOME/gexiv2/issues/69
+ - https://gitlab.gnome.org/GNOME/gexiv2/issues/70
+
+All contributors to this release:
+ - Peter Eisenmann <p3732@getgoogleoff.me>
+ - Alex Xu (Hello71) <alex_y_xu@yahoo.ca>
+ - Felix Crux <felixc@felixcrux.com>
+ - postscript-dev <43813-postscript-dev@users.noreply.gitlab.gnome.org>
+ - Seth Falco <seth@falco.fun>
+ - Jens Georg <mail@jensge.org>
+
 gexiv2 0.14.0 - 18 Sep 2021 (stable)
 
  * Fix BMFF compile test
