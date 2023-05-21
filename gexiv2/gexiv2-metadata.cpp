@@ -228,7 +228,7 @@ public:
 #endif
 
 #ifdef EXV_UNICODE_PATH
-#ifdef EXIV2_TEST_VERSION(0, 27, 99)
+#if EXIV2_TEST_VERSION(0, 27, 99)
     const std::wstring& wpath() const noexcept override {
 #else
     std::wstring wpath() const override {
