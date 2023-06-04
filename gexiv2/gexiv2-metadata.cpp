@@ -414,11 +414,15 @@ static void gexiv2_metadata_init_internal(GExiv2Metadata* self, GError** error) 
             priv->preview_properties[count] = nullptr;
         }
     } catch (Exiv2::Error& e) {
-        if (priv->mime_type)
+        if (priv->mime_type) {
             g_free(priv->mime_type);
+            priv->mime_type = nullptr;
+        }
 
-        if (priv->preview_manager)
+        if (priv->preview_manager) {
             delete priv->preview_manager;
+            priv->preview_manager = nullptr;
+        }
 
         g_set_error_literal(error, g_quark_from_string("GExiv2"), static_cast<int>(e.code()), e.what());
     }
