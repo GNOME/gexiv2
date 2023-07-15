@@ -27,11 +27,13 @@ public:
     using size_type = size_t;
     using path_type = const std::string&;
     using wpath_type = const std::wstring&;
+    using seek_offset_t = int64_t;
 #else
     using ptr_type = Exiv2::BasicIo::AutoPtr;
     using size_type = long;
     using path_type = std::string;
     using wpath_type = std::wstring;
+    using seek_offset_t = long;
 #endif
 
 	StreamIo (ManagedStreamCallbacks* cb);
@@ -46,8 +48,8 @@ public:
     size_type read (Exiv2::byte* buf, size_type rcount) override;
 	int getb () override;
 	void transfer (Exiv2::BasicIo& src) override;
-	int seek (long offset, Position pos) override;
-	Exiv2::byte* mmap (bool isWriteable = false) override;
+    int seek(seek_offset_t offset, Position pos) override;
+    Exiv2::byte* mmap (bool isWriteable = false) override;
 	int munmap () override;
     size_type tell() const override;
     size_t size () const override;
