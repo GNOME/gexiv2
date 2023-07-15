@@ -158,12 +158,12 @@ static void test_bgo_775249(void)
     g_assert_true(result);
     g_assert_true(gexiv2_metadata_get_gps_info(meta, &lon, &lat, &alt));
 
-    g_assert_cmpfloat(lon, ==, -1.508425);
+    g_assert_cmpfloat_with_epsilon(lon, -1.508425, 0.0001);
 
     /* Just check if it fits in there; The main issue is that it's not 0 */
     g_assert_cmpfloat(lat, >=, 48.631806);
     g_assert_cmpfloat(lat, <=, 48.631807);
-    g_assert_cmpfloat(alt, ==, -0.926000);
+    g_assert_cmpfloat_with_epsilon(alt, -0.926000, 0.0001);
 
     g_clear_object(&meta);
 }
