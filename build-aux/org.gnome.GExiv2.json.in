@@ -1,0 +1,80 @@
+{
+    "app-id" : "org.gnome.GExiv2",
+    "runtime" : "org.gnome.Platform",
+    "runtime-version" : "44",
+    "sdk" : "org.gnome.Sdk",
+    "command" : "gexiv2",
+    "tags" : [
+        "nightly"
+    ],
+    "desktop-file-name-prefix" : "(Nightly) ",
+    "cleanup" : [
+        "/include",
+        "/lib/pkconfig",
+        "/share/pkgconfig",
+        "/share/gtk-doc",
+        "/share/man",
+        "/share/vala",
+        "/lib/girepository",
+        "*.la",
+        "*.a"
+    ],
+    "modules" : [
+        {   
+            "name" : "inih",
+            "buildsystem" : "meson",
+            "sources" : [
+                {
+                    "type": "git",
+                    "url" : "https://github.com/benhoyt/inih",
+                    "tag" : "r56",
+                    "commit" : "5e1d9e2625842dddb3f9c086a50f22e4f45dfc2b"
+                }
+            ]
+        },
+        {
+            "name" : "exiv2",
+            "cleanup" : [
+                "/bin"
+            ],
+            "buildsystem" : "cmake-ninja",
+            "config-opts" : [
+                "-DCMAKE_INSTALL_LIBDIR=lib",
+                "-DEXIV2_BUILD_EXIV2_COMMAND=OFF",
+                "-DEXIV2_BUILD_SAMPLES=OFF",
+                "-DEXIV2_BUILD_UNIT_TESTS=OFF",
+                "-DEXIV2_ENABLE_BMFF=On"
+            ],
+            "sources" : [
+                {
+                    "type" : "git",
+                    "url" : "https://github.com/Exiv2/exiv2/",
+                    "branch" : "@EXIV2_REF@"
+                }
+            ]
+        },
+        {
+            "name" : "gexiv2",
+            "buildsystem" : "meson",
+            "cleanup" : [
+                "/lib/girepository-1.0",
+                "/share/gir-1.0"
+            ],
+            "config-opts" : [
+                "-Dpython3=no"
+            ],
+            "build-options" : {
+                "env" : {
+                    "PKG_CONFIG_GOBJECT_INTROSPECTION_1_0_GIRDIR" : "/app/share/gir-1.0",
+                    "PKG_CONFIG_GOBJECT_INTROSPECTION_1_0_TYPELIBDIR" : "/app/lib/girepository-1.0"
+                }
+            },
+            "sources" : [
+                {
+                    "type" : "git",
+                    "url" : "https://gitlab.gnome.org/GNOME/gexiv2.git/"
+                }
+            ]
+        }
+    ]
+}

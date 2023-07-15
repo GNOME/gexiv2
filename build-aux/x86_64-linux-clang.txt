@@ -1,0 +1,13 @@
+[binaries]
+c = 'clang'
+cpp = 'clang++'
+pkgconfig = 'pkg-config'
+
+[host_machine]
+system='linux'
+cpu_family = 'x86_64'
+cpu = 'x86_64'
+endian = 'little'
+
+[properties]
+cpp_args = ['-stdlib=libc++']

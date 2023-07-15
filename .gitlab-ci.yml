@@ -2,14 +2,15 @@
   tags:
     - flatpak
   variables:
-      MANIFEST_PATH: "build-aux/org.gnome.GExiv2.json"
+      EXIV2_REF: 'main'
   image: quay.io/gnome_infrastructure/gnome-runtime-images:gnome-44
   stage: build
   only:
     - schedules
     - merge_requests
   script:
-    - flatpak-builder build-dir ${MANIFEST_PATH} --stop-at=gexiv2 --user --disable-rofiles-fuse
+    - sed build-aux/org.gnome.GExiv2.json.in -e "s/@EXIV2_REF@/${EXIV2_REF}/" > org.gnome.GExiv2.json
+    - flatpak-builder build-dir org.gnome.GExiv2.json --stop-at=gexiv2 --user --disable-rofiles-fuse
     - flatpak build build-dir meson _build -Dtests=true
     - flatpak build build-dir ninja -C _build
     - flatpak build build-dir ninja -C _build test
@@ -19,24 +20,29 @@
     paths:
       - "${CI_PROJECT_DIR}/_build/meson-logs"
 
-exiv2-master:on-schedule:
+exiv2-main:on-schedule:
     extends: .flatpak
     variables:
-        MANIFEST_PATH: "build-aux/org.gnome.GExiv2.json"
+        EXIV2_REF: "main"
 
-exiv2-stable:on-schedule:
+exiv2-0-28:on-schedule:
     extends: .flatpak
     variables:
-        MANIFEST_PATH: "build-aux/org.gnome.GExiv2-stable.json"
+        EXIV2_REF: "0.28.x"
 
-exiv2-oldstable:on-schedule:
+exiv2-0-27:on-schedule:
     extends: .flatpak
     variables:
-        MANIFEST_PATH: "build-aux/org.gnome.GExiv2-oldstable.json"
+        EXIV2_REF: "0.27-maintenance"
+
+exiv2-0-26:on-schedule:
+    extends: .flatpak
+    variables:
+        EXIV2_REF: "0.26"
 
 include:
-    - remote: "https://gitlab.freedesktop.org/freedesktop/ci-templates/-/raw/290b79e0e78eab67a83766f4e9691be554fc4afd/templates/ci-fairy.yml"
-    - remote: 'https://gitlab.freedesktop.org/freedesktop/ci-templates/-/raw/290b79e0e78eab67a83766f4e9691be554fc4afd/templates/fedora.yml'
+    - remote: "https://gitlab.freedesktop.org/freedesktop/ci-templates/-/raw/0c312d9c7255f46e741d43bcd1930f09cd12efe7/templates/ci-fairy.yml"
+    - remote: 'https://gitlab.freedesktop.org/freedesktop/ci-templates/-/raw/0c312d9c7255f46e741d43bcd1930f09cd12efe7/templates/fedora.yml'
 
 variables:
     MESON_TEST_TIMEOUT_MULTIPLIER: 3
@@ -88,53 +94,83 @@ check-merge-request:
 .build-template: &build
   stage: build
   script:
-      - meson . build --prefix=/usr -Db_coverage=true -Dtests=true --werror
-      - ninja -C build
+      - meson setup . ${MESON_BUILD_DIR} --prefix=/usr -Db_coverage=true -Dtests=true --werror ${MESON_EXTRA_ARGS}
+      - ninja -C ${MESON_BUILD_DIR}
   artifacts:
       expire_in: 1 day
       paths:
-          - build
+          - ${MESON_BUILD_DIR}
 
 .gexiv2.fedora@common:
   variables:
-    BASE_TAG: '2021-05-24.0'
+    BASE_TAG: '2023-07-15.2'
     FDO_UPSTREAM_REPO: GNOME/gexiv2
-    FDO_DISTRIBUTION_PACKAGES: 'clang clang-analyzer gcovr git libasan libubsan python3-gobject python3-pip xmlto gobject-introspection-devel gtk-doc vala ninja-build python3-devel gtk-doc exiv2-devel'
+    FDO_DISTRIBUTION_PACKAGES: 'clang clang-analyzer libcxx-devel gcovr git libasan libubsan python3-gobject python3-pip xmlto gobject-introspection-devel gtk-doc vala ninja-build python3-devel gtk-doc exiv2-devel mingw32-gcc mingw32-gcc-c++ mingw32-exiv2 mingw32-glib2 mingw64-gcc mingw64-gcc-c++ mingw64-exiv2 mingw64-glib2'
     FDO_DISTRIBUTION_EXEC: |
       dnf clean all &&
       pip3 install meson
 
-.gexiv2.fedora:34@x86_64:
+.gexiv2.fedora:38@x86_64:
   extends: .gexiv2.fedora@common
   variables:
-    FDO_DISTRIBUTION_VERSION: 34
+    FDO_DISTRIBUTION_VERSION: 38
     FDO_DISTRIBUTION_TAG: "x86_64-${BASE_TAG}"
 
 build-fedora-container@x86_64:
   extends:
     - .fdo.container-build@fedora
-    - .gexiv2.fedora:34@x86_64
+    - .gexiv2.fedora:38@x86_64
   stage: prepare
   variables:
     GIT_STRATEGY: none
 
-
 build-fedora@x86_64:
     extends:
         - .fdo.distribution-image@fedora
-        - .gexiv2.fedora:34@x86_64
+        - .gexiv2.fedora:38@x86_64
     needs:
         - build-fedora-container@x86_64
+    variables:
+        MESON_BUILD_DIR: 'build'
     <<: *build
 
+build-fedora-clang@x86_64:
+    extends:
+        - .fdo.distribution-image@fedora
+        - .gexiv2.fedora:38@x86_64
+    needs:
+        - build-fedora-container@x86_64
+    variables:
+        MESON_EXTRA_ARGS: '--cross-file=build-aux/x86_64-linux-clang.txt'
+        MESON_BUILD_DIR: 'build-clang-libcxx'
+    <<: *build
+
+build-fedora-w32@x86_64:
+    extends:
+        - .fdo.distribution-image@fedora
+        - .gexiv2.fedora:38@x86_64
+    needs:
+        - build-fedora-container@x86_64
+    variables:
+        MESON_EXTRA_ARGS: '--cross-file=build-aux/i686-w64-mingw32.txt -Dintrospection=false -Dvapi=false -Dpython3=false'
+        MESON_BUILD_DIR: 'build-w32'
+    <<: *build
+
+build-fedora-w64@x86_64:
+    extends:
+        - .fdo.distribution-image@fedora
+        - .gexiv2.fedora:38@x86_64
+    needs:
+        - build-fedora-container@x86_64
+    variables:
+        MESON_EXTRA_ARGS: '--cross-file=build-aux/x86_64-w64-mingw32.txt -Dintrospection=false -Dvapi=false -Dpython3=false'
+        MESON_BUILD_DIR: 'build-w64'
+    <<: *build
 
 .test-template: &test
   stage: test
-  variables:
-    G_SLICE: "always-malloc"
-    MALLOC_CHECK_: "3"
   script:
-    - cd build
+    - cd ${MESON_BUILD_DIR}
     - |
       # Remove the many "CI_" variables from the environment. Meson dumps the
       # whole environment for every failed test, and that gives a whole
@@ -157,22 +193,34 @@ build-fedora@x86_64:
     expire_in: 1 day
     when: always
     paths:
-    - build
+    - ${MESON_BUILD_DIR}
     reports:
-      junit: "build/meson-logs/testlog.junit.xml"
+      junit: "${MESON_BUILD_DIR}/meson-logs/testlog.junit.xml"
 
 test-fedora@x86_64:
   extends:
     - .fdo.distribution-image@fedora
-    - .gexiv2.fedora:34@x86_64
+    - .gexiv2.fedora:38@x86_64
   needs:
     - build-fedora@x86_64
+  variables:
+    MESON_BUILD_DIR: 'build'
+  <<: *test
+
+test-fedora-clang@x86_64:
+  extends:
+    - .fdo.distribution-image@fedora
+    - .gexiv2.fedora:38@x86_64
+  needs:
+    - build-fedora-clang@x86_64
+  variables:
+    MESON_BUILD_DIR: 'build-clang'
   <<: *test
 
 coverage-analysis:
   extends:
     - .fdo.distribution-image@fedora
-    - .gexiv2.fedora:34@x86_64
+    - .gexiv2.fedora:38@x86_64
   stage: analysis
   allow_failure: true
   script:
@@ -190,7 +238,7 @@ coverage-analysis:
 static-scan:
   extends:
     - .fdo.distribution-image@fedora
-    - .gexiv2.fedora:34@x86_64
+    - .gexiv2.fedora:38@x86_64
   stage: analysis
   needs:
     - build-fedora-container@x86_64
@@ -205,7 +253,7 @@ static-scan:
 pages:
   extends:
     - .fdo.distribution-image@fedora
-    - .gexiv2.fedora:34@x86_64
+    - .gexiv2.fedora:38@x86_64
   stage: website
   script:
       - meson doc-build -Dgtk_doc=true
