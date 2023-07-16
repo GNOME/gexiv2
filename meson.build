@@ -20,8 +20,10 @@ pkg = import('pkgconfig')
 exiv2 = dependency('exiv2', version : '>= 0.26')
 
 # when building for 0.26 or 0.27 and with clang's libc++, reenable std::auto_ptr
+# and remove deprecation warnings for that
 if exiv2.version().version_compare('< 0.28')
   add_project_arguments('-D_LIBCPP_ENABLE_CXX17_REMOVED_AUTO_PTR', language: 'cpp')
+  add_project_arguments('-D_LIBCPP_DISABLE_DEPRECATION_WARNINGS', language: 'cpp')
 endif
 gobject = dependency('gobject-2.0', version : '>= 2.46.0')
 gio = dependency('gio-2.0', version : '>= 2.46.0')
