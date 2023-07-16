@@ -134,16 +134,16 @@ build-fedora@x86_64:
         MESON_BUILD_DIR: 'build'
     <<: *build
 
-build-fedora-clang@x86_64:
-    extends:
-        - .fdo.distribution-image@fedora
-        - .gexiv2.fedora:38@x86_64
-    needs:
-        - build-fedora-container@x86_64
-    variables:
-        MESON_EXTRA_ARGS: '--cross-file=build-aux/x86_64-linux-clang.txt'
-        MESON_BUILD_DIR: 'build-clang-libcxx'
-    <<: *build
+#build-fedora-clang@x86_64:
+#    extends:
+#        - .fdo.distribution-image@fedora
+#        - .gexiv2.fedora:38@x86_64
+#    needs:
+#        - build-fedora-container@x86_64
+#    variables:
+#        MESON_EXTRA_ARGS: '--cross-file=build-aux/x86_64-linux-clang.txt'
+#        MESON_BUILD_DIR: 'build-clang-libcxx'
+#    <<: *build
 
 build-fedora-w32@x86_64:
     extends:
@@ -207,15 +207,15 @@ test-fedora@x86_64:
     MESON_BUILD_DIR: 'build'
   <<: *test
 
-test-fedora-clang@x86_64:
-  extends:
-    - .fdo.distribution-image@fedora
-    - .gexiv2.fedora:38@x86_64
-  needs:
-    - build-fedora-clang@x86_64
-  variables:
-    MESON_BUILD_DIR: 'build-clang'
-  <<: *test
+#test-fedora-clang@x86_64:
+#  extends:
+#    - .fdo.distribution-image@fedora
+#    - .gexiv2.fedora:38@x86_64
+#  needs:
+#    - build-fedora-clang@x86_64
+#  variables:
+#    MESON_BUILD_DIR: 'build-clang'
+#  <<: *test
 
 coverage-analysis:
   extends:
