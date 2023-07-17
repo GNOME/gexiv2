@@ -251,6 +251,33 @@ static-scan:
       - _scan_build/meson-logs
   allow_failure: true
 
+coverity:
+  extends:
+    - .fdo.distribution-image@fedora
+    - .gexiv2.fedora:38@x86_64
+  stage: analysis
+  allow_failure: true
+  script:
+    - curl https://scan.coverity.com/download/linux64 --data "token=$COVERITY_TOKEN&project=gexiv2" --output /tmp/coverity_tool.tgz
+    - tar zxf /tmp/coverity_tool.tgz
+    - mkdir coverity-build
+    - cd coverity-build
+    - env CC=clang meson ..
+    - ../cov-analysis-linux64-*/bin/cov-build --dir cov-int ninja
+    - tar czf cov-int.tar.gz cov-int
+    - curl https://scan.coverity.com/builds?project=gexiv2
+      --form token=$COVERITY_TOKEN --form email=mail@jensge.org
+      --form file=@cov-int.tar.gz --form version="`git describe --tags`"
+      --form description="gitlab CI build"
+  needs:
+    - build-container-fedora:38@x86_64
+  only:
+    - master
+    - wip/ci
+  except:
+    changes:
+      - po/*.po
+
 pages:
   extends:
     - .fdo.distribution-image@fedora
