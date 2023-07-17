@@ -270,7 +270,7 @@ coverity:
       --form file=@cov-int.tar.gz --form version="`git describe --tags`"
       --form description="gitlab CI build"
   needs:
-    - build-container-fedora:38@x86_64
+    - build-fedora-container@x86_64
   only:
     - master
     - wip/ci
