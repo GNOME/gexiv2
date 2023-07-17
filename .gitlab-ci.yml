@@ -258,14 +258,14 @@ coverity:
   stage: analysis
   allow_failure: true
   script:
-    - curl https://scan.coverity.com/download/linux64 --data "token=$COVERITY_TOKEN&project=gexiv2" --output /tmp/coverity_tool.tgz
+    - curl https://scan.coverity.com/download/linux64 --data "token=$COVERITY_TOKEN&project=Gexiv2" --output /tmp/coverity_tool.tgz
     - tar zxf /tmp/coverity_tool.tgz
     - mkdir coverity-build
     - cd coverity-build
     - env CC=clang meson ..
     - ../cov-analysis-linux64-*/bin/cov-build --dir cov-int ninja
     - tar czf cov-int.tar.gz cov-int
-    - curl https://scan.coverity.com/builds?project=gexiv2
+    - curl https://scan.coverity.com/builds?project=Gexiv2
       --form token=$COVERITY_TOKEN --form email=mail@jensge.org
       --form file=@cov-int.tar.gz --form version="`git describe --tags`"
       --form description="gitlab CI build"
