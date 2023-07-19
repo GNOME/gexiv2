@@ -33,7 +33,11 @@ public:
     using size_type = long;
     using path_type = std::string;
     using wpath_type = std::wstring;
+#if defined(_MSC_VER)
+    using seek_offset_t = int64_t;
+#else
     using seek_offset_t = long;
+#endif
 #endif
 
 	StreamIo (ManagedStreamCallbacks* cb);
