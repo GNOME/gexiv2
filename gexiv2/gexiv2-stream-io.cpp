@@ -120,7 +120,7 @@ int StreamIo::putb (Exiv2::byte data) {
     return EOF;
 }
 
-int StreamIo::seek (long offset, Position position) {
+int StreamIo::seek(seek_offset_t offset, Position position) {
     // FIXME: handle Error
     switch (position) {
         case (beg):

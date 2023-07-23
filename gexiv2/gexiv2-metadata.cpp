@@ -57,7 +57,7 @@ public:
     size_type _size;
 
     ~GioIo() { g_clear_object (&_is); g_clear_error (&_error); _seekable = NULL;}
-#if defined(_MSC_VER)
+#if defined(_MSC_VER) || EXIV2_TEST_VERSION(0, 27, 99)
     typedef int64_t seek_offset_t;
 #else
     typedef long seek_offset_t;
