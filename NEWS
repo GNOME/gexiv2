@@ -1,3 +1,14 @@
+gexiv2 0.14.2 - 24 Jul 2023 (stable)
+
+ * Make compatible with exiv2 0.28 or later
+ * Fix double free if creation of meta-data fails
+ * Fix floating point compare in tests
+
+All contributors to this release:
+ - psykose <alice@ayaya.dev>
+ - Kevin Backhouse <kevinbackhouse@github.com>
+ - Jacob Boerema <jgboerema@gmail.com>
+
 gexiv2 0.14.1 - 5 May 2023 (stable)
 
  * Clean-up python support
