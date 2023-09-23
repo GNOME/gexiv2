@@ -1,6 +1,9 @@
 entities = configuration_data()
 entities.set('VERSION', meson.project_version())
 
+
+gidocgen = find_program('gi-docgen', required: true)
+
 gssdp_toml = configure_file (
     input: 'gexiv2.toml.in',
     output: 'gexiv2.toml',
@@ -14,7 +17,7 @@ custom_target(
     input: gir[0],
     output: 'GExiv2',
     command : [
-        gidocgen_dep,
+        gidocgen,
         'generate',
         '--quiet',
         '--add-include-path=@0@'.format(meson.current_build_dir() / '../libgssdp'),
