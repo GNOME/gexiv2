@@ -17,3 +17,19 @@ show_index_summary = true
 [source-location]
 base_url = "https://gitlab.gnome.org/GNOME/gexiv2/-/blob/master"
 
+[dependencies."GObject-2.0"]
+name = "GObject"
+description = "The base type system library"
+docs_url = "https://docs.gtk.org/gobject/"
+
+[dependencies."GLib-2.0"]
+name = "GLib"
+description = "General-purpose utility library"
+docs_url = "https://docs.gtk.org/glib/"
+
+[dependencies."Exiv2"]
+name = "Exiv2"
+description = "C++ image tag reading library"
+docs_url = "https://exiv2.org/doc/index.html"
+
+urlmap_file = "urlmap.js"

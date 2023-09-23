@@ -117,4 +117,6 @@ if get_option('introspection')
                                install : true,
                                packages: pc_deps)
     endif
+else
+    gir = ['', '']
 endif

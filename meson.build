@@ -45,7 +45,9 @@ subdir('gexiv2')
 
 gidocgen_dep = dependency('gi-docgen', version: '>= 2021.1',
                           fallback: ['gi-docgen', 'dummy_dep'],
-                          required: get_option('gtk_doc') and get_option('introspection')
+                          native: true,
+                          required: get_option('gtk_doc') and get_option('introspection'),
+                          disabler: true
                       )
 
 if get_option('gtk_doc')
