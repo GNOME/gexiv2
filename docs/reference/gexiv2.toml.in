@@ -32,4 +32,5 @@ name = "Exiv2"
 description = "C++ image tag reading library"
 docs_url = "https://exiv2.org/doc/index.html"
 
+[extra]
 urlmap_file = "urlmap.js"
