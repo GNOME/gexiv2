@@ -1233,7 +1233,9 @@ gchar*		gexiv2_metadata_generate_xmp_packet	(GExiv2Metadata *self, GExiv2XmpForm
  * @self: An instance of #GExiv2Metadata
  * @error: (allow-none): A return location for a #GError or %NULL
  *
- * Returns: (transfer full) (allow-none): The currently-encoded XMP packet (see gexiv2_metadata_generate_xmp_packet).
+ * Get the currently encoded XMP packet (after having called [method@GExiv2.Metadata.try_generate_xmp_packet])
+ *
+ * Returns: (transfer full) (allow-none): %NULL if no packet was generated previously, the XMP packet contents otherwise
  *
  * Since: 0.12.2
  */
@@ -1243,6 +1245,8 @@ gchar*			gexiv2_metadata_try_get_xmp_packet	(GExiv2Metadata *self, GError **erro
  * gexiv2_metadata_get_xmp_packet:
  * @self: An instance of #GExiv2Metadata
  *
+ * Get the currently encoded XMP packet (after having called [method@GExiv2.Metadata.try_get_xmp_packet])
+
  * Returns: (transfer full) (allow-none): The currently-encoded XMP packet (see gexiv2_metadata_generate_xmp_packet).
  *
  * Deprecated: 0.12.2: Use gexiv2_metadata_try_get_xmp_packet() instead.
@@ -1324,6 +1328,8 @@ void gexiv2_metadata_try_unregister_all_xmp_namespaces(GError** error);
  * gexiv2_metadata_get_xmp_namespace_for_tag:
  * @tag: (in): Full tag name (e.g. "Xmp.dc.subject") or XMP namespace identifier (e.g. "dc")
  *
+ * Look up the URI for the namespace for @tag
+ *
  * Returns: (transfer full): %NULL if there was no namespace registered for the tag, the URI of the namespace otherwise.
  *
  * Since: 0.12.2
@@ -1337,6 +1343,8 @@ char* gexiv2_metadata_get_xmp_namespace_for_tag(const char* tag);
  * gexiv2_metadata_try_get_xmp_namespace_for_tag:
  * @tag: (in): Full tag name (e.g. "Xmp.dc.subject") or XMP namespace identifier (e.g. "dc")
  * @error: (allow-none): A return location for a #GError or %NULL
+ *
+ * Look up the URI for the namespace for @tag
  *
  * Returns: (transfer full): %NULL if there was no namespace registered for the tag, the URI of the namespace otherwise.
  *
