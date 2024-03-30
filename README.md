@@ -14,10 +14,10 @@ Please consult the [INSTALL](INSTALL) and [COPYING](COPYING) files for more info
 
 ## Contacting the developers
 
-* For reporting issues, please use GitLab: [](https://gitlab.gnome.org/GNOME/gexiv2/issues/new)
+* For reporting issues, please use [GitLab](https://gitlab.gnome.org/GNOME/gexiv2/issues/new)
 * We also encourage you to discuss gexiv2 on GNOME Discourse. See
-[](https://discourse.gnome.org/tag/gexiv2) for details.
-* If you prefer chat, try Shotwell's matrix room: [](https://matrix.to/#/#shotwell:gnome.org))
+[this discourse tag](https://discourse.gnome.org/tag/gexiv2) for details.
+* If you prefer chat, try Shotwell's [matrix room](https://matrix.to/#/#shotwell:gnome.org)
 
 
 ## Further resources
