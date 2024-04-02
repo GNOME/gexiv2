@@ -39,10 +39,12 @@
 namespace compat {
 #if EXIV2_TEST_VERSION(0,27,99)
 using image_ptr = Exiv2::Image::UniquePtr;
+using io_ptr = Exiv2::BasicIo::UniquePtr;
 #else
 #pragma GCC diagnostic push
 #pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 using image_ptr = Exiv2::Image::AutoPtr;
+using io_ptr = Exiv2::BasicIo::AutoPtr;
 #pragma GCC diagnostic pop
 #endif
 } // namespace util
@@ -546,9 +548,14 @@ GBytes* gexiv2_metadata_as_bytes(GExiv2Metadata* self, GBytes* bytes, GError** e
         if (bytes == nullptr) {
             auto& internalIo = self->priv->image->io();
             auto data = internalIo.mmap();
-            auto memIo = Exiv2::BasicIo::AutoPtr(new Exiv2::MemIo(data, internalIo.size()));
+
+            auto memIo = compat::io_ptr(new Exiv2::MemIo(data, internalIo.size()));
             internalIo.munmap();
+#if EXIV2_TEST_VERSION(0, 27, 99)
+            image = Exiv2::ImageFactory::open(std::move(memIo));
+#else
             image = Exiv2::ImageFactory::open(memIo);
+#endif
         } else {
             gsize size{0};
             auto* data = g_bytes_get_data(bytes, &size);
@@ -556,8 +563,13 @@ GBytes* gexiv2_metadata_as_bytes(GExiv2Metadata* self, GBytes* bytes, GError** e
                                               static_cast<GExiv2::GioIo::size_type>(size));
         }
 
-        gexiv2_metadata_save_internal(self, image, error);
+        // save io of image first, since we might be moving it in the call below
         auto& io = image->io();
+#if EXIV2_TEST_VERSION(0, 27, 99)
+        gexiv2_metadata_save_internal(self, std::move(image), error);
+#else
+        gexiv2_metadata_save_internal(self, image, error);
+#endif
         auto* data = reinterpret_cast<char*>(io.mmap());
         auto size = static_cast<gsize>(io.size());
         auto* result = g_bytes_new(data, size);
