@@ -747,6 +747,49 @@ gboolean gexiv2_metadata_save_file (GExiv2Metadata *self, const gchar *path, GEr
     return FALSE;
 }
 
+GBytes* gexiv2_metadata_as_bytes(GExiv2Metadata* self, GBytes* bytes, GError** error) {
+    g_return_val_if_fail(GEXIV2_IS_METADATA(self), FALSE);
+
+    try {
+        image_ptr image;
+        if (bytes == nullptr) {
+            auto& internalIo = self->priv->image->io();
+            auto data = internalIo.mmap();
+            auto memIo = GioIo::ptr_type(new Exiv2::MemIo(data, internalIo.size()));
+            internalIo.munmap();
+#if EXIV2_TEST_VERSION(0,27,99)
+            image = Exiv2::ImageFactory::open(std::move(memIo));
+#else
+            image = Exiv2::ImageFactory::open(memIo);
+#endif
+        } else {
+            gsize size{0};
+            auto* data = g_bytes_get_data(bytes, &size);
+            image = Exiv2::ImageFactory::open(static_cast<const Exiv2::byte*>(data),
+                                              static_cast<GioIo::size_type>(size));
+        }
+
+        auto& io = image->io();
+#if EXIV2_TEST_VERSION(0,27,99)
+        gexiv2_metadata_save_internal(self, std::move(image), error);
+#else
+        gexiv2_metadata_save_internal(self, image, error);
+#endif
+        auto* data = reinterpret_cast<char*>(io.mmap());
+        auto size = static_cast<gsize>(io.size());
+        auto* result = g_bytes_new(data, size);
+        io.munmap();
+
+        return result;
+    } catch (Exiv2::Error& e) {
+        error << e;
+    } catch (std::exception& e) {
+        error << e;
+    }
+
+    return nullptr;
+}
+
 gboolean gexiv2_metadata_has_tag(GExiv2Metadata *self, const gchar* tag) {
     GError* error = nullptr;
     gboolean value = FALSE;
