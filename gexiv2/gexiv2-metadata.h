@@ -369,6 +369,22 @@ gboolean		gexiv2_metadata_save_external			(GExiv2Metadata *self, const gchar *pa
 gboolean		gexiv2_metadata_save_file			(GExiv2Metadata *self, const gchar *path, GError **error);
 
 /**
+ * gexiv2_metadata_as_bytes:
+ * @self: An instance of #GExiv2Metadata
+ * @bytes: (allow-none): An image buffer to update the meta-data on, nor %NULL
+ * @error: (allow-none): A return location for a #GError or %NULL
+ *
+ * Saves the metadata to the stream by reading the stream into memory,copying this object's
+ * metadata into the image, then writing the image as a stream back out.
+ *
+ * if @bytes is %NULL, a copy of the internal image with updated meta-data will be returned.
+ *
+ * Returns: (transfer full): A newly allocated GBytes object containing the image with new meta-data
+ *
+ */
+GBytes* gexiv2_metadata_as_bytes(GExiv2Metadata* self, GBytes* bytes, GError** error);
+
+/**
  * gexiv2_metadata_has_tag:
  * @self: An instance of #GExiv2Metadata
  * @tag: Exiv2 tag

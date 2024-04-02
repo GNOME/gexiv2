@@ -536,6 +536,39 @@ gboolean gexiv2_metadata_save_file (GExiv2Metadata *self, const gchar *path, GEr
     return FALSE;
 }
 
+GBytes* gexiv2_metadata_as_bytes(GExiv2Metadata* self, GBytes* bytes, GError** error) {
+    g_return_val_if_fail(GEXIV2_IS_METADATA(self), FALSE);
+
+    try {
+        image_ptr image;
+        if (bytes == nullptr) {
+            auto& internalIo = self->priv->image->io();
+            auto data = internalIo.mmap();
+            auto memIo = Exiv2::BasicIo::AutoPtr(new Exiv2::MemIo(data, internalIo.size()));
+            internalIo.munmap();
+            image = Exiv2::ImageFactory::open(memIo);
+        } else {
+            gsize size{0};
+            auto* data = g_bytes_get_data(bytes, &size);
+            image = Exiv2::ImageFactory::open(static_cast<const Exiv2::byte*>(data),
+                                              static_cast<GExiv2::GioIo::size_type>(size));
+        }
+
+        gexiv2_metadata_save_internal(self, image, error);
+        auto& io = image->io();
+        auto* data = reinterpret_cast<char*>(io.mmap());
+        auto size = static_cast<gsize>(io.size());
+        auto* result = g_bytes_new(data, size);
+        io.munmap();
+
+        return result;
+    } catch (Exiv2::Error& e) {
+        g_set_error_literal(error, g_quark_from_string("GExiv2"), static_cast<int>(e.code()), e.what());
+    }
+
+    return nullptr;
+}
+
 gboolean gexiv2_metadata_has_tag(GExiv2Metadata *self, const gchar* tag) {
     GError* error = nullptr;
     gboolean value = FALSE;
