@@ -13,7 +13,6 @@
 
 #include <glib-object.h>
 #include <gio/gio.h>
-#include <gexiv2/gexiv2-managed-stream.h>
 #include <gexiv2/gexiv2-preview-properties.h>
 #include <gexiv2/gexiv2-preview-image.h>
 
@@ -317,20 +316,6 @@ gboolean		gexiv2_metadata_open_path			(GExiv2Metadata *self, const gchar *path, 
 gboolean		gexiv2_metadata_open_buf			(GExiv2Metadata *self, const guint8 *data, glong n_data, GError **error);
 
 /**
- * gexiv2_metadata_open_stream: (skip)
- * @self: An instance of #GExiv2Metadata
- * @cb: A #ManagedStreamCallbacks struct offering stream access.
- * @error: (allow-none): A return location for a #GError or %NULL
- *
- * The stream must be an image format supported by Exiv2.
- *
- * Returns: Boolean success indicator
- *
- */
-G_DEPRECATED
-gboolean		gexiv2_metadata_open_stream			(GExiv2Metadata *self, ManagedStreamCallbacks* cb, GError **error);
-
-/**
  * gexiv2_metadata_from_stream:
  *
  * This function does not work and will be removed in a future release.
@@ -381,21 +366,6 @@ gboolean		gexiv2_metadata_save_external			(GExiv2Metadata *self, const gchar *pa
  *
  */
 gboolean		gexiv2_metadata_save_file			(GExiv2Metadata *self, const gchar *path, GError **error);
-
-/**
- * gexiv2_metadata_save_stream: (skip)
- * @self: An instance of #GExiv2Metadata
- * @cb: A #ManagedStreamCallbacks struct offering stream access.
- * @error: (allow-none): A return location for a #GError or %NULL
- *
- * Saves the metadata to the stream by reading the stream into memory,copying this object's
- * metadata into the image, then writing the image as a stream back out.
- *
- * Returns: Boolean success indicator.
- *
- */
-G_DEPRECATED
-gboolean		gexiv2_metadata_save_stream			(GExiv2Metadata *self, ManagedStreamCallbacks* cb, GError **error);
 
 /**
  * gexiv2_metadata_has_tag:
