@@ -39,6 +39,7 @@ class GioIo : public Exiv2::BasicIo {
         if (_mmap_stream != nullptr) {
             g_object_unref(G_OBJECT(_mmap_stream));
             if (_mmap_stream != nullptr) {
+                g_object_remove_weak_pointer(G_OBJECT(_mmap_stream), reinterpret_cast<gpointer*>(_mmap_stream));
                 g_critical("Mismatching mmap/munmap calls, expect memory leak");
             }
         }
