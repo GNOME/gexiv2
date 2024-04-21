@@ -2,7 +2,7 @@ pkg = import('pkgconfig')
 
 as_version = meson.project_version().split('.')
 
-soversion = 2
+soversion = 4
 library_minor = as_version[0].to_int() * 100 + as_version[1].to_int()
 library_micro = as_version[2].to_int()
 
