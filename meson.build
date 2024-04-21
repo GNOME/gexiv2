@@ -1,7 +1,7 @@
 project(
     'gexiv2',
     ['c', 'cpp'],
-    version : '0.14.2',
+    version : '0.15.0',
     license: 'GPL-2.0-or-later',
     meson_version : '>=0.51',
     default_options : [
@@ -9,7 +9,7 @@ project(
     ]
 )
 
-project_api_version = '0.10'
+project_api_version = '0.12'
 message('Project API version: ' + project_api_version)
 
 project_url = 'https://wiki.gnome.org/Projects/gexiv2'
@@ -17,7 +17,7 @@ project_url = 'https://wiki.gnome.org/Projects/gexiv2'
 gnome = import('gnome')
 pkg = import('pkgconfig')
 
-exiv2 = dependency('exiv2', version : '>= 0.26')
+exiv2 = dependency('exiv2', version : '>= 0.27')
 
 # when building for 0.26 or 0.27 and with clang's libc++, reenable std::auto_ptr
 # and remove deprecation warnings for that
