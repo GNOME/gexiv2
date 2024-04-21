@@ -545,27 +545,6 @@ gboolean gexiv2_metadata_open_buf(GExiv2Metadata* self, const guint8* data, glon
     return FALSE;
 }
 
-gboolean gexiv2_metadata_open_stream (GExiv2Metadata *self, ManagedStreamCallbacks* cb, GError **error) {
-    g_return_val_if_fail (GEXIV2_IS_METADATA (self), FALSE);
-
-    try {
-        StreamIo::ptr_type stream_ptr{new StreamIo (cb)};
-#if EXIV2_TEST_VERSION(0,27,99)
-        self->priv->image = Exiv2::ImageFactory::open (std::move(stream_ptr));
-#else
-        self->priv->image = Exiv2::ImageFactory::open (stream_ptr);
-#endif
-        
-        return gexiv2_metadata_open_internal (self, error);
-    } catch (Exiv2::Error &e) {
-        error << e;
-    } catch (std::exception& e) {
-        error << e;
-    }
-    
-    return FALSE;
-}
-
 gboolean gexiv2_metadata_from_stream(GExiv2Metadata *self, GInputStream *stream, GError **error) {
     g_return_val_if_fail (GEXIV2_IS_METADATA (self), FALSE);
 
@@ -764,26 +743,6 @@ gboolean gexiv2_metadata_save_file (GExiv2Metadata *self, const gchar *path, GEr
     }
 #endif
     catch (std::exception& e) {
-        error << e;
-    }
-
-    return FALSE;
-}
-
-gboolean gexiv2_metadata_save_stream (GExiv2Metadata *self, ManagedStreamCallbacks* cb, GError **error) {
-    g_return_val_if_fail(GEXIV2_IS_METADATA(self), FALSE);
-
-    try {
-        StreamIo::ptr_type stream_ptr{new StreamIo (cb)};
-        
-#if EXIV2_TEST_VERSION(0,27,99)
-        return gexiv2_metadata_save_internal (self, Exiv2::ImageFactory::open (std::move(stream_ptr)), error);
-#else
-        return gexiv2_metadata_save_internal (self, Exiv2::ImageFactory::open (stream_ptr), error);
-#endif
-    } catch (Exiv2::Error &e) {
-        error << e;
-    } catch (std::exception& e) {
         error << e;
     }
     
