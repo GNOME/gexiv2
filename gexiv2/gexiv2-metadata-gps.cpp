@@ -15,7 +15,6 @@
 #include <string>
 #include <cmath>
 #include <stdexcept>
-#include <stdio.h>
 #include <glib-object.h>
 #include <exiv2/exiv2.hpp>
 

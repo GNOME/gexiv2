@@ -15,6 +15,7 @@
 
 #include "gexiv2-metadata.h"
 
+#include "gexiv2-gio-io.h"
 #include "gexiv2-log-private.h"
 #include "gexiv2-log.h"
 #include "gexiv2-metadata-private.h"
@@ -38,229 +39,12 @@
 #if EXIV2_TEST_VERSION(0,27,99)
 using image_ptr = Exiv2::Image::UniquePtr;
 #else
+#pragma GCC diagnostic push
+#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
 using image_ptr = Exiv2::Image::AutoPtr;
+#pragma GCC diagnostic pop
 #endif
 
-namespace {
-class GioIo : public Exiv2::BasicIo {
-public:
-    GioIo (GInputStream *is)
-        : BasicIo ()
-        , _is (G_INPUT_STREAM (g_object_ref (is)))
-        , _seekable(G_IS_SEEKABLE(_is) ? G_SEEKABLE (_is) : NULL)
-        , _error{nullptr}
-        , _eof{false}
-        {}
-#if EXIV2_TEST_VERSION(0,27,99)
-    using size_type = size_t;
-#else
-    using size_type = long;
-#endif
-
-    size_type _size;
-
-    ~GioIo() { g_clear_object (&_is); g_clear_error (&_error); _seekable = NULL;}
-#if defined(_MSC_VER) || EXIV2_TEST_VERSION(0, 27, 99)
-    typedef int64_t seek_offset_t;
-#else
-    typedef long seek_offset_t;
-#endif
-
-#if EXIV2_TEST_VERSION(0,27,99)
-    using ptr_type = Exiv2::BasicIo::UniquePtr;
-#else
-    using ptr_type = Exiv2::BasicIo::AutoPtr;
-#endif
-
-#if EXIV2_TEST_VERSION(0, 27, 99)
-    void populateFakeData() override{};
-#endif
-    int open() override {
-        if (_seekable == nullptr)
-            return 0;
-
-        if (_size >= 0)
-            return 0;
-
-        auto position = tell();
-        seek (0, Exiv2::BasicIo::end);
-        _size = tell();
-        seek (position, Exiv2::BasicIo::beg);
-
-        return 0;
-    }
-
-    int close() override { return 0; }
-
-    // Writing is not supported
-    size_type write(const Exiv2::byte* /*data*/, size_type /*wcount*/) override { return 0; }
-    size_type write(BasicIo& /*src*/) override { return 0; }
-    int putb(Exiv2::byte /*data*/) override { return EOF; }
-
-    Exiv2::DataBuf read(size_type rcount) override {
-        Exiv2::DataBuf b{rcount};
-
-#ifdef EXIV2_DATABUF_HAS_PRIVATE_PDATA
-        auto bytes_read = this->read(b.data(), rcount);
-#else
-        auto bytes_read = this->read(b.pData_, rcount);
-#endif
-        if (bytes_read > 0 && bytes_read != rcount) {
-#ifdef EXIV2_DATABUF_HAS_PRIVATE_PDATA
-            b = Exiv2::DataBuf{b};
-#else
-            b.reset({b.pData_, bytes_read});
-#endif
-        }
-
-        return b;
-    }
-
-    size_type read(Exiv2::byte* buf, size_type rcount) override {
-        GError *error = NULL;
-        gssize result = 0;
-
-        result = g_input_stream_read(_is, reinterpret_cast<void *>(buf), rcount, NULL, &error);
-        if (error != NULL) {
-            g_critical ("Error reading from stream: %d %s", error->code, error->message);
-            g_clear_error (&_error);
-            _error = error;
-
-#if EXIV2_TEST_VERSION(0,27,0)
-            throw Exiv2::Error(Exiv2::ErrorCode::kerFailedToReadImageData);
-#else
-            throw Exiv2::Error(2);
-#endif
-            return 0;
-        }
-
-        if (result == 0) {
-            _eof = true;
-        } else {
-            _eof = false;
-        }
-
-        return result;
-    }
-
-    int getb() override {
-        Exiv2::byte b;
-        return this->read (&b, 1) == 1 ? b : EOF;
-    }
-
-    void transfer(Exiv2::BasicIo& /*src*/) override {
-        // Does not seem necessary for Read-only support
-    }
-
-    int seek(seek_offset_t offset, Exiv2::BasicIo::Position position) override {
-        if (_seekable != NULL && g_seekable_can_seek (_seekable)) {
-            GSeekType t = G_SEEK_SET;
-            switch (position) {
-                case Exiv2::BasicIo::cur:
-                    t = G_SEEK_CUR;
-                    break;
-                case Exiv2::BasicIo::beg:
-                    t = G_SEEK_SET;
-                    break;
-                case Exiv2::BasicIo::end:
-                    t = G_SEEK_END;
-                    break;
-                default:
-                    g_assert_not_reached ();
-                    break;
-            }
-
-            GError *error = NULL;
-            g_seekable_seek (_seekable, offset, t, NULL, &error);
-            if (error != NULL) {
-                g_clear_error(&_error);
-                g_critical ("Failed to seek: %s", error->message);
-                _error = error;
-
-                return -1;
-            }
-
-            return 0;
-        } else {
-            // Can only seek forward here...
-            if (position != Exiv2::BasicIo::cur) {
-                return -1;
-            }
-
-            GError *error = NULL;
-            g_input_stream_skip (_is, offset, NULL, &error);
-            if (error != NULL) {
-                g_clear_error(&_error);
-                _error = error;
-                g_critical("Failed to seek forward: %s", error->message);
-
-                return -1;
-            }
-
-            return 0;
-        }
-    }
-
-    Exiv2::byte* mmap(bool /*writable*/) override { return nullptr; }
-
-    int munmap() override { return 0; }
-
-    size_type tell() const override {
-        if (_seekable != nullptr && g_seekable_can_seek (_seekable)) {
-            return static_cast<long>(g_seekable_tell (_seekable));
-        } else {
-            return -1;
-        }
-    }
-
-    size_t size() const override { return static_cast<size_t>(_size); }
-
-    bool isopen() const override { return true; }
-
-    int error() const override { return _error == nullptr ? 0 : 1; }
-
-    bool eof() const override { return _eof; }
-
-#if EXIV2_TEST_VERSION(0, 27, 99)
-    const std::string& path() const noexcept override {
-        static std::string info{"GIO Wrapper"};
-        return info;
-    }
-#else
-    std::string path() const override { return "GIO Wrapper"; }
-#endif
-
-#ifdef EXV_UNICODE_PATH
-#if EXIV2_TEST_VERSION(0, 27, 99)
-    const std::wstring& wpath() const noexcept override {
-#else
-    std::wstring wpath() const override {
-#endif
-        std::string p = path();
-        std::wstring w(p.length(), L' ');
-        std::copy(p.begin(), p.end(), w.begin());
-        return w;
-    }
-#endif
-
-#if EXIV2_TEST_VERSION(0,27,99)
-    Exiv2::BasicIo::UniquePtr temporary() const {
-        return Exiv2::BasicIo::UniquePtr(nullptr);
-    }
-#else
-    Exiv2::BasicIo::AutoPtr temporary() const {
-        return Exiv2::BasicIo::AutoPtr(nullptr);
-    }
-#endif
-
-
-private:
-    GInputStream *_is;
-    GSeekable *_seekable;
-    GError *_error;
-    bool _eof;
-}; // class GioIo
-} // Anonymous namespace
 
 // -----------------------------------------------------------------------------
 // Misc internal helper functions
@@ -546,8 +330,13 @@ gboolean gexiv2_metadata_open_buf(GExiv2Metadata* self, const guint8* data, glon
 gboolean gexiv2_metadata_from_stream(GExiv2Metadata *self, GInputStream *stream, GError **error) {
     g_return_val_if_fail (GEXIV2_IS_METADATA (self), FALSE);
 
+    if (!G_IS_SEEKABLE(stream) || !g_seekable_can_seek(G_SEEKABLE(stream))) {
+        g_set_error_literal(error, G_IO_ERROR, G_IO_ERROR_INVAL, "Passed stream is not seekable");
+        return false;
+    }
+
     try {
-        GioIo::ptr_type gio_ptr{new GioIo (stream)};
+        GExiv2::GioIo::ptr_type gio_ptr{new GExiv2::GioIo(stream)};
 #if EXIV2_TEST_VERSION(0,27,99)
         self->priv->image = Exiv2::ImageFactory::open (std::move(gio_ptr));
 #else
@@ -755,7 +544,7 @@ GBytes* gexiv2_metadata_as_bytes(GExiv2Metadata* self, GBytes* bytes, GError** e
         if (bytes == nullptr) {
             auto& internalIo = self->priv->image->io();
             auto data = internalIo.mmap();
-            auto memIo = GioIo::ptr_type(new Exiv2::MemIo(data, internalIo.size()));
+            auto memIo = GExiv2::GioIo::ptr_type(new Exiv2::MemIo(data, internalIo.size()));
             internalIo.munmap();
 #if EXIV2_TEST_VERSION(0,27,99)
             image = Exiv2::ImageFactory::open(std::move(memIo));
@@ -766,7 +555,7 @@ GBytes* gexiv2_metadata_as_bytes(GExiv2Metadata* self, GBytes* bytes, GError** e
             gsize size{0};
             auto* data = g_bytes_get_data(bytes, &size);
             image = Exiv2::ImageFactory::open(static_cast<const Exiv2::byte*>(data),
-                                              static_cast<GioIo::size_type>(size));
+                                              static_cast<GExiv2::GioIo::size_type>(size));
         }
 
         auto& io = image->io();
