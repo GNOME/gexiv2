@@ -59,7 +59,9 @@ gexiv2 = library('gexiv2',
                   'gexiv2-metadata-private.h',
                   'gexiv2-stream-io.h',
                   'gexiv2-preview-properties-private.h',
-                  'gexiv2-preview-image-private.h'] +
+                  'gexiv2-preview-image-private.h',
+                  'gexiv2-util-private.h'
+                  ] +
                  gexiv2_headers +
                  [version_header, config_h] +
                  enum_sources,

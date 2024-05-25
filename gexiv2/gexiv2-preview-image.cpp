@@ -9,6 +9,7 @@
 
 #include "gexiv2-preview-image.h"
 #include "gexiv2-preview-image-private.h"
+#include "gexiv2-util-private.h"
 #include <glib-object.h>
 #include <gio/gio.h>
 
@@ -66,7 +67,9 @@ GExiv2PreviewImage* gexiv2_preview_image_new(Exiv2::PreviewManager* manager,
 
         g_object_unref(self);
 
-        g_set_error_literal(error, g_quark_from_string("GExiv2"), static_cast<int>(e.code()), e.what());
+        error << e;
+    } catch (std::exception& e) {
+        error << e;
     }
     return nullptr;
 }
@@ -141,7 +144,9 @@ glong gexiv2_preview_image_try_write_file(GExiv2PreviewImage* self, const gchar*
     try {
         return self->priv->image->writeFile(path);
     } catch (Exiv2::Error& e) {
-        g_set_error_literal(error, g_quark_from_string("GExiv2"), static_cast<int>(e.code()), e.what());
+        error << e;
+    } catch (std::exception& e) {
+        error << e;
     }
     return -1;
 }

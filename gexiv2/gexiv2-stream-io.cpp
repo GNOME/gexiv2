@@ -10,11 +10,15 @@
  * ManagedStream to exiv2.
  */
 
+// config.h needs to be the first include
+// clang-format off
+#include <config.h>
+// clang-format on
+
 #include "gexiv2-stream-io.h"
 
 #include "gexiv2-managed-stream.h"
 
-#include <config.h>
 #include <exception>
 #include <exiv2/exiv2.hpp>
 #include <gio/gio.h>

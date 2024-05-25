@@ -10,6 +10,8 @@
 
 #include "gexiv2-metadata.h"
 #include "gexiv2-metadata-private.h"
+#include "gexiv2-util-private.h"
+
 #include <string>
 #include <glib-object.h>
 #include <exiv2/exiv2.hpp>
@@ -140,7 +142,9 @@ gchar* gexiv2_metadata_get_iptc_tag_string (GExiv2Metadata *self, const gchar* t
             return g_strdup (os.str().c_str());
         }
     } catch (Exiv2::Error& e) {
-        g_set_error_literal(error, g_quark_from_string("GExiv2"), static_cast<int>(e.code()), e.what());
+        error << e;
+    } catch (std::exception& e) {
+        error << e;
     }
     
     return nullptr;
@@ -186,7 +190,9 @@ gchar* gexiv2_metadata_get_iptc_tag_interpreted_string (GExiv2Metadata *self, co
             return g_strdup (os.str().c_str());
         }
     } catch (Exiv2::Error& e) {
-        g_set_error_literal(error, g_quark_from_string("GExiv2"), static_cast<int>(e.code()), e.what());
+        error << e;
+    } catch (std::exception& e) {
+        error << e;
     }
     
     return nullptr;
@@ -214,27 +220,27 @@ gboolean gexiv2_metadata_set_iptc_tag_string (GExiv2Metadata *self, const gchar*
         }
 
         // Repeatable values can be any type
-       	GError** error = nullptr;
-      	const gchar* type = gexiv2_metadata_get_iptc_tag_type(tag, error);
-
-        if (error != nullptr && *error != nullptr) {
-            g_set_error_literal (error, g_quark_from_string ("GExiv2"), (*error)->code, (*error)->message);
+        GError* internal_error = nullptr;
+        const gchar* type = gexiv2_metadata_get_iptc_tag_type(tag, &internal_error);
+        if (internal_error != nullptr) {
+            g_propagate_error(error, internal_error);
             return FALSE;
         }
 
+        // FIXME: Can type ever be nullptr without internal_error being non-null?
         if (type == nullptr)
             throw Exiv2::Error(Exiv2::ErrorCode::kerInvalidKey, tag);
 
         auto v = Exiv2::Value::create(Exiv2::TypeInfo::typeId(static_cast<const std::string>(type)));
-
-
 
         if (v->read(static_cast<const std::string>(value)) != 0 || iptc_data.add(key,v.get()) != 0)
          	return FALSE;
 
         return TRUE;
     } catch (Exiv2::Error& e) {
-        g_set_error_literal(error, g_quark_from_string("GExiv2"), static_cast<int>(e.code()), e.what());
+        error << e;
+    } catch (std::exception& e) {
+        error << e;
     }
     
     return FALSE;
@@ -271,7 +277,9 @@ gchar** gexiv2_metadata_get_iptc_tag_multiple (GExiv2Metadata *self, const gchar
         
         return values;
     } catch (Exiv2::Error& e) {
-        g_set_error_literal(error, g_quark_from_string("GExiv2"), static_cast<int>(e.code()), e.what());
+        error << e;
+    } catch (std::exception& e) {
+        error << e;
     }
     
     g_slist_free_full (list, g_free);
@@ -322,14 +330,14 @@ gboolean gexiv2_metadata_set_iptc_tag_multiple (GExiv2Metadata *self, const gcha
         }
 
         // Repeatable values can be any type
-    	GError** error = nullptr;
-    	const gchar* type = gexiv2_metadata_get_iptc_tag_type(tag, error);
-
-        if (error != nullptr && *error != nullptr) {
-            g_set_error_literal (error, g_quark_from_string ("GExiv2"), (*error)->code, (*error)->message);
+        GError* internal_error = nullptr;
+        const gchar* type = gexiv2_metadata_get_iptc_tag_type(tag, &internal_error);
+        if (internal_error != nullptr) {
+            g_propagate_error(error, internal_error);
             return FALSE;
         }
 
+        // FIXME: Can type ever be nullptr without error being non-null?
         if (type == nullptr)
             throw Exiv2::Error(Exiv2::ErrorCode::kerInvalidKey, tag);
 
@@ -347,7 +355,9 @@ gboolean gexiv2_metadata_set_iptc_tag_multiple (GExiv2Metadata *self, const gcha
 
         return TRUE;
     } catch (Exiv2::Error& e) {
-        g_set_error_literal(error, g_quark_from_string("GExiv2"), static_cast<int>(e.code()), e.what());
+        error << e;
+    } catch (std::exception& e) {
+        error << e;
     }
     
     return FALSE;
@@ -361,7 +371,9 @@ const gchar* gexiv2_metadata_get_iptc_tag_label (const gchar* tag, GError **erro
         Exiv2::IptcKey key (tag);
         return Exiv2::IptcDataSets::dataSetTitle (key.tag (), key.record ());
     } catch (Exiv2::Error& e) {
-        g_set_error_literal(error, g_quark_from_string("GExiv2"), static_cast<int>(e.code()), e.what());
+        error << e;
+    } catch (std::exception& e) {
+        error << e;
     }
     
     return NULL;
@@ -375,7 +387,9 @@ const gchar* gexiv2_metadata_get_iptc_tag_description (const gchar* tag, GError 
         Exiv2::IptcKey key (tag);
         return Exiv2::IptcDataSets::dataSetDesc (key.tag (), key.record ());
     } catch (Exiv2::Error& e) {
-        g_set_error_literal(error, g_quark_from_string("GExiv2"), static_cast<int>(e.code()), e.what());
+        error << e;
+    } catch (std::exception& e) {
+        error << e;
     }
     
     return NULL;
@@ -389,7 +403,9 @@ const gchar* gexiv2_metadata_get_iptc_tag_type (const gchar* tag, GError **error
         Exiv2::IptcKey key (tag);
         return Exiv2::TypeInfo::typeName(Exiv2::IptcDataSets::dataSetType(key.tag(), key.record()));
     } catch (Exiv2::Error& e) {
-        g_set_error_literal(error, g_quark_from_string("GExiv2"), static_cast<int>(e.code()), e.what());
+        error << e;
+    } catch (std::exception& e) {
+        error << e;
     }
     
     return NULL;
@@ -403,7 +419,9 @@ gboolean gexiv2_metadata_iptc_tag_supports_multiple_values(const gchar* tag, GEr
         const Exiv2::IptcKey key(tag); // Check to see if @tag is valid
         return (Exiv2::IptcDataSets::dataSetRepeatable(key.tag(), key.record()) ? TRUE : FALSE);
     } catch (Exiv2::Error& e) {
-        g_set_error_literal(error, g_quark_from_string("GExiv2"), static_cast<int>(e.code()), e.what());
+        error << e;
+    } catch (std::exception& e) {
+        error << e;
     }
 
     return FALSE;
@@ -464,7 +482,9 @@ GBytes* gexiv2_metadata_get_iptc_tag_raw (GExiv2Metadata *self, const gchar* tag
             return g_byte_array_free_to_bytes(concatenated_raw_arrays);
         }
     } catch (Exiv2::Error& e) {
-        g_set_error_literal(error, g_quark_from_string("GExiv2"), static_cast<int>(e.code()), e.what());
+        error << e;
+    } catch (std::exception& e) {
+        error << e;
     }
 
     return nullptr;
