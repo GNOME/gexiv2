@@ -67,7 +67,7 @@ std::string detail::collate_key(const std::string& str) {
 
     while (not in.eof()) {
         // As long as there are no digits, we put them from input to output
-        while (not std::isdigit(in.peek()) && not in.eof()) {
+        while ((std::isdigit(in.peek()) == 0) && not in.eof()) {
             out << static_cast<char>(in.get());
         }
 
@@ -77,7 +77,7 @@ std::string detail::collate_key(const std::string& str) {
             uint64_t number;
             in >> number;
 
-            std::string to_append(std::to_string(number).length(), SUPERDIGIT);
+            std::string const to_append(std::to_string(number).length(), SUPERDIGIT);
 
             // ... and append it together with its length in : to the output
             out << COLLATION_SENTINAL << NUM_SENTINEL << to_append << number;
