@@ -327,6 +327,7 @@ gboolean		gexiv2_metadata_open_buf			(GExiv2Metadata *self, const guint8 *data, 
  * Returns: Boolean success indicator
  *
  */
+G_DEPRECATED
 gboolean		gexiv2_metadata_open_stream			(GExiv2Metadata *self, ManagedStreamCallbacks* cb, GError **error);
 
 /**
@@ -393,6 +394,7 @@ gboolean		gexiv2_metadata_save_file			(GExiv2Metadata *self, const gchar *path, 
  * Returns: Boolean success indicator.
  *
  */
+G_DEPRECATED
 gboolean		gexiv2_metadata_save_stream			(GExiv2Metadata *self, ManagedStreamCallbacks* cb, GError **error);
 
 /**
