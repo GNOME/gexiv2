@@ -16,13 +16,14 @@ class GioIo : public Exiv2::BasicIo {
         auto position = tell();
         seek(0, Exiv2::BasicIo::end);
         _size = tell();
-        if constexpr (std::is_same_v<GioIo::size_type, long>) {
-            g_debug("GioIo has size of %ld", _size);
-        } else {
-            g_debug("GioIo has size of %zu", _size);
-        }
+#if EXIV2_TEST_VERSION(0, 27, 99)
+        g_debug("GioIo has size of %zu", _size);
+#else
+        g_debug("GioIo has size of %ld", _size);
+#endif
         seek(position, Exiv2::BasicIo::beg);
     }
+
 #if EXIV2_TEST_VERSION(0, 27, 99)
     using size_type = size_t;
 #else
