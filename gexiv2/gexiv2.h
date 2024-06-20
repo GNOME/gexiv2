@@ -11,7 +11,6 @@
 #define GEXIV2_H
 
 #include <gexiv2/gexiv2-metadata.h>
-#include <gexiv2/gexiv2-managed-stream.h>
 #include <gexiv2/gexiv2-preview-properties.h>
 #include <gexiv2/gexiv2-preview-image.h>
 #include <gexiv2/gexiv2-log.h>

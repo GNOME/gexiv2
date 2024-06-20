@@ -13,7 +13,6 @@
 
 #include <glib-object.h>
 #include <gio/gio.h>
-#include <gexiv2/gexiv2-managed-stream.h>
 #include <gexiv2/gexiv2-preview-properties.h>
 #include <gexiv2/gexiv2-preview-image.h>
 
