@@ -1,13 +1,19 @@
 {
     "app-id" : "org.gnome.GExiv2",
     "runtime" : "org.gnome.Platform",
-    "runtime-version" : "44",
+    "runtime-version" : "master",
     "sdk" : "org.gnome.Sdk",
     "command" : "gexiv2",
     "tags" : [
         "nightly"
     ],
+    "sdk-extensions": [
+        "org.freedesktop.Sdk.Extension.llvm16"
+    ],
     "desktop-file-name-prefix" : "(Nightly) ",
+    "build-options": {
+        "append-path": "/usr/lib/sdk/llvm16/bin"
+    },
     "cleanup" : [
         "/include",
         "/lib/pkconfig",
