@@ -1,3 +1,16 @@
+gexiv2 0.14.3 - 28 Jun 2024 (stable)
+
+ * Prevent std::exception escaping from exiv2
+ * Declare gexiv2_metadata_open_stream and _save_stream as deprecated
+ * Documentation updates
+
+Bugs fixed in this release:
+ - https://gitlab.gnome.org/GNOME/gexiv2/issues/81
+
+All contributors to this release:
+ - Jens Georg <mail@jensge.org>
+ - Doomsdayrs <doomsdayrs@gmail.com>
+
 gexiv2 0.14.2 - 24 Jul 2023 (stable)
 
  * Make compatible with exiv2 0.28 or later
