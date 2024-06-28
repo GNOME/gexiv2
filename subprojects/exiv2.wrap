@@ -1,0 +1,7 @@
+[wrap-git]
+url = https://github.com/Exiv2/exiv2
+revision = 0.28.x
+depth = 1
+ 
+[provide]
+exiv2 = exiv2_dep
