@@ -36,16 +36,6 @@
 
 #include <exiv2/exiv2.hpp>
 
-#if EXIV2_TEST_VERSION(0,27,99)
-using image_ptr = Exiv2::Image::UniquePtr;
-#else
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-using image_ptr = Exiv2::Image::AutoPtr;
-#pragma GCC diagnostic pop
-#endif
-
-
 // -----------------------------------------------------------------------------
 // Misc internal helper functions
 
@@ -94,7 +84,7 @@ static void gexiv2_metadata_finalize (GObject *object);
 static void gexiv2_metadata_set_comment_internal (GExiv2Metadata *self, const gchar *new_comment);
 
 static gboolean gexiv2_metadata_open_internal (GExiv2Metadata *self, GError **error);
-static gboolean gexiv2_metadata_save_internal (GExiv2Metadata *self, image_ptr image, GError **error);
+static gboolean gexiv2_metadata_save_internal (GExiv2Metadata *self, Exiv2::Image::UniquePtr image, GError **error);
 
 static void gexiv2_metadata_init (GExiv2Metadata *self) {
     self->priv = (GExiv2MetadataPrivate*) gexiv2_metadata_get_instance_private(self);
@@ -336,12 +326,8 @@ gboolean gexiv2_metadata_from_stream(GExiv2Metadata *self, GInputStream *stream,
     }
 
     try {
-        GExiv2::GioIo::ptr_type gio_ptr{new GExiv2::GioIo(stream)};
-#if EXIV2_TEST_VERSION(0,27,99)
+        Exiv2::BasicIo::UniquePtr gio_ptr{new GExiv2::GioIo(stream)};
         self->priv->image = Exiv2::ImageFactory::open (std::move(gio_ptr));
-#else
-        self->priv->image = Exiv2::ImageFactory::open (gio_ptr);
-#endif
 
         return gexiv2_metadata_open_internal (self, error);
     } catch (Exiv2::Error &e) {
@@ -405,7 +391,7 @@ gboolean gexiv2_metadata_from_app1_segment(GExiv2Metadata* self, const guint8* d
     return FALSE;
 }
 
-static gboolean gexiv2_metadata_save_internal (GExiv2Metadata *self, image_ptr image, GError **error) {
+static gboolean gexiv2_metadata_save_internal (GExiv2Metadata *self, Exiv2::Image::UniquePtr image, GError **error) {
     g_return_val_if_fail(GEXIV2_IS_METADATA(self), FALSE);
     g_return_val_if_fail(self->priv != nullptr, FALSE);
     g_return_val_if_fail(self->priv->image.get() != nullptr, FALSE);
@@ -540,30 +526,22 @@ GBytes* gexiv2_metadata_as_bytes(GExiv2Metadata* self, GBytes* bytes, GError** e
     g_return_val_if_fail(GEXIV2_IS_METADATA(self), FALSE);
 
     try {
-        image_ptr image;
+        Exiv2::Image::UniquePtr image;
         if (bytes == nullptr) {
             auto& internalIo = self->priv->image->io();
             auto data = internalIo.mmap();
-            auto memIo = GExiv2::GioIo::ptr_type(new Exiv2::MemIo(data, internalIo.size()));
+            auto memIo = Exiv2::BasicIo::UniquePtr(new Exiv2::MemIo(data, internalIo.size()));
             internalIo.munmap();
-#if EXIV2_TEST_VERSION(0,27,99)
             image = Exiv2::ImageFactory::open(std::move(memIo));
-#else
-            image = Exiv2::ImageFactory::open(memIo);
-#endif
         } else {
             gsize size{0};
             auto* data = g_bytes_get_data(bytes, &size);
             image = Exiv2::ImageFactory::open(static_cast<const Exiv2::byte*>(data),
-                                              static_cast<GExiv2::GioIo::size_type>(size));
+                                              static_cast<size_t>(size));
         }
 
         auto& io = image->io();
-#if EXIV2_TEST_VERSION(0,27,99)
         gexiv2_metadata_save_internal(self, std::move(image), error);
-#else
-        gexiv2_metadata_save_internal(self, image, error);
-#endif
         auto* data = reinterpret_cast<char*>(io.mmap());
         auto size = static_cast<gsize>(io.size());
         auto* result = g_bytes_new(data, size);
@@ -1538,20 +1516,10 @@ gboolean gexiv2_metadata_get_exif_thumbnail (GExiv2Metadata *self, guint8** buff
     g_return_val_if_fail(self->priv->image.get() != nullptr, FALSE);
 
     Exiv2::ExifThumb thumb = Exiv2::ExifThumb(self->priv->image->exifData());
-#ifdef EXIV2_DATABUF_HAS_PRIVATE_PDATA
     auto buf = thumb.copy();
     *buffer = reinterpret_cast<guint8*>(g_malloc(buf.size()));
     std::copy(buf.begin(), buf.end(), *buffer);
     *size = buf.size();
-#else
-    Exiv2::DataBuf data = thumb.copy();
-    if (data.pData_ == nullptr)
-        return FALSE;
-    
-    *buffer = (guint8*) g_malloc(data.size_);
-    memcpy(*buffer, data.pData_, data.size_);
-    *size = data.size_;
-#endif
 
     return TRUE;
 }

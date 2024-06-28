@@ -332,13 +332,8 @@ glong gexiv2_metadata_get_xmp_tag_long (GExiv2Metadata *self, const gchar* tag, 
         while (it != xmp_data.end() && it->count() == 0)
             it++;
 
-#ifdef EXIV2_XMPDATUM_HAS_TO_LONG
-        if (it != xmp_data.end())
-            return it->toLong ();
-#else
         if (it != xmp_data.end())
             return static_cast<glong>(it->toInt64());
-#endif
     } catch (Exiv2::Error& e) {
         error << e;
     } catch (std::exception& e) {
@@ -667,20 +662,14 @@ gboolean gexiv2_metadata_try_register_xmp_namespace(const gchar* name, const gch
     g_return_val_if_fail(prefix != nullptr, FALSE);
     g_return_val_if_fail(error == nullptr || *error == nullptr, FALSE);
 
-#if defined(EXIV2_HAS_ANY_ERROR)
-    using Exiv2ErrorProxy = Exiv2::AnyError;
-#else
-    using Exiv2ErrorProxy = Exiv2::Error;
-#endif
-
     try {
         Exiv2::XmpProperties::ns(prefix);
-    } catch (Exiv2ErrorProxy& e1) {
+    } catch (Exiv2::Error& e1) {
         // No namespace, OK to register
         try {
             Exiv2::XmpProperties::registerNs(name, prefix);
             return TRUE;
-        } catch (Exiv2ErrorProxy& e2) {
+        } catch (Exiv2::Error& e2) {
             error << e2;
         }
     }
