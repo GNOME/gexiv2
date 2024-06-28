@@ -9,7 +9,7 @@ basic features of Exiv2 available to GNOME applications.
 
 ## Installation & Licensing
 
-Please consult the [INSTALL](INSTALL) and [COPYING](COPYING) files for more information.
+Please consult the [INSTALLING](INSTALLING.md) and [COPYING](COPYING) files for more information.
 
 
 ## Contacting the developers
