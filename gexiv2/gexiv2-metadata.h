@@ -321,7 +321,6 @@ gboolean		gexiv2_metadata_open_buf			(GExiv2Metadata *self, const guint8 *data, 
  * This function does not work and will be removed in a future release.
  *
  */
-G_DEPRECATED
 gboolean		gexiv2_metadata_from_stream			(GExiv2Metadata *self, GInputStream* stream, GError **error);
 
 /**
