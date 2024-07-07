@@ -17,7 +17,7 @@ project_url = 'https://wiki.gnome.org/Projects/gexiv2'
 gnome = import('gnome')
 pkg = import('pkgconfig')
 
-exiv2 = dependency('exiv2', version : '>= 0.27')
+exiv2 = dependency('exiv2', version : '>= 0.26')
 
 # when building for 0.26 or 0.27 and with clang's libc++, reenable std::auto_ptr
 # and remove deprecation warnings for that
