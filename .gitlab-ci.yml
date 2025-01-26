@@ -98,7 +98,7 @@ check-merge-request:
   script:
       - meson setup . ${MESON_BUILD_DIR} --prefix=/usr -Db_coverage=true -Dtests=true --werror ${MESON_EXTRA_ARGS}
       - ninja -C ${MESON_BUILD_DIR}
-      - [[ ${MESON_BUILD_DIR} = "build" ]] &&  meson dist -C ${MESON_BUILD_DIR} --no-tests
+      - [[ "${MESON_BUILD_DIR}" = "build" ]] &&  meson dist -C ${MESON_BUILD_DIR} --no-tests
   artifacts:
       expire_in: 1 day
       paths:
