@@ -38,6 +38,13 @@ exiv2-0-27:on-schedule:
 include:
     - remote: "https://gitlab.gnome.org/Infrastructure/freedesktop-ci-templates/-/raw/e195d80f35b45cc73668be3767b923fd76c70ed5/templates/ci-fairy.yml"
     - remote: 'https://gitlab.gnome.org/Infrastructure/freedesktop-ci-templates/-/raw/e195d80f35b45cc73668be3767b923fd76c70ed5/templates/fedora.yml'
+    - component: "gitlab.gnome.org/GNOME/citemplates/release-service@master"
+      inputs:
+        dist-job-name: build-fedora@x86_64
+        # gupnp tags are always of the format {PROJECT_NAME}-{version}
+        tarball-artifact-path: "build/meson-dist/${CI_COMMIT_TAG}.tar.xz"
+    - project: "GNOME/citemplates"
+      file: "templates/default-rules.yml"
 
 variables:
     MESON_TEST_TIMEOUT_MULTIPLIER: 3
@@ -48,7 +55,7 @@ stages:
     - build
     - test
     - analysis
-    - website
+    - deploy
 
 .check-template: &check
   extends:
@@ -91,6 +98,7 @@ check-merge-request:
   script:
       - meson setup . ${MESON_BUILD_DIR} --prefix=/usr -Db_coverage=true -Dtests=true --werror ${MESON_EXTRA_ARGS}
       - ninja -C ${MESON_BUILD_DIR}
+      - [[ ${MESON_BUILD_DIR} = "build" ]] &&  meson dist -C ${MESON_BUILD_DIR} --no-tests
   artifacts:
       expire_in: 1 day
       paths:
@@ -276,7 +284,7 @@ pages:
   extends:
     - .fdo.distribution-image@fedora
     - .gexiv2.fedora:41@x86_64
-  stage: website
+  stage: deploy
   script:
       - meson doc-build -Dgtk_doc=true
       - ninja -C doc-build
@@ -288,7 +296,7 @@ pages:
       - public
   needs:
     - build-fedora-container@x86_64
-  only:
-    - master
-    - /^wip\/.*\/ci.*$/
+  rules:
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULIT_BRANCH
+    - if: $CI_COMMIT_BRANCH == /^wip\/.*\/ci.*$/
 
