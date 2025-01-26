@@ -1,7 +1,7 @@
 {
     "app-id" : "org.gnome.GExiv2",
     "runtime" : "org.gnome.Platform",
-    "runtime-version" : "44",
+    "runtime-version" : "47",
     "sdk" : "org.gnome.Sdk",
     "command" : "gexiv2",
     "tags" : [

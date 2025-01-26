@@ -3,7 +3,7 @@
     - flatpak
   variables:
       EXIV2_REF: 'main'
-  image: quay.io/gnome_infrastructure/gnome-runtime-images:gnome-44
+  image: quay.io/gnome_infrastructure/gnome-runtime-images:gnome-47
   stage: build
   only:
     - schedules
@@ -34,11 +34,6 @@ exiv2-0-27:on-schedule:
     extends: .flatpak
     variables:
         EXIV2_REF: "0.27-maintenance"
-
-exiv2-0-26:on-schedule:
-    extends: .flatpak
-    variables:
-        EXIV2_REF: "0.26"
 
 include:
     - remote: "https://gitlab.gnome.org/Infrastructure/freedesktop-ci-templates/-/raw/0c312d9c7255f46e741d43bcd1930f09cd12efe7/templates/ci-fairy.yml"
