@@ -154,15 +154,7 @@ build-msys2-mingw64-ucrt@x86_64:
     MSYSTEM: "UCRT64"
   script:
     - C:\msys64\usr\bin\pacman --noconfirm -Syyuu
-    - C:\msys64\usr\bin\pacman --noconfirm -S --needed base-devel mingw-w64-ucrt-x86_64-toolchain mingw-w64-ucrt-x86_64-gcc mingw-w64-ucrt-x86_64-gobject-introspection mingw-w64-ucrt-x86_64-gtk-doc mingw-w64-ucrt-x86_64-meson mingw-w64-ucrt-x86_64-ninja mingw-w64-ucrt-x86_64-python-gobject mingw-w64-ucrt-x86_64-vala mingw-w64-ucrt-x86_64-cmake
-    - git clone https://github.com/exiv2/exiv2
-    - mkdir exiv2-build
-    - cmake -B exiv2-build -S exiv2 -GNinja -DEXIV2_BUILD_EXIV2_COMMAND=Off -DEXIV2_BUILD_SAMPLES=Off -DEXIV2_BUILD_UNIT_TESTS=Off -DEXIV2_ENABLE_BMFF=On
-    - ninja -C exiv2-build install
-    - meson --buildtype debug build
-    - cd build
-    - ninja
-    - meson test
+    - C:\msys64\usr\bin\bash .gitlab-ci\test-ucrt.sh
   artifacts:
     name: "${env:CI_JOB_NAME}-${env:CI_COMMIT_REF_NAME}"
     when: always
