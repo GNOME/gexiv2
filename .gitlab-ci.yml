@@ -154,7 +154,11 @@ build-msys2-mingw64-ucrt@x86_64:
     MSYSTEM: "UCRT64"
   script:
     - C:\msys64\usr\bin\pacman --noconfirm -Syyuu
-    - C:\msys64\usr\bin\pacman --noconfirm -S --needed base-devel mingw-w64-ucrt-x86_64-toolchain mingw-w64-ucrt-x86_64-gcc mingw-w64-ucrt-x86_64-gobject-introspection mingw-w64-ucrt-x86_64-gtk-doc mingw-w64-ucrt-x86_64-meson mingw-w64-ucrt-x86_64-ninja mingw-w64-ucrt-x86_64-python-gobject mingw-w64-ucrt-x86_64-vala
+    - C:\msys64\usr\bin\pacman --noconfirm -S --needed base-devel mingw-w64-ucrt-x86_64-toolchain mingw-w64-ucrt-x86_64-gcc mingw-w64-ucrt-x86_64-gobject-introspection mingw-w64-ucrt-x86_64-gtk-doc mingw-w64-ucrt-x86_64-meson mingw-w64-ucrt-x86_64-ninja mingw-w64-ucrt-x86_64-python-gobject mingw-w64-ucrt-x86_64-vala mingw-w64-ucrt-x86_64-cmake
+    - git clone https://github.com/exiv2/exiv2
+    - mkdir exiv2-build
+    - cmake -B exiv2-build -C exiv2 -GNinja -DEXIV2_BUILD_EXIV2_COMMAND=Off -DEXIV2_BUILD_SAMPLES=Off -DEXIV2_BUILD_UNIT_TESTS=Off -DEXIV2_ENABLE_BMFF=On
+    - ninja -C exiv2-build install
     - meson --buildtype debug build
     - cd build
     - ninja
@@ -164,39 +168,6 @@ build-msys2-mingw64-ucrt@x86_64:
     when: always
     paths:
       - "${CI_PROJECT_DIR}/build/meson-logs"
-
-#build-fedora-clang@x86_64:
-#    extends:
-#        - .fdo.distribution-image@fedora
-#        - .gexiv2.fedora:41@x86_64
-#    needs:
-#        - build-fedora-container@x86_64
-#    variables:
-#        MESON_EXTRA_ARGS: '--cross-file=build-aux/x86_64-linux-clang.txt'
-#        MESON_BUILD_DIR: 'build-clang-libcxx'
-#    <<: *build
-
-build-fedora-w32@x86_64:
-    extends:
-        - .fdo.distribution-image@fedora
-        - .gexiv2.fedora:41@x86_64
-    needs:
-        - build-fedora-container@x86_64
-    variables:
-        MESON_EXTRA_ARGS: '--cross-file=build-aux/i686-w64-mingw32.txt -Dintrospection=false -Dvapi=false -Dpython3=false'
-        MESON_BUILD_DIR: 'build-w32'
-    <<: *build
-
-build-fedora-w64@x86_64:
-    extends:
-        - .fdo.distribution-image@fedora
-        - .gexiv2.fedora:41@x86_64
-    needs:
-        - build-fedora-container@x86_64
-    variables:
-        MESON_EXTRA_ARGS: '--cross-file=build-aux/x86_64-w64-mingw32.txt -Dintrospection=false -Dvapi=false -Dpython3=false'
-        MESON_BUILD_DIR: 'build-w64'
-    <<: *build
 
 .test-template: &test
   stage: test
@@ -237,16 +208,6 @@ test-fedora@x86_64:
   variables:
     MESON_BUILD_DIR: 'build'
   <<: *test
-
-#test-fedora-clang@x86_64:
-#  extends:
-#    - .fdo.distribution-image@fedora
-#    - .gexiv2.fedora:41@x86_64
-#  needs:
-#    - build-fedora-clang@x86_64
-#  variables:
-#    MESON_BUILD_DIR: 'build-clang'
-#  <<: *test
 
 coverage-analysis:
   extends:
