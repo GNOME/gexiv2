@@ -33,6 +33,24 @@
             ]
         },
         {
+            "name": "fmt",
+            "buildsystem" : "cmake-ninja",
+            "config-opts" : [
+                "-DCMAKE_INSTALL_LIBDIR=lib",
+                "-DBUILD_SHARED_LIBS=On",
+                "-DFMT_DOC=Off",
+                "-DFMT_TEST=Off"
+            ],
+            "sources" : [
+                {
+                    "type": "git",
+                    "url" : "https://github.com/fmtlib/fmt",
+                    "tag" : "11.1.2",
+                    "commit" : "8303d140a1a11f19b982a9f664bbe59a1ccda3f4"
+                }
+            ]
+        },
+        {
             "name" : "exiv2",
             "cleanup" : [
                 "/bin"
