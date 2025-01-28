@@ -5,7 +5,6 @@ pacman --noconfirm -Suy
 pacman -S --needed base-devel \
     ${MINGW_PACKAGE_PREFIX}-toolchain \
     ${MINGW_PACKAGE_PREFIX}-gcc \
-    ${MINGW_PACKAGE_PREFIX}-g++ \
     ${MINGW_PACKAGE_PREFIX}-gobject-introspection \
     ${MINGW_PACKAGE_PREFIX}-gtk-doc \
     ${MINGW_PACKAGE_PREFIX}-meson \
