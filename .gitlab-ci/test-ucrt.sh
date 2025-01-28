@@ -2,7 +2,7 @@
 
 pacman --noconfirm -Suy
 
-pacman -S --needed base-devel \
+pacman --noconfirm -S --needed base-devel \
     ${MINGW_PACKAGE_PREFIX}-toolchain \
     ${MINGW_PACKAGE_PREFIX}-gcc \
     ${MINGW_PACKAGE_PREFIX}-gobject-introspection \
