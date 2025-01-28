@@ -100,7 +100,7 @@ check-merge-request:
       - ninja -C ${MESON_BUILD_DIR}
       - if [[ "${MESON_BUILD_DIR}" = "build" ]] ;
         then
-          meson dist -C ${MESON_BUILD_DIR} --no-tests
+          meson dist -C ${MESON_BUILD_DIR} --no-tests ;
         fi
   artifacts:
       expire_in: 1 day
