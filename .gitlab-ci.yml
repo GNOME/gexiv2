@@ -142,7 +142,7 @@ build-fedora@x86_64:
         MESON_BUILD_DIR: 'build'
     <<: *build
 
-build-msys2-mingw64-ucrt@x86_64:
+build-msys2-ucrt64@x86_64:
   only:
     - branches
   stage: build
