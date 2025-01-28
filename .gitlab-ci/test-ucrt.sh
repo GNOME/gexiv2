@@ -16,7 +16,7 @@ pacman --noconfirm -S --needed base-devel \
 
 git clone https://github.com/exiv2/exiv2
 mkdir exiv2-build
-cmake -B exiv2-build -S exiv2 -GNinja \
+/ucrt64/bin/cmake -B exiv2-build -S exiv2 -GNinja \
     -DCMAKE_INSTALL_PREFIX="${PWD}"/exiv2-install \
     -DCMAKE_BUILD_TYPE=Debug \
     -DEXIV2_BUILD_EXIV2_COMMAND=OFF \
