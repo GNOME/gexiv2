@@ -6,6 +6,10 @@ test_env.set('TEST_DATA_DIR', test_sample_path)
 test_env.prepend('GI_TYPELIB_PATH', typelib_path)
 test_env.prepend('LD_LIBRARY_PATH', typelib_path)
 test_env.prepend('PYTHONPATH', join_paths(meson.current_source_dir(), 'python'))
+test_env.prepend('LC_ALL', 'en_US.UTF-8')
+
+# For windows
+test_env.prepend('PATH', typelib_path)
 
 regression_test = executable('gexiv2-regression', 'gexiv2-regression.c',
                              dependencies : [gobject, gio, math],
