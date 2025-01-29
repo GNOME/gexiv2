@@ -1538,20 +1538,10 @@ gboolean gexiv2_metadata_get_exif_thumbnail (GExiv2Metadata *self, guint8** buff
     g_return_val_if_fail(self->priv->image.get() != nullptr, FALSE);
 
     Exiv2::ExifThumb thumb = Exiv2::ExifThumb(self->priv->image->exifData());
-#ifdef EXIV2_DATABUF_HAS_PRIVATE_PDATA
     auto buf = thumb.copy();
     *buffer = reinterpret_cast<guint8*>(g_malloc(buf.size()));
     std::copy(buf.begin(), buf.end(), *buffer);
     *size = buf.size();
-#else
-    Exiv2::DataBuf data = thumb.copy();
-    if (data.pData_ == nullptr)
-        return FALSE;
-    
-    *buffer = (guint8*) g_malloc(data.size_);
-    memcpy(*buffer, data.pData_, data.size_);
-    *size = data.size_;
-#endif
 
     return TRUE;
 }

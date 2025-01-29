@@ -12,10 +12,6 @@
 #include "gexiv2-version.h"
 
 gboolean gexiv2_initialize(void) {
-#if EXIV2_TEST_VERSION(0, 27, 4) && !EXIV2_TEST_VERSION(0,28,0)
-    Exiv2::enableBMFF();
-#endif
-
     return Exiv2::XmpParser::initialize();
 }
 

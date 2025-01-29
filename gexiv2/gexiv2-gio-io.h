@@ -16,19 +16,11 @@ class GioIo : public Exiv2::BasicIo {
         auto position = tell();
         seek(0, Exiv2::BasicIo::end);
         _size = tell();
-#if EXIV2_TEST_VERSION(0, 27, 99)
         g_debug("GioIo has size of %zu", _size);
-#else
-        g_debug("GioIo has size of %ld", _size);
-#endif
         seek(position, Exiv2::BasicIo::beg);
     }
 
-#if EXIV2_TEST_VERSION(0, 27, 99)
     using size_type = size_t;
-#else
-    using size_type = long;
-#endif
 
     size_type _size{0};
 
@@ -45,24 +37,11 @@ class GioIo : public Exiv2::BasicIo {
             }
         }
     }
-#if defined(_MSC_VER) || EXIV2_TEST_VERSION(0, 27, 99)
     typedef int64_t seek_offset_t;
-#else
-    using seek_offset_t = long;
-#endif
 
-#if EXIV2_TEST_VERSION(0, 27, 99)
     using ptr_type = Exiv2::BasicIo::UniquePtr;
-#else
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-    using ptr_type = Exiv2::BasicIo::AutoPtr;
-#pragma GCC diagnostic pop
-#endif
 
-#if EXIV2_TEST_VERSION(0, 27, 99)
     void populateFakeData() override{};
-#endif
     int open() override { return 0; }
 
     int close() override { return 0; }
@@ -75,17 +54,9 @@ class GioIo : public Exiv2::BasicIo {
     Exiv2::DataBuf read(size_type rcount) override {
         Exiv2::DataBuf b{rcount};
 
-#ifdef EXIV2_DATABUF_HAS_PRIVATE_PDATA
         auto bytes_read = this->read(b.data(), rcount);
-#else
-        auto bytes_read = this->read(b.pData_, rcount);
-#endif
         if (bytes_read > 0 && bytes_read != rcount) {
-#ifdef EXIV2_DATABUF_HAS_PRIVATE_PDATA
             b = Exiv2::DataBuf{b};
-#else
-            b.reset({b.pData_, bytes_read});
-#endif
         }
 
         return b;
@@ -101,11 +72,7 @@ class GioIo : public Exiv2::BasicIo {
             g_clear_error(&_error);
             _error = error;
 
-#if EXIV2_TEST_VERSION(0, 27, 0)
             throw Exiv2::Error(Exiv2::ErrorCode::kerFailedToReadImageData);
-#else
-            throw Exiv2::Error(2);
-#endif
             return 0;
         }
 
@@ -214,11 +181,7 @@ class GioIo : public Exiv2::BasicIo {
 #endif
 
 #ifdef EXV_UNICODE_PATH
-#if EXIV2_TEST_VERSION(0, 27, 99)
     const std::wstring& wpath() const noexcept override {
-#else
-    std::wstring wpath() const override {
-#endif
         std::string p = path();
         std::wstring w(p.length(), L' ');
         std::copy(p.begin(), p.end(), w.begin());
@@ -226,11 +189,7 @@ class GioIo : public Exiv2::BasicIo {
     }
 #endif
 
-#if EXIV2_TEST_VERSION(0, 27, 99)
     Exiv2::BasicIo::UniquePtr temporary() const { return Exiv2::BasicIo::UniquePtr(nullptr); }
-#else
-    Exiv2::BasicIo::AutoPtr temporary() const { return Exiv2::BasicIo::AutoPtr(nullptr); }
-#endif
 
   private:
     GInputStream* _is{nullptr};

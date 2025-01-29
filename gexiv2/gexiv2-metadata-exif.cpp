@@ -268,13 +268,8 @@ glong gexiv2_metadata_get_exif_tag_long (GExiv2Metadata *self, const gchar* tag,
         Exiv2::ExifData::iterator it = exif_data.findKey(Exiv2::ExifKey(tag));
         while (it != exif_data.end() && it->count() == 0)
             it++;
-#ifdef EXIV2_EXIFDATUM_HAS_TO_LONG
-        if (it != exif_data.end())
-            return it->toLong ();
-#else
         if (it != exif_data.end())
             return static_cast<glong>(it->toInt64());
-#endif
     } catch (Exiv2::Error& e) {
         error << e;
     } catch (std::exception& e) {

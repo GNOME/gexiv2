@@ -332,13 +332,8 @@ glong gexiv2_metadata_get_xmp_tag_long (GExiv2Metadata *self, const gchar* tag, 
         while (it != xmp_data.end() && it->count() == 0)
             it++;
 
-#ifdef EXIV2_XMPDATUM_HAS_TO_LONG
-        if (it != xmp_data.end())
-            return it->toLong ();
-#else
         if (it != xmp_data.end())
             return static_cast<glong>(it->toInt64());
-#endif
     } catch (Exiv2::Error& e) {
         error << e;
     } catch (std::exception& e) {

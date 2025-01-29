@@ -107,13 +107,11 @@ check-merge-request:
       paths:
           - ${MESON_BUILD_DIR}
 
-
-
 .gexiv2.fedora@common:
   variables:
     BASE_TAG: '2025-01-26.0'
     FDO_UPSTREAM_REPO: GNOME/gexiv2
-    FDO_DISTRIBUTION_PACKAGES: 'clang clang-analyzer libcxx-devel gcovr git libasan libubsan python3-gobject python3-pip xmlto gobject-introspection-devel gtk-doc vala ninja-build python3-devel gtk-doc exiv2-devel mingw32-gcc mingw32-gcc-c++ mingw32-exiv2 mingw32-glib2 mingw64-gcc mingw64-gcc-c++ mingw64-exiv2 mingw64-glib2'
+    FDO_DISTRIBUTION_PACKAGES: 'clang clang-analyzer libcxx-devel gcovr git libasan libubsan python3-gobject python3-pip xmlto gobject-introspection-devel gtk-doc vala ninja-build python3-devel gtk-doc exiv2-devel'
     FDO_DISTRIBUTION_EXEC: |
       dnf clean all &&
       pip3 install meson
