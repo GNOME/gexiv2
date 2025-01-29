@@ -171,23 +171,10 @@ class GioIo : public Exiv2::BasicIo {
 
     bool eof() const override { return _eof; }
 
-#if EXIV2_TEST_VERSION(0, 27, 99)
     const std::string& path() const noexcept override {
         static std::string info{"GIO Wrapper"};
         return info;
     }
-#else
-    std::string path() const override { return "GIO Wrapper"; }
-#endif
-
-#ifdef EXV_UNICODE_PATH
-    const std::wstring& wpath() const noexcept override {
-        std::string p = path();
-        std::wstring w(p.length(), L' ');
-        std::copy(p.begin(), p.end(), w.begin());
-        return w;
-    }
-#endif
 
     Exiv2::BasicIo::UniquePtr temporary() const { return Exiv2::BasicIo::UniquePtr(nullptr); }
 

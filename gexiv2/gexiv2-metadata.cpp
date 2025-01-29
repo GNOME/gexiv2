@@ -36,15 +36,7 @@
 
 #include <exiv2/exiv2.hpp>
 
-#if EXIV2_TEST_VERSION(0,27,99)
 using image_ptr = Exiv2::Image::UniquePtr;
-#else
-#pragma GCC diagnostic push
-#pragma GCC diagnostic ignored "-Wdeprecated-declarations"
-using image_ptr = Exiv2::Image::AutoPtr;
-#pragma GCC diagnostic pop
-#endif
-
 
 // -----------------------------------------------------------------------------
 // Misc internal helper functions
@@ -242,21 +234,6 @@ static gboolean gexiv2_metadata_open_internal (GExiv2Metadata* self, GError** er
     return FALSE;
 }
 
-#ifdef EXV_UNICODE_PATH
-static std::wstring convert_path(const char* path, GError** error) {
-    wchar_t* wfile{nullptr};
-    wfile = reinterpret_cast<wchar_t*>(g_utf8_to_utf16(path, -1, nullptr, nullptr, error));
-    // Error is set by g_utf8_to_utf16()
-    if (wfile == nullptr) {
-        return {};
-    }
-
-    std::wstring file{wfile};
-    g_free(wfile);
-
-    return file;
-}
-#else
 static std::string convert_path(const char* path, GError** error) {
 #ifdef G_OS_WIN32
     std::string file;
@@ -279,7 +256,6 @@ static std::string convert_path(const char* path, GError** error) {
     return std::string{path};
 #endif
 }
-#endif
 
 gboolean gexiv2_metadata_open_path(GExiv2Metadata* self, const gchar* path, GError** error) {
     g_return_val_if_fail(GEXIV2_IS_METADATA(self), FALSE);
@@ -299,11 +275,6 @@ gboolean gexiv2_metadata_open_path(GExiv2Metadata* self, const gchar* path, GErr
 
         error << e;
     }
-#ifdef EXV_UNICODE_PATH
-    catch (Exiv2::WError &e) {
-        error << e;
-    }
-#endif
     catch (std::exception& e) {
         error << e;
     }
@@ -337,11 +308,7 @@ gboolean gexiv2_metadata_from_stream(GExiv2Metadata *self, GInputStream *stream,
 
     try {
         GExiv2::GioIo::ptr_type gio_ptr{new GExiv2::GioIo(stream)};
-#if EXIV2_TEST_VERSION(0,27,99)
         self->priv->image = Exiv2::ImageFactory::open (std::move(gio_ptr));
-#else
-        self->priv->image = Exiv2::ImageFactory::open (gio_ptr);
-#endif
 
         return gexiv2_metadata_open_internal (self, error);
     } catch (Exiv2::Error &e) {
@@ -495,11 +462,6 @@ gboolean gexiv2_metadata_save_external (GExiv2Metadata *self, const gchar *path,
     } catch (Exiv2::Error &e) {
         error << e;
     }
-#ifdef EXV_UNICODE_PATH
-    catch (Exiv2::WError &e) {
-        error << e;
-    }
-#endif
     catch (std::exception& e) {
         error << e;
     }
@@ -524,11 +486,6 @@ gboolean gexiv2_metadata_save_file (GExiv2Metadata *self, const gchar *path, GEr
     } catch (Exiv2::Error &e) {
         error << e;
     }
-#ifdef EXV_UNICODE_PATH
-    catch (Exiv2::WError &e) {
-        error << e;
-    }
-#endif
     catch (std::exception& e) {
         error << e;
     }
@@ -546,11 +503,7 @@ GBytes* gexiv2_metadata_as_bytes(GExiv2Metadata* self, GBytes* bytes, GError** e
             auto data = internalIo.mmap();
             auto memIo = GExiv2::GioIo::ptr_type(new Exiv2::MemIo(data, internalIo.size()));
             internalIo.munmap();
-#if EXIV2_TEST_VERSION(0,27,99)
             image = Exiv2::ImageFactory::open(std::move(memIo));
-#else
-            image = Exiv2::ImageFactory::open(memIo);
-#endif
         } else {
             gsize size{0};
             auto* data = g_bytes_get_data(bytes, &size);
@@ -559,11 +512,7 @@ GBytes* gexiv2_metadata_as_bytes(GExiv2Metadata* self, GBytes* bytes, GError** e
         }
 
         auto& io = image->io();
-#if EXIV2_TEST_VERSION(0,27,99)
         gexiv2_metadata_save_internal(self, std::move(image), error);
-#else
-        gexiv2_metadata_save_internal(self, image, error);
-#endif
         auto* data = reinterpret_cast<char*>(io.mmap());
         auto size = static_cast<gsize>(io.size());
         auto* result = g_bytes_new(data, size);
