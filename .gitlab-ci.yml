@@ -276,6 +276,6 @@ pages:
   needs:
     - build-fedora-container@x86_64
   rules:
-    - if: $CI_COMMIT_BRANCH == $CI_DEFAULIT_BRANCH
+    - if: $CI_COMMIT_BRANCH == $CI_DEFAULT_BRANCH
     - if: $CI_COMMIT_BRANCH == /^wip\/.*\/ci.*$/
 
