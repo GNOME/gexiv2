@@ -244,7 +244,7 @@ static std::string convert_path(const char* path, GError** error) {
 
         g_free(msg);
 
-        return FALSE;
+        return {};
     }
     file = local_path;
     g_free(local_path);
