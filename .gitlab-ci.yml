@@ -30,11 +30,6 @@ exiv2-0-28:on-schedule:
     variables:
         EXIV2_REF: "0.28.x"
 
-exiv2-0-27:on-schedule:
-    extends: .flatpak
-    variables:
-        EXIV2_REF: "0.27-maintenance"
-
 include:
     - remote: "https://gitlab.gnome.org/Infrastructure/freedesktop-ci-templates/-/raw/e195d80f35b45cc73668be3767b923fd76c70ed5/templates/ci-fairy.yml"
     - remote: 'https://gitlab.gnome.org/Infrastructure/freedesktop-ci-templates/-/raw/e195d80f35b45cc73668be3767b923fd76c70ed5/templates/fedora.yml'
