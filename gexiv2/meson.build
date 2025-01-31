@@ -98,7 +98,6 @@ if get_option('introspection')
                  'gexiv2-startup.h',
                  'gexiv2-metadata.h',
                  'gexiv2-log.h',
-                 'gexiv2-managed-stream.h',
                  version_header,
                  enum_sources.get(1)
                  ],

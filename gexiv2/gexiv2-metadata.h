@@ -47,43 +47,6 @@
  */
 
 /**
- * SECTION: gexiv2-preview-image
- * @title: Preview images
- * @short_description: Class describing preview images (or thumbnails) that
- * are part of the metadata.
- * @see_also: #GExiv2Metadata #GExiv2PreviewProperties
- * @include: gexiv2/gexiv2.h
- *
- * #GExiv2PreviewImage is an accessor to the preview images contained in
- * the image's metadata. This could be anything from a thumbnail to a
- * full-sized camera development of a RAW image.
- *
- * The #GExiv2PreviewImage is obtained by calling gexiv2_metadata_get_preview_image()
- * with an instance of #GExiv2PreviewProperties that are describing the image
- * to be fetched.
- * <informalexample><programlisting>
- * GExiv2PreviewProperties **properties, **it;
- * properties = it = gexiv2_metadata_get_preview_properties(metadata);
- *
- * while (*it) {
- *   preview_image = gexiv2_metadata_get_preview_image(metadata, *it);
- *   it++;
- * }
- * </programlisting></informalexample>
- */
-
-/**
- * SECTION: gexiv2-preview-properties
- * @title: Properties of preview images
- * @short_description: Class describing properties of a preview image
- * @see_also: #GExiv2Metadata #GExiv2PreviewProperties
- *
- * Metadata can contain multiple preview images. #GExiv2PreviewProperties are
- * used to describe the available image without the need of fetching the whole
- * image from the metadata.
- */
-
-/**
  * SECTION: gexiv2-version
  * @title: Library version information
  * @short_description: Utilities for querying the library version

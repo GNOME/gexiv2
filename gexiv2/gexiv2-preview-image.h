@@ -45,8 +45,10 @@ G_DEFINE_AUTOPTR_CLEANUP_FUNC(GExiv2PreviewImage, g_object_unref)
  * GExiv2PreviewImage:
  *
  * `GExiv2PreviewImage` is an accessor to the preview images contained in
- * the image's metadata. This could be anything from a thumbnail to a
- * full-sized camera development of a RAW image.
+ * the image's metadata.
+ *
+ * This could be anything from a thumbnail to a full-sized camera development
+ * of a RAW image.
  *
  * The `GExiv2PreviewImage` is obtained by calling gexiv2_metadata_get_preview_image()
  * with an instance of #GExiv2PreviewProperties that are describing the image
@@ -166,6 +168,8 @@ glong			gexiv2_preview_image_write_file			(GExiv2PreviewImage *self, const gchar
  * @self: An instance of #GExiv2PreviewImage
  * @path: (in): The file path to write the preview image to.
  * @error: (allow-none): A return location for a #GError or %NULL
+ *
+ * Write the preview image to a file in @path
  *
  * Returns: The number of bytes written to the file.
  *

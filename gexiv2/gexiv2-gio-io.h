@@ -6,6 +6,7 @@
 #include <glib-object.h>
 
 namespace GExiv2 {
+
 class GioIo : public Exiv2::BasicIo {
   public:
     GioIo(GInputStream* is)
