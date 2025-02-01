@@ -5,7 +5,6 @@ pages:
     - mkdir public
     - mkdir public/docs
     - mv style.css public
-    - mv doc public 
     - ./fetch-docs.sh
   artifacts:
     paths:
