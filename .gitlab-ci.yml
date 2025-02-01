@@ -1,0 +1,14 @@
+pages:
+  image: fedora:latest
+  script:
+    - sudo dnf install -y unzip pandoc
+    - mkdir public
+    - mv style.css public
+    - mv doc public 
+    - ./fetch-docs.sh
+  artifacts:
+    paths:
+      - public
+  only:
+    - pages
+
