@@ -82,18 +82,6 @@ struct _GExiv2PreviewImageClass
 
 GType 			gexiv2_preview_image_get_type			(void);
 
-/**
- * gexiv2_preview_image_free:
- * @self: An instance of [class@GExiv2.PreviewImage]
- *
- * Releases the preview image and all associated memory.
- *
- * Deprecated: 0.10.3: Use g_object_unref() instead.
- */
-G_DEPRECATED_FOR(g_object_unref)
-void			gexiv2_preview_image_free				(GExiv2PreviewImage *self);
-
-
 /* preview image properties */
 
 /**

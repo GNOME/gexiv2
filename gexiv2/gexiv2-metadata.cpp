@@ -148,12 +148,6 @@ GExiv2Metadata* gexiv2_metadata_new (void) {
     return GEXIV2_METADATA (g_object_new (GEXIV2_TYPE_METADATA, NULL));
 }
 
-void gexiv2_metadata_free (GExiv2Metadata *self) {
-    g_return_if_fail(GEXIV2_IS_METADATA(self));
-    
-    g_object_unref(self);
-}
-
 static void gexiv2_metadata_set_comment_internal (GExiv2Metadata* self, const gchar* new_comment) {
     g_return_if_fail (GEXIV2_IS_METADATA (self));
     g_return_if_fail(self->priv != nullptr);

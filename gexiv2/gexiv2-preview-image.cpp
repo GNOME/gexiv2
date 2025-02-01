@@ -74,12 +74,6 @@ GExiv2PreviewImage* gexiv2_preview_image_new(Exiv2::PreviewManager* manager,
     return nullptr;
 }
 
-void gexiv2_preview_image_free(GExiv2PreviewImage *self) {
-    g_return_if_fail(GEXIV2_IS_PREVIEW_IMAGE(self));
-    
-    g_object_unref(self);
-}
-
 const guint8* gexiv2_preview_image_get_data (GExiv2PreviewImage *self, guint32 *size) {
     g_return_val_if_fail(GEXIV2_IS_PREVIEW_IMAGE(self), nullptr);
     g_return_val_if_fail(self->priv != nullptr, nullptr);
