@@ -286,10 +286,10 @@ docs:
       - meson doc-build -Dgtk_doc=true
       - ninja -C doc-build
       - ninja -C doc-build gexiv2-doc
-      - mv doc-build/docs/reference/html docs
+      - mv doc-build/docs/reference/html reference
   artifacts:
     paths:
-      - docs
+      - reference
   needs:
     - build-fedora-container@x86_64
 
