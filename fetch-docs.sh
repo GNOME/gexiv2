@@ -20,7 +20,7 @@ for REF in $REFS; do
     API_VERSION=${REF//gexiv2-/}
     curl -L --output "$REF.zip" "https://gitlab.gnome.org/GNOME/gexiv2/-/jobs/artifacts/$REF/download?job=docs"
     unzip -d "$REF" "$REF.zip"
-    mv "$REF/docs" "$DOC_DIR/$API_VERSION"
+    mv "$REF/reference" "$DOC_DIR/$API_VERSION"
     rm "$REF.zip"
     rm -rf "$REF"
 done
