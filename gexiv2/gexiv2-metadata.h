@@ -184,17 +184,6 @@ GType 			gexiv2_metadata_get_type			(void);
 GExiv2Metadata* gexiv2_metadata_new					(void);
 
 /**
- * gexiv2_metadata_free:
- * @self: An instance of [class@GExiv2.Metadata]
- *
- * Destroys the [class@GExiv2.Metadata] object and frees all associated memory.
- *
- * Deprecated: 0.10.3: Use g_object_unref() instead.
- */
-G_DEPRECATED_FOR(g_object_unref)
-void			gexiv2_metadata_free				(GExiv2Metadata *self);
-
-/**
  * gexiv2_metadata_open_path:
  * @self: An instance of [class@GExiv2.Metadata]
  * @path: Path to the file you want to open
