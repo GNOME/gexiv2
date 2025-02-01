@@ -53,7 +53,6 @@ stages:
     - build
     - test
     - analysis
-    - website
 
 .check-template: &check
   extends:
@@ -133,6 +132,7 @@ build-fedora@x86_64:
     variables:
         MESON_BUILD_DIR: 'build'
     <<: *build
+
 
 #build-fedora-clang@x86_64:
 #    extends:
@@ -277,23 +277,19 @@ coverity:
     changes:
       - po/*.po
 
-pages:
+docs:
   extends:
     - .fdo.distribution-image@fedora
     - .gexiv2.fedora:38@x86_64
-  stage: website
+  stage: build
   script:
       - meson doc-build -Dgtk_doc=true
       - ninja -C doc-build
       - ninja -C doc-build gexiv2-doc
-      - mkdir -p public
-      - mv doc-build/docs/reference/html public/docs
+      - mv doc-build/docs/reference/html docs
   artifacts:
     paths:
-      - public
+      - docs
   needs:
     - build-fedora-container@x86_64
-  only:
-    - master
-    - /^wip\/.*\/ci.*$/
 
