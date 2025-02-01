@@ -9,7 +9,7 @@ project(
     ]
 )
 
-project_api_version = '0.12'
+project_api_version = '0.16'
 message('Project API version: ' + project_api_version)
 
 project_url = 'https://wiki.gnome.org/Projects/gexiv2'
