@@ -25,4 +25,4 @@ for REF in $REFS; do
     rm -rf "$REF"
 done
 
-ln -s $DOC_DIR/0.14 $DOC_DIR/latest
+ln -sr $DOC_DIR/0.14 $DOC_DIR/latest
