@@ -4,7 +4,7 @@ pages:
     - sudo dnf install -y unzip pandoc
     - mkdir public
     - mkdir public/docs
-    - mv style.css public
+    - cp style.css public
     - mv style.css public/docs
     - ./fetch-docs.sh
   artifacts:

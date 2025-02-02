@@ -24,3 +24,5 @@ for REF in $REFS; do
     rm "$REF.zip"
     rm -rf "$REF"
 done
+
+ln -s $DOC_DIR/0.14 $DOC_DIR/latest
