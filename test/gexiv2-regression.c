@@ -45,7 +45,8 @@ static void test_ggo_31(void)
     g_assert_no_error(error);
     g_assert_true(result);
 
-    gexiv2_metadata_set_metadata_pixel_height(meta, 123);
+    gexiv2_metadata_set_metadata_pixel_height(meta, 123, &error);
+    g_assert_no_error(error);
     /* Would abort without fix */
 
     g_clear_object(&meta);
@@ -66,9 +67,11 @@ static void test_ggo_32 (void)
     g_assert_no_error(error);
     g_assert_true(result);
 
-    gexiv2_metadata_set_tag_long(meta, "Exif.Image.ImageLength", 1234);
+    gexiv2_metadata_set_tag_long(meta, "Exif.Image.ImageLength", 1234, &error);
+    g_assert_no_error(error);
 
-    pixel_height = gexiv2_metadata_get_metadata_pixel_height(meta);
+    pixel_height = gexiv2_metadata_get_metadata_pixel_height(meta, &error);
+    g_assert_no_error(error);
     g_assert_cmpint(pixel_height, ==, 1234);
 
     g_clear_object(&meta);
@@ -91,32 +94,42 @@ static void test_ggo_33 (void)
 
 
     /* Check all the width tags and check that they have the same value */
-    gexiv2_metadata_set_metadata_pixel_width(meta, 1234);
-    pixels = gexiv2_metadata_get_tag_long(meta, "Exif.Photo.PixelXDimension");
+    gexiv2_metadata_set_metadata_pixel_width(meta, 1234, &error);
+    g_assert_no_error(error);
+    pixels = gexiv2_metadata_get_tag_long(meta, "Exif.Photo.PixelXDimension", &error);
+    g_assert_no_error(error);
     g_assert_cmpint(pixels, ==, 1234);
 
-    pixels = gexiv2_metadata_get_tag_long(meta, "Exif.Image.ImageWidth");
+    pixels = gexiv2_metadata_get_tag_long(meta, "Exif.Image.ImageWidth", &error);
+    g_assert_no_error(error);
     g_assert_cmpint(pixels, ==, 1234);
 
-    pixels = gexiv2_metadata_get_tag_long(meta, "Xmp.tiff.ImageWidth");
+    pixels = gexiv2_metadata_get_tag_long(meta, "Xmp.tiff.ImageWidth", &error);
+    g_assert_no_error(error);
     g_assert_cmpint(pixels, ==, 1234);
 
-    pixels = gexiv2_metadata_get_tag_long(meta, "Xmp.exif.PixelXDimension");
+    pixels = gexiv2_metadata_get_tag_long(meta, "Xmp.exif.PixelXDimension", &error);
+    g_assert_no_error(error);
     g_assert_cmpint(pixels, ==, 1234);
 
 
     /* Check all the height tags and check that they have the same value */
-    gexiv2_metadata_set_metadata_pixel_height(meta, 4321);
-    pixels = gexiv2_metadata_get_tag_long(meta, "Exif.Photo.PixelYDimension");
+    gexiv2_metadata_set_metadata_pixel_height(meta, 4321, &error);
+    g_assert_no_error(error);
+    pixels = gexiv2_metadata_get_tag_long(meta, "Exif.Photo.PixelYDimension", &error);
+    g_assert_no_error(error);
     g_assert_cmpint(pixels, ==, 4321);
 
-    pixels = gexiv2_metadata_get_tag_long(meta, "Exif.Image.ImageLength");
+    pixels = gexiv2_metadata_get_tag_long(meta, "Exif.Image.ImageLength", &error);
+    g_assert_no_error(error);
     g_assert_cmpint(pixels, ==, 4321);
 
-    pixels = gexiv2_metadata_get_tag_long(meta, "Xmp.tiff.ImageLength");
+    pixels = gexiv2_metadata_get_tag_long(meta, "Xmp.tiff.ImageLength", &error);
+    g_assert_no_error(error);
     g_assert_cmpint(pixels, ==, 4321);
 
-    pixels = gexiv2_metadata_get_tag_long(meta, "Xmp.exif.PixelYDimension");
+    pixels = gexiv2_metadata_get_tag_long(meta, "Xmp.exif.PixelYDimension", &error);
+    g_assert_no_error(error);
     g_assert_cmpint(pixels, ==, 4321);
 
     g_clear_object(&meta);
@@ -135,7 +148,8 @@ static void test_bgo_792239(void)
     result = gexiv2_metadata_open_path(meta, SAMPLE_PATH "/no-fnumber.jpg", &error);
     g_assert_no_error(error);
     g_assert_true(result);
-    fnumber = gexiv2_metadata_get_fnumber(meta);
+    fnumber = gexiv2_metadata_get_fnumber(meta, &error);
+    g_assert_no_error(error);
     g_assert_cmpfloat(fnumber, !=, -1.0);
 
     g_clear_object(&meta);
@@ -156,7 +170,8 @@ static void test_bgo_775249(void)
     result = gexiv2_metadata_open_path(meta, SAMPLE_PATH "/CaorVN.jpeg", &error);
     g_assert_no_error(error);
     g_assert_true(result);
-    g_assert_true(gexiv2_metadata_get_gps_info(meta, &lon, &lat, &alt));
+    g_assert_true(gexiv2_metadata_get_gps_info(meta, &lon, &lat, &alt, &error));
+    g_assert_no_error(error);
 
     g_assert_cmpfloat_with_epsilon(lon, -1.508425, 0.0001);
 
@@ -187,7 +202,8 @@ static void test_bgo_730136(void)
     g_assert_no_error(error);
     g_assert_true(result);
 
-    raw_tag = gexiv2_metadata_get_tag_raw (meta, "Exif.Image.Artist");
+    raw_tag = gexiv2_metadata_get_tag_raw(meta, "Exif.Image.Artist", &error);
+    g_assert_no_error(error);
     g_assert_nonnull (raw_tag);
     g_assert_cmpmem (g_bytes_get_data(raw_tag, NULL), g_bytes_get_size(raw_tag),
                      test_bgo_730136_artist_data, sizeof(test_bgo_730136_artist_data));
@@ -214,7 +230,8 @@ static void test_bgo_790925(void)
     props = gexiv2_metadata_get_preview_properties (meta);
     g_assert_nonnull (props);
 
-    image = gexiv2_metadata_get_preview_image (meta, *props);
+    image = gexiv2_metadata_get_preview_image(meta, *props, &error);
+    g_assert_no_error(error);
     g_assert_nonnull(image);
 #endif
 }
@@ -235,7 +252,8 @@ static void test_ggo_xx(void)
     g_assert_no_error(error);
     g_assert_true(result);
 
-    gexiv2_metadata_set_comment (meta, LOREM_IPSUM);
+    gexiv2_metadata_set_comment(meta, LOREM_IPSUM, &error);
+    g_assert_no_error(error);
     tmp_file = g_strdup ("lorem-ipsum.jpg"); //g_build_filename (g_get_tmp_dir (), "lorem-ipsum.jpg", NULL);
 
     src = g_file_new_for_path (SAMPLE_PATH "/no-metadata.jpg");
@@ -256,7 +274,8 @@ static void test_ggo_xx(void)
     g_assert_no_error(error);
     g_assert_true(result);
 
-    comment = gexiv2_metadata_get_comment (meta);
+    comment = gexiv2_metadata_get_comment(meta, &error);
+    g_assert_no_error(error);
     g_assert_nonnull (comment);
     g_assert_cmpstr (LOREM_IPSUM, ==, comment);
 
@@ -269,7 +288,9 @@ static void test_ggo_xx(void)
 
 static void test_ggo_27(void)
 {
-    gexiv2_metadata_register_xmp_namespace ("http://www.gnome.org/xmp", "gnome");
+    GError* error = NULL;
+    gexiv2_metadata_register_xmp_namespace("http://www.gnome.org/xmp", "gnome", &error);
+    g_assert_no_error(error);
 }
 
 static void test_ggo_45(void)
@@ -286,10 +307,12 @@ static void test_ggo_45(void)
     g_assert_true(result);
 
     alt = 2200.0;
-    result = gexiv2_metadata_set_gps_info(meta, lon, lat, alt);
+    result = gexiv2_metadata_set_gps_info(meta, lon, lat, alt, &error);
+    g_assert_no_error(error);
     g_assert_true(result);
 
-    result = gexiv2_metadata_get_gps_altitude(meta, &alt);
+    result = gexiv2_metadata_get_gps_altitude(meta, &alt, &error);
+    g_assert_no_error(error);
     g_assert_true(result);
     g_assert_cmpfloat(fabs(alt - 2200.0), <= , 1e-5);
 

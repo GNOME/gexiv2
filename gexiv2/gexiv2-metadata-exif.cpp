@@ -298,7 +298,7 @@ gboolean gexiv2_metadata_set_exif_tag_long (GExiv2Metadata *self, const gchar* t
     return FALSE;
 }
 
-gboolean gexiv2_metadata_try_get_exif_tag_rational (GExiv2Metadata *self, const gchar* tag, gint* nom,
+gboolean gexiv2_metadata_get_exif_tag_rational (GExiv2Metadata *self, const gchar* tag, gint* nom,
     gint* den, GError **error) {
     g_return_val_if_fail(GEXIV2_IS_METADATA (self), FALSE);
     g_return_val_if_fail(tag != nullptr, FALSE);
@@ -331,7 +331,7 @@ gboolean gexiv2_metadata_try_get_exif_tag_rational (GExiv2Metadata *self, const 
     return FALSE;
 }
 
-gboolean gexiv2_metadata_try_set_exif_tag_rational (GExiv2Metadata *self, const gchar* tag, gint nom,
+gboolean gexiv2_metadata_set_exif_tag_rational (GExiv2Metadata *self, const gchar* tag, gint nom,
     gint den, GError **error) {
     g_return_val_if_fail(GEXIV2_IS_METADATA (self), FALSE);
     g_return_val_if_fail(tag != NULL, FALSE);
@@ -354,43 +354,14 @@ gboolean gexiv2_metadata_try_set_exif_tag_rational (GExiv2Metadata *self, const 
     return FALSE;
 }
 
-gboolean gexiv2_metadata_get_exif_tag_rational (GExiv2Metadata *self, const gchar* tag, gint* nom,
-    gint* den) {
-    GError   *error = nullptr;
-    gboolean  success;
-    g_return_val_if_fail(GEXIV2_IS_METADATA (self), FALSE);
-    g_return_val_if_fail(tag != NULL, FALSE);
-    g_return_val_if_fail(nom != NULL, FALSE);
-    g_return_val_if_fail(den != NULL, FALSE);
-    g_return_val_if_fail(self->priv->image.get() != NULL, FALSE);
-
-    success = gexiv2_metadata_try_get_exif_tag_rational(self, tag, nom, den, &error);
-
-    if (error) {
-        g_warning("%s", error->message);
-        g_clear_error(&error);
-    }
-
-    return success;
+gboolean gexiv2_metadata_try_get_exif_tag_rational (GExiv2Metadata *self, const gchar* tag, gint* nom,
+    gint* den, GError **error) {
+    return gexiv2_metadata_get_exif_tag_rational(self, tag, nom, den, error);
 }
 
-gboolean gexiv2_metadata_set_exif_tag_rational (GExiv2Metadata *self, const gchar* tag, gint nom,
-    gint den) {
-    GError   *error = nullptr;
-    gboolean  success;
-
-    g_return_val_if_fail(GEXIV2_IS_METADATA (self), FALSE);
-    g_return_val_if_fail(tag != NULL, FALSE);
-    g_return_val_if_fail(self->priv->image.get() != NULL, FALSE);
-
-    success = gexiv2_metadata_try_set_exif_tag_rational(self, tag, nom, den, &error);
-
-    if (error) {
-        g_warning("%s", error->message);
-        g_clear_error(&error);
-    }
-
-    return success;
+gboolean gexiv2_metadata_try_set_exif_tag_rational (GExiv2Metadata *self, const gchar* tag, gint nom,
+    gint den, GError **error) {
+    return gexiv2_metadata_set_exif_tag_rational(self, tag, nom, den, error);
 }
 
 /**
@@ -398,7 +369,7 @@ gboolean gexiv2_metadata_set_exif_tag_rational (GExiv2Metadata *self, const gcha
  * @self: An instance of #GExiv2Metadata
  * @tag: Name of the tag to fetch
  * @def: Default value that is returned in error case
- * @error: (allow-none): A return location for a #GError or %NULL
+ * @error: (allow-none): A return location for a [struct@GLib.Error] or %NULL
  *
  * A convenience wrapper around gexiv2_metadata_get_exif_tag_rational() that
  * will convert the fraction into a floating point number.
@@ -415,7 +386,7 @@ gdouble gexiv2_metadata_get_exif_tag_rational_as_double(GExiv2Metadata* self,
     gint den = 0;
     gboolean result = FALSE;
 
-    result = gexiv2_metadata_try_get_exif_tag_rational(self, tag, &nom, &den, error);
+    result = gexiv2_metadata_get_exif_tag_rational(self, tag, &nom, &den, error);
     if (error && *error)
         return def;
 

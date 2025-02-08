@@ -140,28 +140,31 @@ guint32			gexiv2_preview_image_get_height			(GExiv2PreviewImage *self);
  * gexiv2_preview_image_write_file:
  * @self: An instance of [class@GExiv2.PreviewImage]
  * @path: (in): The file path to write the preview image to.
+ * @error: (allow-none): A return location for a [struct@GLib.Error] or %NULL
  *
  * Write the preview image to a file in @path
  *
  * Returns: The number of bytes written to the file.
  *
- * Deprecated: 0.14.0: Use [method@GExiv2.PreviewImage.try_write_file] instead.
+ * Since: 0.16.0
  */
-G_DEPRECATED_FOR(gexiv2_preview_image_try_write_file)
-glong			gexiv2_preview_image_write_file			(GExiv2PreviewImage *self, const gchar *path);
+glong			gexiv2_preview_image_write_file			(GExiv2PreviewImage *self, const gchar *path, GError **error);
 
 /**
  * gexiv2_preview_image_try_write_file:
  * @self: An instance of [class@GExiv2.PreviewImage]
  * @path: (in): The file path to write the preview image to.
- * @error: (allow-none): A return location for a #GError or %NULL
+ * @error: (allow-none): A return location for a [struct@GLib.Error] or %NULL
  *
  * Write the preview image to a file in @path
  *
  * Returns: The number of bytes written to the file.
  *
  * Since: 0.14.0
+ *
+ * Deprecated: 0.16.0: Use [method@GExiv2.PreviewImage.write_file] instead.
  */
+G_DEPRECATED_FOR(gexiv2_preview_image_write_file)
 glong gexiv2_preview_image_try_write_file(GExiv2PreviewImage* self, const gchar* path, GError** error);
 
 G_END_DECLS

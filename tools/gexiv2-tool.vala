@@ -189,13 +189,13 @@ void print_tag(GExiv2.Metadata metadata, string tag, bool print_unknown_tags, bo
     if (print_unknown_tags || !(".0x" in tag)) {
         if (print_details) {
             print("%-64s%s\n", "Tag", tag);
-            print("%-64s%s\n", "  Value", metadata.try_get_tag_string(tag));
-            print("%-64s%s\n", "  Interpreted value", metadata.try_get_tag_interpreted_string(tag));
-            print("%-64s%s\n", "  Label", GExiv2.Metadata.try_get_tag_label(tag));
-            print("%-64s%s\n", "  Type", GExiv2.Metadata.try_get_tag_type(tag));
-            print("%-64s%s\n", "  Description", GExiv2.Metadata.try_get_tag_description(tag));
+            print("%-64s%s\n", "  Value", metadata.get_tag_string(tag));
+            print("%-64s%s\n", "  Interpreted value", metadata.get_tag_interpreted_string(tag));
+            print("%-64s%s\n", "  Label", GExiv2.Metadata.get_tag_label(tag));
+            print("%-64s%s\n", "  Type", GExiv2.Metadata.get_tag_type(tag));
+            print("%-64s%s\n", "  Description", GExiv2.Metadata.get_tag_description(tag));
         } else {
-            print("%-64s%s\n", tag, metadata.try_get_tag_interpreted_string(tag));
+            print("%-64s%s\n", tag, metadata.get_tag_interpreted_string(tag));
         }
     }
 }
@@ -220,7 +220,7 @@ void print_all_xmp_namespaces(string[] xmp_tags) throws Error {
 
         // Only output one example of a groupName's namespace
         if (last_groupName != groupName) {
-            print("Xmp ns: %-56s%s\n", groupName, GExiv2.Metadata.try_get_xmp_namespace_for_tag(groupName));
+            print("Xmp ns: %-56s%s\n", groupName, GExiv2.Metadata.get_xmp_namespace_for_tag(groupName));
             last_groupName = groupName;
         }
     }

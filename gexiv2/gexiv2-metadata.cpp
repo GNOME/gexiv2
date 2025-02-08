@@ -538,21 +538,11 @@ GBytes* gexiv2_metadata_as_bytes(GExiv2Metadata* self, GBytes* bytes, GError** e
     return nullptr;
 }
 
-gboolean gexiv2_metadata_has_tag(GExiv2Metadata *self, const gchar* tag) {
-    GError* error = nullptr;
-    gboolean value = FALSE;
-
-    value = gexiv2_metadata_try_has_tag(self, tag, &error);
-
-    if (error) {
-        g_warning("%s", error->message);
-        g_clear_error(&error);
-    }
-
-    return value;
+gboolean gexiv2_metadata_try_has_tag(GExiv2Metadata *self, const gchar* tag, GError **error) {
+    return gexiv2_metadata_has_tag(self, tag, error);
 }
 
-gboolean gexiv2_metadata_try_has_tag(GExiv2Metadata* self, const gchar* tag, GError** error) {
+gboolean gexiv2_metadata_has_tag(GExiv2Metadata* self, const gchar* tag, GError** error) {
     g_return_val_if_fail(GEXIV2_IS_METADATA(self), FALSE);
     g_return_val_if_fail(tag != nullptr, FALSE);
     g_return_val_if_fail(self->priv->image.get() != nullptr, FALSE);
@@ -573,21 +563,11 @@ gboolean gexiv2_metadata_try_has_tag(GExiv2Metadata* self, const gchar* tag, GEr
     return FALSE;
 }
 
-gboolean gexiv2_metadata_clear_tag(GExiv2Metadata *self, const gchar* tag) {
-    GError* error = nullptr;
-    gboolean value = FALSE;
-
-    value = gexiv2_metadata_try_clear_tag(self, tag, &error);
-
-    if (error) {
-        g_warning("%s", error->message);
-        g_clear_error(&error);
-    }
-
-    return value;
+gboolean gexiv2_metadata_try_clear_tag(GExiv2Metadata *self, const gchar* tag, GError **error) {
+    return gexiv2_metadata_clear_tag(self, tag, error);
 }
 
-gboolean gexiv2_metadata_try_clear_tag(GExiv2Metadata* self, const gchar* tag, GError** error) {
+gboolean gexiv2_metadata_clear_tag(GExiv2Metadata* self, const gchar* tag, GError** error) {
     g_return_val_if_fail(GEXIV2_IS_METADATA(self), FALSE);
     g_return_val_if_fail(tag != nullptr, FALSE);
     g_return_val_if_fail(self->priv->image.get() != nullptr, FALSE);
@@ -629,21 +609,11 @@ const gchar* gexiv2_metadata_get_mime_type (GExiv2Metadata *self) {
     return self->priv->mime_type;
 }
 
-GExiv2Orientation gexiv2_metadata_get_orientation (GExiv2Metadata *self) {
-    GError* error = nullptr;
-    GExiv2Orientation value = GEXIV2_ORIENTATION_UNSPECIFIED;
-
-    value = gexiv2_metadata_try_get_orientation(self, &error);
-
-    if (error) {
-        g_warning("%s", error->message);
-        g_clear_error(&error);
-    }
-
-    return value;
+GExiv2Orientation gexiv2_metadata_try_get_orientation (GExiv2Metadata *self, GError **error) {
+    return gexiv2_metadata_get_orientation(self, error);
 }
 
-GExiv2Orientation gexiv2_metadata_try_get_orientation(GExiv2Metadata* self, GError** error) {
+GExiv2Orientation gexiv2_metadata_get_orientation(GExiv2Metadata* self, GError** error) {
     g_return_val_if_fail(GEXIV2_IS_METADATA (self), GEXIV2_ORIENTATION_UNSPECIFIED);
     g_return_val_if_fail(self->priv->image.get() != nullptr, GEXIV2_ORIENTATION_UNSPECIFIED);
     g_return_val_if_fail(error == nullptr || *error == nullptr, GEXIV2_ORIENTATION_UNSPECIFIED);
@@ -732,18 +702,11 @@ gboolean gexiv2_metadata_get_supports_iptc (GExiv2Metadata *self) {
     return self->priv->supports_iptc;
 }
 
-void gexiv2_metadata_set_orientation (GExiv2Metadata *self, GExiv2Orientation orientation) {
-    GError* error = nullptr;
-
-    gexiv2_metadata_try_set_orientation(self, orientation, &error);
-
-    if (error) {
-        g_warning("%s", error->message);
-        g_clear_error(&error);
-    }
+void gexiv2_metadata_try_set_orientation (GExiv2Metadata *self, GExiv2Orientation orientation, GError **error) {
+    gexiv2_metadata_set_orientation(self, orientation, error);
 }
 
-void gexiv2_metadata_try_set_orientation(GExiv2Metadata* self, GExiv2Orientation orientation, GError** error) {
+void gexiv2_metadata_set_orientation(GExiv2Metadata* self, GExiv2Orientation orientation, GError** error) {
     g_return_if_fail(GEXIV2_IS_METADATA (self));
     g_return_if_fail(self->priv->image.get() != nullptr);
     g_return_if_fail(orientation <= GEXIV2_ORIENTATION_ROT_270);
@@ -782,21 +745,11 @@ gint gexiv2_metadata_get_pixel_height (GExiv2Metadata *self) {
     return self->priv->pixel_height;
 }
 
-gint gexiv2_metadata_get_metadata_pixel_width (GExiv2Metadata *self) {
-    GError* error = nullptr;
-    gint value = -1;
-
-    value = gexiv2_metadata_try_get_metadata_pixel_width(self, &error);
-
-    if (error) {
-        g_warning("%s", error->message);
-        g_clear_error(&error);
-    }
-
-    return value;
+gint gexiv2_metadata_try_get_metadata_pixel_width (GExiv2Metadata *self, GError **error) {
+    return gexiv2_metadata_get_metadata_pixel_width(self, error);
 }
 
-gint gexiv2_metadata_try_get_metadata_pixel_width(GExiv2Metadata* self, GError** error) {
+gint gexiv2_metadata_get_metadata_pixel_width(GExiv2Metadata* self, GError** error) {
     g_return_val_if_fail (GEXIV2_IS_METADATA (self), -1);
     g_return_val_if_fail(self->priv->image.get() != nullptr, -1);
     g_return_val_if_fail(error == nullptr || *error == nullptr, -1);
@@ -820,21 +773,11 @@ gint gexiv2_metadata_try_get_metadata_pixel_width(GExiv2Metadata* self, GError**
     return -1;
 }
 
-gint gexiv2_metadata_get_metadata_pixel_height (GExiv2Metadata *self) {
-    GError* error = nullptr;
-    gint value = -1;
-
-    value = gexiv2_metadata_try_get_metadata_pixel_height(self, &error);
-
-    if (error) {
-        g_warning("%s", error->message);
-        g_clear_error(&error);
-    }
-
-    return value;
+gint gexiv2_metadata_try_get_metadata_pixel_height (GExiv2Metadata *self, GError **error) {
+    return gexiv2_metadata_get_metadata_pixel_height(self, error);
 }
 
-gint gexiv2_metadata_try_get_metadata_pixel_height(GExiv2Metadata* self, GError** error) {
+gint gexiv2_metadata_get_metadata_pixel_height(GExiv2Metadata* self, GError** error) {
     g_return_val_if_fail (GEXIV2_IS_METADATA (self), -1);
     g_return_val_if_fail(self->priv->image.get() != nullptr, -1);
     g_return_val_if_fail(error == nullptr || *error == nullptr, -1);
@@ -858,18 +801,11 @@ gint gexiv2_metadata_try_get_metadata_pixel_height(GExiv2Metadata* self, GError*
     return -1;
 }
 
-void gexiv2_metadata_set_metadata_pixel_width (GExiv2Metadata *self, gint width) {
-    GError* error = nullptr;
-
-    gexiv2_metadata_try_set_metadata_pixel_width(self, width, &error);
-
-    if (error) {
-        g_warning("%s", error->message);
-        g_clear_error(&error);
-    }
+void gexiv2_metadata_try_set_metadata_pixel_width (GExiv2Metadata *self, gint width, GError **error) {
+    gexiv2_metadata_set_metadata_pixel_width(self, width, error);
 }
 
-void gexiv2_metadata_try_set_metadata_pixel_width(GExiv2Metadata* self, gint width, GError** error) {
+void gexiv2_metadata_set_metadata_pixel_width(GExiv2Metadata* self, gint width, GError** error) {
     g_return_if_fail(GEXIV2_IS_METADATA (self));
     g_return_if_fail(self->priv->image.get() != nullptr);
     g_return_if_fail(error == nullptr || *error == nullptr);
@@ -889,18 +825,11 @@ void gexiv2_metadata_try_set_metadata_pixel_width(GExiv2Metadata* self, gint wid
     }
 }
 
-void gexiv2_metadata_set_metadata_pixel_height (GExiv2Metadata *self, gint height) {
-    GError* error = nullptr;
-
-    gexiv2_metadata_try_set_metadata_pixel_height(self, height, &error);
-
-    if (error) {
-        g_warning("%s", error->message);
-        g_clear_error(&error);
-    }
+void gexiv2_metadata_try_set_metadata_pixel_height (GExiv2Metadata *self, gint height, GError **error) {
+    gexiv2_metadata_set_metadata_pixel_height(self, height, error);
 }
 
-void gexiv2_metadata_try_set_metadata_pixel_height(GExiv2Metadata* self, gint height, GError** error) {
+void gexiv2_metadata_set_metadata_pixel_height(GExiv2Metadata* self, gint height, GError** error) {
     g_return_if_fail(GEXIV2_IS_METADATA (self));
     g_return_if_fail(self->priv->image.get() != NULL);
     g_return_if_fail(error == nullptr || *error == nullptr);
@@ -920,21 +849,11 @@ void gexiv2_metadata_try_set_metadata_pixel_height(GExiv2Metadata* self, gint he
     }
 }
 
-gchar* gexiv2_metadata_get_comment (GExiv2Metadata *self) {
-    GError* error = nullptr;
-    gchar* value = nullptr;
-
-    value = gexiv2_metadata_try_get_comment(self, &error);
-
-    if (error) {
-        g_warning("%s", error->message);
-        g_clear_error(&error);
-    }
-
-    return value;
+gchar* gexiv2_metadata_try_get_comment (GExiv2Metadata *self, GError **error) {
+    return gexiv2_metadata_get_comment(self, error);
 }
 
-gchar* gexiv2_metadata_try_get_comment(GExiv2Metadata* self, GError** error) {
+gchar* gexiv2_metadata_get_comment(GExiv2Metadata* self, GError** error) {
     g_return_val_if_fail(GEXIV2_IS_METADATA(self), nullptr);
     g_return_val_if_fail(self->priv->image.get() != nullptr, nullptr);
     g_return_val_if_fail(error == nullptr || *error == nullptr, nullptr);
@@ -1006,18 +925,11 @@ gchar* gexiv2_metadata_try_get_comment(GExiv2Metadata* self, GError** error) {
     return nullptr;
 }
 
-void gexiv2_metadata_set_comment (GExiv2Metadata *self, const gchar* comment) {
-    GError* error = nullptr;
-
-    gexiv2_metadata_try_set_comment(self, comment, &error);
-
-    if (error) {
-        g_warning("%s", error->message);
-        g_clear_error(&error);
-    }
+void gexiv2_metadata_try_set_comment (GExiv2Metadata *self, const gchar* comment, GError **error) {
+    gexiv2_metadata_set_comment(self, comment, error);
 }
 
-void gexiv2_metadata_try_set_comment(GExiv2Metadata* self, const gchar* comment, GError** error) {
+void gexiv2_metadata_set_comment(GExiv2Metadata* self, const gchar* comment, GError** error) {
     g_return_if_fail(GEXIV2_IS_METADATA (self));
     g_return_if_fail(self->priv->image.get() != nullptr);
     g_return_if_fail(comment != nullptr);
@@ -1070,7 +982,7 @@ gboolean gexiv2_metadata_is_iptc_tag(const gchar* tag) {
     return strncmp("Iptc.", tag, 5) == 0;
 }
 
-gchar* gexiv2_metadata_try_get_tag_string (GExiv2Metadata *self, const gchar* tag, GError **error) {
+gchar* gexiv2_metadata_get_tag_string (GExiv2Metadata *self, const gchar* tag, GError **error) {
     g_return_val_if_fail(GEXIV2_IS_METADATA (self), nullptr);
     g_return_val_if_fail(tag != nullptr, nullptr);
     g_return_val_if_fail(self->priv->image.get() != nullptr, nullptr);
@@ -1091,7 +1003,7 @@ gchar* gexiv2_metadata_try_get_tag_string (GExiv2Metadata *self, const gchar* ta
     return nullptr;
 }
 
-gboolean gexiv2_metadata_try_set_tag_string (GExiv2Metadata *self, const gchar* tag, const gchar* value, GError **error) {
+gboolean gexiv2_metadata_set_tag_string (GExiv2Metadata *self, const gchar* tag, const gchar* value, GError **error) {
     g_return_val_if_fail(GEXIV2_IS_METADATA(self), FALSE);
     g_return_val_if_fail(tag != nullptr, FALSE);
     g_return_val_if_fail(self->priv->image.get() != nullptr, FALSE);
@@ -1112,43 +1024,15 @@ gboolean gexiv2_metadata_try_set_tag_string (GExiv2Metadata *self, const gchar* 
     return FALSE;
 }
 
-gchar* gexiv2_metadata_get_tag_string (GExiv2Metadata *self, const gchar* tag) {
-    gchar  *value;
-    GError *error = nullptr;
-
-    g_return_val_if_fail(GEXIV2_IS_METADATA (self), nullptr);
-    g_return_val_if_fail(tag != nullptr, nullptr);
-    g_return_val_if_fail(self->priv->image.get() != nullptr, nullptr);
-
-    value = gexiv2_metadata_try_get_tag_string (self, tag, &error);
-
-    if (error) {
-        g_warning("%s", error->message);
-        g_clear_error(&error);
-    }
-
-    return value;
+gchar* gexiv2_metadata_try_get_tag_string (GExiv2Metadata *self, const gchar* tag, GError **error) {
+    return gexiv2_metadata_get_tag_string (self, tag, error);
 }
 
-gboolean gexiv2_metadata_set_tag_string (GExiv2Metadata *self, const gchar* tag, const gchar* value) {
-    gboolean  success;
-    GError   *error = nullptr;
-
-    g_return_val_if_fail(GEXIV2_IS_METADATA(self), FALSE);
-    g_return_val_if_fail(tag != nullptr, FALSE);
-    g_return_val_if_fail(self->priv->image.get() != nullptr, FALSE);
-
-    success = gexiv2_metadata_try_set_tag_string(self, tag, value, &error);
-
-    if (error) {
-        g_warning("%s", error->message);
-        g_clear_error(&error);
-    }
-
-    return success;
+gboolean gexiv2_metadata_try_set_tag_string (GExiv2Metadata *self, const gchar* tag, const gchar* value, GError **error) {
+    return gexiv2_metadata_set_tag_string(self, tag, value, error);
 }
 
-gchar* gexiv2_metadata_try_get_tag_interpreted_string (GExiv2Metadata *self, const gchar* tag, GError **error) {
+gchar* gexiv2_metadata_get_tag_interpreted_string (GExiv2Metadata *self, const gchar* tag, GError **error) {
     g_return_val_if_fail(GEXIV2_IS_METADATA(self), nullptr);
     g_return_val_if_fail(tag != nullptr, nullptr);
     g_return_val_if_fail(self->priv->image.get() != nullptr, nullptr);
@@ -1169,25 +1053,11 @@ gchar* gexiv2_metadata_try_get_tag_interpreted_string (GExiv2Metadata *self, con
     return nullptr;
 }
 
-gchar* gexiv2_metadata_get_tag_interpreted_string (GExiv2Metadata *self, const gchar* tag) {
-    gchar  *value;
-    GError *error = nullptr;
-
-    g_return_val_if_fail(GEXIV2_IS_METADATA (self), nullptr);
-    g_return_val_if_fail(tag != nullptr, nullptr);
-    g_return_val_if_fail(self->priv->image.get() != nullptr, nullptr);
-
-    value = gexiv2_metadata_try_get_tag_interpreted_string(self, tag, &error);
-
-    if (error) {
-        g_warning("%s", error->message);
-        g_clear_error(&error);
-    }
-
-    return value;
+gchar* gexiv2_metadata_try_get_tag_interpreted_string (GExiv2Metadata *self, const gchar* tag, GError **error) {
+    return gexiv2_metadata_get_tag_interpreted_string(self, tag, error);
 }
 
-gchar** gexiv2_metadata_try_get_tag_multiple(GExiv2Metadata *self, const gchar* tag, GError **error) {
+gchar** gexiv2_metadata_get_tag_multiple(GExiv2Metadata *self, const gchar* tag, GError **error) {
     g_return_val_if_fail(GEXIV2_IS_METADATA(self), nullptr);
     g_return_val_if_fail(tag != nullptr, nullptr);
     g_return_val_if_fail(self->priv->image.get() != nullptr, nullptr);
@@ -1208,7 +1078,7 @@ gchar** gexiv2_metadata_try_get_tag_multiple(GExiv2Metadata *self, const gchar* 
     return nullptr;
 }
 
-gboolean gexiv2_metadata_try_set_tag_multiple(GExiv2Metadata *self, const gchar* tag, const gchar** values, GError **error) {
+gboolean gexiv2_metadata_set_tag_multiple(GExiv2Metadata *self, const gchar* tag, const gchar** values, GError **error) {
     g_return_val_if_fail(GEXIV2_IS_METADATA(self), FALSE);
     g_return_val_if_fail(tag != nullptr, FALSE);
     g_return_val_if_fail(values != nullptr, FALSE);
@@ -1230,70 +1100,15 @@ gboolean gexiv2_metadata_try_set_tag_multiple(GExiv2Metadata *self, const gchar*
     return FALSE;
 }
 
-gchar** gexiv2_metadata_get_tag_multiple(GExiv2Metadata* self, const gchar* tag) {
-    gchar** tags = nullptr;
-    GError* error = nullptr;
-
-    g_return_val_if_fail(GEXIV2_IS_METADATA(self), nullptr);
-    g_return_val_if_fail(tag != nullptr, nullptr);
-    g_return_val_if_fail(self->priv != nullptr, nullptr);
-    g_return_val_if_fail(self->priv->image.get() != nullptr, nullptr);
-
-    if (gexiv2_metadata_is_xmp_tag(tag)) {
-        tags = gexiv2_metadata_get_xmp_tag_multiple_deprecated(self, tag, &error);
-        if (error) {
-            g_warning("%s", error->message);
-            g_clear_error(&error);
-        }
-        return tags;
-    }
-
-    if (gexiv2_metadata_is_exif_tag(tag)) {
-        tags = gexiv2_metadata_get_exif_tag_multiple(self, tag, &error);
-        if (error) {
-            g_warning("%s", error->message);
-            g_clear_error(&error);
-        }
-        return tags;
-    }
-
-    if (gexiv2_metadata_is_iptc_tag(tag)) {
-        tags = gexiv2_metadata_get_iptc_tag_multiple(self, tag, &error);
-        if (error) {
-            g_warning("%s", error->message);
-            g_clear_error(&error);
-        }
-        return tags;
-    }
-
-    // Invalid "familyName"
-    g_set_error_literal(&error, g_quark_from_string("GExiv2"), static_cast<int>(Exiv2::ErrorCode::kerInvalidKey), tag);
-    g_warning("%s", error->message);
-    g_clear_error(&error);
-
-    return tags;
+gchar** gexiv2_metadata_try_get_tag_multiple(GExiv2Metadata* self, const gchar* tag, GError** error) {
+    return gexiv2_metadata_get_tag_multiple(self, tag, error);
 }
 
-gboolean gexiv2_metadata_set_tag_multiple(GExiv2Metadata *self, const gchar* tag, const gchar** values) {
-    GError   *error   = nullptr;
-    gboolean  success = FALSE;
-
-    g_return_val_if_fail(GEXIV2_IS_METADATA(self), FALSE);
-    g_return_val_if_fail(tag != nullptr, FALSE);
-    g_return_val_if_fail(values != nullptr, FALSE);
-    g_return_val_if_fail(self->priv->image.get() != nullptr, FALSE);
-
-    success = gexiv2_metadata_try_set_tag_multiple(self, tag, values, &error);
-
-    if (error) {
-        g_warning("%s", error->message);
-        g_clear_error(&error);
-    }
-
-    return success;
+gboolean gexiv2_metadata_try_set_tag_multiple(GExiv2Metadata *self, const gchar* tag, const gchar** values, GError **error) {
+    return gexiv2_metadata_set_tag_multiple(self, tag, values, error);
 }
 
-glong gexiv2_metadata_try_get_tag_long(GExiv2Metadata *self, const gchar* tag, GError **error) {
+glong gexiv2_metadata_get_tag_long(GExiv2Metadata *self, const gchar* tag, GError **error) {
     g_return_val_if_fail(GEXIV2_IS_METADATA(self), 0);
     g_return_val_if_fail(tag != nullptr, 0);
     g_return_val_if_fail(self->priv->image.get() != nullptr, 0);
@@ -1311,25 +1126,11 @@ glong gexiv2_metadata_try_get_tag_long(GExiv2Metadata *self, const gchar* tag, G
     return 0;
 }
 
-glong gexiv2_metadata_get_tag_long(GExiv2Metadata *self, const gchar* tag) {
-    GError *error   = nullptr;
-    glong   value;
-
-    g_return_val_if_fail(GEXIV2_IS_METADATA(self), FALSE);
-    g_return_val_if_fail(tag != nullptr, FALSE);
-    g_return_val_if_fail(self->priv->image.get() != nullptr, FALSE);
-
-    value = gexiv2_metadata_try_get_tag_long(self, tag, &error);
-
-    if (error) {
-        g_warning("%s", error->message);
-        g_clear_error(&error);
-    }
-
-    return value;
+glong gexiv2_metadata_try_get_tag_long(GExiv2Metadata *self, const gchar* tag, GError **error) {
+    return gexiv2_metadata_get_tag_long(self, tag, error);
 }
 
-gboolean gexiv2_metadata_try_set_tag_long(GExiv2Metadata *self, const gchar* tag, glong value, GError **error) {
+gboolean gexiv2_metadata_set_tag_long(GExiv2Metadata *self, const gchar* tag, glong value, GError **error) {
     g_return_val_if_fail(GEXIV2_IS_METADATA(self), FALSE);
     g_return_val_if_fail(tag != nullptr, FALSE);
     g_return_val_if_fail(self->priv->image.get() != nullptr, 0);
@@ -1347,57 +1148,23 @@ gboolean gexiv2_metadata_try_set_tag_long(GExiv2Metadata *self, const gchar* tag
     return FALSE;
 }
 
-gboolean gexiv2_metadata_set_tag_long(GExiv2Metadata *self, const gchar* tag, glong value) {
-    GError   *error   = nullptr;
-    gboolean  success = FALSE;
-
-    g_return_val_if_fail(GEXIV2_IS_METADATA(self), FALSE);
-    g_return_val_if_fail(tag != nullptr, FALSE);
-    g_return_val_if_fail(self->priv->image.get() != nullptr, FALSE);
-
-    success = gexiv2_metadata_try_set_tag_long(self, tag, value, &error);
-
-    if (error) {
-        g_warning("%s", error->message);
-        g_clear_error(&error);
-    }
-
-    return success;
+gboolean gexiv2_metadata_try_set_tag_long(GExiv2Metadata *self, const gchar* tag, glong value, GError **error) {
+    return gexiv2_metadata_set_tag_long(self, tag, value, error);
 }
 
-gboolean gexiv2_metadata_get_exposure_time (GExiv2Metadata *self, gint *nom, gint *den) {
-    GError* error = nullptr;
-    gboolean value = FALSE;
-
-    value = gexiv2_metadata_try_get_exposure_time(self, nom, den, &error);
-
-    if (error) {
-        g_warning("%s", error->message);
-        g_clear_error(&error);
-    }
-
-    return value;
+gboolean gexiv2_metadata_try_get_exposure_time (GExiv2Metadata *self, gint *nom, gint *den, GError **error) {
+    return gexiv2_metadata_get_exposure_time(self, nom, den, error);
 }
 
-gboolean gexiv2_metadata_try_get_exposure_time(GExiv2Metadata* self, gint* nom, gint* den, GError** error) {
-    return gexiv2_metadata_try_get_exif_tag_rational(self, "Exif.Photo.ExposureTime", nom, den, error);
+gboolean gexiv2_metadata_get_exposure_time(GExiv2Metadata* self, gint* nom, gint* den, GError** error) {
+    return gexiv2_metadata_get_exif_tag_rational(self, "Exif.Photo.ExposureTime", nom, den, error);
 }
 
-gdouble gexiv2_metadata_get_fnumber (GExiv2Metadata *self) {
-    GError* error = nullptr;
-    gdouble value = -1.0;
-
-    value = gexiv2_metadata_try_get_fnumber(self, &error);
-
-    if (error) {
-        g_warning("%s", error->message);
-        g_clear_error(&error);
-    }
-
-    return value;
+gdouble gexiv2_metadata_try_get_fnumber (GExiv2Metadata *self, GError **error) {
+    return gexiv2_metadata_get_fnumber(self, error);
 }
 
-gdouble gexiv2_metadata_try_get_fnumber(GExiv2Metadata* self, GError** error) {
+gdouble gexiv2_metadata_get_fnumber(GExiv2Metadata* self, GError** error) {
     g_return_val_if_fail(error == nullptr || *error == nullptr, FALSE);
 
     gdouble fnumber = gexiv2_metadata_get_exif_tag_rational_as_double(self, "Exif.Photo.FNumber", -1.0, error);
@@ -1419,39 +1186,19 @@ gdouble gexiv2_metadata_try_get_fnumber(GExiv2Metadata* self, GError** error) {
     return fnumber;
 }
 
-gdouble gexiv2_metadata_get_focal_length (GExiv2Metadata *self) {
-    GError* error = nullptr;
-    gdouble value = -1.0;
-
-    value = gexiv2_metadata_try_get_focal_length(self, &error);
-
-    if (error) {
-        g_warning("%s", error->message);
-        g_clear_error(&error);
-    }
-
-    return value;
+gdouble gexiv2_metadata_try_get_focal_length (GExiv2Metadata *self, GError **error) {
+    return gexiv2_metadata_get_focal_length(self, error);
 }
 
-gdouble gexiv2_metadata_try_get_focal_length(GExiv2Metadata* self, GError** error) {
+gdouble gexiv2_metadata_get_focal_length(GExiv2Metadata* self, GError** error) {
     return gexiv2_metadata_get_exif_tag_rational_as_double(self, "Exif.Photo.FocalLength", -1.0, error);
 }
 
-gint gexiv2_metadata_get_iso_speed (GExiv2Metadata *self) {
-    GError* error = nullptr;
-    gdouble value = -1.0;
-
-    value = gexiv2_metadata_try_get_iso_speed(self, &error);
-
-    if (error) {
-        g_warning("%s", error->message);
-        g_clear_error(&error);
-    }
-
-    return value;
+gint gexiv2_metadata_try_get_iso_speed (GExiv2Metadata *self, GError **error) {
+    return gexiv2_metadata_get_iso_speed(self, error);
 }
 
-gint gexiv2_metadata_try_get_iso_speed(GExiv2Metadata* self, GError** error) {
+gint gexiv2_metadata_get_iso_speed(GExiv2Metadata* self, GError** error) {
     return (gint) gexiv2_metadata_get_exif_tag_long(self, "Exif.Photo.ISOSpeedRatings", error);
 }
 
@@ -1463,25 +1210,15 @@ GExiv2PreviewProperties** gexiv2_metadata_get_preview_properties (GExiv2Metadata
     return self->priv->preview_properties;
 }
 
-GExiv2PreviewImage* gexiv2_metadata_get_preview_image (GExiv2Metadata *self,
-    GExiv2PreviewProperties *props) {
+GExiv2PreviewImage* gexiv2_metadata_try_get_preview_image (GExiv2Metadata *self,
+    GExiv2PreviewProperties *props, GError **error) {
 
-    GExiv2PreviewImage* value = nullptr;
-    GError* error = nullptr;
-
-    value = gexiv2_metadata_try_get_preview_image(self, props, &error);
-
-    if (error) {
-        g_warning("%s", error->message);
-        g_clear_error(&error);
-    }
-
-    return value;
+    return gexiv2_metadata_get_preview_image(self, props, error);
 }
 
-GExiv2PreviewImage* gexiv2_metadata_try_get_preview_image(GExiv2Metadata* self,
-                                                          GExiv2PreviewProperties* props,
-                                                          GError** error) {
+GExiv2PreviewImage* gexiv2_metadata_get_preview_image(GExiv2Metadata* self,
+                                                      GExiv2PreviewProperties* props,
+                                                      GError** error) {
     g_return_val_if_fail(GEXIV2_IS_METADATA(self), nullptr);
     g_return_val_if_fail(GEXIV2_IS_PREVIEW_PROPERTIES(props), nullptr);
     g_return_val_if_fail(self->priv->image.get() != nullptr, nullptr);
@@ -1524,19 +1261,13 @@ gboolean gexiv2_metadata_set_exif_thumbnail_from_file(GExiv2Metadata* self, cons
     return FALSE;
 }
 
-void gexiv2_metadata_set_exif_thumbnail_from_buffer (GExiv2Metadata *self, const guint8 *buffer,
-    gint size) {
-    GError* error = nullptr;
+void gexiv2_metadata_try_set_exif_thumbnail_from_buffer (GExiv2Metadata *self, const guint8 *buffer,
+    gint size, GError **error) {
 
-    gexiv2_metadata_try_set_exif_thumbnail_from_buffer(self, buffer, size, &error);
-
-    if (error) {
-        g_warning("%s", error->message);
-        g_clear_error(&error);
-    }
+    gexiv2_metadata_set_exif_thumbnail_from_buffer(self, buffer, size, error);
 }
 
-void gexiv2_metadata_try_set_exif_thumbnail_from_buffer(GExiv2Metadata* self,
+void gexiv2_metadata_set_exif_thumbnail_from_buffer(GExiv2Metadata* self,
                                                         const guint8* buffer,
                                                         gint size,
                                                         GError** error) {
@@ -1556,18 +1287,11 @@ void gexiv2_metadata_try_set_exif_thumbnail_from_buffer(GExiv2Metadata* self,
     }
 }
 
-void gexiv2_metadata_erase_exif_thumbnail (GExiv2Metadata *self) {
-    GError* error = nullptr;
-
-    gexiv2_metadata_try_erase_exif_thumbnail(self, &error);
-
-    if (error) {
-        g_warning("%s", error->message);
-        g_clear_error(&error);
-    }
+void gexiv2_metadata_try_erase_exif_thumbnail (GExiv2Metadata *self, GError **error) {
+    gexiv2_metadata_erase_exif_thumbnail(self, error);
 }
 
-void gexiv2_metadata_try_erase_exif_thumbnail(GExiv2Metadata* self, GError** error) {
+void gexiv2_metadata_erase_exif_thumbnail(GExiv2Metadata* self, GError** error) {
     g_return_if_fail(GEXIV2_IS_METADATA(self));
     g_return_if_fail(self->priv->image.get() != nullptr);
     g_return_if_fail(error == nullptr || *error == nullptr);
@@ -1582,7 +1306,7 @@ void gexiv2_metadata_try_erase_exif_thumbnail(GExiv2Metadata* self, GError** err
     }
 }
 
-const gchar* gexiv2_metadata_try_get_tag_label (const gchar *tag, GError **error) {
+const gchar* gexiv2_metadata_get_tag_label (const gchar *tag, GError **error) {
     g_return_val_if_fail(tag != nullptr, nullptr);
     g_return_val_if_fail(error == nullptr || *error == nullptr, nullptr);
 
@@ -1602,23 +1326,11 @@ const gchar* gexiv2_metadata_try_get_tag_label (const gchar *tag, GError **error
     return nullptr;
 }
 
-const gchar* gexiv2_metadata_get_tag_label (const gchar *tag) {
-    const gchar *value;
-    GError      *error = nullptr;
-
-    g_return_val_if_fail(tag != nullptr, nullptr);
-
-    value = gexiv2_metadata_try_get_tag_label(tag, &error);
-
-    if (error) {
-        g_warning("%s", error->message);
-        g_clear_error(&error);
-    }
-
-    return value;
+const gchar* gexiv2_metadata_try_get_tag_label (const gchar *tag, GError **error) {
+    return  gexiv2_metadata_get_tag_label(tag, error);
 }
 
-const gchar* gexiv2_metadata_try_get_tag_description (const gchar *tag, GError **error) {
+const gchar* gexiv2_metadata_get_tag_description (const gchar *tag, GError **error) {
     g_return_val_if_fail(tag != nullptr, nullptr);
     g_return_val_if_fail(error == nullptr || *error == nullptr, nullptr);
 
@@ -1638,23 +1350,11 @@ const gchar* gexiv2_metadata_try_get_tag_description (const gchar *tag, GError *
     return nullptr;
 }
 
-const gchar* gexiv2_metadata_get_tag_description (const gchar *tag) {
-    const gchar *value;
-    GError      *error = nullptr;
-
-    g_return_val_if_fail(tag != nullptr, nullptr);
-
-    value = gexiv2_metadata_try_get_tag_description(tag, &error);
-
-    if (error) {
-        g_warning("%s", error->message);
-        g_clear_error(&error);
-    }
-
-    return value;
+const gchar* gexiv2_metadata_try_get_tag_description (const gchar *tag, GError **error) {
+    return gexiv2_metadata_get_tag_description(tag, error);
 }
 
-const gchar* gexiv2_metadata_try_get_tag_type (const gchar *tag, GError **error) {
+const gchar* gexiv2_metadata_get_tag_type (const gchar *tag, GError **error) {
     g_return_val_if_fail(tag != nullptr, nullptr);
     g_return_val_if_fail(error == nullptr || *error == nullptr, nullptr);
 
@@ -1674,23 +1374,11 @@ const gchar* gexiv2_metadata_try_get_tag_type (const gchar *tag, GError **error)
     return nullptr;
 }
 
-const gchar* gexiv2_metadata_get_tag_type (const gchar *tag) {
-    const gchar *value;
-    GError      *error = nullptr;
-
-    g_return_val_if_fail(tag != nullptr, nullptr);
-
-    value = gexiv2_metadata_try_get_tag_type(tag, &error);
-
-    if (error) {
-        g_warning("%s", error->message);
-        g_clear_error(&error);
-    }
-
-    return value;
+const gchar* gexiv2_metadata_try_get_tag_type (const gchar *tag, GError **error) {
+    return gexiv2_metadata_get_tag_type(tag, error);
 }
 
-gboolean gexiv2_metadata_try_tag_supports_multiple_values(GExiv2Metadata* self, const gchar* tag, GError** error) {
+gboolean gexiv2_metadata_tag_supports_multiple_values(GExiv2Metadata* self, const gchar* tag, GError** error) {
     g_return_val_if_fail(GEXIV2_IS_METADATA(self), FALSE);
     g_return_val_if_fail(self->priv != nullptr, FALSE);
     g_return_val_if_fail(self->priv->image.get() != nullptr, FALSE);
@@ -1713,7 +1401,11 @@ gboolean gexiv2_metadata_try_tag_supports_multiple_values(GExiv2Metadata* self, 
     return FALSE;
 }
 
-GBytes* gexiv2_metadata_try_get_tag_raw(GExiv2Metadata *self, const gchar* tag, GError **error) {
+gboolean gexiv2_metadata_try_tag_supports_multiple_values(GExiv2Metadata* self, const gchar* tag, GError** error) {
+    return gexiv2_metadata_tag_supports_multiple_values(self, tag, error);
+}
+
+GBytes* gexiv2_metadata_get_tag_raw(GExiv2Metadata *self, const gchar* tag, GError **error) {
     g_return_val_if_fail(GEXIV2_IS_METADATA(self), nullptr);
     g_return_val_if_fail(tag != nullptr, nullptr);
     g_return_val_if_fail(self->priv->image.get() != nullptr, nullptr);
@@ -1735,22 +1427,8 @@ GBytes* gexiv2_metadata_try_get_tag_raw(GExiv2Metadata *self, const gchar* tag, 
     return nullptr;
 }
 
-GBytes* gexiv2_metadata_get_tag_raw(GExiv2Metadata *self, const gchar* tag) {
-    GBytes *value;
-    GError *error = nullptr;
-
-    g_return_val_if_fail(GEXIV2_IS_METADATA (self), nullptr);
-    g_return_val_if_fail(tag != nullptr, nullptr);
-    g_return_val_if_fail(self->priv->image.get() != nullptr, nullptr);
-
-    value = gexiv2_metadata_try_get_tag_raw(self, tag, &error);
-
-    if (error) {
-        g_warning("%s", error->message);
-        g_clear_error(&error);
-    }
-
-    return value;
+GBytes* gexiv2_metadata_try_get_tag_raw(GExiv2Metadata *self, const gchar* tag, GError **error) {
+    return  gexiv2_metadata_get_tag_raw(self, tag, error);
 }
 
 G_END_DECLS

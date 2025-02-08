@@ -224,8 +224,12 @@ gboolean		gexiv2_metadata_open_buf			(GExiv2Metadata *self, const guint8 *data, 
 
 /**
  * gexiv2_metadata_from_stream:
+ * @stream:
+ * @error: (allow-none): A return location for a [struct@GLib.Error] or %NULL
  *
- * This function does not work and will be removed in a future release.
+ * Read metadata from a [interface@Gio.InputStream]. This function is not very
+ * efficient in places since it needs to copy memory to fullfil underlying
+ * requirements by exiv2, which expects everything to be memory-mappable.
  *
  */
 gboolean		gexiv2_metadata_from_stream			(GExiv2Metadata *self, GInputStream* stream, GError **error);
@@ -295,16 +299,17 @@ GBytes* gexiv2_metadata_as_bytes(GExiv2Metadata* self, GBytes* bytes, GError** e
  * gexiv2_metadata_has_tag:
  * @self: An instance of [class@GExiv2.Metadata]
  * @tag: Exiv2 tag
+ * @error: (allow-none): A return location for a [struct@GLib.Error] or %NULL
+ *
  *
  * Check for presence of a tag.
  *
  * The Exiv2 Tag Reference can be found at <http://exiv2.org/metadata.html>
  *
  * Returns: %TRUE if the tag is present.
- * Deprecated: 0.14.0: Use [method@Metadata.try_has_tag] instead.
+ * Since: 0.16.0
  */
-G_DEPRECATED_FOR(gexiv2_metadata_try_has_tag)
-gboolean		gexiv2_metadata_has_tag				(GExiv2Metadata *self, const gchar* tag);
+gboolean		gexiv2_metadata_has_tag				(GExiv2Metadata *self, const gchar* tag, GError **error);
 
 /**
  * gexiv2_metadata_try_has_tag:
@@ -317,13 +322,16 @@ gboolean		gexiv2_metadata_has_tag				(GExiv2Metadata *self, const gchar* tag);
  * Returns: TRUE if the tag is present.
  *
  * Since: 0.14.0
+ * Deprecated: 0.16.0: Use [method@Metadata.has_tag] instead.
  */
+G_DEPRECATED_FOR(gexiv2_metadata_has_tag)
 gboolean gexiv2_metadata_try_has_tag(GExiv2Metadata* self, const gchar* tag, GError** error);
 
 /**
  * gexiv2_metadata_clear_tag:
  * @self: An instance of [class@GExiv2.Metadata]
  * @tag: Exiv2 tag
+ * @error: (allow-none): A return location for a [struct@GLib.Error] or %NULL
  *
  * Removes the Exiv2 tag from the metadata object.
  *
@@ -331,10 +339,9 @@ gboolean gexiv2_metadata_try_has_tag(GExiv2Metadata* self, const gchar* tag, GEr
  *
  * Returns: %TRUE if the tag was present.
  *
- * Deprecated: 0.14.0: Use [method@Metadata.try_clear_tag] instead.
+ * Since: 0.16.0
  */
-G_DEPRECATED_FOR(gexiv2_metadata_try_clear_tag)
-gboolean		gexiv2_metadata_clear_tag			(GExiv2Metadata *self, const gchar* tag);
+gboolean		gexiv2_metadata_clear_tag			(GExiv2Metadata *self, const gchar* tag, GError **error);
 
 /**
  * gexiv2_metadata_try_clear_tag:
@@ -349,7 +356,9 @@ gboolean		gexiv2_metadata_clear_tag			(GExiv2Metadata *self, const gchar* tag);
  * Returns: TRUE if the tag was present.
  *
  * Since: 0.14.0
+ * Deprecated: 0.14.0: Use [method@Metadata.clear_tag] instead.
  */
+G_DEPRECATED_FOR(gexiv2_metadata_clear_tag)
 gboolean gexiv2_metadata_try_clear_tag(GExiv2Metadata* self, const gchar* tag, GError** error);
 
 /**
@@ -408,12 +417,15 @@ gboolean		gexiv2_metadata_is_xmp_tag				(const gchar* tag);
  * Returns: (transfer none) (allow-none): The tag's label
  *
  * Since: 0.12.2
+ * Deprecated: 0.16.0: Use [func@Metadata.get_tag_label] instead.
  */
+G_DEPRECATED_FOR(gexiv2_metadata_get_tag_label)
 const gchar*	gexiv2_metadata_try_get_tag_label		(const gchar *tag, GError **error);
 
 /**
  * gexiv2_metadata_get_tag_label:
  * @tag: An Exiv2 tag
+ * @error: (allow-none): A return location for a [struct@GLib.Error] or %NULL
  *
  * Get Exiv2's label for this tag.
  *
@@ -421,10 +433,8 @@ const gchar*	gexiv2_metadata_try_get_tag_label		(const gchar *tag, GError **erro
  *
  * Returns: (transfer none) (allow-none): The tag's label
  *
- * Deprecated: 0.12.2: Use [func@Metadata.try_get_tag_label] instead.
  */
-G_DEPRECATED_FOR(gexiv2_metadata_try_get_tag_label)
-const gchar*	gexiv2_metadata_get_tag_label		(const gchar *tag);
+const gchar*	gexiv2_metadata_get_tag_label		(const gchar *tag, GError **error);
 
 /**
  * gexiv2_metadata_try_get_tag_description:
@@ -438,12 +448,16 @@ const gchar*	gexiv2_metadata_get_tag_label		(const gchar *tag);
  * Returns: (transfer none) (allow-none): The tag's description
  *
  * Since: 0.12.2
+ * Deprecated: 0.16.0: Use [func@Metadata.get_tag_description] instead.
+ *
  */
+G_DEPRECATED_FOR(gexiv2_metadata_get_tag_description)
 const gchar*	gexiv2_metadata_try_get_tag_description	(const gchar *tag, GError **error);
 
 /**
  * gexiv2_metadata_get_tag_description:
  * @tag: An Exiv2 tag
+ * @error: (allow-none): A return location for a [struct@GLib.Error] or %NULL
  *
  * Get Exiv2's description for a tag.
  *
@@ -451,10 +465,9 @@ const gchar*	gexiv2_metadata_try_get_tag_description	(const gchar *tag, GError *
  *
  * Returns: (transfer none) (allow-none): The tag's description
  *
- * Deprecated: 0.12.2: Use [func@Metadata.try_get_tag_description] instead.
+ * Since: 0.16.0
  */
-G_DEPRECATED_FOR(gexiv2_metadata_try_get_tag_description)
-const gchar*	gexiv2_metadata_get_tag_description	(const gchar *tag);
+const gchar*	gexiv2_metadata_get_tag_description	(const gchar *tag, GError **error);
 
 /**
  * gexiv2_metadata_try_get_tag_type:
@@ -471,12 +484,15 @@ const gchar*	gexiv2_metadata_get_tag_description	(const gchar *tag);
  * Returns: (transfer none) (allow-none): The tag's type name.
  *
  * Since: 0.12.2
+ * Deprecated: 0.16.0: Use [func@Metadata.get_tag_type] instead.
  */
+G_DEPRECATED_FOR(gexiv2_metadata_get_tag_type)
 const gchar*	gexiv2_metadata_try_get_tag_type	(const gchar *tag, GError **error);
 
 /**
  * gexiv2_metadata_get_tag_type:
  * @tag: An Exiv2 tag
+ * @error: (allow-none): A return location for a [struct@GLib.Error] or %NULL
  *
  * Get Exiv2's type name of a tag.
  *
@@ -486,11 +502,9 @@ const gchar*	gexiv2_metadata_try_get_tag_type	(const gchar *tag, GError **error)
  * The Exiv2 Tag Reference can be found at <http://exiv2.org/metadata.html>
  *
  * Returns: (transfer none) (allow-none): The tag's type name.
- *
- * Deprecated: 0.12.2: Use [func@Metadata.try_get_tag_type] instead.
+ * Since: 0.16.0
  */
-G_DEPRECATED_FOR(gexiv2_metadata_try_get_tag_type)
-const gchar*	gexiv2_metadata_get_tag_type	(const gchar *tag);
+const gchar*	gexiv2_metadata_get_tag_type	(const gchar *tag, GError **error);
 
 /**
  * gexiv2_metadata_try_tag_supports_multiple_values:
@@ -510,8 +524,30 @@ const gchar*	gexiv2_metadata_get_tag_type	(const gchar *tag);
  * (i.e. not built-in and not added to @self), then @error is set and %FALSE is returned.
  *
  * Since: 0.14.0
+ * Deprecated: 0.16.0. Use [method@GExiv2.Metadata.tag_supports_multiple_values] instead.
  */
 gboolean gexiv2_metadata_try_tag_supports_multiple_values(GExiv2Metadata* self, const gchar* tag, GError** error);
+
+/**
+ * gexiv2_metadata_tag_supports_multiple_values:
+ * @self: An instance of [class@GExiv2.Metadata]
+ * @tag: An Exiv2 tag
+ * @error: (allow-none): A return location for a [struct@GLib.Error] or %NULL
+ *
+ * Check whether a tag supports multiple values.
+ *
+ * Multiple value tags are Xmp tags of type "XmpAlt", "XmpBag", "XmpSeq" or "LangAlt", or Iptc
+ * tags marked as Repeatable (which can be of any Iptc type). There are no multiple value Exif
+ * tags.
+ *
+ * The Exiv2 Tag Reference can be found at <http://exiv2.org/metadata.html>
+ *
+ * Returns: Whether @tag is capable of storing multiple values or not. If @tag is undefined
+ * (i.e. not built-in and not added to @self), then @error is set and %FALSE is returned.
+ *
+ * Since: 0.16.0
+ */
+gboolean gexiv2_metadata_tag_supports_multiple_values(GExiv2Metadata* self, const gchar* tag, GError** error);
 
 /**
  * gexiv2_metadata_get_supports_exif:
@@ -591,7 +627,9 @@ gint			gexiv2_metadata_get_pixel_height	(GExiv2Metadata *self);
  * Returns: (transfer full) (allow-none): The tag's value as a string
  *
  * Since: 0.12.2
+ * Deprecated: 0.16.0: Use [method@Metadata.get_tag_string] instead.
  */
+G_DEPRECATED_FOR(gexiv2_metadata_get_tag_string)
 gchar*			gexiv2_metadata_try_get_tag_string	(GExiv2Metadata *self, const gchar* tag, GError **error);
 
 /**
@@ -611,13 +649,16 @@ gchar*			gexiv2_metadata_try_get_tag_string	(GExiv2Metadata *self, const gchar* 
  * Returns: TRUE on success
  *
  * Since: 0.12.2
+ * Deprecated: 0.16.0: Use [method@Metadata.set_tag_string] instead.
  */
+G_DEPRECATED_FOR(gexiv2_metadata_set_tag_string)
 gboolean		gexiv2_metadata_try_set_tag_string	(GExiv2Metadata *self, const gchar* tag, const gchar* value, GError **error);
 
 /**
  * gexiv2_metadata_get_tag_string:
  * @self: An instance of [class@GExiv2.Metadata]
  * @tag: Exiv2 tag name
+ * @error: (allow-none): A return location for a [struct@GLib.Error] or %NULL
  *
  * The Exiv2 Tag Reference can be found at <http://exiv2.org/metadata.html>
  *
@@ -629,16 +670,16 @@ gboolean		gexiv2_metadata_try_set_tag_string	(GExiv2Metadata *self, const gchar*
  *
  * Returns: (transfer full) (allow-none): The tag's value as a string
  *
- * Deprecated: 0.12.2: Use [method@Metadata.try_get_tag_string] instead.
+ * Since: 0.16.0
  */
-G_DEPRECATED_FOR(gexiv2_metadata_try_get_tag_string)
-gchar*			gexiv2_metadata_get_tag_string		(GExiv2Metadata *self, const gchar* tag);
+gchar*			gexiv2_metadata_get_tag_string		(GExiv2Metadata *self, const gchar* tag, GError **error);
 
 /**
  * gexiv2_metadata_set_tag_string:
  * @self: An instance of [class@GExiv2.Metadata]
  * @tag: Exiv2 tag name
  * @value: The value to set or replace the existing value
+ * @error: (allow-none): A return location for a [struct@GLib.Error] or %NULL
  *
  * The Exiv2 Tag Reference can be found at <http://exiv2.org/metadata.html>
  *
@@ -651,10 +692,9 @@ gchar*			gexiv2_metadata_get_tag_string		(GExiv2Metadata *self, const gchar* tag
  *
  * Returns: TRUE on success
  *
- * Deprecated: 0.12.2: Use [method@Metadata.try_set_tag_string] instead.
+ * Since: 0.16.0
  */
-G_DEPRECATED_FOR(gexiv2_metadata_try_set_tag_string)
-gboolean		gexiv2_metadata_set_tag_string		(GExiv2Metadata *self, const gchar* tag, const gchar* value);
+gboolean		gexiv2_metadata_set_tag_string		(GExiv2Metadata *self, const gchar* tag, const gchar* value, GError **error);
 
 /**
  * gexiv2_metadata_try_set_xmp_tag_struct:
@@ -668,7 +708,9 @@ gboolean		gexiv2_metadata_set_tag_string		(GExiv2Metadata *self, const gchar* ta
  * Returns: TRUE on success
  *
  * Since: 0.12.2
+ * Deprecated: 0.16.0: Use [method@Metadata.set_xmp_tag_struct] instead.
  */
+G_DEPRECATED_FOR(gexiv2_metadata_set_xmp_tag_struct)
 gboolean gexiv2_metadata_try_set_xmp_tag_struct (GExiv2Metadata *self, const gchar* tag, GExiv2StructureType type, GError **error);
 
 /**
@@ -676,15 +718,14 @@ gboolean gexiv2_metadata_try_set_xmp_tag_struct (GExiv2Metadata *self, const gch
  * @self: An instance of [class@GExiv2.Metadata]
  * @tag: Exiv2 tag name
  * @type: The GExiv2StructureType specifying the type of structure
+ * @error: (allow-none): A return location for a [struct@GLib.Error] or %NULL
  *
  * The Exiv2 Tag Reference can be found at <http://exiv2.org/metadata.html>
  *
  * Returns: TRUE on success
- *
- * Deprecated: 0.12.2: Use [method@Metadata.try_set_xmp_tag_struct] instead.
+ * Since: 0.16.0
  */
-G_DEPRECATED_FOR(gexiv2_metadata_try_set_xmp_tag_struct)
-gboolean gexiv2_metadata_set_xmp_tag_struct (GExiv2Metadata *self, const gchar* tag, GExiv2StructureType type);
+gboolean gexiv2_metadata_set_xmp_tag_struct (GExiv2Metadata *self, const gchar* tag, GExiv2StructureType type, GError **error);
 
 /**
  * gexiv2_metadata_try_get_tag_interpreted_string:
@@ -702,13 +743,16 @@ gboolean gexiv2_metadata_set_xmp_tag_struct (GExiv2Metadata *self, const gchar* 
  * Returns: (transfer full) (allow-none): The tag's interpreted value as a string
  *
  * Since: 0.12.2
+ * Deprecated: 0.16.0: Use [method@Metadata.get_tag_interpreted_string] instead.
  */
+G_DEPRECATED_FOR(gexiv2_metadata_get_tag_interpreted_string)
 gchar*			gexiv2_metadata_try_get_tag_interpreted_string (GExiv2Metadata *self, const gchar* tag, GError **error);
 
 /**
  * gexiv2_metadata_get_tag_interpreted_string:
  * @self: An instance of [class@GExiv2.Metadata]
  * @tag: Exiv2 tag name
+ * @error: (allow-none): A return location for a [struct@GLib.Error] or %NULL
  *
  * An interpreted string is one fit for user display.  It may display units or use formatting
  * appropriate to the type of data the tag holds.
@@ -718,11 +762,9 @@ gchar*			gexiv2_metadata_try_get_tag_interpreted_string (GExiv2Metadata *self, c
  * The Exiv2 Tag Reference can be found at <http://exiv2.org/metadata.html>
  *
  * Returns: (transfer full) (allow-none): The tag's interpreted value as a string
- *
- * Deprecated: 0.12.2: Use [method@Metadata.try_get_tag_interpreted_string] instead.
+ * Since: 0.16.0
  */
-G_DEPRECATED_FOR(gexiv2_metadata_try_get_tag_interpreted_string)
-gchar*			gexiv2_metadata_get_tag_interpreted_string (GExiv2Metadata *self, const gchar* tag);
+gchar*			gexiv2_metadata_get_tag_interpreted_string (GExiv2Metadata *self, const gchar* tag, GError **error);
 
 /**
  * gexiv2_metadata_try_get_tag_long:
@@ -735,22 +777,23 @@ gchar*			gexiv2_metadata_get_tag_interpreted_string (GExiv2Metadata *self, const
  * Returns: The tag's value as a glong
  *
  * Since: 0.12.2
+ * Deprecated: 0.12.2: Use [method@Metadata.get_tag_long] instead.
  */
+G_DEPRECATED_FOR(gexiv2_metadata_get_tag_long)
 glong			gexiv2_metadata_try_get_tag_long	(GExiv2Metadata *self, const gchar* tag, GError **error);
 
 /**
  * gexiv2_metadata_get_tag_long:
  * @self: An instance of [class@GExiv2.Metadata]
  * @tag: Exiv2 tag name
+ * @error: (allow-none): A return location for a [struct@GLib.Error] or %NULL
  *
  * The Exiv2 Tag Reference can be found at <http://exiv2.org/metadata.html>
  *
  * Returns: The tag's value as a glong
- *
- * Deprecated: 0.12.2: Use [method@Metadata.try_get_tag_long] instead.
+ * Since: 0.16.0
  */
-G_DEPRECATED_FOR(gexiv2_metadata_try_get_tag_long)
-glong			gexiv2_metadata_get_tag_long		(GExiv2Metadata *self, const gchar* tag);
+glong			gexiv2_metadata_get_tag_long		(GExiv2Metadata *self, const gchar* tag, GError **error);
 
 /**
  * gexiv2_metadata_try_set_tag_long:
@@ -764,7 +807,9 @@ glong			gexiv2_metadata_get_tag_long		(GExiv2Metadata *self, const gchar* tag);
  * Returns: TRUE on success
  *
  * Since: 0.12.2
+ * Deprecated: 0.16.0: Use [method@Metadata.set_tag_long] instead.
  */
+G_DEPRECATED_FOR(gexiv2_metadata_set_tag_long)
 gboolean		gexiv2_metadata_try_set_tag_long	(GExiv2Metadata *self, const gchar* tag, glong value, GError **error);
 
 /**
@@ -772,15 +817,14 @@ gboolean		gexiv2_metadata_try_set_tag_long	(GExiv2Metadata *self, const gchar* t
  * @self: An instance of [class@GExiv2.Metadata]
  * @tag: Exiv2 tag name
  * @value: The value to set or replace the existing value
+ * @error: (allow-none): A return location for a [struct@GLib.Error] or %NULL
  *
  * The Exiv2 Tag Reference can be found at <http://exiv2.org/metadata.html>
  *
  * Returns: TRUE on success
- *
- * Deprecated: 0.12.2: Use [method@Metadata.try_set_tag_long] instead.
+ * Since: 0.16.0
  */
-G_DEPRECATED_FOR(gexiv2_metadata_try_set_tag_long)
-gboolean		gexiv2_metadata_set_tag_long		(GExiv2Metadata *self, const gchar* tag, glong value);
+gboolean		gexiv2_metadata_set_tag_long		(GExiv2Metadata *self, const gchar* tag, glong value, GError **error);
 
 /**
  * gexiv2_metadata_try_get_tag_multiple:
@@ -796,7 +840,9 @@ gboolean		gexiv2_metadata_set_tag_long		(GExiv2Metadata *self, const gchar* tag,
  * is undefined or is not set in the current metadata.
  *
  * Since: 0.12.2
+ * Deprecated: 0.16.0: Use [method@Metadata.get_tag_multiple] instead.
  */
+G_DEPRECATED_FOR(gexiv2_metadata_get_tag_multiple)
 gchar**			gexiv2_metadata_try_get_tag_multiple	(GExiv2Metadata *self, const gchar* tag, GError **error);
 
 /**
@@ -815,13 +861,16 @@ gchar**			gexiv2_metadata_try_get_tag_multiple	(GExiv2Metadata *self, const gcha
  * Returns: Boolean success value
  *
  * Since: 0.12.2
+ * Deprecated: 0.16.0: Use [method@Metadata.set_tag_multiple] instead.
  */
+G_DEPRECATED_FOR(gexiv2_metadata_set_tag_multiple)
 gboolean		gexiv2_metadata_try_set_tag_multiple	(GExiv2Metadata *self, const gchar* tag, const gchar** values, GError **error);
 
 /**
  * gexiv2_metadata_get_tag_multiple:
  * @self: An instance of [class@GExiv2.Metadata]
  * @tag: Exiv2 tag name
+ * @error: (allow-none): A return location for a [struct@GLib.Error] or %NULL
  *
  * The Exiv2 Tag Reference can be found at <http://exiv2.org/metadata.html>
  *
@@ -833,19 +882,17 @@ gboolean		gexiv2_metadata_try_set_tag_multiple	(GExiv2Metadata *self, const gcha
  * the tag.  Returns %NULL if parameters are %NULL or @tag does not begin with recognised type of
  * metadata ("Exif.", "Xmp." or "Iptc.").  For a well formed @tag, returns array[0] = %NULL if @tag
  * is undefined or is not set in the current metadata.
- * (Note: [xmpText](https://gitlab.gnome.org/GNOME/gexiv2/-/issues/61)
- *  is fixed in [method@Metadata.try_get_tag_multiple])
  *
- * Deprecated: 0.12.2: Use [method@Metadata.try_get_tag_multiple] instead.
+ * Since: 0.16.0
  */
-G_DEPRECATED_FOR(gexiv2_metadata_try_get_tag_multiple)
-gchar**			gexiv2_metadata_get_tag_multiple	(GExiv2Metadata *self, const gchar* tag);
+gchar**			gexiv2_metadata_get_tag_multiple	(GExiv2Metadata *self, const gchar* tag, GError **error);
 
 /**
  * gexiv2_metadata_set_tag_multiple:
  * @self: An instance of [class@GExiv2.Metadata]
  * @tag: Exiv2 tag name
  * @values: (array zero-terminated=1): An array of values to set or replace the existing value(s)
+ * @error: (allow-none): A return location for a [struct@GLib.Error] or %NULL
  *
  * The Exiv2 Tag Reference can be found at <http://exiv2.org/metadata.html>
  *
@@ -853,16 +900,10 @@ gchar**			gexiv2_metadata_get_tag_multiple	(GExiv2Metadata *self, const gchar* t
  * entries in @values is stored. For single value tags, only the last non %NULL value
  * is assigned.
  *
- * In case of error, a GLib warning will be logged. Use instead
- * [method@Metadata.try_set_tag_multiple] if you want to avoid this and
- * control if and how the error is outputted.
- *
  * Returns: Boolean success value
  *
- * Deprecated: 0.12.2: Use [method@Metadata.try_set_tag_multiple] instead.
  */
-G_DEPRECATED_FOR(gexiv2_metadata_try_set_tag_multiple)
-gboolean		gexiv2_metadata_set_tag_multiple	(GExiv2Metadata *self, const gchar* tag, const gchar** values);
+gboolean		gexiv2_metadata_set_tag_multiple	(GExiv2Metadata *self, const gchar* tag, const gchar** values, GError **error);
 
 /**
  * gexiv2_metadata_try_get_tag_raw:
@@ -878,13 +919,16 @@ gboolean		gexiv2_metadata_set_tag_multiple	(GExiv2Metadata *self, const gchar* t
  * Returns: (transfer full) (allow-none): The tag's raw value as a byte array
  *
  * Since: 0.12.2
+ * Deprecated: 0.16.0: Use [method@Metadata.get_tag_raw] instead.
  */
+G_DEPRECATED_FOR(gexiv2_metadata_try_get_tag_raw)
 GBytes*			gexiv2_metadata_try_get_tag_raw		(GExiv2Metadata *self, const gchar* tag, GError **error);
 
 /**
  * gexiv2_metadata_get_tag_raw:
  * @self: An instance of [class@GExiv2.Metadata]
  * @tag: Exiv2 tag name
+ * @error: (allow-none): A return location for a [struct@GLib.Error] or %NULL
  *
  * The Exiv2 Tag Reference can be found at <http://exiv2.org/metadata.html>
  *
@@ -892,11 +936,9 @@ GBytes*			gexiv2_metadata_try_get_tag_raw		(GExiv2Metadata *self, const gchar* t
  * by 4x INFORMATION SEPARATOR FOUR (ASCII 0x1c)
  *
  * Returns: (transfer full) (allow-none): The tag's raw value as a byte array
- *
- * Deprecated: 0.12.2: Use [method@Metadata.try_get_tag_raw] instead.
+ * Since: 0.16.0
  */
-G_DEPRECATED_FOR(gexiv2_metadata_try_get_tag_raw)
-GBytes*			gexiv2_metadata_get_tag_raw			(GExiv2Metadata *self, const gchar* tag);
+GBytes*			gexiv2_metadata_get_tag_raw			(GExiv2Metadata *self, const gchar* tag, GError **error);
 
 /*
  * EXIF functions
@@ -945,7 +987,9 @@ gchar**			gexiv2_metadata_get_exif_tags		(GExiv2Metadata *self);
  * Returns: (skip): Boolean success value
  *
  * Since: 0.12.2
+ * Deprecated: 0.16.0: Use [method@Metadata.get_exif_tag_rational] instead.
  */
+G_DEPRECATED_FOR(gexiv2_metadata_get_exif_tag_rational)
 gboolean		gexiv2_metadata_try_get_exif_tag_rational (GExiv2Metadata *self, const gchar* tag, gint* nom, gint* den, GError **error);
 
 /**
@@ -962,7 +1006,9 @@ gboolean		gexiv2_metadata_try_get_exif_tag_rational (GExiv2Metadata *self, const
  * Returns: (skip): Boolean success value
  *
  * Since: 0.12.2
+ * Deprecated: 0.16.0: Use [method@Metadata.set_exif_tag_rational] instead.
  */
+G_DEPRECATED_FOR(gexiv2_metadata_set_exif_tag_rational)
 gboolean		gexiv2_metadata_try_set_exif_tag_rational (GExiv2Metadata *self, const gchar* tag, gint nom, gint den, GError **error);
 
 /**
@@ -971,16 +1017,16 @@ gboolean		gexiv2_metadata_try_set_exif_tag_rational (GExiv2Metadata *self, const
  * @tag: (in): The tag you want the rational value for
  * @nom: (out): The numerator
  * @den: (out): The denominator
+ * @error: (allow-none): A return location for a [struct@GLib.Error] or %NULL
  *
  * Fetch EXIF @tag represented by a fraction. @nom will contain the numerator,
  * @den the denominator of the fraction on successful return.
  *
  * Returns: (skip): Boolean success value
  *
- * Deprecated: 0.12.2: Use [method@Metadata.try_get_exif_tag_rational] instead.
+ * Since: 0.16.0
  */
-G_DEPRECATED_FOR(gexiv2_metadata_try_get_exif_tag_rational)
-gboolean		gexiv2_metadata_get_exif_tag_rational (GExiv2Metadata *self, const gchar* tag, gint* nom, gint* den);
+gboolean		gexiv2_metadata_get_exif_tag_rational (GExiv2Metadata *self, const gchar* tag, gint* nom, gint* den, GError **error);
 
 /**
  * gexiv2_metadata_set_exif_tag_rational:
@@ -988,16 +1034,15 @@ gboolean		gexiv2_metadata_get_exif_tag_rational (GExiv2Metadata *self, const gch
  * @tag: (in): The Exiv2 tag
  * @nom: Rational numerator
  * @den: Rational denominator
+ * @error: (allow-none): A return location for a [struct@GLib.Error] or %NULL
  *
  * Set EXIF @tag represented by a fraction, with @nom being the numerator,
  * @den the denominator of the fraction.
  *
  * Returns: (skip): Boolean success value
- *
- * Deprecated: 0.12.2: Use [method@Metadata.try_set_exif_tag_rational] instead.
+ * Since: 0.16.0
  */
-G_DEPRECATED_FOR(gexiv2_metadata_try_set_exif_tag_rational)
-gboolean		gexiv2_metadata_set_exif_tag_rational (GExiv2Metadata *self, const gchar* tag, gint nom, gint den);
+gboolean		gexiv2_metadata_set_exif_tag_rational (GExiv2Metadata *self, const gchar* tag, gint nom, gint den, GError **error);
 
 /**
  * gexiv2_metadata_get_exif_thumbnail:
@@ -1029,13 +1074,12 @@ gboolean		gexiv2_metadata_set_exif_thumbnail_from_file (GExiv2Metadata *self, co
  * @self: An instance of [class@GExiv2.Metadata]
  * @buffer: (array length=size): A buffer containing thumbnail data
  * @size: (skip): Size of the thumbnail's buffer
+ * @error: (allow-none): A return location for a [struct@GLib.Error] or %NULL
  *
  * Sets or replaces the EXIF thumbnail with the data in @buffer.
- *
- * Deprecated: 0.14.0: Use [method@Metadata.try_set_exif_thumbnail_from_buffer] instead.
+ * Since: 0.16.0
  */
-G_DEPRECATED_FOR(gexiv2_metadata_try_set_exif_thumbnail_from_buffer)
-void			gexiv2_metadata_set_exif_thumbnail_from_buffer (GExiv2Metadata *self, const guint8 *buffer, gint size);
+void			gexiv2_metadata_set_exif_thumbnail_from_buffer (GExiv2Metadata *self, const guint8 *buffer, gint size, GError **error);
 
 /**
  * gexiv2_metadata_try_set_exif_thumbnail_from_buffer:
@@ -1047,7 +1091,9 @@ void			gexiv2_metadata_set_exif_thumbnail_from_buffer (GExiv2Metadata *self, con
  * Sets or replaces the EXIF thumbnail with the data in @buffer.
  *
  * Since: 0.14.0
+ * Deprecated: 0.16.0: Use [method@Metadata.set_exif_thumbnail_from_buffer] instead.
  */
+G_DEPRECATED_FOR(gexiv2_metadata_set_exif_thumbnail_from_buffer)
 void gexiv2_metadata_try_set_exif_thumbnail_from_buffer(GExiv2Metadata* self,
                                                         const guint8* buffer,
                                                         gint size,
@@ -1056,13 +1102,12 @@ void gexiv2_metadata_try_set_exif_thumbnail_from_buffer(GExiv2Metadata* self,
 /**
  * gexiv2_metadata_erase_exif_thumbnail:
  * @self: An instance of [class@GExiv2.Metadata]
+ * @error: (allow-none): A return location for a [struct@GLib.Error] or %NULL
  *
  * Removes the EXIF thumbnail from the loaded image.
  *
- * Deprecated: 0.14.0: Use [method@Metadata.try_erase_exif_thumbnail] instead.
  */
-G_DEPRECATED_FOR(gexiv2_metadata_try_erase_exif_thumbnail)
-void			gexiv2_metadata_erase_exif_thumbnail (GExiv2Metadata *self);
+void			gexiv2_metadata_erase_exif_thumbnail (GExiv2Metadata *self, GError **error);
 
 /**
  * gexiv2_metadata_try_erase_exif_thumbnail:
@@ -1072,7 +1117,9 @@ void			gexiv2_metadata_erase_exif_thumbnail (GExiv2Metadata *self);
  * Removes the EXIF thumbnail from the loaded image.
  *
  * Since: 0.14.0
+ * Deprecated: 0.16.0: Use [method@Metadata.erase_exif_thumbnail] instead.
  */
+G_DEPRECATED_FOR(gexiv2_metadata_erase_exif_thumbnail)
 void gexiv2_metadata_try_erase_exif_thumbnail(GExiv2Metadata* self, GError** error);
 
 /**
@@ -1124,7 +1171,9 @@ void			gexiv2_metadata_clear_xmp			(GExiv2Metadata *self);
  * Returns: (transfer full) (allow-none): Encode the XMP packet and return as a %NULL-terminated string.
  *
  * Since: 0.12.2
+ * Deprecated: 0.16.0: Use [method@Metadata.try_generate_xmp_packet] instead.
  */
+G_DEPRECATED_FOR(gexiv2_metadata_try_generate_xmp_packet)
 gchar*		gexiv2_metadata_try_generate_xmp_packet	(GExiv2Metadata *self, GExiv2XmpFormatFlags xmp_format_flags, guint32 padding, GError **error);
 
 /**
@@ -1132,15 +1181,14 @@ gchar*		gexiv2_metadata_try_generate_xmp_packet	(GExiv2Metadata *self, GExiv2Xmp
  * @self: An instance of [class@GExiv2.Metadata]
  * @xmp_format_flags: One of #GExiv2XmpFormatFlags
  * @padding: The padding before the closing `<?xpacket>` tag
+ * @error: (allow-none): A return location for a [struct@GLib.Error] or %NULL
  *
  * Encode the XMP packet as a %NULL-terminated string.
  *
  * Returns: (transfer full) (allow-none): Encode the XMP packet and return as a %NULL-terminated string.
- *
- * Deprecated: 0.12.2: Use [method@Metadata.try_generate_xmp_packet] instead.
+ * Since: 0.16.0
  */
-G_DEPRECATED_FOR(gexiv2_metadata_try_generate_xmp_packet)
-gchar*		gexiv2_metadata_generate_xmp_packet	(GExiv2Metadata *self, GExiv2XmpFormatFlags xmp_format_flags, guint32 padding);
+gchar*		gexiv2_metadata_generate_xmp_packet	(GExiv2Metadata *self, GExiv2XmpFormatFlags xmp_format_flags, guint32 padding, GError **error);
 
 /**
  * gexiv2_metadata_try_get_xmp_packet:
@@ -1152,21 +1200,22 @@ gchar*		gexiv2_metadata_generate_xmp_packet	(GExiv2Metadata *self, GExiv2XmpForm
  * Returns: (transfer full) (allow-none): %NULL if no packet was generated previously, the XMP packet contents otherwise
  *
  * Since: 0.12.2
+ * Deprecated: 0.16.0: Use [method@Metadata.try_get_xmp_packet] instead.
  */
+G_DEPRECATED_FOR(gexiv2_metadata_get_xmp_packet)
 gchar*			gexiv2_metadata_try_get_xmp_packet	(GExiv2Metadata *self, GError **error);
 
 /**
  * gexiv2_metadata_get_xmp_packet:
  * @self: An instance of [class@GExiv2.Metadata]
+ * @error: (allow-none): A return location for a [struct@GLib.Error] or %NULL
  *
  * Get the currently encoded XMP packet (after having called [method@GExiv2.Metadata.try_get_xmp_packet])
 
  * Returns: (transfer full) (allow-none): The currently-encoded XMP packet (see [method@Metadata.generate_xmp_packet]).
- *
- * Deprecated: 0.12.2: Use [method@Metadata.try_get_xmp_packet] instead.
+ * Since: 0.16.0
  */
-G_DEPRECATED_FOR(gexiv2_metadata_try_get_xmp_packet)
-gchar*			gexiv2_metadata_get_xmp_packet		(GExiv2Metadata *self);
+gchar*			gexiv2_metadata_get_xmp_packet		(GExiv2Metadata *self, GError **error);
 
 /**
  * gexiv2_metadata_get_xmp_tags:
@@ -1184,15 +1233,15 @@ gchar**			gexiv2_metadata_get_xmp_tags		(GExiv2Metadata *self);
  * gexiv2_metadata_register_xmp_namespace:
  * @name: (in): XMP URI name (should end in /)
  * @prefix: (in): XMP namespace prefix
+ * @error: (allow-none): A return location for a [struct@GLib.Error] or %NULL
  *
  * Register an additional XMP namespace.
  *
  * Returns: (skip): Boolean success value
  *
- * Deprecated: 0.14.0: Use [func@Metadata.try_register_xmp_namespace] instead.
+ * Since: 0.16.0
  */
-G_DEPRECATED_FOR(gexiv2_metadata_try_register_xmp_namespace)
-gboolean        gexiv2_metadata_register_xmp_namespace (const gchar* name, const gchar *prefix);
+gboolean        gexiv2_metadata_register_xmp_namespace (const gchar* name, const gchar *prefix, GError **error);
 
 /**
  * gexiv2_metadata_try_register_xmp_namespace:
@@ -1205,22 +1254,24 @@ gboolean        gexiv2_metadata_register_xmp_namespace (const gchar* name, const
  * Returns: (skip): Boolean success value
  *
  * Since: 0.14.0
+ * Deprecated: 0.16.0: Use [func@Metadata.register_xmp_namespace] instead.
  */
+G_DEPRECATED_FOR(gexiv2_metadata_register_xmp_namespace)
 gboolean gexiv2_metadata_try_register_xmp_namespace(const gchar* name, const gchar* prefix, GError** error);
 
 /**
  * gexiv2_metadata_unregister_xmp_namespace:
  * @name: (in): XMP URI name (should end in /)
+ * @error: (allow-none): A return location for a [struct@GLib.Error] or %NULL
  *
  * Unregister a namespace previously registered with
  * [func@Metadata.try_register_xmp_namespace].
  *
  * Returns: (skip): Boolean success value
  *
- * Deprecated: 0.14.0: Use [func@Metadata.try_unregister_xmp_namespace] instead.
+ * Since: 0.16.0
  */
-G_DEPRECATED_FOR(gexiv2_metadata_try_unregister_xmp_namespace)
-gboolean        gexiv2_metadata_unregister_xmp_namespace (const gchar* name);
+gboolean        gexiv2_metadata_unregister_xmp_namespace (const gchar* name, GError **error);
 
 /**
  * gexiv2_metadata_try_unregister_xmp_namespace:
@@ -1233,19 +1284,20 @@ gboolean        gexiv2_metadata_unregister_xmp_namespace (const gchar* name);
  * Returns: (skip): Boolean success value
  *
  * Since: 0.14.0
+ * Deprecated: 0.16.0: Use [func@Metadata.try_unregister_xmp_namespace] instead.
  */
+G_DEPRECATED_FOR(gexiv2_metadata_try_unregister_xmp_namespace)
 gboolean gexiv2_metadata_try_unregister_xmp_namespace(const gchar* name, GError** error);
 
 /**
  * gexiv2_metadata_unregister_all_xmp_namespaces:
+ * @error: (allow-none): A return location for a [struct@GLib.Error] or %NULL
  *
  * Unregister all XMP namespaces that have been previously registered with
  * [func@Metadata.try_register_xmp_namespace].
- *
- * Deprecated: 0.14.0: Use [func@Metadata.try_register_xmp_namespace] instead
+ * Since: 0.16.0
  */
-G_DEPRECATED_FOR(gexiv2_metadata_try_unregister_all_xmp_namespaces)
-void            gexiv2_metadata_unregister_all_xmp_namespaces (void);
+void            gexiv2_metadata_unregister_all_xmp_namespaces (GError** error);
 
 /**
  * gexiv2_metadata_try_unregister_all_xmp_namespaces:
@@ -1255,23 +1307,24 @@ void            gexiv2_metadata_unregister_all_xmp_namespaces (void);
  * [func@Metadata.try_register_xmp_namespace].
  *
  * Since: 0.14.0
+ * Deprecated: 0.16.0: Use [func@Metadata.register_xmp_namespace] instead
  */
+G_DEPRECATED_FOR(gexiv2_metadata_unregister_all_xmp_namespaces)
 void gexiv2_metadata_try_unregister_all_xmp_namespaces(GError** error);
 
 /**
  * gexiv2_metadata_get_xmp_namespace_for_tag:
  * @tag: (in): Full tag name (e.g. "Xmp.dc.subject") or XMP namespace identifier (e.g. "dc")
+ * @error: (allow-none): A return location for a [struct@GLib.Error] or %NULL
  *
  * Look up the URI for the namespace for @tag
  *
  * Returns: (transfer full): %NULL if there was no namespace registered for the tag, the URI of the namespace otherwise.
  *
- * Since: 0.12.2
+ * Since: 0.16.0
  *
- * Deprecated: 0.14.0: Use [func@Metadata.try_get_xmp_namespace_for_tag] instead.
  */
-G_DEPRECATED_FOR(gexiv2_metadata_try_get_xmp_namespace_for_tag)
-char* gexiv2_metadata_get_xmp_namespace_for_tag(const char* tag);
+char* gexiv2_metadata_get_xmp_namespace_for_tag(const char* tag, GError **error);
 
 /**
  * gexiv2_metadata_try_get_xmp_namespace_for_tag:
@@ -1283,7 +1336,9 @@ char* gexiv2_metadata_get_xmp_namespace_for_tag(const char* tag);
  * Returns: (transfer full): %NULL if there was no namespace registered for the tag, the URI of the namespace otherwise.
  *
  * Since: 0.14.0
+ * Deprecated: 0.16.0: Use [func@Metadata.try_get_xmp_namespace_for_tag] instead.
  */
+G_DEPRECATED_FOR(gexiv2_metadata_try_get_xmp_namespace_for_tag)
 char* gexiv2_metadata_try_get_xmp_namespace_for_tag(const char* tag, GError** error);
 
 /* IPTC functions */
@@ -1323,16 +1378,16 @@ gchar**			gexiv2_metadata_get_iptc_tags		(GExiv2Metadata *self);
 /**
  * gexiv2_metadata_get_orientation:
  * @self: An instance of [class@GExiv2.Metadata]
+ * @error: (allow-none): A return location for a [struct@GLib.Error] or %NULL
  *
  * The EXIF Orientation field
  *
  * Returns: A [enum@GExiv2.Orientation] value representing the EXIF orientation
  * value.
  *
- * Deprecated: 0.14.0: Use [method@Metadata.try_get_orientation] instead.
+ * Since: 0.16.0
  */
-G_DEPRECATED_FOR(gexiv2_metadata_try_get_orientation)
-GExiv2Orientation gexiv2_metadata_get_orientation 	(GExiv2Metadata *self);
+GExiv2Orientation gexiv2_metadata_get_orientation 	(GExiv2Metadata *self, GError **error);
 
 /**
  * gexiv2_metadata_try_get_orientation:
@@ -1345,20 +1400,22 @@ GExiv2Orientation gexiv2_metadata_get_orientation 	(GExiv2Metadata *self);
  * value.
  *
  * Since: 0.14.0
+ * Deprecated: 0.16.0: Use [method@Metadata.get_orientation] instead.
  */
+G_DEPRECATED_FOR(gexiv2_metadata_get_orientation)
 GExiv2Orientation gexiv2_metadata_try_get_orientation(GExiv2Metadata* self, GError** error);
 
 /**
  * gexiv2_metadata_set_orientation:
  * @self: An instance of [class@GExiv2.Metadata]
  * @orientation: The new [enum@GExiv2.Orientation] for the image.
+ * @error: (allow-none): A return location for a [struct@GLib.Error] or %NULL
  *
  * The orientation must be valid and cannot be [enum@GExiv2.Orientation.UNSPECIFIED].
  *
- * Deprecated: 0.14.0: Use [method@Metadata.try_set_orientation] instead.
+ * Since: 0.16.0
  */
-G_DEPRECATED_FOR(gexiv2_metadata_try_set_orientation)
-void			gexiv2_metadata_set_orientation		(GExiv2Metadata *self, GExiv2Orientation orientation);
+void			gexiv2_metadata_set_orientation		(GExiv2Metadata *self, GExiv2Orientation orientation, GError **error);
 
 /**
  * gexiv2_metadata_try_set_orientation:
@@ -1369,12 +1426,15 @@ void			gexiv2_metadata_set_orientation		(GExiv2Metadata *self, GExiv2Orientation
  * The orientation must be valid and cannot be [enum@GExiv2.Orientation.UNSPECIFIED.
  *
  * Since: 0.14.0
+ * Deprecated: 0.16.0: Use [method@Metadata.set_orientation] instead.
  */
+G_DEPRECATED_FOR(gexiv2_metadata_set_orientation)
 void gexiv2_metadata_try_set_orientation(GExiv2Metadata* self, GExiv2Orientation orientation, GError** error);
 
 /**
  * gexiv2_metadata_get_metadata_pixel_width:
  * @self: An instance of [class@GExiv2.Metadata]
+ * @error: (allow-none): A return location for a [struct@GLib.Error] or %NULL
  *
  * Composite accessor to query the pixel with stored in the metadata. This
  * might differ from the width of image that is available through
@@ -1382,10 +1442,9 @@ void gexiv2_metadata_try_set_orientation(GExiv2Metadata* self, GExiv2Orientation
  *
  * Returns: Width of images in pixels as stored in the metadata
  *
- * Deprecated: 0.14.0: Use [method@Metadata.try_get_metadata_pixel_width] instead.
+ * Since: 0.16.0
  */
-G_DEPRECATED_FOR(gexiv2_metadata_try_get_metadata_pixel_width)
-gint gexiv2_metadata_get_metadata_pixel_width (GExiv2Metadata *self);
+gint gexiv2_metadata_get_metadata_pixel_width (GExiv2Metadata *self, GError** error);
 
 /**
  * gexiv2_metadata_try_get_metadata_pixel_width:
@@ -1399,23 +1458,24 @@ gint gexiv2_metadata_get_metadata_pixel_width (GExiv2Metadata *self);
  * Returns: Width of images in pixels as stored in the metadata
  *
  * Since: 0.14.0
+ * Deprecated: 0.16.0: Use [method@Metadata.get_metadata_pixel_width] instead.
  */
+G_DEPRECATED_FOR(gexiv2_metadata_get_metadata_pixel_width)
 gint gexiv2_metadata_try_get_metadata_pixel_width(GExiv2Metadata* self, GError** error);
 
 /**
  * gexiv2_metadata_get_metadata_pixel_height:
  * @self: An instance of [class@GExiv2.Metadata]
+ * @error: (allow-none): A return location for a [struct@GLib.Error] or %NULL
  *
  * Composite accessor to query the pixel with stored in the metadata. This
  * might differ from the height of image that is available through
  * [method@Metadata.get_pixel_height]
  *
  * Returns: Height of images in pixels as stored in the metadata
- *
- * Deprecated: 0.14.0: Use [method@Metadata.try_get_metadata_pixel_height] instead.
+ * Since: 0.16.0
  */
-G_DEPRECATED_FOR(gexiv2_metadata_try_get_metadata_pixel_height)
-gint gexiv2_metadata_get_metadata_pixel_height (GExiv2Metadata *self);
+gint gexiv2_metadata_get_metadata_pixel_height (GExiv2Metadata *self, GError** error);
 
 /**
  * gexiv2_metadata_try_get_metadata_pixel_height:
@@ -1429,20 +1489,21 @@ gint gexiv2_metadata_get_metadata_pixel_height (GExiv2Metadata *self);
  * Returns: Height of images in pixels as stored in the metadata
  *
  * Since: 0.14.0
+ * Deprecated: 0.16.0: Use [method@Metadata.get_metadata_pixel_height] instead.
  */
+G_DEPRECATED_FOR(gexiv2_metadata_get_metadata_pixel_height)
 gint gexiv2_metadata_try_get_metadata_pixel_height(GExiv2Metadata* self, GError** error);
 
 /**
  * gexiv2_metadata_set_metadata_pixel_width:
  * @self: An instance of [class@GExiv2.Metadata]
  * @width: The width of the image as it should be put into the metadata
+ * @error: (allow-none): A return location for a [struct@GLib.Error] or %NULL
  *
  * Composite setter to update the image's metadata with @width
- *
- * Deprecated: 0.14.0: Use [method@Metadata.try_set_metadata_pixel_width] instead.
+ * Since: 0.16.0
  */
-G_DEPRECATED_FOR(gexiv2_metadata_try_set_metadata_pixel_width)
-void gexiv2_metadata_set_metadata_pixel_width (GExiv2Metadata *self, gint width);
+void gexiv2_metadata_set_metadata_pixel_width (GExiv2Metadata *self, gint width, GError **error);
 
 /**
  * gexiv2_metadata_try_set_metadata_pixel_width:
@@ -1453,20 +1514,21 @@ void gexiv2_metadata_set_metadata_pixel_width (GExiv2Metadata *self, gint width)
  * Composite setter to update the image's metadata with @width
  *
  * Since: 0.14.0
+ * Deprecated: 0.16.0: Use [method@Metadata.set_metadata_pixel_width] instead.
  */
+G_DEPRECATED_FOR(gexiv2_metadata_try_set_metadata_pixel_width)
 void gexiv2_metadata_try_set_metadata_pixel_width(GExiv2Metadata* self, gint width, GError** error);
 
 /**
  * gexiv2_metadata_set_metadata_pixel_height:
  * @self: An instance of [class@GExiv2.Metadata]
  * @height: The width of the image as it should be put into the metadata.
+ * @error: (allow-none): A return location for a [struct@GLib.Error] or %NULL
  *
  * Update the image's metadata with @height
- *
- * Deprecated: 0.14.0: Use [method@Metadata.try_set_metadata_pixel_height] instead.
+ * Since: 0.16.0
  */
-G_DEPRECATED_FOR(gexiv2_metadata_try_set_metadata_pixel_height)
-void gexiv2_metadata_set_metadata_pixel_height (GExiv2Metadata *self, gint height);
+void gexiv2_metadata_set_metadata_pixel_height (GExiv2Metadata *self, gint height, GError **error);
 
 /**
  * gexiv2_metadata_try_set_metadata_pixel_height:
@@ -1477,12 +1539,15 @@ void gexiv2_metadata_set_metadata_pixel_height (GExiv2Metadata *self, gint heigh
  * Update the image's metadata with @height
  *
  * Since: 0.14.0
+ * Deprecated: 0.16.0: Use [method@Metadata.set_metadata_pixel_height] instead.
  */
+G_DEPRECATED_FOR(gexiv2_metadata_set_metadata_pixel_height)
 void gexiv2_metadata_try_set_metadata_pixel_height(GExiv2Metadata* self, gint height, GError** error);
 
 /**
  * gexiv2_metadata_get_comment:
  * @self: An instance of [class@GExiv2.Metadata]
+ * @error: (allow-none): A return location for a [struct@GLib.Error] or %NULL
  *
  * A composite accessor that uses the first available metadata field from a list of well-known
  * locations to find the photo's comment (or description).
@@ -1508,10 +1573,9 @@ void gexiv2_metadata_try_set_metadata_pixel_height(GExiv2Metadata* self, gint he
  *
  * Returns: (transfer full) (allow-none): The photo's comment field.
  *
- * Deprecated: 0.14.0: Use [method@Metadata.try_get_comment] instead.
+ * Since: 0.16.0
  */
-G_DEPRECATED_FOR(gexiv2_metadata_try_get_comment)
-gchar*			gexiv2_metadata_get_comment			(GExiv2Metadata *self);
+gchar*			gexiv2_metadata_get_comment			(GExiv2Metadata *self, GError **error);
 
 /**
  * gexiv2_metadata_try_get_comment:
@@ -1543,21 +1607,23 @@ gchar*			gexiv2_metadata_get_comment			(GExiv2Metadata *self);
  * Returns: (transfer full) (allow-none): The photo's comment field.
  *
  * Since: 0.14.0
+ * Deprecated: 0.16.0: Use [method@Metadata.get_comment] instead.
  */
+G_DEPRECATED_FOR(gexiv2_metadata_get_comment)
 gchar* gexiv2_metadata_try_get_comment(GExiv2Metadata* self, GError** error);
 
 /**
  * gexiv2_metadata_set_comment:
  * @self: An instance of [class@GExiv2.Metadata]
  * @comment: Comment string to set. Must not be %NULL
+ * @error: (allow-none): A return location for a [struct@GLib.Error] or %NULL
  *
  * This is a composite setter that will set a number of fields to the supplied value.  See
  * [method@Metadata.get_comment] for more information.
  *
- * Deprecated: 0.14.0: Use [method@Metadata.try_set_comment] instead.
+ * Since: 0.16.0
  */
-G_DEPRECATED_FOR(gexiv2_metadata_try_set_comment)
-void			gexiv2_metadata_set_comment			(GExiv2Metadata *self, const gchar* comment);
+void			gexiv2_metadata_set_comment			(GExiv2Metadata *self, const gchar* comment, GError **error);
 
 /**
  * gexiv2_metadata_try_set_comment:
@@ -1569,7 +1635,9 @@ void			gexiv2_metadata_set_comment			(GExiv2Metadata *self, const gchar* comment
  * [method@Metadata.get_comment] for more information.
  *
  * Since: 0.14.0
+ * Deprecated: 0.16.0: Use [method@Metadata.set_comment] instead.
  */
+G_DEPRECATED_FOR(gexiv2_metadata_set_comment)
 void gexiv2_metadata_try_set_comment(GExiv2Metadata* self, const gchar* comment, GError** error);
 
 /**
@@ -1586,16 +1654,16 @@ void			gexiv2_metadata_clear_comment		(GExiv2Metadata *self);
  * @self: An instance of [class@GExiv2.Metadata]
  * @nom: (out): The numerator
  * @den: (out): The denominator
+ * @error: (allow-none): A return location for a [struct@GLib.Error] or %NULL
  *
  * Returns the exposure time in seconds (shutter speed, *not* date-time of exposure) as a
  * rational.  See <https://en.wikipedia.org/wiki/Shutter_speed> for more information.
  *
  * Returns: (skip): Boolean success value
  *
- * Deprecated: 0.14.0: Use [method@Metadata.try_get_exposure_time] instead.
+ * Since: 0.16.0
  */
-G_DEPRECATED_FOR(gexiv2_metadata_try_get_exposure_time)
-gboolean		gexiv2_metadata_get_exposure_time	(GExiv2Metadata *self, gint *nom, gint *den);
+gboolean		gexiv2_metadata_get_exposure_time	(GExiv2Metadata *self, gint *nom, gint *den, GError **error);
 
 /**
  * gexiv2_metadata_try_get_exposure_time:
@@ -1610,12 +1678,15 @@ gboolean		gexiv2_metadata_get_exposure_time	(GExiv2Metadata *self, gint *nom, gi
  * Returns: (skip): Boolean success value
  *
  * Since: 0.14.0
+ * Deprecated: 0.16.0: Use [method@Metadata.get_exposure_time] instead.
  */
+G_DEPRECATED_FOR(gexiv2_metadata_get_exposure_time)
 gboolean gexiv2_metadata_try_get_exposure_time(GExiv2Metadata* self, gint* nom, gint* den, GError** error);
 
 /**
  * gexiv2_metadata_get_fnumber:
  * @self: An instance of [class@GExiv2.Metadata]
+ * @error: (allow-none): A return location for a [struct@GLib.Error] or %NULL
  *
  * See <https://en.wikipedia.org/wiki/F-number> for more information.
  * If Exif.Photo.FNumber does not exist, it will fall back to calculating the FNumber from
@@ -1623,10 +1694,9 @@ gboolean gexiv2_metadata_try_get_exposure_time(GExiv2Metadata* self, gint* nom, 
  *
  * Returns: The exposure Fnumber as a gdouble, or -1.0 if tag is not present or invalid.
  *
- * Deprecated: 0.14.0: Use [method@Metadata.try_get_fnumber] instead.
+ * Since: 0.16.0
  */
-G_DEPRECATED_FOR(gexiv2_metadata_try_get_fnumber)
-gdouble			gexiv2_metadata_get_fnumber			(GExiv2Metadata *self);
+gdouble			gexiv2_metadata_get_fnumber			(GExiv2Metadata *self, GError **error);
 
 /**
  * gexiv2_metadata_try_get_fnumber:
@@ -1640,21 +1710,23 @@ gdouble			gexiv2_metadata_get_fnumber			(GExiv2Metadata *self);
  * Returns: The exposure Fnumber as a gdouble, or -1.0 if tag is not present or invalid.
  *
  * Since: 0.14.0
+ * Deprecated: 0.16.0: Use [method@Metadata.get_fnumber] instead.
  */
+G_DEPRECATED_FOR(gexiv2_metadata_get_fnumber)
 gdouble gexiv2_metadata_try_get_fnumber(GExiv2Metadata* self, GError** error);
 
 /**
  * gexiv2_metadata_get_focal_length:
  * @self: An instance of [class@GExiv2.Metadata]
+ * @error: (allow-none): A return location for a [struct@GLib.Error] or %NULL
  *
  * See <https://en.wikipedia.org/wiki/Flange_focal_distance> for more information.
  *
  * Returns: The focal length as a gdouble, or -1.0 if tag is not present or invalid.
  *
- * Deprecated: 0.14.0: Use [method@Metadata.try_get_focal_length] instead.
+ * Since: 0.16.0
  */
-G_DEPRECATED_FOR(gexiv2_metadata_try_get_focal_length)
-gdouble			gexiv2_metadata_get_focal_length	(GExiv2Metadata *self);
+gdouble			gexiv2_metadata_get_focal_length	(GExiv2Metadata *self, GError **error);
 
 /**
  * gexiv2_metadata_try_get_focal_length:
@@ -1666,21 +1738,23 @@ gdouble			gexiv2_metadata_get_focal_length	(GExiv2Metadata *self);
  * Returns: The focal length as a gdouble, or -1.0 if tag is not present or invalid.
  *
  * Since: 0.14.0
+ * Deprecated: 0.16.0: Use [method@Metadata.get_focal_length] instead.
  */
+G_DEPRECATED_FOR(gexiv2_metadata_get_focal_length)
 gdouble gexiv2_metadata_try_get_focal_length(GExiv2Metadata* self, GError** error);
 
 /**
  * gexiv2_metadata_get_iso_speed:
  * @self: An instance of [class@GExiv2.Metadata]
+ * @error: (allow-none): A return location for a [struct@GLib.Error] or %NULL
  *
  * See <https://en.wikipedia.org/wiki/Iso_speed> for more information.
  *
  * Returns: The ISO speed rating as a gint, or 0 if tag is not present or invalid.
  *
- * Deprecated: 0.14.0: Use [method@Metadata.try_get_iso_speed] instead.
+ * Since: 0.16.0
  */
-G_DEPRECATED_FOR(gexiv2_metadata_try_get_iso_speed)
-gint			gexiv2_metadata_get_iso_speed		(GExiv2Metadata *self);
+gint			gexiv2_metadata_get_iso_speed		(GExiv2Metadata *self, GError **error);
 
 /**
  * gexiv2_metadata_try_get_iso_speed:
@@ -1692,7 +1766,9 @@ gint			gexiv2_metadata_get_iso_speed		(GExiv2Metadata *self);
  * Returns: The ISO speed rating as a gint, or 0 if tag is not present or invalid.
  *
  * Since: 0.14.0
+ * Deprecated: 0.16.0: Use [method@Metadata.get_iso_speed] instead.
  */
+G_DEPRECATED_FOR(gexiv2_metadata_get_iso_speed)
 gint gexiv2_metadata_try_get_iso_speed(GExiv2Metadata* self, GError** error);
 
 /*
@@ -1710,7 +1786,9 @@ gint gexiv2_metadata_try_get_iso_speed(GExiv2Metadata* self, GError** error);
  * Returns: (skip): Boolean success value
  *
  * Since: 0.12.2
+ * Deprecated: 0.16.0: Use [method@Metadata.get_gps_longitude] instead.
  */
+G_DEPRECATED_FOR(gexiv2_metadata_get_gps_longitude)
 gboolean		gexiv2_metadata_try_get_gps_longitude			(GExiv2Metadata *self, gdouble *longitude, GError **error);
 
 /**
@@ -1724,7 +1802,9 @@ gboolean		gexiv2_metadata_try_get_gps_longitude			(GExiv2Metadata *self, gdouble
  * Returns: (skip): Boolean success value
  *
  * Since: 0.12.2
+ * Deprecated: 0.16.0: Use [method@Metadata.get_gps_altitude] instead.
  */
+G_DEPRECATED_FOR(gexiv2_metadata_get_gps_altitude)
 gboolean		gexiv2_metadata_try_get_gps_latitude			(GExiv2Metadata *self, gdouble *latitude, GError **error);
 
 /**
@@ -1739,51 +1819,50 @@ gboolean		gexiv2_metadata_try_get_gps_latitude			(GExiv2Metadata *self, gdouble 
  * Returns: (skip): Boolean success value
  *
  * Since: 0.12.2
+ * Deprecated: 0.16.0: Use [method@Metadata.get_gps_latitude] instead.
  */
+G_DEPRECATED_FOR(gexiv2_metadata_get_gps_latitude)
 gboolean		gexiv2_metadata_try_get_gps_altitude		(GExiv2Metadata *self, gdouble *altitude, GError **error);
 
 /**
  * gexiv2_metadata_get_gps_longitude:
  * @self: An instance of [class@GExiv2.Metadata]
  * @longitude: (out): Variable to store the longitude value
+ * @error: (allow-none): A return location for a [struct@GLib.Error] or %NULL
  *
  * Query the longitude stored in the GPS tags of @self
  *
  * Returns: (skip): Boolean success value
- *
- * Deprecated: 0.12.2: Use [method@Metadata.try_get_gps_longitude] instead.
+ * Since: 0.16.0
  */
-G_DEPRECATED_FOR(gexiv2_metadata_try_get_gps_longitude)
-gboolean		gexiv2_metadata_get_gps_longitude			(GExiv2Metadata *self, gdouble *longitude);
+gboolean		gexiv2_metadata_get_gps_longitude			(GExiv2Metadata *self, gdouble *longitude, GError **error);
 
 /**
  * gexiv2_metadata_get_gps_latitude:
  * @self: An instance of [class@GExiv2.Metadata]
  * @latitude: (out): Variable to store the latitude value
+ * @error: (allow-none): A return location for a [struct@GLib.Error] or %NULL
  *
  * Query the latitude stored in the GPS tags of @self
  *
  * Returns: (skip): Boolean success value
- *
- * Deprecated: 0.12.2: Use [method@Metadata.try_get_gps_latitude] instead.
+ * Since: 0.16.0
  */
-G_DEPRECATED_FOR(gexiv2_metadata_try_get_gps_latitude)
-gboolean		gexiv2_metadata_get_gps_latitude			(GExiv2Metadata *self, gdouble *latitude);
+gboolean		gexiv2_metadata_get_gps_latitude			(GExiv2Metadata *self, gdouble *latitude, GError **error);
 
 /**
  * gexiv2_metadata_get_gps_altitude:
  * @self: An instance of [class@GExiv2.Metadata]
  * @altitude: (out): Variable to store the altitude value
+ * @error: (allow-none): A return location for a [struct@GLib.Error] or %NULL
  *
  * Convenience function to query the altitude stored in the GPS tags of the
  * image
  *
  * Returns: (skip): Boolean success value
- *
- * Deprecated: 0.12.2: Use [method@Metadata.try_get_gps_altitude] instead.
+ * Since: 0.16.0
  */
-G_DEPRECATED_FOR(gexiv2_metadata_try_get_gps_altitude)
-gboolean		gexiv2_metadata_get_gps_altitude			(GExiv2Metadata *self, gdouble *altitude);
+gboolean		gexiv2_metadata_get_gps_altitude			(GExiv2Metadata *self, gdouble *altitude, GError **error);
 
 /**
  * gexiv2_metadata_try_get_gps_info:
@@ -1798,7 +1877,9 @@ gboolean		gexiv2_metadata_get_gps_altitude			(GExiv2Metadata *self, gdouble *alt
  * Returns: (skip): Boolean success value.
  *
  * Since: 0.12.2
+ * Deprecated: 0.16.0: Use [method@Metadata.get_gps_info] instead.
  */
+G_DEPRECATED_FOR(gexiv2_metadata_get_gps_info)
 gboolean		gexiv2_metadata_try_get_gps_info			(GExiv2Metadata *self, gdouble *longitude, gdouble *latitude, gdouble *altitude, GError **error);
 
 /**
@@ -1807,15 +1888,14 @@ gboolean		gexiv2_metadata_try_get_gps_info			(GExiv2Metadata *self, gdouble *lon
  * @longitude: (out): Storage for longitude value
  * @latitude: (out): Storage for latitude value
  * @altitude: (out): Storage for altitude value
+ * @error: (allow-none): A return location for a [struct@GLib.Error] or %NULL
  *
  * Convenience function to query all available GPS information at once.
  *
  * Returns: (skip): Boolean success value.
- *
- * Deprecated: 0.12.2: Use [method@Metadata.try_get_gps_info] instead.
+ * Since: 0.16.0
  */
-G_DEPRECATED_FOR(gexiv2_metadata_try_get_gps_info)
-gboolean		gexiv2_metadata_get_gps_info				(GExiv2Metadata *self, gdouble *longitude, gdouble *latitude, gdouble *altitude);
+gboolean		gexiv2_metadata_get_gps_info				(GExiv2Metadata *self, gdouble *longitude, gdouble *latitude, gdouble *altitude, GError **error);
 
 /**
  * gexiv2_metadata_try_set_gps_info:
@@ -1832,7 +1912,9 @@ gboolean		gexiv2_metadata_get_gps_info				(GExiv2Metadata *self, gdouble *longit
  * Returns: (skip): Boolean success value.
  *
  * Since: 0.12.2
+ * Deprecated: 0.16.0: Use [method@Metadata.set_gps_info] instead.
  */
+G_DEPRECATED_FOR(gexiv2_metadata_set_gps_info)
 gboolean		gexiv2_metadata_try_set_gps_info			(GExiv2Metadata *self, gdouble longitude, gdouble latitude, gdouble altitude, GError **error);
 
 /**
@@ -1841,17 +1923,16 @@ gboolean		gexiv2_metadata_try_set_gps_info			(GExiv2Metadata *self, gdouble long
  * @longitude: Longitude value to set or replace current value
  * @latitude: Latitude value to set or replace current value
  * @altitude: Altitude value to set or replace current value
+ * @error: (allow-none): A return location for a [struct@GLib.Error] or %NULL
  *
  * Convenience function to create a new set of simple GPS data. Warning: Will remove any other
  * GPS information that is currently set. See [method@Metadata.update_gps_info] for
  * just modifying the GPS data.
  *
  * Returns: (skip): Boolean success value.
- *
- * Deprecated: 0.12.2: Use [method@Metadata.try_set_gps_info] instead.
+ * Since: 0.16.0
  */
-G_DEPRECATED_FOR(gexiv2_metadata_try_set_gps_info)
-gboolean		gexiv2_metadata_set_gps_info				(GExiv2Metadata *self, gdouble longitude, gdouble latitude, gdouble altitude);
+gboolean		gexiv2_metadata_set_gps_info				(GExiv2Metadata *self, gdouble longitude, gdouble latitude, gdouble altitude, GError **error);
 
 /**
  * gexiv2_metadata_try_update_gps_info:
@@ -1866,7 +1947,9 @@ gboolean		gexiv2_metadata_set_gps_info				(GExiv2Metadata *self, gdouble longitu
  * Returns: (skip): Boolean success value.
  *
  * Since: 0.12.2
+ * Deprecated: 0.16.0: Use [method@Metadata.update_gps_info] instead.
  */
+G_DEPRECATED_FOR(gexiv2_metadata_update_gps_info)
 gboolean		gexiv2_metadata_try_update_gps_info			(GExiv2Metadata *self, gdouble longitude, gdouble latitude, gdouble altitude, GError **error);
 
 /**
@@ -1875,17 +1958,15 @@ gboolean		gexiv2_metadata_try_update_gps_info			(GExiv2Metadata *self, gdouble l
  * @longitude: Longitude value to set or replace current value
  * @latitude: Latitude value to set or replace current value
  * @altitude: Altitude value to set or replace current value
+ * @error: (allow-none): A return location for a [struct@GLib.Error] or %NULL
  *
  * Convenience function to update longitude, latitude and altitude at once.
  *
  * Returns: (skip): Boolean success value.
  *
- * Since: 0.12.1
- *
- * Deprecated: 0.12.2: Use [method@Metadata.try_update_gps_info] instead.
+ * Since: 0.16.0
  */
-G_DEPRECATED_FOR(gexiv2_metadata_try_update_gps_info)
-gboolean		gexiv2_metadata_update_gps_info				(GExiv2Metadata *self, gdouble longitude, gdouble latitude, gdouble altitude);
+gboolean		gexiv2_metadata_update_gps_info				(GExiv2Metadata *self, gdouble longitude, gdouble latitude, gdouble altitude, GError **error);
 
 /**
  * gexiv2_metadata_try_delete_gps_info:
@@ -1895,19 +1976,20 @@ gboolean		gexiv2_metadata_update_gps_info				(GExiv2Metadata *self, gdouble long
  * Removes all GPS metadata from the loaded image
  *
  * Since: 0.12.2
+ * Deprecated: 0.16.0: Use [method@Metadata.delete_gps_info] instead.
  */
+G_DEPRECATED_FOR(gexiv2_metadata_delete_gps_info)
 void			gexiv2_metadata_try_delete_gps_info			(GExiv2Metadata *self, GError **error);
 
 /**
  * gexiv2_metadata_delete_gps_info:
  * @self: An instance of [class@GExiv2.Metadata]
+ * @error: (allow-none): A return location for a [struct@GLib.Error] or %NULL
  *
  * Removes all GPS metadata from the loaded image
- *
- * Deprecated: 0.12.2: Use [method@Metadata.try_delete_gps_info] instead.
+ * Since: 0.16.0
  */
-G_DEPRECATED_FOR(gexiv2_metadata_try_delete_gps_info)
-void			gexiv2_metadata_delete_gps_info			(GExiv2Metadata *self);
+void			gexiv2_metadata_delete_gps_info			(GExiv2Metadata *self, GError **error);
 
 /*
  * Preview Manager
@@ -1931,16 +2013,16 @@ GExiv2PreviewProperties** gexiv2_metadata_get_preview_properties (GExiv2Metadata
  * gexiv2_metadata_get_preview_image:
  * @self: An instance of [class@GExiv2.Metadata]
  * @props: A #GExiv2PreviewProperties instance
+ * @error: (allow-none): A return location for a [struct@GLib.Error] or %NULL
  *
  * Get a preview image from the metadata.
  *
  * Returns: (transfer full): A #GExiv2PreviewImage instance for the particular
  * #GExiv2PreviewProperties.
  *
- * Deprecated: 0.14.0: Use [method@Metadata.try_get_preview_image] instead.
+ * Since: 0.16.0
  */
-G_DEPRECATED_FOR(gexiv2_metadata_try_get_preview_image)
-GExiv2PreviewImage* gexiv2_metadata_get_preview_image		(GExiv2Metadata *self, GExiv2PreviewProperties *props);
+GExiv2PreviewImage* gexiv2_metadata_get_preview_image		(GExiv2Metadata *self, GExiv2PreviewProperties *props, GError **error);
 
 /**
  * gexiv2_metadata_try_get_preview_image:
@@ -1954,7 +2036,9 @@ GExiv2PreviewImage* gexiv2_metadata_get_preview_image		(GExiv2Metadata *self, GE
  * #GExiv2PreviewProperties.
  *
  * Since: 0.14.0
+ * Deprecated: 0.16.0: Use [method@Metadata.get_preview_image] instead.
  */
+G_DEPRECATED_FOR(gexiv2_metadata_get_preview_image)
 GExiv2PreviewImage* gexiv2_metadata_try_get_preview_image(GExiv2Metadata* self,
                                                           GExiv2PreviewProperties* props,
                                                           GError** error);

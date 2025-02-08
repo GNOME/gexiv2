@@ -115,21 +115,11 @@ guint32 gexiv2_preview_image_get_height (GExiv2PreviewImage *self) {
     return self->priv->image->height();
 }
 
-glong gexiv2_preview_image_write_file (GExiv2PreviewImage *self, const gchar *path) {
-    GError* error = nullptr;
-    glong value = -1;
-
-    value = gexiv2_preview_image_try_write_file(self, path, &error);
-
-    if (error) {
-        g_warning("%s", error->message);
-        g_clear_error(&error);
-    }
-
-    return value;
+glong gexiv2_preview_image_try_write_file (GExiv2PreviewImage *self, const gchar *path, GError **error) {
+    return gexiv2_preview_image_write_file(self, path, error);
 }
 
-glong gexiv2_preview_image_try_write_file(GExiv2PreviewImage* self, const gchar* path, GError** error) {
+glong gexiv2_preview_image_write_file(GExiv2PreviewImage* self, const gchar* path, GError** error) {
     g_return_val_if_fail(GEXIV2_IS_PREVIEW_IMAGE(self), -1);
     g_return_val_if_fail(self->priv != nullptr, -1);
     g_return_val_if_fail(self->priv->image != nullptr, -1);
