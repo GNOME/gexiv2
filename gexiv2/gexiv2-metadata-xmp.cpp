@@ -19,8 +19,6 @@
 
 #include <exiv2/exiv2.hpp>
 #include <glib-object.h>
-#include <iostream>
-#include <locale>
 #include <string>
 
 G_BEGIN_DECLS
@@ -40,7 +38,7 @@ void gexiv2_metadata_clear_xmp(GExiv2Metadata *self) {
     self->priv->image->xmpData().clear();
 }
 
-gchar *gexiv2_metadata_try_generate_xmp_packet(GExiv2Metadata *self,
+gchar *gexiv2_metadata_generate_xmp_packet(GExiv2Metadata *self,
     GExiv2XmpFormatFlags xmp_format_flags, guint32 padding, GError **error) {
     g_return_val_if_fail(GEXIV2_IS_METADATA (self), NULL);
     g_return_val_if_fail(self->priv->image.get() != NULL, NULL);
@@ -62,25 +60,12 @@ gchar *gexiv2_metadata_try_generate_xmp_packet(GExiv2Metadata *self,
     return nullptr;
 }
 
-gchar *gexiv2_metadata_generate_xmp_packet(GExiv2Metadata *self,
-    GExiv2XmpFormatFlags xmp_format_flags, guint32 padding) {
-    gchar  *value;
-    GError *error = nullptr;
-
-    g_return_val_if_fail(GEXIV2_IS_METADATA (self), nullptr);
-    g_return_val_if_fail(self->priv->image.get() != nullptr, nullptr);
-
-    value = gexiv2_metadata_try_generate_xmp_packet (self, xmp_format_flags, padding, &error);
-
-    if (error) {
-        g_warning("%s", error->message);
-        g_clear_error(&error);
-    }
-
-    return value;
+gchar *gexiv2_metadata_try_generate_xmp_packet(GExiv2Metadata *self,
+    GExiv2XmpFormatFlags xmp_format_flags, guint32 padding, GError **error) {
+    return gexiv2_metadata_generate_xmp_packet (self, xmp_format_flags, padding, error);
 }
 
-gchar *gexiv2_metadata_try_get_xmp_packet(GExiv2Metadata *self, GError **error) {
+gchar *gexiv2_metadata_get_xmp_packet(GExiv2Metadata *self, GError **error) {
     g_return_val_if_fail(GEXIV2_IS_METADATA (self), NULL);
     g_return_val_if_fail(self->priv->image.get() != NULL, NULL);
     
@@ -95,21 +80,8 @@ gchar *gexiv2_metadata_try_get_xmp_packet(GExiv2Metadata *self, GError **error) 
     return NULL;
 }
 
-gchar *gexiv2_metadata_get_xmp_packet(GExiv2Metadata *self) {
-    gchar  *value;
-    GError *error = nullptr;
-
-    g_return_val_if_fail(GEXIV2_IS_METADATA (self), nullptr);
-    g_return_val_if_fail(self->priv->image.get() != nullptr, nullptr);
-
-    value = gexiv2_metadata_try_get_xmp_packet (self, &error);
-
-    if (error) {
-        g_warning("%s", error->message);
-        g_clear_error(&error);
-    }
-
-    return value;
+gchar *gexiv2_metadata_try_get_xmp_packet(GExiv2Metadata *self, GError **error) {
+    return gexiv2_metadata_get_xmp_packet (self, error);
 }
 
 gboolean gexiv2_metadata_has_xmp_tag(GExiv2Metadata *self, const gchar* tag) {
@@ -234,7 +206,7 @@ gchar* gexiv2_metadata_get_xmp_tag_interpreted_string (GExiv2Metadata *self, con
     return nullptr;
 }
 
-gboolean gexiv2_metadata_try_set_xmp_tag_struct (GExiv2Metadata *self, const gchar* tag, GExiv2StructureType type, GError **error) {
+gboolean gexiv2_metadata_set_xmp_tag_struct (GExiv2Metadata *self, const gchar* tag, GExiv2StructureType type, GError **error) {
     g_return_val_if_fail(GEXIV2_IS_METADATA (self), FALSE);
     g_return_val_if_fail(tag != NULL, FALSE);
     g_return_val_if_fail(self->priv->image.get() != NULL, FALSE);
@@ -279,22 +251,8 @@ gboolean gexiv2_metadata_try_set_xmp_tag_struct (GExiv2Metadata *self, const gch
     return FALSE;
 }
 
-gboolean gexiv2_metadata_set_xmp_tag_struct (GExiv2Metadata *self, const gchar* tag, GExiv2StructureType type) {
-    GError   *error   = nullptr;
-    gboolean  success = FALSE;
-
-    g_return_val_if_fail(GEXIV2_IS_METADATA (self), FALSE);
-    g_return_val_if_fail(tag != nullptr, FALSE);
-    g_return_val_if_fail(self->priv->image.get() != nullptr, FALSE);
-
-    success = gexiv2_metadata_try_set_xmp_tag_struct (self, tag, type, &error);
-
-    if (error) {
-        g_warning("%s", error->message);
-        g_clear_error(&error);
-    }
-
-    return success;
+gboolean gexiv2_metadata_try_set_xmp_tag_struct (GExiv2Metadata *self, const gchar* tag, GExiv2StructureType type, GError **error) {
+    return gexiv2_metadata_set_xmp_tag_struct (self, tag, type, error);
 }
 
 gboolean gexiv2_metadata_set_xmp_tag_string (GExiv2Metadata *self, const gchar* tag, 
@@ -643,21 +601,11 @@ GBytes* gexiv2_metadata_get_xmp_tag_raw (GExiv2Metadata *self, const gchar* tag,
     return nullptr;
 }
 
-gboolean gexiv2_metadata_register_xmp_namespace (const gchar* name, const gchar* prefix) {
-    gboolean value = FALSE;
-    GError* error = nullptr;
-
-    value = gexiv2_metadata_try_register_xmp_namespace(name, prefix, &error);
-
-    if (error) {
-        g_warning("%s", error->message);
-        g_clear_error(&error);
-    }
-
-    return value;
+gboolean gexiv2_metadata_try_register_xmp_namespace (const gchar* name, const gchar* prefix, GError **error) {
+    return gexiv2_metadata_register_xmp_namespace(name, prefix, error);
 }
 
-gboolean gexiv2_metadata_try_register_xmp_namespace(const gchar* name, const gchar* prefix, GError** error) {
+gboolean gexiv2_metadata_register_xmp_namespace(const gchar* name, const gchar* prefix, GError** error) {
     g_return_val_if_fail(name != nullptr, FALSE);
     g_return_val_if_fail(prefix != nullptr, FALSE);
     g_return_val_if_fail(error == nullptr || *error == nullptr, FALSE);
@@ -683,21 +631,11 @@ gboolean gexiv2_metadata_try_register_xmp_namespace(const gchar* name, const gch
     return FALSE;
 }
 
-gboolean gexiv2_metadata_unregister_xmp_namespace (const gchar* name) {
-    gboolean value = FALSE;
-    GError* error = nullptr;
-
-    value = gexiv2_metadata_try_unregister_xmp_namespace(name, &error);
-
-    if (error) {
-        g_warning("%s", error->message);
-        g_clear_error(&error);
-    }
-
-    return value;
+gboolean gexiv2_metadata_try_unregister_xmp_namespace (const gchar* name, GError **error) {
+    return gexiv2_metadata_unregister_xmp_namespace(name, error);
 }
 
-gboolean gexiv2_metadata_try_unregister_xmp_namespace(const gchar* name, GError** error) {
+gboolean gexiv2_metadata_unregister_xmp_namespace(const gchar* name, GError** error) {
     g_return_val_if_fail(name != nullptr, FALSE);
     g_return_val_if_fail(error == nullptr || *error == nullptr, FALSE);
 
@@ -725,18 +663,11 @@ gboolean gexiv2_metadata_try_unregister_xmp_namespace(const gchar* name, GError*
     return FALSE;
 }
 
-void gexiv2_metadata_unregister_all_xmp_namespaces (void) {
-    GError* error = nullptr;
-
-    gexiv2_metadata_try_unregister_all_xmp_namespaces(&error);
-
-    if (error) {
-        g_warning("%s", error->message);
-        g_clear_error(&error);
-    }
+void gexiv2_metadata_try_unregister_all_xmp_namespaces (GError **error) {
+    gexiv2_metadata_unregister_all_xmp_namespaces(error);
 }
 
-void gexiv2_metadata_try_unregister_all_xmp_namespaces(GError** error) {
+void gexiv2_metadata_unregister_all_xmp_namespaces(GError** error) {
     g_return_if_fail(error == nullptr || *error == nullptr);
 
     try {
@@ -748,21 +679,11 @@ void gexiv2_metadata_try_unregister_all_xmp_namespaces(GError** error) {
     }
 }
 
-char* gexiv2_metadata_get_xmp_namespace_for_tag(const char* tag) {
-    gchar* value = nullptr;
-    GError* error = nullptr;
-
-    value = gexiv2_metadata_try_get_xmp_namespace_for_tag(tag, &error);
-
-    if (error) {
-        g_warning("%s", error->message);
-        g_clear_error(&error);
-    }
-
-    return value;
+char* gexiv2_metadata_try_get_xmp_namespace_for_tag(const char* tag, GError **error) {
+    return gexiv2_metadata_get_xmp_namespace_for_tag(tag, error);
 }
 
-char* gexiv2_metadata_try_get_xmp_namespace_for_tag(const char* tag, GError** error) {
+char* gexiv2_metadata_get_xmp_namespace_for_tag(const char* tag, GError** error) {
     g_return_val_if_fail(tag != nullptr, nullptr);
     g_return_val_if_fail(strlen(tag) != 0, nullptr);
     g_return_val_if_fail(error == nullptr || *error == nullptr, nullptr);
