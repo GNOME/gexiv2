@@ -272,6 +272,8 @@ docs:
       - reference
   needs:
     - build-fedora-container@x86_64
+  rules:
+    - if: $CI_COMMIT_BRANCH== $CI_DEFAULT_BRANCH
 
 refresh-doc:
   extends:
