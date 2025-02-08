@@ -27,6 +27,7 @@ import errno
 import shutil
 import unittest
 import tempfile
+import math
 
 import gi
 gi.require_version('GExiv2', '0.16')
@@ -908,7 +909,15 @@ generated the image. When the field is left blank, it is treated as unknown.""")
         lon, lat, alt = self.metadata.try_get_gps_info()
         self.assertAlmostEqual(lon, -1.0, 9)
         self.assertAlmostEqual(lat, 2.0, 9)
-        self.assertEqual(alt, 0.0)
+        self.assertAlmostEqual(alt, 0.0)
+
+    def test_get_gps_info_without_altitude(self):
+        self.metadata.set_gps_info(-2.0, 4.0, 3.0)
+        self.metadata.clear_tag('Exif.GPSInfo.GPSAltitudeRef')
+        lon, lat, alt = self.metadata.get_gps_info()
+        self.assertAlmostEqual(lon, -2.0, 9)
+        self.assertAlmostEqual(lat, 4.0, 9)
+        self.assertTrue(math.isnan(alt))
 
     def test_set_gps_info(self):
         # Longitude, latitude, altitude

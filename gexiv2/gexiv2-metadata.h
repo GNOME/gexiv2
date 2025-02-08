@@ -227,7 +227,7 @@ gboolean		gexiv2_metadata_open_buf			(GExiv2Metadata *self, const guint8 *data, 
  * @stream:
  * @error: (allow-none): A return location for a [struct@GLib.Error] or %NULL
  *
- * Read metadata from a [interface@Gio.InputStream]. This function is not very
+ * Read metadata from a [class@Gio.InputStream]. This function is not very
  * efficient in places since it needs to copy memory to fullfil underlying
  * requirements by exiv2, which expects everything to be memory-mappable.
  *
@@ -1827,42 +1827,39 @@ gboolean		gexiv2_metadata_try_get_gps_altitude		(GExiv2Metadata *self, gdouble *
 /**
  * gexiv2_metadata_get_gps_longitude:
  * @self: An instance of [class@GExiv2.Metadata]
- * @longitude: (out): Variable to store the longitude value
  * @error: (allow-none): A return location for a [struct@GLib.Error] or %NULL
  *
  * Query the longitude stored in the GPS tags of @self
  *
- * Returns: (skip): Boolean success value
+ * Returns: The longitude value, or -inf on error, or nan if no altitude value.
  * Since: 0.16.0
  */
-gboolean		gexiv2_metadata_get_gps_longitude			(GExiv2Metadata *self, gdouble *longitude, GError **error);
+gdouble		gexiv2_metadata_get_gps_longitude			(GExiv2Metadata *self, GError **error);
 
 /**
  * gexiv2_metadata_get_gps_latitude:
  * @self: An instance of [class@GExiv2.Metadata]
- * @latitude: (out): Variable to store the latitude value
  * @error: (allow-none): A return location for a [struct@GLib.Error] or %NULL
  *
  * Query the latitude stored in the GPS tags of @self
  *
- * Returns: (skip): Boolean success value
+ * Returns: The latitude or -inf on error, nan if no altitude value is found.
  * Since: 0.16.0
  */
-gboolean		gexiv2_metadata_get_gps_latitude			(GExiv2Metadata *self, gdouble *latitude, GError **error);
+gdouble		gexiv2_metadata_get_gps_latitude			(GExiv2Metadata *self, GError **error);
 
 /**
  * gexiv2_metadata_get_gps_altitude:
  * @self: An instance of [class@GExiv2.Metadata]
- * @altitude: (out): Variable to store the altitude value
  * @error: (allow-none): A return location for a [struct@GLib.Error] or %NULL
  *
  * Convenience function to query the altitude stored in the GPS tags of the
  * image
  *
- * Returns: (skip): Boolean success value
+ * Returns: The altitude value, or -inf on error, or nan if no altitude value.
  * Since: 0.16.0
  */
-gboolean		gexiv2_metadata_get_gps_altitude			(GExiv2Metadata *self, gdouble *altitude, GError **error);
+gdouble		gexiv2_metadata_get_gps_altitude			(GExiv2Metadata *self, GError **error);
 
 /**
  * gexiv2_metadata_try_get_gps_info:
@@ -1890,9 +1887,12 @@ gboolean		gexiv2_metadata_try_get_gps_info			(GExiv2Metadata *self, gdouble *lon
  * @altitude: (out): Storage for altitude value
  * @error: (allow-none): A return location for a [struct@GLib.Error] or %NULL
  *
- * Convenience function to query all available GPS information at once.
+ * Convenience function to query all available GPS information at once. See the
+ * [method@GExiv2.Metadata.get_gps_longitude], [method@GExiv2.Metadata.get_gps_latitude]
+ * and [method@GExiv2.Metadata.get_gps_altitude] for possible values of the out
+ * parameters.
  *
- * Returns: (skip): Boolean success value.
+ * Returns: (skip): Boolean success value. Indicates if any of the queries failed.
  * Since: 0.16.0
  */
 gboolean		gexiv2_metadata_get_gps_info				(GExiv2Metadata *self, gdouble *longitude, gdouble *latitude, gdouble *altitude, GError **error);
@@ -1900,7 +1900,7 @@ gboolean		gexiv2_metadata_get_gps_info				(GExiv2Metadata *self, gdouble *longit
 /**
  * gexiv2_metadata_try_set_gps_info:
  * @self: An instance of [class@GExiv2.Metadata]
- * @longitude: Longitude value to set or replace current value
+ * @longitude: Longitude value to set or replace current value.
  * @latitude: Latitude value to set or replace current value
  * @altitude: Altitude value to set or replace current value
  * @error: (allow-none): A return location for a [struct@GLib.Error] or %NULL

@@ -22,6 +22,8 @@
 import unittest
 import os
 
+import gi
+gi.require_version('GExiv2', '0.16')
 import gi.overrides
 gi.overrides.__path__.insert(0, os.path.join(os.path.dirname(__file__), '..', '..'))
 from gi.repository import GExiv2

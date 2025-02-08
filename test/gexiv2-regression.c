@@ -311,7 +311,7 @@ static void test_ggo_45(void)
     g_assert_no_error(error);
     g_assert_true(result);
 
-    result = gexiv2_metadata_get_gps_altitude(meta, &alt, &error);
+    alt = gexiv2_metadata_get_gps_altitude(meta, &error);
     g_assert_no_error(error);
     g_assert_true(result);
     g_assert_cmpfloat(fabs(alt - 2200.0), <= , 1e-5);
@@ -553,6 +553,58 @@ static void test_ggo_69(void) {
     g_object_unref(meta);
 }
 
+static void test_nobug_gps(void) {
+    GExiv2Metadata* meta = NULL;
+    gboolean result = FALSE;
+    GError* error = NULL;
+
+    meta = gexiv2_metadata_new();
+    g_assert_nonnull(meta);
+    result = gexiv2_metadata_open_path(meta, SAMPLE_PATH "/no-metadata.jpg", &error);
+    g_assert_no_error(error);
+    g_assert_true(result);
+
+    result = gexiv2_metadata_set_gps_info(meta, -1.0, 2.0, 3.0, &error);
+    g_assert_no_error(error);
+    g_assert_true(result);
+
+    result = gexiv2_metadata_clear_tag(meta, "Exif.GPSInfo.GPSAltitudeRef", &error);
+    g_assert_no_error(error);
+    g_assert_true(result);
+
+    gdouble value = gexiv2_metadata_get_gps_longitude(meta, &error);
+    g_assert_true(!isnan(value) && !isinf(value));
+    g_assert_no_error(error);
+    g_assert_cmpfloat_with_epsilon(value, -1.0, 0.001);
+
+    value = gexiv2_metadata_get_gps_latitude(meta, &error);
+    g_assert_true(!isnan(value) && !isinf(value));
+    g_assert_no_error(error);
+    g_assert_cmpfloat_with_epsilon(value, 2.0, 0.001);
+
+    value = gexiv2_metadata_get_gps_altitude(meta, &error);
+    g_assert_true(isnan(value));
+
+    gexiv2_metadata_try_get_gps_longitude(meta, &value, &error);
+    g_assert_true(!isnan(value) && !isinf(value));
+    g_assert_no_error(error);
+    g_assert_cmpfloat_with_epsilon(value, -1.0, 0.001);
+
+    gexiv2_metadata_try_get_gps_latitude(meta, &value, &error);
+    g_assert_true(!isnan(value) && !isinf(value));
+    g_assert_no_error(error);
+    g_assert_cmpfloat_with_epsilon(value, 2.0, 0.001);
+
+    gexiv2_metadata_try_get_gps_altitude(meta, &value, &error);
+    g_assert_cmpfloat(value, ==, 0.0);
+
+    gdouble lon = 0.0, lat = 0.0, alt = 0.0;
+
+
+    result = gexiv2_metadata_try_get_gps_info(meta, &lon, &lat, &alt, &error);
+    g_assert_no_error(error);
+}
+
 int main(int argc, char *argv[static argc + 1])
 {
     g_test_init(&argc, &argv, NULL);
@@ -571,6 +623,7 @@ int main(int argc, char *argv[static argc + 1])
     g_test_add_func("/bugs/gnome/gitlab/60", test_ggo_66);
     g_test_add_func("/bugs/gnome/gitlab/69", test_ggo_69);
     g_test_add_func("/bugs/gnome/gitlab/70", test_ggo_70);
+    g_test_add_func("/bugs/gnome/nobug/01", test_nobug_gps);
 
     return g_test_run();
 }
