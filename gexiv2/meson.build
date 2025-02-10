@@ -69,7 +69,15 @@ gexiv2 = library('gexiv2',
                  version: libversion,
                  darwin_versions: darwin_versions,
                  dependencies : [gobject, exiv2, gio],
+                 vs_module_defs : 'gexiv2.def',
                  install : true)
+
+update_def_script = find_program('update-def-file.sh', dirs: [meson.project_source_root() / 'build-aux'])
+custom_target('update-def-file',
+  output: 'gexiv2.def',
+  input: gexiv2,
+  command: [update_def_script, '@INPUT@', '@OUTPUT@'],
+  install: false)
 
 libgexiv2 = declare_dependency(
     link_with : gexiv2,
