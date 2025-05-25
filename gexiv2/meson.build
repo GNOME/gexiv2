@@ -90,7 +90,7 @@ pkg.generate(
     libraries : gexiv2,
     version : meson.project_version(),
     name : 'GExiv2',
-    filebase : 'gexiv2',
+    filebase : 'gexiv2-' + project_api_version,
     requires_private : 'exiv2',
     requires : pc_deps
     )
