@@ -269,3 +269,15 @@ docs:
   needs:
     - build-fedora-container@x86_64
 
+refresh-doc:
+  extends:
+    - .fdo.distribution-image@fedora
+    - .gexiv2.fedora:41@x86_64
+  stage: deploy
+  needs: ['doc']
+  only:
+    refs:
+    - 'maaster'
+  script:
+    - "curl -X POST -F token=${PAGES_TRIGGER_TOKEN} -F ref=pages https://gitlab.gnome.org/api/v4/projects/1534/trigger/pipeline"
+
