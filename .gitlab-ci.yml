@@ -274,7 +274,7 @@ refresh-doc:
     - .fdo.distribution-image@fedora
     - .gexiv2.fedora:41@x86_64
   stage: deploy
-  needs: ['doc']
+  needs: ['docs']
   only:
     refs:
     - 'maaster'
