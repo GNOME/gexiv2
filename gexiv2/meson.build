@@ -13,7 +13,8 @@ darwin_version_minor = libversion_arr[1].to_int()
 darwin_version_micro = libversion_arr[2].to_int()
 darwin_versions = [darwin_version_major + darwin_version_minor + 1, '@0@.@1@'.format(darwin_version_major + darwin_version_minor + 1, darwin_version_micro)]
 
-gexiv2_include_dir = join_paths(get_option('includedir'), 'gexiv2')
+header_folder = join_paths('gexiv2-' + project_api_version, 'gexiv2')
+gexiv2_include_dir = join_paths(get_option('includedir'), header_folder)
 
 config = configuration_data()
 config.set('GEXIV2_MAJOR_VERSION', as_version[0])
@@ -41,7 +42,7 @@ enum_sources = gnome.mkenums('gexiv2-enums',
                              install_header : true,
                              install_dir : gexiv2_include_dir)
 
-install_headers(gexiv2_headers, subdir : 'gexiv2')
+install_headers(gexiv2_headers, subdir : header_folder)
 
 gexiv2 = library('gexiv2',
                  ['gexiv2-metadata.cpp',
@@ -89,6 +90,7 @@ pkg.generate(
     url : project_url,
     libraries : gexiv2,
     version : meson.project_version(),
+    subdirs : ['gexiv2-' + project_api_version],
     name : 'GExiv2',
     filebase : 'gexiv2-' + project_api_version,
     requires_private : 'exiv2',
