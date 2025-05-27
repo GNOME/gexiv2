@@ -15,31 +15,9 @@
 
 G_BEGIN_DECLS
 
-#define GEXIV2_TYPE_PREVIEW_IMAGE \
-    (gexiv2_preview_image_get_type())
-	
-#define GEXIV2_PREVIEW_IMAGE(obj) \
-	(G_TYPE_CHECK_INSTANCE_CAST ((obj), GEXIV2_TYPE_PREVIEW_IMAGE, GExiv2PreviewImage))
-	
-#define GEXIV2_IS_PREVIEW_IMAGE(obj) \
-	(G_TYPE_CHECK_INSTANCE_TYPE ((obj), GEXIV2_TYPE_PREVIEW_IMAGE))
-	
-#define GEXIV2_PREVIEW_IMAGE_CLASS(klass) \
-	(G_TYPE_CHECK_CLASS_CAST ((klass), GEXIV2_TYPE_PREVIEW_IMAGE, GExiv2PreviewImageClass))
-	
-#define GEXIV2_IS_PREVIEW_IMAGE_CLASS(klass) \
-	(G_TYPE_CHECK_CLASS_TYPE ((klass), GEXIV2_TYPE_PREVIEW_IMAGE))
-	
-#define GEXIV2_PREVIEW_IMAGE_GET_CLASS(obj) \
-	(G_TYPE_INSTANCE_GET_CLASS ((obj), GEXIV2_TYPE_PREVIEW_IMAGE, GExiv2PreviewImageClass))
-	
+#define GEXIV2_TYPE_PREVIEW_IMAGE (gexiv2_preview_image_get_type())
 
-
-typedef struct _GExiv2PreviewImage			GExiv2PreviewImage;
-typedef struct _GExiv2PreviewImageClass		GExiv2PreviewImageClass;
-typedef struct _GExiv2PreviewImagePrivate	GExiv2PreviewImagePrivate;
-
-G_DEFINE_AUTOPTR_CLEANUP_FUNC(GExiv2PreviewImage, g_object_unref)
+G_DECLARE_FINAL_TYPE(GExiv2PreviewImage, gexiv2_preview_image, GEXIV2, PREVIEW_IMAGE, GObject)
 
 /**
  * GExiv2PreviewImage:
@@ -65,22 +43,7 @@ G_DEFINE_AUTOPTR_CLEANUP_FUNC(GExiv2PreviewImage, g_object_unref)
  *
  */
 
-struct _GExiv2PreviewImage
-{
-	GObject parent_instance;
-
-	/*< private >*/
-	GExiv2PreviewImagePrivate *priv;
-};
-
-struct _GExiv2PreviewImageClass
-{
-	GObjectClass parent_class;
-};
-
 /* basic functions */
-
-GType 			gexiv2_preview_image_get_type			(void);
 
 /* preview image properties */
 
@@ -148,7 +111,7 @@ guint32			gexiv2_preview_image_get_height			(GExiv2PreviewImage *self);
  *
  * Since: 0.16.0
  */
-glong			gexiv2_preview_image_write_file			(GExiv2PreviewImage *self, const gchar *path, GError **error);
+size_t gexiv2_preview_image_write_file(GExiv2PreviewImage* self, const gchar* path, GError** error);
 
 /**
  * gexiv2_preview_image_try_write_file:

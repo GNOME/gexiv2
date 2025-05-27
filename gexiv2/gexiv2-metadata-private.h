@@ -43,6 +43,9 @@ struct _GExiv2MetadataPrivate
     Exiv2::PreviewManager *preview_manager;
     GExiv2PreviewProperties **preview_properties;
 };
+using GExiv2MetadataPrivate = struct _GExiv2MetadataPrivate;
+
+G_GNUC_INTERNAL GExiv2MetadataPrivate* gexiv2_priv(GExiv2Metadata* self);
 
 /* private EXIF functions */
 

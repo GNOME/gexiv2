@@ -20,19 +20,23 @@ G_BEGIN_DECLS
 
 gboolean gexiv2_metadata_has_iptc (GExiv2Metadata *self) {
     g_return_val_if_fail(GEXIV2_IS_METADATA(self), FALSE);
-    g_return_val_if_fail(self->priv != nullptr, FALSE);
-    g_return_val_if_fail(self->priv->image.get() != nullptr, FALSE);
+    auto* priv = gexiv2_priv(self);
 
-    return ! (self->priv->image->iptcData().empty());
+    g_return_val_if_fail(priv != nullptr, FALSE);
+    g_return_val_if_fail(priv->image.get() != nullptr, FALSE);
+
+    return !(priv->image->iptcData().empty());
 }
 
 gboolean gexiv2_metadata_has_iptc_tag(GExiv2Metadata *self, const gchar* tag) {
     g_return_val_if_fail(GEXIV2_IS_METADATA(self), FALSE);
     g_return_val_if_fail(tag != nullptr, FALSE);
-    g_return_val_if_fail(self->priv->image.get() != nullptr, FALSE);
+    auto* priv = gexiv2_priv(self);
 
-    Exiv2::IptcData &iptc_data = self->priv->image->iptcData();
-    
+    g_return_val_if_fail(priv->image.get() != nullptr, FALSE);
+
+    Exiv2::IptcData& iptc_data = priv->image->iptcData();
+
     for (Exiv2::IptcData::iterator it = iptc_data.begin(); it != iptc_data.end(); ++it) {
         if (it->count() > 0 && g_ascii_strcasecmp(tag, it->key().c_str()) == 0)
             return TRUE;
@@ -44,9 +48,11 @@ gboolean gexiv2_metadata_has_iptc_tag(GExiv2Metadata *self, const gchar* tag) {
 gboolean gexiv2_metadata_clear_iptc_tag(GExiv2Metadata *self, const gchar* tag) {
     g_return_val_if_fail(GEXIV2_IS_METADATA(self), FALSE);
     g_return_val_if_fail(tag != nullptr, FALSE);
-    g_return_val_if_fail(self->priv->image.get() != nullptr, FALSE);
+    auto* priv = gexiv2_priv(self);
 
-    Exiv2::IptcData &iptc_data = self->priv->image->iptcData();
+    g_return_val_if_fail(priv->image.get() != nullptr, FALSE);
+
+    Exiv2::IptcData& iptc_data = priv->image->iptcData();
 
     gboolean erased = FALSE;
 
@@ -65,18 +71,22 @@ gboolean gexiv2_metadata_clear_iptc_tag(GExiv2Metadata *self, const gchar* tag) 
 
 void gexiv2_metadata_clear_iptc (GExiv2Metadata *self) {
     g_return_if_fail(GEXIV2_IS_METADATA (self));
-    g_return_if_fail(self->priv->image.get() != nullptr);
+    auto* priv = gexiv2_priv(self);
 
-    self->priv->image->iptcData().clear ();
+    g_return_if_fail(priv->image.get() != nullptr);
+
+    priv->image->iptcData().clear();
 }
 
 gchar** gexiv2_metadata_get_iptc_tags(GExiv2Metadata* self) {
     g_return_val_if_fail(GEXIV2_IS_METADATA(self), nullptr);
-    g_return_val_if_fail(self->priv != nullptr, nullptr);
-    g_return_val_if_fail(self->priv->image.get() != nullptr, nullptr);
+    auto* priv = gexiv2_priv(self);
+
+    g_return_val_if_fail(priv != nullptr, nullptr);
+    g_return_val_if_fail(priv->image.get() != nullptr, nullptr);
 
     // get a copy of the IptcData and sort it by key, preserving the original
-    Exiv2::IptcData iptc_data = Exiv2::IptcData(self->priv->image->iptcData());
+    Exiv2::IptcData iptc_data = Exiv2::IptcData(priv->image->iptcData());
     detail::sortMetadata(iptc_data);
 
     GSList* list = nullptr;
@@ -106,13 +116,15 @@ gchar** gexiv2_metadata_get_iptc_tags(GExiv2Metadata* self) {
 gchar* gexiv2_metadata_get_iptc_tag_string (GExiv2Metadata *self, const gchar* tag, GError **error) {
     g_return_val_if_fail(GEXIV2_IS_METADATA (self), nullptr);
     g_return_val_if_fail(tag != nullptr, nullptr);
-    g_return_val_if_fail(self->priv != nullptr, nullptr);
-    g_return_val_if_fail(self->priv->image.get() != nullptr, nullptr);
+    auto* priv = gexiv2_priv(self);
+
+    g_return_val_if_fail(priv != nullptr, nullptr);
+    g_return_val_if_fail(priv->image.get() != nullptr, nullptr);
     g_return_val_if_fail(error == nullptr || *error == nullptr, nullptr);
 
     try {
-        const auto& iptc_data = self->priv->image->iptcData();
-    	const Exiv2::IptcKey key(tag);
+        const auto& iptc_data = priv->image->iptcData();
+        const Exiv2::IptcKey key(tag);
         auto it = iptc_data.findKey(key);
 
         while (it != iptc_data.end() && it->count() == 0)
@@ -153,12 +165,14 @@ gchar* gexiv2_metadata_get_iptc_tag_string (GExiv2Metadata *self, const gchar* t
 gchar* gexiv2_metadata_get_iptc_tag_interpreted_string (GExiv2Metadata *self, const gchar* tag, GError **error) {
     g_return_val_if_fail(GEXIV2_IS_METADATA (self), nullptr);
     g_return_val_if_fail(tag != nullptr, nullptr);
-    g_return_val_if_fail(self->priv != nullptr, nullptr);
-    g_return_val_if_fail(self->priv->image.get() != nullptr, nullptr);
+    auto* priv = gexiv2_priv(self);
+
+    g_return_val_if_fail(priv != nullptr, nullptr);
+    g_return_val_if_fail(priv->image.get() != nullptr, nullptr);
     g_return_val_if_fail(error == nullptr || *error == nullptr, nullptr);
 
     try {
-        const auto& iptc_data = self->priv->image->iptcData();
+        const auto& iptc_data = priv->image->iptcData();
         const Exiv2::IptcKey key(tag);
         auto it = iptc_data.findKey(key);
 
@@ -203,15 +217,17 @@ gboolean gexiv2_metadata_set_iptc_tag_string (GExiv2Metadata *self, const gchar*
     g_return_val_if_fail (GEXIV2_IS_METADATA (self), FALSE);
     g_return_val_if_fail(tag != nullptr, FALSE);
     g_return_val_if_fail(value != nullptr, FALSE);
-    g_return_val_if_fail(self->priv != nullptr, FALSE);
-    g_return_val_if_fail(self->priv->image.get() != nullptr, FALSE);
+    auto* priv = gexiv2_priv(self);
+
+    g_return_val_if_fail(priv != nullptr, FALSE);
+    g_return_val_if_fail(priv->image.get() != nullptr, FALSE);
     g_return_val_if_fail(error == nullptr || *error == nullptr, FALSE);
     
     try {
         const Exiv2::IptcKey key(tag);
-        auto& iptc_data = self->priv->image->iptcData();
+        auto& iptc_data = priv->image->iptcData();
 
-    	// Iptc allows Repeatable tags (multi-value) and Non-Repeatable tags
+        // Iptc allows Repeatable tags (multi-value) and Non-Repeatable tags
     	// (single value). Repeatable tags are not grouped together, but exist as
     	// separate entries with the same tag name.
         if (!Exiv2::IptcDataSets::dataSetRepeatable(key.tag(), key.record())) {
@@ -249,8 +265,10 @@ gboolean gexiv2_metadata_set_iptc_tag_string (GExiv2Metadata *self, const gchar*
 gchar** gexiv2_metadata_get_iptc_tag_multiple (GExiv2Metadata *self, const gchar* tag, GError **error) {
     g_return_val_if_fail(GEXIV2_IS_METADATA(self), nullptr);
     g_return_val_if_fail(tag != nullptr, nullptr);
-    g_return_val_if_fail(self->priv != nullptr, nullptr);
-    g_return_val_if_fail(self->priv->image.get() != nullptr, nullptr);
+    auto* priv = gexiv2_priv(self);
+
+    g_return_val_if_fail(priv != nullptr, nullptr);
+    g_return_val_if_fail(priv->image.get() != nullptr, nullptr);
     g_return_val_if_fail(error == nullptr || *error == nullptr, nullptr);
 
     GSList* list = nullptr;
@@ -259,7 +277,7 @@ gchar** gexiv2_metadata_get_iptc_tag_multiple (GExiv2Metadata *self, const gchar
     gint count = 0;
     
     try {
-        Exiv2::IptcData& iptc_data = self->priv->image->iptcData();
+        Exiv2::IptcData& iptc_data = priv->image->iptcData();
         Exiv2::IptcKey key (tag);
         for (Exiv2::IptcData::iterator it = iptc_data.begin(); it != iptc_data.end(); ++it) {
             if (it->count() > 0 && key.key () == it->key ()) {
@@ -292,17 +310,19 @@ gboolean gexiv2_metadata_set_iptc_tag_multiple (GExiv2Metadata *self, const gcha
     g_return_val_if_fail (GEXIV2_IS_METADATA (self), FALSE);
     g_return_val_if_fail(tag != nullptr, FALSE);
     g_return_val_if_fail(values != nullptr, FALSE);
-    g_return_val_if_fail(self->priv != nullptr, FALSE);
-    g_return_val_if_fail(self->priv->image.get() != nullptr, FALSE);
+    auto* priv = gexiv2_priv(self);
+
+    g_return_val_if_fail(priv != nullptr, FALSE);
+    g_return_val_if_fail(priv->image.get() != nullptr, FALSE);
     g_return_val_if_fail(error == nullptr || *error == nullptr, FALSE);
 
     if (values[0] == nullptr)
         return TRUE;
 
     try {
-        auto& iptc_data = self->priv->image->iptcData();
+        auto& iptc_data = priv->image->iptcData();
 
-    	// Iptc allows Repeatable tags (multi-value) and Non-Repeatable tags
+        // Iptc allows Repeatable tags (multi-value) and Non-Repeatable tags
     	// (single value). Repeatable tags are not grouped together, but exist as
     	// separate entries with the same tag name.
 
@@ -430,12 +450,14 @@ gboolean gexiv2_metadata_iptc_tag_supports_multiple_values(const gchar* tag, GEr
 GBytes* gexiv2_metadata_get_iptc_tag_raw (GExiv2Metadata *self, const gchar* tag, GError **error) {
     g_return_val_if_fail(GEXIV2_IS_METADATA (self), nullptr);
     g_return_val_if_fail(tag != nullptr, nullptr);
-    g_return_val_if_fail(self->priv != nullptr, nullptr);
-    g_return_val_if_fail(self->priv->image.get() != nullptr, nullptr);
+    auto* priv = gexiv2_priv(self);
+
+    g_return_val_if_fail(priv != nullptr, nullptr);
+    g_return_val_if_fail(priv->image.get() != nullptr, nullptr);
     g_return_val_if_fail(error == nullptr || *error == nullptr, nullptr);
 
     try {
-        const auto& iptc_data = self->priv->image->iptcData();
+        const auto& iptc_data = priv->image->iptcData();
         const Exiv2::IptcKey key(tag);
         auto it = iptc_data.findKey(key);
 

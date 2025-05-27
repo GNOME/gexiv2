@@ -18,24 +18,9 @@
 
 G_BEGIN_DECLS
 
-#define GEXIV2_TYPE_METADATA \
-    (gexiv2_metadata_get_type())
-	
-#define GEXIV2_METADATA(obj) \
-	(G_TYPE_CHECK_INSTANCE_CAST ((obj), GEXIV2_TYPE_METADATA, GExiv2Metadata))
-	
-#define GEXIV2_IS_METADATA(obj) \
-	(G_TYPE_CHECK_INSTANCE_TYPE ((obj), GEXIV2_TYPE_METADATA))
-	
-#define GEXIV2_METADATA_CLASS(klass) \
-	(G_TYPE_CHECK_CLASS_CAST ((klass), GEXIV2_TYPE_METADATA, GExiv2MetadataClass))
-	
-#define GEXIV2_IS_METADATA_CLASS(klass) \
-	(G_TYPE_CHECK_CLASS_TYPE ((klass), GEXIV2_TYPE_METADATA))
-	
-#define GEXIV2_METADATA_GET_CLASS(obj) \
-	(G_TYPE_INSTANCE_GET_CLASS ((obj), GEXIV2_TYPE_METADATA, GExiv2MetadataClass))
-	
+#define GEXIV2_TYPE_METADATA (gexiv2_metadata_get_type())
+
+G_DECLARE_DERIVABLE_TYPE(GExiv2Metadata, gexiv2_metadata, GEXIV2, METADATA, GObject)
 
 /**
  * GExiv2Orientation:
@@ -147,19 +132,6 @@ typedef enum {
  *
  * A full reference for all supported Exiv2 tags can be found at <http://www.exiv2.org/metadata.html>
  */
-typedef struct _GExiv2Metadata			GExiv2Metadata;
-typedef struct _GExiv2MetadataClass		GExiv2MetadataClass;
-typedef struct _GExiv2MetadataPrivate	GExiv2MetadataPrivate;
-
-G_DEFINE_AUTOPTR_CLEANUP_FUNC(GExiv2Metadata, g_object_unref)
-
-struct _GExiv2Metadata
-{
-	GObject parent_instance;
-
-	/*< private >*/
-	GExiv2MetadataPrivate *priv;
-};
 
 struct _GExiv2MetadataClass
 {
@@ -167,8 +139,6 @@ struct _GExiv2MetadataClass
 };
 
 /* basic functions */
-
-GType 			gexiv2_metadata_get_type			(void);
 
 /**
  * gexiv2_metadata_new:

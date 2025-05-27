@@ -154,7 +154,6 @@ class TestMetadata(unittest.TestCase):
                        'open_buf',
                        'open_path',
                        'parent_instance',
-                       'priv',
                        'props',
                        'qdata',
                        'ref',

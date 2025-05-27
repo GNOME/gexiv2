@@ -15,7 +15,7 @@
 
 G_BEGIN_DECLS
 
-G_GNUC_INTERNAL gboolean        gexiv2_log_is_handler_installed(void);
+G_GNUC_INTERNAL bool gexiv2_log_is_handler_installed(void);
 
 G_END_DECLS
 

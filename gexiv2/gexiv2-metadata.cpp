@@ -80,40 +80,44 @@ std::string detail::collate_key(const std::string& str) {
 
 G_BEGIN_DECLS
 
-G_DEFINE_TYPE_WITH_CODE (GExiv2Metadata, gexiv2_metadata, G_TYPE_OBJECT, G_ADD_PRIVATE (GExiv2Metadata));
+G_DEFINE_TYPE_WITH_PRIVATE(GExiv2Metadata, gexiv2_metadata, G_TYPE_OBJECT);
 
-static void gexiv2_metadata_finalize (GObject *object);
-static void gexiv2_metadata_set_comment_internal (GExiv2Metadata *self, const gchar *new_comment);
+GExiv2MetadataPrivate* gexiv2_priv(GExiv2Metadata* self) {
+    return (GExiv2MetadataPrivate*) gexiv2_metadata_get_instance_private(self);
+}
 
-static gboolean gexiv2_metadata_open_internal (GExiv2Metadata *self, GError **error);
-static gboolean gexiv2_metadata_save_internal (GExiv2Metadata *self, image_ptr image, GError **error);
+static void gexiv2_metadata_finalize(GObject* object);
+static void gexiv2_metadata_set_comment_internal(GExiv2Metadata* self, const gchar* new_comment);
 
-static void gexiv2_metadata_init (GExiv2Metadata *self) {
-    self->priv = (GExiv2MetadataPrivate*) gexiv2_metadata_get_instance_private(self);
+static gboolean gexiv2_metadata_open_internal(GExiv2Metadata* self, GError** error);
+static gboolean gexiv2_metadata_save_internal(GExiv2Metadata* self, image_ptr image, GError** error);
+
+static void gexiv2_metadata_init(GExiv2Metadata* self) {
+    auto* priv = (GExiv2MetadataPrivate*) gexiv2_metadata_get_instance_private(self);
 
     /* Initialize members */
-    self->priv->comment = NULL;
-    self->priv->mime_type = NULL;
-    self->priv->preview_manager = NULL;
-    self->priv->preview_properties = NULL;
-    self->priv->pixel_width = -1;
-    self->priv->pixel_height = -1;
-    
+    priv->comment = nullptr;
+    priv->mime_type = nullptr;
+    priv->preview_manager = nullptr;
+    priv->preview_properties = nullptr;
+    priv->pixel_width = -1;
+    priv->pixel_height = -1;
+
     /* the others are static members and need not to be initialized */
-    
+
     /*  install GLib logging in place of Exiv2's default (where everything is dumped to stderr)
         but only if the user hasn't beaten us to the punch
-        
-        if user wants old behavior they should code this:
-            gexiv2_log_set_handler(gexiv2_log_get_default_handler());
-    */
+
+ if user wants old behavior they should code this:
+     gexiv2_log_set_handler(gexiv2_log_get_default_handler());
+*/
     if (!gexiv2_log_is_handler_installed())
         gexiv2_log_use_glib_logging();
 }
 
-static void gexiv2_metadata_class_init (GExiv2MetadataClass *klass) {
-    GObjectClass *gobject_class = G_OBJECT_CLASS (klass);
-    
+static void gexiv2_metadata_class_init(GExiv2MetadataClass* klass) {
+    GObjectClass* gobject_class = G_OBJECT_CLASS(klass);
+
     gobject_class->finalize = gexiv2_metadata_finalize;
 }
 
@@ -123,7 +127,7 @@ static void gexiv2_metadata_free_impl(GExiv2MetadataPrivate* priv) {
     if (priv->preview_properties != NULL) {
         int ctr = 0;
         while (priv->preview_properties[ctr] != NULL)
-            gexiv2_preview_properties_free(priv->preview_properties[ctr++]);
+            g_object_unref(priv->preview_properties[ctr++]);
 
         g_free(priv->preview_properties);
     }
@@ -144,26 +148,28 @@ static void gexiv2_metadata_finalize(GObject* object) {
     G_OBJECT_CLASS (gexiv2_metadata_parent_class)->finalize (object);
 }
 
-GExiv2Metadata* gexiv2_metadata_new (void) {
-    return GEXIV2_METADATA (g_object_new (GEXIV2_TYPE_METADATA, NULL));
+GExiv2Metadata* gexiv2_metadata_new(void) {
+    return GEXIV2_METADATA(g_object_new(GEXIV2_TYPE_METADATA, NULL));
 }
 
-static void gexiv2_metadata_set_comment_internal (GExiv2Metadata* self, const gchar* new_comment) {
-    g_return_if_fail (GEXIV2_IS_METADATA (self));
-    g_return_if_fail(self->priv != nullptr);
+static void gexiv2_metadata_set_comment_internal(GExiv2Metadata* self, const gchar* new_comment) {
+    g_return_if_fail(GEXIV2_IS_METADATA(self));
+    auto* priv = (GExiv2MetadataPrivate*) gexiv2_metadata_get_instance_private(self);
+    g_return_if_fail(priv != nullptr);
 
-    g_free (self->priv->comment);
+    g_free(priv->comment);
 
-    self->priv->comment = g_strdup (new_comment);
+    priv->comment = g_strdup(new_comment);
 }
 
 static void gexiv2_metadata_init_internal(GExiv2Metadata* self, GError** error) {
     g_return_if_fail(GEXIV2_IS_METADATA(self));
-    g_return_if_fail(self->priv != nullptr);
-    g_return_if_fail(self->priv->image.get() != nullptr);
+    auto* priv = (GExiv2MetadataPrivate*) gexiv2_metadata_get_instance_private(self);
+
+    g_return_if_fail(priv != nullptr);
+    g_return_if_fail(priv->image.get() != nullptr);
     g_return_if_fail(error == nullptr || *error == nullptr);
 
-    GExiv2MetadataPrivate* priv = self->priv;
     try {
 
         gexiv2_metadata_set_comment_internal(self, priv->image->comment().c_str());
@@ -185,24 +191,15 @@ static void gexiv2_metadata_init_internal(GExiv2Metadata* self, GError** error) 
         priv->preview_manager = new Exiv2::PreviewManager(*priv->image.get());
 
         Exiv2::PreviewPropertiesList list = priv->preview_manager->getPreviewProperties();
-        int count = list.size();
-        if (count > 0) {
+        if (auto count = list.size(); count > 0) {
             priv->preview_properties = g_new(GExiv2PreviewProperties*, count + 1);
-            for (int ctr = 0; ctr < count; ctr++)
+            for (size_t ctr = 0; ctr < count; ctr++)
                 priv->preview_properties[ctr] = gexiv2_preview_properties_new(list[ctr]);
             priv->preview_properties[count] = nullptr;
         }
     } catch (Exiv2::Error& e) {
-        if (priv->mime_type) {
-            g_free(priv->mime_type);
-            priv->mime_type = nullptr;
-        }
-
-        if (priv->preview_manager) {
-            delete priv->preview_manager;
-            priv->preview_manager = nullptr;
-        }
-
+        g_clear_pointer(&priv->mime_type, g_free);
+        g_clear_pointer(&priv->preview_manager, [](gpointer p) { delete reinterpret_cast<Exiv2::PreviewManager*>(p); });
         error << e;
     } catch (std::exception& e) {
         error << e;
@@ -211,17 +208,17 @@ static void gexiv2_metadata_init_internal(GExiv2Metadata* self, GError** error) 
 
 static gboolean gexiv2_metadata_open_internal (GExiv2Metadata* self, GError** error) {
     g_return_val_if_fail(GEXIV2_IS_METADATA(self), FALSE);
-    g_return_val_if_fail(self->priv != nullptr, FALSE);
+    auto* priv = (GExiv2MetadataPrivate*) gexiv2_metadata_get_instance_private(self);
+    g_return_val_if_fail(priv != nullptr, FALSE);
     g_return_val_if_fail(error == nullptr || *error == nullptr, FALSE);
 
-    if (self->priv->image.get() == nullptr || !self->priv->image->good()) {
-        g_set_error_literal (error, g_quark_from_string ("GExiv2"),
-            501, "unsupported format");
+    if (priv->image.get() == nullptr || !priv->image->good()) {
+        g_set_error_literal(error, g_quark_from_string("GExiv2"), 501, "unsupported format");
         return FALSE;
     }
 
     try {
-        self->priv->image->readMetadata();
+        priv->image->readMetadata();
         gexiv2_metadata_init_internal(self, error);
 
         return !(error && *error);
@@ -259,8 +256,9 @@ static std::string convert_path(const char* path, GError** error) {
 
 gboolean gexiv2_metadata_open_path(GExiv2Metadata* self, const gchar* path, GError** error) {
     g_return_val_if_fail(GEXIV2_IS_METADATA(self), FALSE);
+    auto* priv = (GExiv2MetadataPrivate*) gexiv2_metadata_get_instance_private(self);
 
-    gexiv2_metadata_free_impl(self->priv);
+    gexiv2_metadata_free_impl(priv);
 
     try {
         GError* inner_error = nullptr;
@@ -271,7 +269,7 @@ gboolean gexiv2_metadata_open_path(GExiv2Metadata* self, const gchar* path, GErr
 
             return FALSE;
         }
-        self->priv->image = Exiv2::ImageFactory::open(converted_path);
+        priv->image = Exiv2::ImageFactory::open(converted_path);
 
         return gexiv2_metadata_open_internal (self, error);
     } catch (Exiv2::Error &e) {
@@ -286,37 +284,37 @@ gboolean gexiv2_metadata_open_path(GExiv2Metadata* self, const gchar* path, GErr
 
 gboolean gexiv2_metadata_open_buf(GExiv2Metadata* self, const guint8* data, glong n_data, GError** error) {
     g_return_val_if_fail (GEXIV2_IS_METADATA (self), FALSE);
+    auto* priv = (GExiv2MetadataPrivate*) gexiv2_metadata_get_instance_private(self);
 
-    gexiv2_metadata_free_impl(self->priv);
+    gexiv2_metadata_free_impl(priv);
 
     try {
-        self->priv->image = Exiv2::ImageFactory::open (data, n_data);
-        
+        priv->image = Exiv2::ImageFactory::open(data, n_data);
+
         return gexiv2_metadata_open_internal (self, error);
     } catch (Exiv2::Error &e) {
         g_set_error_literal (error, g_quark_from_string ("GExiv2"), 501, "unsupported format");
     } catch (std::exception& e) {
         error << e;
     }
-    
+
     return FALSE;
 }
 
 gboolean gexiv2_metadata_from_stream(GExiv2Metadata *self, GInputStream *stream, GError **error) {
     g_return_val_if_fail (GEXIV2_IS_METADATA (self), FALSE);
 
-    gexiv2_metadata_free_impl(self->priv);
+    auto* priv = (GExiv2MetadataPrivate*) gexiv2_metadata_get_instance_private(self);
+    gexiv2_metadata_free_impl(priv);
 
     if (!G_IS_SEEKABLE(stream) || !g_seekable_can_seek(G_SEEKABLE(stream))) {
         g_set_error_literal(error, G_IO_ERROR, G_IO_ERROR_INVAL, "Passed stream is not seekable");
         return false;
     }
 
-    gexiv2_metadata_free_impl(self->priv);
-
     try {
         GExiv2::GioIo::ptr_type gio_ptr{new GExiv2::GioIo(stream)};
-        self->priv->image = Exiv2::ImageFactory::open (std::move(gio_ptr));
+        priv->image = Exiv2::ImageFactory::open(std::move(gio_ptr));
 
         return gexiv2_metadata_open_internal (self, error);
     } catch (Exiv2::Error &e) {
@@ -342,39 +340,40 @@ gboolean gexiv2_metadata_from_app1_segment(GExiv2Metadata* self, const guint8* d
     g_return_val_if_fail(data != nullptr, FALSE);
     g_return_val_if_fail(n_data > 0, FALSE);
 
-    gexiv2_metadata_free_impl(self->priv);
+    auto* priv = (GExiv2MetadataPrivate*) gexiv2_metadata_get_instance_private(self);
+    gexiv2_metadata_free_impl(priv);
 
     int offset = 0;
     while (offset < n_data - 1) {
         if ((data[offset] == 0x4D && data[offset + 1] == 0x4D)
             || (data[offset] == 0x49 && data[offset + 1] == 0x49))
             break;
-        
+
         offset++;
     }
-    
+
     if (offset >= n_data - 1) {
-        g_set_error_literal(error, g_quark_from_string("GExiv2"), 501, "unsupported format");\
-        
+        g_set_error_literal(error, g_quark_from_string("GExiv2"), 501, "unsupported format");
+
         return FALSE;
     }
-    
+
     try {
-        self->priv->image = Exiv2::ImageFactory::create(Exiv2::ImageType::jpeg);
-        if (self->priv->image.get() == nullptr)
+        priv->image = Exiv2::ImageFactory::create(Exiv2::ImageType::jpeg);
+        if (priv->image.get() == nullptr)
             return FALSE;
-        
-        Exiv2::ExifParser::decode(self->priv->image->exifData(), data + offset, n_data - offset);
+
+        Exiv2::ExifParser::decode(priv->image->exifData(), data + offset, n_data - offset);
         gexiv2_metadata_init_internal(self, error);
         if (error && *error) {
             // Cleanup
-            delete self->priv->image.release();
+            delete priv->image.release();
             return FALSE;
         }
 
         return TRUE;
     } catch (Exiv2::Error &e) {
-        delete self->priv->image.release();
+        delete priv->image.release();
         error << e;
     } catch (std::exception& e) {
         error << e;
@@ -384,14 +383,15 @@ gboolean gexiv2_metadata_from_app1_segment(GExiv2Metadata* self, const guint8* d
 
 static gboolean gexiv2_metadata_save_internal (GExiv2Metadata *self, image_ptr image, GError **error) {
     g_return_val_if_fail(GEXIV2_IS_METADATA(self), FALSE);
-    g_return_val_if_fail(self->priv != nullptr, FALSE);
-    g_return_val_if_fail(self->priv->image.get() != nullptr, FALSE);
+    auto* priv = (GExiv2MetadataPrivate*) gexiv2_metadata_get_instance_private(self);
+
+    g_return_val_if_fail(priv != nullptr, FALSE);
+    g_return_val_if_fail(priv->image.get() != nullptr, FALSE);
     g_return_val_if_fail(error == nullptr || *error == nullptr, FALSE);
 
     if (image.get() == nullptr || !image->good()) {
-        g_set_error_literal (error, g_quark_from_string ("GExiv2"),
-            501, "format seems not to be supported");
-        
+        g_set_error_literal(error, g_quark_from_string("GExiv2"), 501, "format seems not to be supported");
+
         return FALSE;
     }
 
@@ -405,42 +405,42 @@ static gboolean gexiv2_metadata_save_internal (GExiv2Metadata *self, image_ptr i
              */
             if (image->mimeType() == "image/tiff") {
                 // FIXME
-                /*Exiv2::ExifData new_exif_data = self->priv->exif_data;
+                /*Exiv2::ExifData new_exif_data = priv->exif_data;
                 Exiv2::ExifData old_exif_data = image->getExifData ();
 
-                new_exif_data["Exif.Image.ImageWidth"];
-                new_exif_data["Exif.Image.ImageLength"];
-                new_exif_data["Exif.Image.BitsPerSample"];
-                new_exif_data["Exif.Image.Compression"];
-                new_exif_data["Exif.Image.PhotometricInterpretation"];
-                new_exif_data["Exif.Image.FillOrder"];
-                new_exif_data["Exif.Image.SamplesPerPixel"];
-                new_exif_data["Exif.Image.StripOffsets"];
-                new_exif_data["Exif.Image.RowsPerStrip"];
-                new_exif_data["Exif.Image.StripByteCounts"];
-                new_exif_data["Exif.Image.XResolution"];
-                new_exif_data["Exif.Image.YResolution"];
-                new_exif_data["Exif.Image.PlanarConfiguration"];
-                new_exif_data["Exif.Image.ResolutionUnit"];
-                */
+                 new_exif_data["Exif.Image.ImageWidth"];
+                 new_exif_data["Exif.Image.ImageLength"];
+                 new_exif_data["Exif.Image.BitsPerSample"];
+                 new_exif_data["Exif.Image.Compression"];
+                 new_exif_data["Exif.Image.PhotometricInterpretation"];
+                 new_exif_data["Exif.Image.FillOrder"];
+                 new_exif_data["Exif.Image.SamplesPerPixel"];
+                 new_exif_data["Exif.Image.StripOffsets"];
+                 new_exif_data["Exif.Image.RowsPerStrip"];
+                 new_exif_data["Exif.Image.StripByteCounts"];
+                 new_exif_data["Exif.Image.XResolution"];
+                 new_exif_data["Exif.Image.YResolution"];
+                 new_exif_data["Exif.Image.PlanarConfiguration"];
+                 new_exif_data["Exif.Image.ResolutionUnit"];
+                 */
 
-                image->setExifData(self->priv->image->exifData());
+                image->setExifData(priv->image->exifData());
             } else {
-                image->setExifData(self->priv->image->exifData());
+                image->setExifData(priv->image->exifData());
             }
         }
 
         mode = image->checkMode(Exiv2::mdXmp);
         if (mode == Exiv2::amWrite || mode == Exiv2::amReadWrite)
-            image->setXmpData(self->priv->image->xmpData());
+            image->setXmpData(priv->image->xmpData());
 
         mode = image->checkMode(Exiv2::mdIptc);
         if (mode == Exiv2::amWrite || mode == Exiv2::amReadWrite)
-            image->setIptcData(self->priv->image->iptcData());
+            image->setIptcData(priv->image->iptcData());
 
         mode = image->checkMode(Exiv2::mdComment);
         if (mode == Exiv2::amWrite || mode == Exiv2::amReadWrite)
-            image->setComment(self->priv->comment);
+            image->setComment(priv->comment);
 
         image->writeMetadata();
 
@@ -481,7 +481,7 @@ gboolean gexiv2_metadata_save_external (GExiv2Metadata *self, const gchar *path,
 
 gboolean gexiv2_metadata_save_file (GExiv2Metadata *self, const gchar *path, GError **error) {
     g_return_val_if_fail (GEXIV2_IS_METADATA (self), FALSE);
-    
+
     try {
         GError* inner_error = nullptr;
 
@@ -499,17 +499,18 @@ gboolean gexiv2_metadata_save_file (GExiv2Metadata *self, const gchar *path, GEr
     catch (std::exception& e) {
         error << e;
     }
-    
+
     return FALSE;
 }
 
 GBytes* gexiv2_metadata_as_bytes(GExiv2Metadata* self, GBytes* bytes, GError** error) {
     g_return_val_if_fail(GEXIV2_IS_METADATA(self), FALSE);
+    auto* priv = (GExiv2MetadataPrivate*) gexiv2_metadata_get_instance_private(self);
 
     try {
         image_ptr image;
         if (bytes == nullptr) {
-            auto& internalIo = self->priv->image->io();
+            auto& internalIo = priv->image->io();
             auto data = internalIo.mmap();
             auto memIo = GExiv2::GioIo::ptr_type(new Exiv2::MemIo(data, internalIo.size()));
             internalIo.munmap();
@@ -545,7 +546,8 @@ gboolean gexiv2_metadata_try_has_tag(GExiv2Metadata *self, const gchar* tag, GEr
 gboolean gexiv2_metadata_has_tag(GExiv2Metadata* self, const gchar* tag, GError** error) {
     g_return_val_if_fail(GEXIV2_IS_METADATA(self), FALSE);
     g_return_val_if_fail(tag != nullptr, FALSE);
-    g_return_val_if_fail(self->priv->image.get() != nullptr, FALSE);
+    auto* priv = (GExiv2MetadataPrivate*) gexiv2_metadata_get_instance_private(self);
+    g_return_val_if_fail(priv->image.get() != nullptr, FALSE);
     g_return_val_if_fail(error == nullptr || *error == nullptr, FALSE);
 
     if (gexiv2_metadata_is_xmp_tag(tag))
@@ -570,7 +572,8 @@ gboolean gexiv2_metadata_try_clear_tag(GExiv2Metadata *self, const gchar* tag, G
 gboolean gexiv2_metadata_clear_tag(GExiv2Metadata* self, const gchar* tag, GError** error) {
     g_return_val_if_fail(GEXIV2_IS_METADATA(self), FALSE);
     g_return_val_if_fail(tag != nullptr, FALSE);
-    g_return_val_if_fail(self->priv->image.get() != nullptr, FALSE);
+    auto* priv = (GExiv2MetadataPrivate*) gexiv2_metadata_get_instance_private(self);
+    g_return_val_if_fail(priv->image.get() != nullptr, FALSE);
     g_return_val_if_fail(error == nullptr || *error == nullptr, FALSE);
 
     if (gexiv2_metadata_is_xmp_tag(tag))
@@ -590,8 +593,10 @@ gboolean gexiv2_metadata_clear_tag(GExiv2Metadata* self, const gchar* tag, GErro
 
 void gexiv2_metadata_clear (GExiv2Metadata *self) {
     g_return_if_fail(GEXIV2_IS_METADATA (self));
-    g_return_if_fail(self->priv != nullptr);
-    g_return_if_fail(self->priv->image.get() != nullptr);
+    auto* priv = (GExiv2MetadataPrivate*) gexiv2_metadata_get_instance_private(self);
+
+    g_return_if_fail(priv != nullptr);
+    g_return_if_fail(priv->image.get() != nullptr);
 
     gexiv2_metadata_clear_exif (self);
     gexiv2_metadata_clear_xmp (self);
@@ -599,14 +604,16 @@ void gexiv2_metadata_clear (GExiv2Metadata *self) {
 
     gexiv2_metadata_clear_comment (self);
 
-    self->priv->image->clearMetadata();
+    priv->image->clearMetadata();
 }
 
 const gchar* gexiv2_metadata_get_mime_type (GExiv2Metadata *self) {
     g_return_val_if_fail(GEXIV2_IS_METADATA(self), nullptr);
-    g_return_val_if_fail(self->priv != nullptr, nullptr);
+    auto* priv = (GExiv2MetadataPrivate*) gexiv2_metadata_get_instance_private(self);
 
-    return self->priv->mime_type;
+    g_return_val_if_fail(priv != nullptr, nullptr);
+
+    return priv->mime_type;
 }
 
 GExiv2Orientation gexiv2_metadata_try_get_orientation (GExiv2Metadata *self, GError **error) {
@@ -615,7 +622,9 @@ GExiv2Orientation gexiv2_metadata_try_get_orientation (GExiv2Metadata *self, GEr
 
 GExiv2Orientation gexiv2_metadata_get_orientation(GExiv2Metadata* self, GError** error) {
     g_return_val_if_fail(GEXIV2_IS_METADATA (self), GEXIV2_ORIENTATION_UNSPECIFIED);
-    g_return_val_if_fail(self->priv->image.get() != nullptr, GEXIV2_ORIENTATION_UNSPECIFIED);
+    auto* priv = (GExiv2MetadataPrivate*) gexiv2_metadata_get_instance_private(self);
+
+    g_return_val_if_fail(priv->image.get() != nullptr, GEXIV2_ORIENTATION_UNSPECIFIED);
     g_return_val_if_fail(error == nullptr || *error == nullptr, GEXIV2_ORIENTATION_UNSPECIFIED);
 
     if (gexiv2_metadata_has_exif(self)) {
@@ -665,7 +674,7 @@ GExiv2Orientation gexiv2_metadata_get_orientation(GExiv2Metadata* self, GError**
         if (orientation >= GEXIV2_ORIENTATION_MIN && orientation <= GEXIV2_ORIENTATION_MAX)
             return orientation;
     }
-    
+
     GExiv2Orientation orientation = GEXIV2_ORIENTATION_UNSPECIFIED;
     if (gexiv2_metadata_has_xmp_tag(self, "Xmp.tiff.ImageWidth")) {
         orientation = (GExiv2Orientation) gexiv2_metadata_get_xmp_tag_long(self, "Xmp.tiff.ImageWidth", error);
@@ -673,33 +682,40 @@ GExiv2Orientation gexiv2_metadata_get_orientation(GExiv2Metadata* self, GError**
             return GEXIV2_ORIENTATION_UNSPECIFIED;
         }
     }
-    
+
     return (orientation < GEXIV2_ORIENTATION_MIN || orientation > GEXIV2_ORIENTATION_MAX)
-        ? GEXIV2_ORIENTATION_UNSPECIFIED : orientation;
+               ? GEXIV2_ORIENTATION_UNSPECIFIED
+               : orientation;
 }
 
 gboolean gexiv2_metadata_get_supports_exif (GExiv2Metadata *self) {
     g_return_val_if_fail(GEXIV2_IS_METADATA (self), FALSE);
-    g_return_val_if_fail(self->priv != nullptr, FALSE);
-    g_return_val_if_fail(self->priv->image.get() != nullptr, FALSE);
+    auto* priv = (GExiv2MetadataPrivate*) gexiv2_metadata_get_instance_private(self);
 
-    return self->priv->supports_exif;
+    g_return_val_if_fail(priv != nullptr, FALSE);
+    g_return_val_if_fail(priv->image.get() != nullptr, FALSE);
+
+    return priv->supports_exif;
 }
 
 gboolean gexiv2_metadata_get_supports_xmp (GExiv2Metadata *self) {
     g_return_val_if_fail(GEXIV2_IS_METADATA (self), FALSE);
-    g_return_val_if_fail(self->priv != nullptr, FALSE);
-    g_return_val_if_fail(self->priv->image.get() != nullptr, FALSE);
+    auto* priv = (GExiv2MetadataPrivate*) gexiv2_metadata_get_instance_private(self);
 
-    return self->priv->supports_xmp;
+    g_return_val_if_fail(priv != nullptr, FALSE);
+    g_return_val_if_fail(priv->image.get() != nullptr, FALSE);
+
+    return priv->supports_xmp;
 }
 
 gboolean gexiv2_metadata_get_supports_iptc (GExiv2Metadata *self) {
     g_return_val_if_fail(GEXIV2_IS_METADATA (self), FALSE);
-    g_return_val_if_fail(self->priv != nullptr, FALSE);
-    g_return_val_if_fail(self->priv->image.get() != nullptr, FALSE);
+    auto* priv = (GExiv2MetadataPrivate*) gexiv2_metadata_get_instance_private(self);
 
-    return self->priv->supports_iptc;
+    g_return_val_if_fail(priv != nullptr, FALSE);
+    g_return_val_if_fail(priv->image.get() != nullptr, FALSE);
+
+    return priv->supports_iptc;
 }
 
 void gexiv2_metadata_try_set_orientation (GExiv2Metadata *self, GExiv2Orientation orientation, GError **error) {
@@ -708,14 +724,16 @@ void gexiv2_metadata_try_set_orientation (GExiv2Metadata *self, GExiv2Orientatio
 
 void gexiv2_metadata_set_orientation(GExiv2Metadata* self, GExiv2Orientation orientation, GError** error) {
     g_return_if_fail(GEXIV2_IS_METADATA (self));
-    g_return_if_fail(self->priv->image.get() != nullptr);
+    auto* priv = (GExiv2MetadataPrivate*) gexiv2_metadata_get_instance_private(self);
+
+    g_return_if_fail(priv->image.get() != nullptr);
     g_return_if_fail(orientation <= GEXIV2_ORIENTATION_ROT_270);
     g_return_if_fail(orientation >= GEXIV2_ORIENTATION_UNSPECIFIED);
     g_return_if_fail(error == nullptr || *error == nullptr);
 
     try {
-        Exiv2::ExifData& exif_data = self->priv->image->exifData();
-        Exiv2::XmpData& xmp_data = self->priv->image->xmpData();
+        Exiv2::ExifData& exif_data = priv->image->exifData();
+        Exiv2::XmpData& xmp_data = priv->image->xmpData();
 
         exif_data["Exif.Image.Orientation"] = static_cast<uint16_t>(orientation);
         xmp_data["Xmp.tiff.Orientation"] = static_cast<uint16_t>(orientation);
@@ -731,18 +749,22 @@ void gexiv2_metadata_set_orientation(GExiv2Metadata* self, GExiv2Orientation ori
 
 gint gexiv2_metadata_get_pixel_width (GExiv2Metadata *self) {
     g_return_val_if_fail(GEXIV2_IS_METADATA (self), -1);
-    g_return_val_if_fail(self->priv != nullptr, -1);
-    g_return_val_if_fail(self->priv->image.get() != nullptr, -1);
+    auto* priv = (GExiv2MetadataPrivate*) gexiv2_metadata_get_instance_private(self);
 
-    return self->priv->pixel_width;
+    g_return_val_if_fail(priv != nullptr, -1);
+    g_return_val_if_fail(priv->image.get() != nullptr, -1);
+
+    return priv->pixel_width;
 }
 
 gint gexiv2_metadata_get_pixel_height (GExiv2Metadata *self) {
     g_return_val_if_fail (GEXIV2_IS_METADATA (self), -1);
-    g_return_val_if_fail(self->priv != nullptr, -1);
-    g_return_val_if_fail(self->priv->image.get() != nullptr, -1);
+    auto* priv = (GExiv2MetadataPrivate*) gexiv2_metadata_get_instance_private(self);
 
-    return self->priv->pixel_height;
+    g_return_val_if_fail(priv != nullptr, -1);
+    g_return_val_if_fail(priv->image.get() != nullptr, -1);
+
+    return priv->pixel_height;
 }
 
 gint gexiv2_metadata_try_get_metadata_pixel_width (GExiv2Metadata *self, GError **error) {
@@ -751,7 +773,9 @@ gint gexiv2_metadata_try_get_metadata_pixel_width (GExiv2Metadata *self, GError 
 
 gint gexiv2_metadata_get_metadata_pixel_width(GExiv2Metadata* self, GError** error) {
     g_return_val_if_fail (GEXIV2_IS_METADATA (self), -1);
-    g_return_val_if_fail(self->priv->image.get() != nullptr, -1);
+    auto* priv = (GExiv2MetadataPrivate*) gexiv2_metadata_get_instance_private(self);
+
+    g_return_val_if_fail(priv->image.get() != nullptr, -1);
     g_return_val_if_fail(error == nullptr || *error == nullptr, -1);
 
     if (gexiv2_metadata_has_exif(self)) {
@@ -761,7 +785,7 @@ gint gexiv2_metadata_get_metadata_pixel_width(GExiv2Metadata* self, GError** err
         if (gexiv2_metadata_has_exif_tag(self, "Exif.Image.ImageWidth"))
             return gexiv2_metadata_get_exif_tag_long(self, "Exif.Image.ImageWidth", error);
     }
-    
+
     if (gexiv2_metadata_has_xmp(self)) {
         if (gexiv2_metadata_has_xmp_tag(self, "Xmp.tiff.ImageWidth"))
             return gexiv2_metadata_get_xmp_tag_long(self, "Xmp.tiff.ImageWidth", error);
@@ -769,7 +793,7 @@ gint gexiv2_metadata_get_metadata_pixel_width(GExiv2Metadata* self, GError** err
         if (gexiv2_metadata_has_xmp_tag(self, "Xmp.exif.PixelXDimension"))
             return gexiv2_metadata_get_xmp_tag_long(self, "Xmp.exif.PixelXDimension", error);
     }
-    
+
     return -1;
 }
 
@@ -779,7 +803,9 @@ gint gexiv2_metadata_try_get_metadata_pixel_height (GExiv2Metadata *self, GError
 
 gint gexiv2_metadata_get_metadata_pixel_height(GExiv2Metadata* self, GError** error) {
     g_return_val_if_fail (GEXIV2_IS_METADATA (self), -1);
-    g_return_val_if_fail(self->priv->image.get() != nullptr, -1);
+
+    auto* priv = (GExiv2MetadataPrivate*) gexiv2_metadata_get_instance_private(self);
+    g_return_val_if_fail(priv->image.get() != nullptr, -1);
     g_return_val_if_fail(error == nullptr || *error == nullptr, -1);
 
     if (gexiv2_metadata_has_exif(self)) {
@@ -789,7 +815,7 @@ gint gexiv2_metadata_get_metadata_pixel_height(GExiv2Metadata* self, GError** er
         if (gexiv2_metadata_has_exif_tag(self, "Exif.Image.ImageLength"))
             return gexiv2_metadata_get_exif_tag_long(self, "Exif.Image.ImageLength", error);
     }
-    
+
     if (gexiv2_metadata_has_xmp(self)) {
         if (gexiv2_metadata_has_xmp_tag(self, "Xmp.tiff.ImageHeight"))
             return gexiv2_metadata_get_xmp_tag_long(self, "Xmp.tiff.ImageHeight", error);
@@ -797,7 +823,7 @@ gint gexiv2_metadata_get_metadata_pixel_height(GExiv2Metadata* self, GError** er
         if (gexiv2_metadata_has_xmp_tag(self, "Xmp.exif.PixelYDimension"))
             return gexiv2_metadata_get_xmp_tag_long(self, "Xmp.exif.PixelYDimension", error);
     }
-    
+
     return -1;
 }
 
@@ -807,12 +833,14 @@ void gexiv2_metadata_try_set_metadata_pixel_width (GExiv2Metadata *self, gint wi
 
 void gexiv2_metadata_set_metadata_pixel_width(GExiv2Metadata* self, gint width, GError** error) {
     g_return_if_fail(GEXIV2_IS_METADATA (self));
-    g_return_if_fail(self->priv->image.get() != nullptr);
+    auto* priv = (GExiv2MetadataPrivate*) gexiv2_metadata_get_instance_private(self);
+
+    g_return_if_fail(priv->image.get() != nullptr);
     g_return_if_fail(error == nullptr || *error == nullptr);
 
     try {
-        Exiv2::ExifData& exif_data = self->priv->image->exifData();
-        Exiv2::XmpData& xmp_data = self->priv->image->xmpData();
+        Exiv2::ExifData& exif_data = priv->image->exifData();
+        Exiv2::XmpData& xmp_data = priv->image->xmpData();
 
         exif_data["Exif.Photo.PixelXDimension"] = static_cast<uint32_t>(width);
         exif_data["Exif.Image.ImageWidth"] = static_cast<uint32_t>(width);
@@ -831,12 +859,14 @@ void gexiv2_metadata_try_set_metadata_pixel_height (GExiv2Metadata *self, gint h
 
 void gexiv2_metadata_set_metadata_pixel_height(GExiv2Metadata* self, gint height, GError** error) {
     g_return_if_fail(GEXIV2_IS_METADATA (self));
-    g_return_if_fail(self->priv->image.get() != NULL);
+    auto* priv = (GExiv2MetadataPrivate*) gexiv2_metadata_get_instance_private(self);
+
+    g_return_if_fail(priv->image.get() != NULL);
     g_return_if_fail(error == nullptr || *error == nullptr);
 
     try {
-        Exiv2::ExifData& exif_data = self->priv->image->exifData();
-        Exiv2::XmpData& xmp_data = self->priv->image->xmpData();
+        Exiv2::ExifData& exif_data = priv->image->exifData();
+        Exiv2::XmpData& xmp_data = priv->image->xmpData();
 
         exif_data["Exif.Photo.PixelYDimension"] = static_cast<uint32_t>(height);
         exif_data["Exif.Image.ImageLength"] = static_cast<uint32_t>(height);
@@ -855,10 +885,12 @@ gchar* gexiv2_metadata_try_get_comment (GExiv2Metadata *self, GError **error) {
 
 gchar* gexiv2_metadata_get_comment(GExiv2Metadata* self, GError** error) {
     g_return_val_if_fail(GEXIV2_IS_METADATA(self), nullptr);
-    g_return_val_if_fail(self->priv->image.get() != nullptr, nullptr);
+    auto* priv = (GExiv2MetadataPrivate*) gexiv2_metadata_get_instance_private(self);
+
+    g_return_val_if_fail(priv->image.get() != nullptr, nullptr);
     g_return_val_if_fail(error == nullptr || *error == nullptr, nullptr);
 
-    gchar* str = self->priv->comment;
+    gchar* str = priv->comment;
     if (str != nullptr && *str != '\0')
         return g_strdup(str);
 
@@ -931,14 +963,16 @@ void gexiv2_metadata_try_set_comment (GExiv2Metadata *self, const gchar* comment
 
 void gexiv2_metadata_set_comment(GExiv2Metadata* self, const gchar* comment, GError** error) {
     g_return_if_fail(GEXIV2_IS_METADATA (self));
-    g_return_if_fail(self->priv->image.get() != nullptr);
+    auto* priv = (GExiv2MetadataPrivate*) gexiv2_metadata_get_instance_private(self);
+
+    g_return_if_fail(priv->image.get() != nullptr);
     g_return_if_fail(comment != nullptr);
     g_return_if_fail(error == nullptr || *error == nullptr);
 
     try {
-        Exiv2::ExifData& exif_data = self->priv->image->exifData();
-        Exiv2::IptcData& iptc_data = self->priv->image->iptcData();
-        Exiv2::XmpData& xmp_data = self->priv->image->xmpData();
+        Exiv2::ExifData& exif_data = priv->image->exifData();
+        Exiv2::IptcData& iptc_data = priv->image->iptcData();
+        Exiv2::XmpData& xmp_data = priv->image->xmpData();
 
         gexiv2_metadata_set_comment_internal(self, comment);
 
@@ -958,7 +992,9 @@ void gexiv2_metadata_set_comment(GExiv2Metadata* self, const gchar* comment, GEr
 
 void gexiv2_metadata_clear_comment (GExiv2Metadata *self) {
     g_return_if_fail(GEXIV2_IS_METADATA (self));
-    g_return_if_fail(self->priv->image.get() != nullptr);
+    auto* priv = (GExiv2MetadataPrivate*) gexiv2_metadata_get_instance_private(self);
+
+    g_return_if_fail(priv->image.get() != nullptr);
 
     /* don't delete the comment field, merely empty it */
     gexiv2_metadata_set_comment_internal (self, "");
@@ -985,7 +1021,9 @@ gboolean gexiv2_metadata_is_iptc_tag(const gchar* tag) {
 gchar* gexiv2_metadata_get_tag_string (GExiv2Metadata *self, const gchar* tag, GError **error) {
     g_return_val_if_fail(GEXIV2_IS_METADATA (self), nullptr);
     g_return_val_if_fail(tag != nullptr, nullptr);
-    g_return_val_if_fail(self->priv->image.get() != nullptr, nullptr);
+    auto* priv = (GExiv2MetadataPrivate*) gexiv2_metadata_get_instance_private(self);
+
+    g_return_val_if_fail(priv->image.get() != nullptr, nullptr);
     g_return_val_if_fail(error == nullptr || *error == nullptr, nullptr);
 
     if (gexiv2_metadata_is_xmp_tag(tag))
@@ -1006,7 +1044,9 @@ gchar* gexiv2_metadata_get_tag_string (GExiv2Metadata *self, const gchar* tag, G
 gboolean gexiv2_metadata_set_tag_string (GExiv2Metadata *self, const gchar* tag, const gchar* value, GError **error) {
     g_return_val_if_fail(GEXIV2_IS_METADATA(self), FALSE);
     g_return_val_if_fail(tag != nullptr, FALSE);
-    g_return_val_if_fail(self->priv->image.get() != nullptr, FALSE);
+    auto* priv = (GExiv2MetadataPrivate*) gexiv2_metadata_get_instance_private(self);
+
+    g_return_val_if_fail(priv->image.get() != nullptr, FALSE);
     g_return_val_if_fail(error == nullptr || *error == nullptr, FALSE);
 
     if (gexiv2_metadata_is_xmp_tag(tag))
@@ -1035,7 +1075,9 @@ gboolean gexiv2_metadata_try_set_tag_string (GExiv2Metadata *self, const gchar* 
 gchar* gexiv2_metadata_get_tag_interpreted_string (GExiv2Metadata *self, const gchar* tag, GError **error) {
     g_return_val_if_fail(GEXIV2_IS_METADATA(self), nullptr);
     g_return_val_if_fail(tag != nullptr, nullptr);
-    g_return_val_if_fail(self->priv->image.get() != nullptr, nullptr);
+    auto* priv = (GExiv2MetadataPrivate*) gexiv2_metadata_get_instance_private(self);
+
+    g_return_val_if_fail(priv->image.get() != nullptr, nullptr);
     g_return_val_if_fail(error == nullptr || *error == nullptr, nullptr);
 
     if (gexiv2_metadata_is_xmp_tag(tag))
@@ -1060,7 +1102,9 @@ gchar* gexiv2_metadata_try_get_tag_interpreted_string (GExiv2Metadata *self, con
 gchar** gexiv2_metadata_get_tag_multiple(GExiv2Metadata *self, const gchar* tag, GError **error) {
     g_return_val_if_fail(GEXIV2_IS_METADATA(self), nullptr);
     g_return_val_if_fail(tag != nullptr, nullptr);
-    g_return_val_if_fail(self->priv->image.get() != nullptr, nullptr);
+    auto* priv = (GExiv2MetadataPrivate*) gexiv2_metadata_get_instance_private(self);
+
+    g_return_val_if_fail(priv->image.get() != nullptr, nullptr);
     g_return_val_if_fail(error == nullptr || *error == nullptr, nullptr);
 
     if (gexiv2_metadata_is_xmp_tag(tag))
@@ -1082,7 +1126,9 @@ gboolean gexiv2_metadata_set_tag_multiple(GExiv2Metadata *self, const gchar* tag
     g_return_val_if_fail(GEXIV2_IS_METADATA(self), FALSE);
     g_return_val_if_fail(tag != nullptr, FALSE);
     g_return_val_if_fail(values != nullptr, FALSE);
-    g_return_val_if_fail(self->priv->image.get() != nullptr, FALSE);
+    auto* priv = (GExiv2MetadataPrivate*) gexiv2_metadata_get_instance_private(self);
+
+    g_return_val_if_fail(priv->image.get() != nullptr, FALSE);
     g_return_val_if_fail(error == nullptr || *error == nullptr, FALSE);
 
     if (gexiv2_metadata_is_xmp_tag(tag))
@@ -1111,7 +1157,9 @@ gboolean gexiv2_metadata_try_set_tag_multiple(GExiv2Metadata *self, const gchar*
 glong gexiv2_metadata_get_tag_long(GExiv2Metadata *self, const gchar* tag, GError **error) {
     g_return_val_if_fail(GEXIV2_IS_METADATA(self), 0);
     g_return_val_if_fail(tag != nullptr, 0);
-    g_return_val_if_fail(self->priv->image.get() != nullptr, 0);
+    auto* priv = (GExiv2MetadataPrivate*) gexiv2_metadata_get_instance_private(self);
+
+    g_return_val_if_fail(priv->image.get() != nullptr, 0);
     g_return_val_if_fail(error == nullptr || *error == nullptr, 0);
 
     if (gexiv2_metadata_is_xmp_tag(tag))
@@ -1133,7 +1181,9 @@ glong gexiv2_metadata_try_get_tag_long(GExiv2Metadata *self, const gchar* tag, G
 gboolean gexiv2_metadata_set_tag_long(GExiv2Metadata *self, const gchar* tag, glong value, GError **error) {
     g_return_val_if_fail(GEXIV2_IS_METADATA(self), FALSE);
     g_return_val_if_fail(tag != nullptr, FALSE);
-    g_return_val_if_fail(self->priv->image.get() != nullptr, 0);
+    auto* priv = (GExiv2MetadataPrivate*) gexiv2_metadata_get_instance_private(self);
+
+    g_return_val_if_fail(priv->image.get() != nullptr, 0);
     g_return_val_if_fail(error == nullptr || *error == nullptr, FALSE);
 
     if (gexiv2_metadata_is_xmp_tag(tag))
@@ -1178,7 +1228,7 @@ gdouble gexiv2_metadata_get_fnumber(GExiv2Metadata* self, GError** error) {
             return -1.0;
 
         if (aperture_value == -1.0)
-          return fnumber;
+            return fnumber;
 
         fnumber = pow (2.0, aperture_value / 2.0);
     }
@@ -1204,14 +1254,17 @@ gint gexiv2_metadata_get_iso_speed(GExiv2Metadata* self, GError** error) {
 
 GExiv2PreviewProperties** gexiv2_metadata_get_preview_properties (GExiv2Metadata *self) {
     g_return_val_if_fail(GEXIV2_IS_METADATA(self), nullptr);
-    g_return_val_if_fail(self->priv != nullptr, nullptr);
-    g_return_val_if_fail(self->priv->image.get() != nullptr, nullptr);
+    auto* priv = (GExiv2MetadataPrivate*) gexiv2_metadata_get_instance_private(self);
 
-    return self->priv->preview_properties;
+    g_return_val_if_fail(priv != nullptr, nullptr);
+    g_return_val_if_fail(priv->image.get() != nullptr, nullptr);
+
+    return priv->preview_properties;
 }
 
-GExiv2PreviewImage* gexiv2_metadata_try_get_preview_image (GExiv2Metadata *self,
-    GExiv2PreviewProperties *props, GError **error) {
+GExiv2PreviewImage* gexiv2_metadata_try_get_preview_image(GExiv2Metadata* self,
+                                                          GExiv2PreviewProperties* props,
+                                                          GError** error) {
 
     return gexiv2_metadata_get_preview_image(self, props, error);
 }
@@ -1221,19 +1274,24 @@ GExiv2PreviewImage* gexiv2_metadata_get_preview_image(GExiv2Metadata* self,
                                                       GError** error) {
     g_return_val_if_fail(GEXIV2_IS_METADATA(self), nullptr);
     g_return_val_if_fail(GEXIV2_IS_PREVIEW_PROPERTIES(props), nullptr);
-    g_return_val_if_fail(self->priv->image.get() != nullptr, nullptr);
+    auto* priv = (GExiv2MetadataPrivate*) gexiv2_metadata_get_instance_private(self);
+
+    g_return_val_if_fail(priv->image.get() != nullptr, nullptr);
     g_return_val_if_fail(error == nullptr || *error == nullptr, nullptr);
 
-    return gexiv2_preview_image_new(self->priv->preview_manager, *props->priv->props, error);
+    auto* impl = gexiv2_preview_properties_get_impl(props);
+    return gexiv2_preview_image_new(priv->preview_manager, *impl, error);
 }
 
 gboolean gexiv2_metadata_get_exif_thumbnail (GExiv2Metadata *self, guint8** buffer, gint *size) {
     g_return_val_if_fail(GEXIV2_IS_METADATA(self), FALSE);
     g_return_val_if_fail(buffer != nullptr, FALSE);
     g_return_val_if_fail(size != nullptr, FALSE);
-    g_return_val_if_fail(self->priv->image.get() != nullptr, FALSE);
+    auto* priv = (GExiv2MetadataPrivate*) gexiv2_metadata_get_instance_private(self);
 
-    Exiv2::ExifThumb thumb = Exiv2::ExifThumb(self->priv->image->exifData());
+    g_return_val_if_fail(priv->image.get() != nullptr, FALSE);
+
+    Exiv2::ExifThumb thumb = Exiv2::ExifThumb(priv->image->exifData());
     auto buf = thumb.copy();
     *buffer = reinterpret_cast<guint8*>(g_malloc(buf.size()));
     std::copy(buf.begin(), buf.end(), *buffer);
@@ -1245,40 +1303,46 @@ gboolean gexiv2_metadata_get_exif_thumbnail (GExiv2Metadata *self, guint8** buff
 gboolean gexiv2_metadata_set_exif_thumbnail_from_file(GExiv2Metadata* self, const gchar* path, GError** error) {
     g_return_val_if_fail(GEXIV2_IS_METADATA(self), FALSE);
     g_return_val_if_fail(path != nullptr && g_utf8_strlen(path, -1) > 0, FALSE);
-    g_return_val_if_fail(self->priv->image.get() != nullptr, FALSE);
+    auto* priv = (GExiv2MetadataPrivate*) gexiv2_metadata_get_instance_private(self);
+
+    g_return_val_if_fail(priv->image.get() != nullptr, FALSE);
 
     try {
-        Exiv2::ExifThumb thumb = Exiv2::ExifThumb(self->priv->image->exifData());
+        Exiv2::ExifThumb thumb = Exiv2::ExifThumb(priv->image->exifData());
         thumb.setJpegThumbnail(std::string(path));
-        
+
         return TRUE;
     } catch (Exiv2::Error &e) {
         error << e;
     } catch (std::exception& e) {
         error << e;
     }
-    
+
     return FALSE;
 }
 
-void gexiv2_metadata_try_set_exif_thumbnail_from_buffer (GExiv2Metadata *self, const guint8 *buffer,
-    gint size, GError **error) {
+void gexiv2_metadata_try_set_exif_thumbnail_from_buffer(GExiv2Metadata* self,
+                                                        const guint8* buffer,
+                                                        gint size,
+                                                        GError** error) {
 
     gexiv2_metadata_set_exif_thumbnail_from_buffer(self, buffer, size, error);
 }
 
 void gexiv2_metadata_set_exif_thumbnail_from_buffer(GExiv2Metadata* self,
-                                                        const guint8* buffer,
-                                                        gint size,
-                                                        GError** error) {
+                                                    const guint8* buffer,
+                                                    gint size,
+                                                    GError** error) {
     g_return_if_fail(GEXIV2_IS_METADATA(self));
     g_return_if_fail(buffer != nullptr);
     g_return_if_fail(size > 0);
-    g_return_if_fail(self->priv->image.get() != nullptr);
+    auto* priv = (GExiv2MetadataPrivate*) gexiv2_metadata_get_instance_private(self);
+
+    g_return_if_fail(priv->image.get() != nullptr);
     g_return_if_fail(error == nullptr || *error == nullptr);
 
     try {
-        Exiv2::ExifThumb thumb = Exiv2::ExifThumb(self->priv->image->exifData());
+        Exiv2::ExifThumb thumb = Exiv2::ExifThumb(priv->image->exifData());
         thumb.setJpegThumbnail(buffer, size);
     } catch (Exiv2::Error& e) {
         error << e;
@@ -1293,11 +1357,13 @@ void gexiv2_metadata_try_erase_exif_thumbnail (GExiv2Metadata *self, GError **er
 
 void gexiv2_metadata_erase_exif_thumbnail(GExiv2Metadata* self, GError** error) {
     g_return_if_fail(GEXIV2_IS_METADATA(self));
-    g_return_if_fail(self->priv->image.get() != nullptr);
+    auto* priv = (GExiv2MetadataPrivate*) gexiv2_metadata_get_instance_private(self);
+
+    g_return_if_fail(priv->image.get() != nullptr);
     g_return_if_fail(error == nullptr || *error == nullptr);
 
     try {
-        Exiv2::ExifThumb thumb = Exiv2::ExifThumb(self->priv->image->exifData());
+        Exiv2::ExifThumb thumb = Exiv2::ExifThumb(priv->image->exifData());
         thumb.erase();
     } catch (Exiv2::Error& e) {
         error << e;
@@ -1380,8 +1446,10 @@ const gchar* gexiv2_metadata_try_get_tag_type (const gchar *tag, GError **error)
 
 gboolean gexiv2_metadata_tag_supports_multiple_values(GExiv2Metadata* self, const gchar* tag, GError** error) {
     g_return_val_if_fail(GEXIV2_IS_METADATA(self), FALSE);
-    g_return_val_if_fail(self->priv != nullptr, FALSE);
-    g_return_val_if_fail(self->priv->image.get() != nullptr, FALSE);
+    auto* priv = (GExiv2MetadataPrivate*) gexiv2_metadata_get_instance_private(self);
+
+    g_return_val_if_fail(priv != nullptr, FALSE);
+    g_return_val_if_fail(priv->image.get() != nullptr, FALSE);
     g_return_val_if_fail(tag != nullptr, FALSE);
     g_return_val_if_fail(error == nullptr || *error == nullptr, FALSE);
 
@@ -1408,7 +1476,9 @@ gboolean gexiv2_metadata_try_tag_supports_multiple_values(GExiv2Metadata* self, 
 GBytes* gexiv2_metadata_get_tag_raw(GExiv2Metadata *self, const gchar* tag, GError **error) {
     g_return_val_if_fail(GEXIV2_IS_METADATA(self), nullptr);
     g_return_val_if_fail(tag != nullptr, nullptr);
-    g_return_val_if_fail(self->priv->image.get() != nullptr, nullptr);
+    auto* priv = (GExiv2MetadataPrivate*) gexiv2_metadata_get_instance_private(self);
+
+    g_return_val_if_fail(priv->image.get() != nullptr, nullptr);
     g_return_val_if_fail(error == nullptr || *error == nullptr, nullptr);
 
     if (gexiv2_metadata_is_xmp_tag(tag))

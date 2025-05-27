@@ -25,26 +25,32 @@ G_BEGIN_DECLS
 
 gboolean gexiv2_metadata_has_xmp (GExiv2Metadata *self) {
     g_return_val_if_fail(GEXIV2_IS_METADATA (self), FALSE);
-    g_return_val_if_fail(self->priv != nullptr, FALSE);
-    g_return_val_if_fail(self->priv->image.get() != nullptr, FALSE);
+    auto* priv = gexiv2_priv(self);
 
-    return !(self->priv->image->xmpData().empty());
+    g_return_val_if_fail(priv != nullptr, FALSE);
+    g_return_val_if_fail(priv->image.get() != nullptr, FALSE);
+
+    return !(priv->image->xmpData().empty());
 }
 
 void gexiv2_metadata_clear_xmp(GExiv2Metadata *self) {
     g_return_if_fail(GEXIV2_IS_METADATA (self));
-    g_return_if_fail(self->priv->image.get() != nullptr);
+    auto* priv = gexiv2_priv(self);
 
-    self->priv->image->xmpData().clear();
+    g_return_if_fail(priv->image.get() != nullptr);
+
+    priv->image->xmpData().clear();
 }
 
 gchar *gexiv2_metadata_generate_xmp_packet(GExiv2Metadata *self,
     GExiv2XmpFormatFlags xmp_format_flags, guint32 padding, GError **error) {
     g_return_val_if_fail(GEXIV2_IS_METADATA (self), NULL);
-    g_return_val_if_fail(self->priv->image.get() != NULL, NULL);
+    auto* priv = gexiv2_priv(self);
+
+    g_return_val_if_fail(priv->image.get() != NULL, NULL);
     g_return_val_if_fail(error == nullptr || *error == nullptr, nullptr);
 
-    auto const& xmp_data = self->priv->image->xmpData();
+    auto const& xmp_data = priv->image->xmpData();
 
     try {
         std::string packet;
@@ -67,10 +73,12 @@ gchar *gexiv2_metadata_try_generate_xmp_packet(GExiv2Metadata *self,
 
 gchar *gexiv2_metadata_get_xmp_packet(GExiv2Metadata *self, GError **error) {
     g_return_val_if_fail(GEXIV2_IS_METADATA (self), NULL);
-    g_return_val_if_fail(self->priv->image.get() != NULL, NULL);
-    
+    auto* priv = gexiv2_priv(self);
+
+    g_return_val_if_fail(priv->image.get() != NULL, NULL);
+
     try {
-        return g_strdup(self->priv->image->xmpPacket().c_str());
+        return g_strdup(priv->image->xmpPacket().c_str());
     } catch (Exiv2::Error& e) {
         error << e;
     } catch (std::exception& e) {
@@ -87,10 +95,12 @@ gchar *gexiv2_metadata_try_get_xmp_packet(GExiv2Metadata *self, GError **error) 
 gboolean gexiv2_metadata_has_xmp_tag(GExiv2Metadata *self, const gchar* tag) {
     g_return_val_if_fail(GEXIV2_IS_METADATA(self), FALSE);
     g_return_val_if_fail(tag != nullptr, FALSE);
-    g_return_val_if_fail(self->priv->image.get() != nullptr, FALSE);
+    auto* priv = gexiv2_priv(self);
 
-    Exiv2::XmpData &xmp_data = self->priv->image->xmpData();
-    
+    g_return_val_if_fail(priv->image.get() != nullptr, FALSE);
+
+    Exiv2::XmpData& xmp_data = priv->image->xmpData();
+
     for (Exiv2::XmpData::iterator it = xmp_data.begin(); it != xmp_data.end(); ++it) {
         if (it->count() > 0 && g_ascii_strcasecmp(tag, it->key().c_str()) == 0)
             return TRUE;
@@ -102,10 +112,12 @@ gboolean gexiv2_metadata_has_xmp_tag(GExiv2Metadata *self, const gchar* tag) {
 gboolean gexiv2_metadata_clear_xmp_tag(GExiv2Metadata *self, const gchar* tag) {
     g_return_val_if_fail(GEXIV2_IS_METADATA(self), FALSE);
     g_return_val_if_fail(tag != nullptr, FALSE);
-    g_return_val_if_fail(self->priv->image.get() != nullptr, FALSE);
+    auto* priv = gexiv2_priv(self);
 
-    Exiv2::XmpData &xmp_data = self->priv->image->xmpData();
-    
+    g_return_val_if_fail(priv->image.get() != nullptr, FALSE);
+
+    Exiv2::XmpData& xmp_data = priv->image->xmpData();
+
     gboolean erased = FALSE;
     
     Exiv2::XmpData::iterator it = xmp_data.begin();
@@ -123,10 +135,12 @@ gboolean gexiv2_metadata_clear_xmp_tag(GExiv2Metadata *self, const gchar* tag) {
 
 gchar** gexiv2_metadata_get_xmp_tags (GExiv2Metadata *self) {
     g_return_val_if_fail(GEXIV2_IS_METADATA(self), nullptr);
-    g_return_val_if_fail(self->priv->image.get() != nullptr, nullptr);
+    auto* priv = gexiv2_priv(self);
+
+    g_return_val_if_fail(priv->image.get() != nullptr, nullptr);
 
     // get a copy of the original XmpData and sort it by key, preserving the original
-    Exiv2::XmpData xmp_data = Exiv2::XmpData(self->priv->image->xmpData());
+    Exiv2::XmpData xmp_data = Exiv2::XmpData(priv->image->xmpData());
     detail::sortMetadata(xmp_data);
 
     GSList* list = nullptr;
@@ -155,12 +169,14 @@ gchar** gexiv2_metadata_get_xmp_tags (GExiv2Metadata *self) {
 gchar* gexiv2_metadata_get_xmp_tag_string (GExiv2Metadata *self, const gchar* tag, GError **error) {
     g_return_val_if_fail(GEXIV2_IS_METADATA(self), nullptr);
     g_return_val_if_fail(tag != nullptr, nullptr);
-    g_return_val_if_fail(self->priv != nullptr, nullptr);
-    g_return_val_if_fail(self->priv->image.get() != nullptr, nullptr);
+    auto* priv = gexiv2_priv(self);
+
+    g_return_val_if_fail(priv != nullptr, nullptr);
+    g_return_val_if_fail(priv->image.get() != nullptr, nullptr);
     g_return_val_if_fail(error == nullptr || *error == nullptr, nullptr);
 
     try {
-        Exiv2::XmpData& xmp_data = self->priv->image->xmpData();
+        Exiv2::XmpData& xmp_data = priv->image->xmpData();
 
         Exiv2::XmpData::iterator it = xmp_data.findKey(Exiv2::XmpKey(tag));
         while (it != xmp_data.end() && it->count() == 0)
@@ -180,12 +196,14 @@ gchar* gexiv2_metadata_get_xmp_tag_string (GExiv2Metadata *self, const gchar* ta
 gchar* gexiv2_metadata_get_xmp_tag_interpreted_string (GExiv2Metadata *self, const gchar* tag, GError **error) {
     g_return_val_if_fail(GEXIV2_IS_METADATA(self), nullptr);
     g_return_val_if_fail(tag != nullptr, nullptr);
-    g_return_val_if_fail(self->priv != nullptr, nullptr);
-    g_return_val_if_fail(self->priv->image.get() != nullptr, nullptr);
+    auto* priv = gexiv2_priv(self);
+
+    g_return_val_if_fail(priv != nullptr, nullptr);
+    g_return_val_if_fail(priv->image.get() != nullptr, nullptr);
     g_return_val_if_fail(error == nullptr || *error == nullptr, nullptr);
 
     try {
-        Exiv2::XmpData& xmp_data = self->priv->image->xmpData();
+        Exiv2::XmpData& xmp_data = priv->image->xmpData();
 
         Exiv2::XmpData::iterator it = xmp_data.findKey(Exiv2::XmpKey(tag));
         while (it != xmp_data.end() && it->count() == 0)
@@ -209,11 +227,13 @@ gchar* gexiv2_metadata_get_xmp_tag_interpreted_string (GExiv2Metadata *self, con
 gboolean gexiv2_metadata_set_xmp_tag_struct (GExiv2Metadata *self, const gchar* tag, GExiv2StructureType type, GError **error) {
     g_return_val_if_fail(GEXIV2_IS_METADATA (self), FALSE);
     g_return_val_if_fail(tag != NULL, FALSE);
-    g_return_val_if_fail(self->priv->image.get() != NULL, FALSE);
+    auto* priv = gexiv2_priv(self);
+
+    g_return_val_if_fail(priv->image.get() != NULL, FALSE);
     g_return_val_if_fail(error == nullptr || *error == nullptr, FALSE);
 
     Exiv2::XmpTextValue tv("");
-    Exiv2::XmpData& xmp_data = self->priv->image->xmpData();
+    Exiv2::XmpData& xmp_data = priv->image->xmpData();
 
     switch (type) {
       case GEXIV2_STRUCTURE_XA_NONE:
@@ -260,12 +280,14 @@ gboolean gexiv2_metadata_set_xmp_tag_string (GExiv2Metadata *self, const gchar* 
     g_return_val_if_fail(GEXIV2_IS_METADATA (self), FALSE);
     g_return_val_if_fail(tag != NULL, FALSE);
     g_return_val_if_fail(value != NULL, FALSE);
-    g_return_val_if_fail(self->priv->image.get() != NULL, FALSE);
+    auto* priv = gexiv2_priv(self);
+
+    g_return_val_if_fail(priv->image.get() != NULL, FALSE);
     g_return_val_if_fail(error == nullptr || *error == nullptr, FALSE);
     
     try {
-        self->priv->image->xmpData()[tag] = value;
-        
+        priv->image->xmpData()[tag] = value;
+
         return TRUE;
     } catch (Exiv2::Error& e) {
         error << e;
@@ -279,12 +301,14 @@ gboolean gexiv2_metadata_set_xmp_tag_string (GExiv2Metadata *self, const gchar* 
 glong gexiv2_metadata_get_xmp_tag_long (GExiv2Metadata *self, const gchar* tag, GError **error) {
     g_return_val_if_fail(GEXIV2_IS_METADATA (self), 0);
     g_return_val_if_fail(tag != nullptr, 0);
-    g_return_val_if_fail(self->priv != nullptr, 0);
-    g_return_val_if_fail(self->priv->image.get() != nullptr, 0);
+    auto* priv = gexiv2_priv(self);
+
+    g_return_val_if_fail(priv != nullptr, 0);
+    g_return_val_if_fail(priv->image.get() != nullptr, 0);
     g_return_val_if_fail(error == nullptr || *error == nullptr, 0);
 
     try {
-        Exiv2::XmpData& xmp_data = self->priv->image->xmpData();
+        Exiv2::XmpData& xmp_data = priv->image->xmpData();
 
         Exiv2::XmpData::iterator it = xmp_data.findKey(Exiv2::XmpKey(tag));
         while (it != xmp_data.end() && it->count() == 0)
@@ -304,12 +328,14 @@ glong gexiv2_metadata_get_xmp_tag_long (GExiv2Metadata *self, const gchar* tag, 
 gboolean gexiv2_metadata_set_xmp_tag_long (GExiv2Metadata *self, const gchar* tag, glong value, GError **error) {
     g_return_val_if_fail(GEXIV2_IS_METADATA (self), FALSE);
     g_return_val_if_fail(tag != NULL, FALSE);
-    g_return_val_if_fail(self->priv->image.get() != NULL, FALSE);
+    auto* priv = gexiv2_priv(self);
+
+    g_return_val_if_fail(priv->image.get() != NULL, FALSE);
     g_return_val_if_fail(error == nullptr || *error == nullptr, FALSE);
     
     try {
-        self->priv->image->xmpData()[tag] = value;
-        
+        priv->image->xmpData()[tag] = value;
+
         return TRUE;
     } catch (Exiv2::Error& e) {
         error << e;
@@ -323,14 +349,16 @@ gboolean gexiv2_metadata_set_xmp_tag_long (GExiv2Metadata *self, const gchar* ta
 gchar** gexiv2_metadata_get_xmp_tag_multiple(GExiv2Metadata* self, const gchar* tag, GError** error) {
     g_return_val_if_fail(GEXIV2_IS_METADATA(self), nullptr);
     g_return_val_if_fail(tag != nullptr, nullptr);
-    g_return_val_if_fail(self->priv != nullptr, nullptr);
-    g_return_val_if_fail(self->priv->image.get() != nullptr, nullptr);
+    auto* priv = gexiv2_priv(self);
+
+    g_return_val_if_fail(priv != nullptr, nullptr);
+    g_return_val_if_fail(priv->image.get() != nullptr, nullptr);
     g_return_val_if_fail(error == nullptr || *error == nullptr, nullptr);
 
     gchar** array = nullptr; // Return value
 
     try {
-        Exiv2::XmpData& xmp_data = self->priv->image->xmpData();
+        Exiv2::XmpData& xmp_data = priv->image->xmpData();
 
         const Exiv2::XmpKey key = Exiv2::XmpKey(tag);
         auto it = xmp_data.findKey(key);
@@ -408,12 +436,14 @@ gchar** gexiv2_metadata_get_xmp_tag_multiple(GExiv2Metadata* self, const gchar* 
 gchar** gexiv2_metadata_get_xmp_tag_multiple_deprecated (GExiv2Metadata *self, const gchar* tag, GError **error) {
     g_return_val_if_fail(GEXIV2_IS_METADATA (self), nullptr);
     g_return_val_if_fail(tag != nullptr, nullptr);
-    g_return_val_if_fail(self->priv != nullptr, nullptr);
-    g_return_val_if_fail(self->priv->image.get() != nullptr, nullptr);
+    auto* priv = gexiv2_priv(self);
+
+    g_return_val_if_fail(priv != nullptr, nullptr);
+    g_return_val_if_fail(priv->image.get() != nullptr, nullptr);
     g_return_val_if_fail(error == nullptr || *error == nullptr, nullptr);
 
     try {
-        Exiv2::XmpData& xmp_data = self->priv->image->xmpData();
+        Exiv2::XmpData& xmp_data = priv->image->xmpData();
 
         Exiv2::XmpKey key = Exiv2::XmpKey(tag);
         Exiv2::XmpData::iterator it = xmp_data.findKey(key);
@@ -448,12 +478,14 @@ gboolean gexiv2_metadata_set_xmp_tag_multiple (GExiv2Metadata *self, const gchar
     g_return_val_if_fail(GEXIV2_IS_METADATA (self), FALSE);
     g_return_val_if_fail(tag != nullptr, FALSE);
     g_return_val_if_fail(values != nullptr, FALSE);
-    g_return_val_if_fail(self->priv != nullptr, FALSE);
-    g_return_val_if_fail(self->priv->image.get() != nullptr, FALSE);
+    auto* priv = gexiv2_priv(self);
+
+    g_return_val_if_fail(priv != nullptr, FALSE);
+    g_return_val_if_fail(priv->image.get() != nullptr, FALSE);
     g_return_val_if_fail(error == nullptr || *error == nullptr, FALSE);
     
     try {
-        Exiv2::XmpData& xmp_data = self->priv->image->xmpData();
+        Exiv2::XmpData& xmp_data = priv->image->xmpData();
 
         /* first clear existing tag */
         Exiv2::XmpData::iterator it = xmp_data.findKey(Exiv2::XmpKey(tag));
@@ -527,8 +559,10 @@ const gchar* gexiv2_metadata_get_xmp_tag_type (const gchar* tag, GError **error)
 
 gboolean gexiv2_metadata_xmp_tag_supports_multiple_values(GExiv2Metadata* self, const gchar* tag, GError** error) {
     g_return_val_if_fail(GEXIV2_IS_METADATA(self), FALSE);
-    g_return_val_if_fail(self->priv != nullptr, FALSE);
-    g_return_val_if_fail(self->priv->image.get() != nullptr, FALSE);
+    auto* priv = gexiv2_priv(self);
+
+    g_return_val_if_fail(priv != nullptr, FALSE);
+    g_return_val_if_fail(priv->image.get() != nullptr, FALSE);
     g_return_val_if_fail(tag != nullptr, FALSE);
     g_return_val_if_fail(error == nullptr || *error == nullptr, FALSE);
 
@@ -551,7 +585,7 @@ gboolean gexiv2_metadata_xmp_tag_supports_multiple_values(GExiv2Metadata* self, 
         // "Xmp.dc.TagDoesNotExist").
         // For consistency with the `_supports_multiple_values` Exif and Iptc functions,
         // check if @tag exists - Note: all built-in tags have a label.
-        const auto& xmp_data = self->priv->image->xmpData();
+        const auto& xmp_data = priv->image->xmpData();
 
         if (g_ascii_strcasecmp(type, "XmpText") == 0 && gexiv2_metadata_get_xmp_tag_label(tag, error) == nullptr &&
             xmp_data.findKey(key) == xmp_data.end()) {
@@ -573,12 +607,14 @@ gboolean gexiv2_metadata_xmp_tag_supports_multiple_values(GExiv2Metadata* self, 
 GBytes* gexiv2_metadata_get_xmp_tag_raw (GExiv2Metadata *self, const gchar* tag, GError **error) {
     g_return_val_if_fail(GEXIV2_IS_METADATA(self), nullptr);
     g_return_val_if_fail(tag != nullptr, nullptr);
-    g_return_val_if_fail(self->priv != nullptr, nullptr);
-    g_return_val_if_fail(self->priv->image.get() != nullptr, nullptr);
+    auto* priv = gexiv2_priv(self);
+
+    g_return_val_if_fail(priv != nullptr, nullptr);
+    g_return_val_if_fail(priv->image.get() != nullptr, nullptr);
     g_return_val_if_fail(error == nullptr || *error == nullptr, nullptr);
 
     try {
-        Exiv2::XmpData& xmp_data = self->priv->image->xmpData();
+        Exiv2::XmpData& xmp_data = priv->image->xmpData();
 
         Exiv2::XmpData::iterator it = xmp_data.findKey(Exiv2::XmpKey(tag));
         while (it != xmp_data.end() && it->count() == 0)

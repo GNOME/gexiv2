@@ -18,11 +18,11 @@ G_BEGIN_DECLS
 struct _GExiv2PreviewPropertiesPrivate
 {
   Exiv2::PreviewProperties *props;
+  Exiv2::PreviewManager* manager;
 };
 
-
-G_GNUC_INTERNAL GExiv2PreviewProperties* gexiv2_preview_properties_new (Exiv2::PreviewProperties &props);
-G_GNUC_INTERNAL void gexiv2_preview_properties_free(GExiv2PreviewProperties *self);
+G_GNUC_INTERNAL GExiv2PreviewProperties* gexiv2_preview_properties_new(Exiv2::PreviewProperties& props);
+G_GNUC_INTERNAL Exiv2::PreviewProperties* gexiv2_preview_properties_get_impl(GExiv2PreviewProperties* props);
 
 G_END_DECLS
 

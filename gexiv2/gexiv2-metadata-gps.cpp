@@ -48,7 +48,9 @@ private:
 
 gdouble gexiv2_metadata_get_gps_longitude (GExiv2Metadata *self, GError **error) {
     g_return_val_if_fail (GEXIV2_IS_METADATA (self), FALSE);
-    g_return_val_if_fail (self->priv->image.get() != NULL, FALSE);
+    auto* priv = gexiv2_priv(self);
+
+    g_return_val_if_fail(priv->image.get() != NULL, FALSE);
     g_return_val_if_fail(error == nullptr || *error == nullptr, FALSE);
 
     gdouble longitude = -std::numeric_limits<gdouble>::infinity();
@@ -63,7 +65,7 @@ gdouble gexiv2_metadata_get_gps_longitude (GExiv2Metadata *self, GError **error)
             return std::numeric_limits<gdouble>::quiet_NaN();
         }
 
-        Exiv2::ExifData& exif_data = self->priv->image->exifData();
+        Exiv2::ExifData& exif_data = priv->image->exifData();
         Exiv2::ExifKey key ("Exif.GPSInfo.GPSLongitude");
         Exiv2::ExifData::iterator it = exif_data.findKey (key);
 
@@ -98,7 +100,9 @@ gdouble gexiv2_metadata_get_gps_longitude (GExiv2Metadata *self, GError **error)
 
 gdouble gexiv2_metadata_get_gps_latitude (GExiv2Metadata *self, GError **error) {
     g_return_val_if_fail (GEXIV2_IS_METADATA (self), FALSE);
-    g_return_val_if_fail (self->priv->image.get() != NULL, FALSE);
+    auto* priv = gexiv2_priv(self);
+
+    g_return_val_if_fail(priv->image.get() != NULL, FALSE);
     g_return_val_if_fail(error == nullptr || *error == nullptr, FALSE);
 
     gdouble latitude = -std::numeric_limits<gdouble>::infinity();
@@ -112,7 +116,7 @@ gdouble gexiv2_metadata_get_gps_latitude (GExiv2Metadata *self, GError **error) 
             return std::numeric_limits<gdouble>::quiet_NaN();
         }
 
-        Exiv2::ExifData& exif_data = self->priv->image->exifData();
+        Exiv2::ExifData& exif_data = priv->image->exifData();
         Exiv2::ExifKey key ("Exif.GPSInfo.GPSLatitude");
         Exiv2::ExifData::iterator it = exif_data.findKey (key);
 
@@ -148,7 +152,9 @@ gdouble gexiv2_metadata_get_gps_latitude (GExiv2Metadata *self, GError **error) 
 
 gdouble gexiv2_metadata_get_gps_altitude(GExiv2Metadata* self, GError** error) {
     g_return_val_if_fail(GEXIV2_IS_METADATA (self), FALSE);
-    g_return_val_if_fail(self->priv->image.get() != NULL, FALSE);
+    auto* priv = gexiv2_priv(self);
+
+    g_return_val_if_fail(priv->image.get() != NULL, FALSE);
     g_return_val_if_fail(error == nullptr || *error == nullptr, FALSE);
 
     gdouble altitude = -std::numeric_limits<gdouble>::infinity();
@@ -161,7 +167,7 @@ gdouble gexiv2_metadata_get_gps_altitude(GExiv2Metadata* self, GError** error) {
             return std::numeric_limits<gdouble>::quiet_NaN();
         }
 
-        Exiv2::ExifData& exif_data = self->priv->image->exifData();
+        Exiv2::ExifData& exif_data = priv->image->exifData();
         Exiv2::ExifKey key ("Exif.GPSInfo.GPSAltitude");
         Exiv2::ExifData::iterator it = exif_data.findKey (key);
 
@@ -289,7 +295,9 @@ gboolean gexiv2_metadata_try_get_gps_info(GExiv2Metadata* self,
 gboolean gexiv2_metadata_set_gps_info (GExiv2Metadata *self, gdouble longitude, gdouble latitude,
     gdouble altitude, GError **error) {
     g_return_val_if_fail (GEXIV2_IS_METADATA (self), FALSE);
-    g_return_val_if_fail(self->priv->image.get() != NULL, FALSE);
+    auto* priv = gexiv2_priv(self);
+
+    g_return_val_if_fail(priv->image.get() != NULL, FALSE);
     g_return_val_if_fail(error == nullptr || *error == nullptr, FALSE);
 
     try {
@@ -316,11 +324,13 @@ gboolean gexiv2_metadata_try_set_gps_info (GExiv2Metadata *self, gdouble longitu
 gboolean gexiv2_metadata_update_gps_info (GExiv2Metadata *self, gdouble longitude, gdouble latitude,
     gdouble altitude, GError **error) {
     g_return_val_if_fail (GEXIV2_IS_METADATA (self), FALSE);
-    g_return_val_if_fail(self->priv->image.get() != NULL, FALSE);
+    auto* priv = gexiv2_priv(self);
+
+    g_return_val_if_fail(priv->image.get() != NULL, FALSE);
     g_return_val_if_fail(error == nullptr || *error == nullptr, FALSE);
 
     try {
-        Exiv2::ExifData& exif_data = self->priv->image->exifData();
+        Exiv2::ExifData& exif_data = priv->image->exifData();
 
         gchar buffer [100];
         gint deg, min, sec;
@@ -396,12 +406,14 @@ gboolean gexiv2_metadata_try_update_gps_info (GExiv2Metadata *self, gdouble long
 
 void gexiv2_metadata_delete_gps_info (GExiv2Metadata *self, GError **error) {
     g_return_if_fail(GEXIV2_IS_METADATA (self));
-    g_return_if_fail(self->priv->image.get() != NULL);
+    auto* priv = gexiv2_priv(self);
+
+    g_return_if_fail(priv->image.get() != NULL);
     g_return_if_fail(error == nullptr || *error == nullptr);
     
     try {
-        Exiv2::ExifData& exif_data = self->priv->image->exifData();
-        
+        Exiv2::ExifData& exif_data = priv->image->exifData();
+
         /* clear in exif data */
         Exiv2::ExifData::iterator exif_it = exif_data.begin();
         while (exif_it != exif_data.end()) {
@@ -420,8 +432,8 @@ void gexiv2_metadata_delete_gps_info (GExiv2Metadata *self, GError **error) {
      *         fails. Do we need this?
      */
     try {
-        Exiv2::XmpData& xmp_data = self->priv->image->xmpData();
-        
+        Exiv2::XmpData& xmp_data = priv->image->xmpData();
+
         /* clear in xmp data */
         Exiv2::XmpData::iterator xmp_it = xmp_data.begin();
         while (xmp_it != xmp_data.end()) {

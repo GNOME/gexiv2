@@ -119,7 +119,7 @@ void gexiv2_log_use_glib_logging(void) {
     gexiv2_log_set_handler(glib_log_handler);
 }
 
-gboolean gexiv2_log_is_handler_installed(void) {
+bool gexiv2_log_is_handler_installed(void) {
     return (installed_handler != nullptr);
 }
 

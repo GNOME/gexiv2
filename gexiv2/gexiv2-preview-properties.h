@@ -15,30 +15,9 @@
 
 G_BEGIN_DECLS
 
-#define GEXIV2_TYPE_PREVIEW_PROPERTIES \
-	(gexiv2_preview_properties_get_type ())
-	
-#define GEXIV2_PREVIEW_PROPERTIES(obj) \
-	(G_TYPE_CHECK_INSTANCE_CAST ((obj), GEXIV2_TYPE_PREVIEW_PROPERTIES, GExiv2PreviewProperties))
-	
-#define GEXIV2_IS_PREVIEW_PROPERTIES(obj) \
-	(G_TYPE_CHECK_INSTANCE_TYPE ((obj), GEXIV2_TYPE_PREVIEW_PROPERTIES))
-	
-#define GEXIV2_PREVIEW_PROPERTIES_CLASS(klass) \
-	(G_TYPE_CHECK_CLASS_CAST ((klass), GEXIV2_TYPE_PREVIEW_PROPERTIES, GExiv2PreviewPropertiesClass))
-	
-#define GEXIV2_IS_PREVIEW_PROPERTIES_CLASS(klass) \
-	(G_TYPE_CHECK_CLASS_TYPE ((klass), GEXIV2_TYPE_PREVIEW_PROPERTIES))
-	
-#define GEXIV2_PREVIEW_PROPERTIES_GET_CLASS(obj) \
-	(G_TYPE_INSTANCE_GET_CLASS ((obj), GEXIV2_TYPE_PREVIEW_PROPERTIES, GExiv2PreviewPropertiesClass))
-	
+#define GEXIV2_TYPE_PREVIEW_PROPERTIES (gexiv2_preview_properties_get_type())
 
-typedef struct _GExiv2PreviewProperties			GExiv2PreviewProperties;
-typedef struct _GExiv2PreviewPropertiesClass	GExiv2PreviewPropertiesClass;
-typedef struct _GExiv2PreviewPropertiesPrivate	GExiv2PreviewPropertiesPrivate;
-
-G_DEFINE_AUTOPTR_CLEANUP_FUNC(GExiv2PreviewProperties, g_object_unref)
+G_DECLARE_FINAL_TYPE(GExiv2PreviewProperties, gexiv2_preview_properties, GEXIV2, PREVIEW_PROPERTIES, GObject)
 
 /**
  * GExiv2PreviewProperties:
@@ -49,23 +28,6 @@ G_DEFINE_AUTOPTR_CLEANUP_FUNC(GExiv2PreviewProperties, g_object_unref)
  * used to describe the available image without the need of fetching the whole
  * image from the metadata.
  */
-struct _GExiv2PreviewProperties
-{
-	GObject parent_instance;
-
-	/*< private >*/
-	GExiv2PreviewPropertiesPrivate *priv;
-};
-
-struct _GExiv2PreviewPropertiesClass
-{
-	GObjectClass parent_class;
-};
-
-/* basic functions */
-
-GType 			gexiv2_preview_properties_get_type			(void);
-
 
 /* preview properties */
 

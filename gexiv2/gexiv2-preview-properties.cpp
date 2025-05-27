@@ -14,14 +14,21 @@
 
 G_BEGIN_DECLS
 
-G_DEFINE_TYPE_WITH_CODE (GExiv2PreviewProperties, gexiv2_preview_properties, G_TYPE_OBJECT, G_ADD_PRIVATE (GExiv2PreviewProperties));
+using GExiv2PreviewPropertiesPrivate = struct _GExiv2PreviewPropertiesPrivate;
+
+struct _GExiv2PreviewProperties {
+    GObject parent_instance;
+
+    GExiv2PreviewPropertiesPrivate* priv;
+};
+G_DEFINE_TYPE_WITH_PRIVATE(GExiv2PreviewProperties, gexiv2_preview_properties, G_TYPE_OBJECT);
 
 static void gexiv2_preview_properties_finalize (GObject *object);
 
 static void gexiv2_preview_properties_init (GExiv2PreviewProperties *self) {
     self->priv = (GExiv2PreviewPropertiesPrivate *) gexiv2_preview_properties_get_instance_private(self);
-    
-    self->priv->props = NULL;
+
+    self->priv->props = nullptr;
 }
 
 static void gexiv2_preview_properties_class_init (GExiv2PreviewPropertiesClass *klass) {
@@ -45,12 +52,6 @@ GExiv2PreviewProperties* gexiv2_preview_properties_new (Exiv2::PreviewProperties
     self->priv->props = new Exiv2::PreviewProperties(props);
     
     return self;
-}
-
-void gexiv2_preview_properties_free (GExiv2PreviewProperties *self) {
-    g_return_if_fail(GEXIV2_IS_PREVIEW_PROPERTIES(self));
-    
-    g_object_unref(self);
 }
 
 #define ACCESSOR(self, field, fail) \
@@ -78,4 +79,9 @@ guint32 gexiv2_preview_properties_get_height (GExiv2PreviewProperties *self) {
     ACCESSOR(self, height_, 0);
 }
 
+Exiv2::PreviewProperties* gexiv2_preview_properties_get_impl(GExiv2PreviewProperties* self) {
+    g_return_val_if_fail(GEXIV2_IS_PREVIEW_PROPERTIES(self), nullptr);
+
+    return self->priv->props;
+}
 G_END_DECLS
