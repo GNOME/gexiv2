@@ -15,6 +15,10 @@ gboolean gexiv2_initialize(void) {
     return Exiv2::XmpParser::initialize();
 }
 
+void gexiv2_shutdown(void) {
+    Exiv2::XmpParser::terminate();
+}
+
 gint gexiv2_get_version(void) {
     return GEXIV2_MAJOR_VERSION * 100 * 100 +
            GEXIV2_MINOR_VERSION * 100 +

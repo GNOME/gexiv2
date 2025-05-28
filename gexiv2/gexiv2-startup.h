@@ -23,7 +23,7 @@ G_BEGIN_DECLS
 /**
  * gexiv2_initialize:
  *
- * Initializes GExvi2.
+ * Initializes GExiv2.
  *
  * GExiv2 requires initialization before its methods are used.  In particular, this call must be
  * made in a thread-safe fashion.  Best practice is to call from the application's main thread and
@@ -33,6 +33,17 @@ G_BEGIN_DECLS
  * properly).
  */
 gboolean gexiv2_initialize(void);
+
+/**
+ * gexiv2_shutdown:
+ *
+ * Shutdown GExiv2.
+ *
+ * Shutdown GExiv2. Should be called in the same thread as gexiv2_initialize().
+ *
+ * Since: 0.16.0
+ */
+void gexiv2_shutdown(void);
 
 G_END_DECLS
 #endif
