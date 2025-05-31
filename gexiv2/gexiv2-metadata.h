@@ -223,6 +223,11 @@ gboolean		gexiv2_metadata_open_path			(GExiv2Metadata *self, const gchar *path, 
  * The buffer must be an image format supported by Exiv2. If called multiple times,
  * current metadata will be replaced by the content of the last file opened.
  *
+ * When called on an already filled meta-data object (i.e. one that has already
+ * been filled by a previous call of [method@GExiv2.Metadata.open_path]) and the
+ * opening of the new path fails, the object will not revert to its previous
+ * state but be in a similar state after calling [method@GExiv2.Metadata.new].
+ *
  * Returns: Boolean success indicator
  *
  */

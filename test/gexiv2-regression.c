@@ -226,11 +226,11 @@ static void test_ggo_xx(void)
     GError *error = NULL;
     char *tmp_file = NULL;
     char *comment = NULL;
-    GFile *src = NULL, *dest = NULL;
+    GFile* src = NULL;
+    GFile* dest = NULL;
 
     meta = gexiv2_metadata_new ();
     g_assert_nonnull (meta);
-
     result = gexiv2_metadata_open_path (meta, SAMPLE_PATH "/no-metadata.jpg", &error);
     g_assert_no_error(error);
     g_assert_true(result);
@@ -264,6 +264,7 @@ static void test_ggo_xx(void)
     g_object_unref (dest);
     g_free (tmp_file);
     g_free (comment);
+    g_object_unref(meta);
 }
 
 static void test_ggo_27(void)
@@ -340,6 +341,7 @@ static void test_ggo_66(void) {
     g_assert_nonnull(error);
     g_assert_false(result);
 
+    g_clear_error(&error);
     g_clear_object(&meta);
 }
 

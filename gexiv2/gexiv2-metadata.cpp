@@ -117,25 +117,30 @@ static void gexiv2_metadata_class_init (GExiv2MetadataClass *klass) {
     gobject_class->finalize = gexiv2_metadata_finalize;
 }
 
+static void gexiv2_metadata_free_impl(GExiv2MetadataPrivate* priv) {
+    delete priv->preview_manager;
 
-static void gexiv2_metadata_finalize (GObject *object) {
-    GExiv2Metadata *self = GEXIV2_METADATA (object);
-    
-    g_free (self->priv->comment);
-    g_free (self->priv->mime_type);
-    delete self->priv->preview_manager;
-    
-    if (self->priv->preview_properties != NULL) {
+    if (priv->preview_properties != NULL) {
         int ctr = 0;
-        while (self->priv->preview_properties[ctr] != NULL)
-            gexiv2_preview_properties_free(self->priv->preview_properties[ctr++]);
-        
-        g_free (self->priv->preview_properties);
+        while (priv->preview_properties[ctr] != NULL)
+            gexiv2_preview_properties_free(priv->preview_properties[ctr++]);
+
+        g_free(priv->preview_properties);
     }
-    
-    if (self->priv->image.get() != NULL)
-        self->priv->image.reset();
-    
+
+    if (priv->image.get() != NULL)
+        priv->image.reset();
+}
+
+static void gexiv2_metadata_finalize(GObject* object) {
+    GExiv2Metadata* self = GEXIV2_METADATA(object);
+    auto* priv = (GExiv2MetadataPrivate*) gexiv2_metadata_get_instance_private(self);
+
+    g_free(priv->comment);
+    g_free(priv->mime_type);
+
+    gexiv2_metadata_free_impl(priv);
+
     G_OBJECT_CLASS (gexiv2_metadata_parent_class)->finalize (object);
 }
 
@@ -168,6 +173,7 @@ static void gexiv2_metadata_init_internal(GExiv2Metadata* self, GError** error) 
     try {
 
         gexiv2_metadata_set_comment_internal(self, priv->image->comment().c_str());
+        g_clear_pointer(&priv->mime_type, g_free);
         priv->mime_type = g_strdup(priv->image->mimeType().c_str());
 
         priv->pixel_width = priv->image->pixelWidth();
@@ -259,6 +265,9 @@ static std::string convert_path(const char* path, GError** error) {
 
 gboolean gexiv2_metadata_open_path(GExiv2Metadata* self, const gchar* path, GError** error) {
     g_return_val_if_fail(GEXIV2_IS_METADATA(self), FALSE);
+
+    gexiv2_metadata_free_impl(self->priv);
+
     try {
         GError* inner_error = nullptr;
 
@@ -272,7 +281,6 @@ gboolean gexiv2_metadata_open_path(GExiv2Metadata* self, const gchar* path, GErr
 
         return gexiv2_metadata_open_internal (self, error);
     } catch (Exiv2::Error &e) {
-
         error << e;
     }
     catch (std::exception& e) {
@@ -284,7 +292,9 @@ gboolean gexiv2_metadata_open_path(GExiv2Metadata* self, const gchar* path, GErr
 
 gboolean gexiv2_metadata_open_buf(GExiv2Metadata* self, const guint8* data, glong n_data, GError** error) {
     g_return_val_if_fail (GEXIV2_IS_METADATA (self), FALSE);
-    
+
+    gexiv2_metadata_free_impl(self->priv);
+
     try {
         self->priv->image = Exiv2::ImageFactory::open (data, n_data);
         
@@ -301,10 +311,14 @@ gboolean gexiv2_metadata_open_buf(GExiv2Metadata* self, const guint8* data, glon
 gboolean gexiv2_metadata_from_stream(GExiv2Metadata *self, GInputStream *stream, GError **error) {
     g_return_val_if_fail (GEXIV2_IS_METADATA (self), FALSE);
 
+    gexiv2_metadata_free_impl(self->priv);
+
     if (!G_IS_SEEKABLE(stream) || !g_seekable_can_seek(G_SEEKABLE(stream))) {
         g_set_error_literal(error, G_IO_ERROR, G_IO_ERROR_INVAL, "Passed stream is not seekable");
         return false;
     }
+
+    gexiv2_metadata_free_impl(self->priv);
 
     try {
         GExiv2::GioIo::ptr_type gio_ptr{new GExiv2::GioIo(stream)};
@@ -333,7 +347,9 @@ gboolean gexiv2_metadata_from_app1_segment(GExiv2Metadata* self, const guint8* d
     g_return_val_if_fail(GEXIV2_IS_METADATA(self), FALSE);
     g_return_val_if_fail(data != nullptr, FALSE);
     g_return_val_if_fail(n_data > 0, FALSE);
-    
+
+    gexiv2_metadata_free_impl(self->priv);
+
     int offset = 0;
     while (offset < n_data - 1) {
         if ((data[offset] == 0x4D && data[offset + 1] == 0x4D)
