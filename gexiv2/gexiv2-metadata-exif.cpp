@@ -19,6 +19,7 @@
 
 #include <exiv2/exiv2.hpp>
 #include <glib-object.h>
+#include <iostream>
 #include <string>
 
 G_BEGIN_DECLS
@@ -222,8 +223,14 @@ gchar* gexiv2_metadata_get_exif_tag_interpreted_string (GExiv2Metadata *self, co
         
         if (it != exif_data.end()) {
             std::ostringstream os;
-            it->write (os, &exif_data);
-            
+            auto value = it->getValue();
+            const auto* comment_value = dynamic_cast<const Exiv2::CommentValue*>(value.get());
+            if (comment_value == nullptr) {
+                it->write(os, &exif_data);
+            } else {
+                os << comment_value->comment();
+            }
+
             return g_strdup (os.str ().c_str ());
         }
     } catch (Exiv2::Error& e) {
