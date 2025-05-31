@@ -603,10 +603,34 @@ static void test_nobug_gps(void) {
 
     result = gexiv2_metadata_try_get_gps_info(meta, &lon, &lat, &alt, &error);
     g_assert_no_error(error);
+    g_assert_cmpint(meta->parent_instance.ref_count, ==, 1);
+    g_object_unref(meta);
+}
+
+static void test_ggo_80() {
+    GExiv2Metadata* meta = NULL;
+    gboolean result = FALSE;
+    GError* error = NULL;
+    char* comment = NULL;
+
+    meta = gexiv2_metadata_new();
+    g_assert_nonnull(meta);
+    result = gexiv2_metadata_open_path(meta, SAMPLE_PATH "/encoded-comment.jpg", &error);
+    g_assert_no_error(error);
+
+    comment = gexiv2_metadata_get_comment(meta, &error);
+    g_assert_cmpstr(comment, ==, "This is a comment, äöüßßßßê漢字, some endcoding perhaps?");
+    g_assert_no_error(error);
+    g_assert_true(result);
+
+    g_free(comment);
+    g_object_unref(meta);
 }
 
 int main(int argc, char *argv[static argc + 1])
 {
+    gexiv2_initialize();
+
     g_test_init(&argc, &argv, NULL);
     g_test_add_func("/bugs/gnome/775249", test_bgo_775249);
     g_test_add_func("/bugs/gnome/730136", test_bgo_730136);
@@ -623,7 +647,12 @@ int main(int argc, char *argv[static argc + 1])
     g_test_add_func("/bugs/gnome/gitlab/60", test_ggo_66);
     g_test_add_func("/bugs/gnome/gitlab/69", test_ggo_69);
     g_test_add_func("/bugs/gnome/gitlab/70", test_ggo_70);
+    g_test_add_func("/bugs/gnome/gitlab/86", test_ggo_80);
     g_test_add_func("/bugs/gnome/nobug/01", test_nobug_gps);
 
-    return g_test_run();
+    int result = g_test_run();
+
+    gexiv2_shutdown();
+
+    return result;
 }
