@@ -277,7 +277,7 @@ refresh-doc:
   needs: ['docs']
   only:
     refs:
-    - 'maaster'
+    - 'master'
   script:
     - "curl -X POST -F token=${PAGES_TRIGGER_TOKEN} -F ref=pages https://gitlab.gnome.org/api/v4/projects/1534/trigger/pipeline"
 
