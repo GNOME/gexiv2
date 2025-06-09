@@ -142,6 +142,7 @@ build-fedora@x86_64:
 build-msys2-ucrt64@x86_64:
   only:
     - branches
+    - merge_requests
   stage: build
   needs: []
   tags:
