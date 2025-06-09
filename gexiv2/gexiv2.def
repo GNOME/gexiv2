@@ -149,3 +149,4 @@ gexiv2_preview_properties_get_mime_type
 gexiv2_preview_properties_get_size
 gexiv2_preview_properties_get_type
 gexiv2_preview_properties_get_width
+gexiv2_shutdown
