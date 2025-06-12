@@ -121,7 +121,7 @@ if get_option('introspection')
       install : true)
 
     if get_option('vapi')
-        vapi = gnome.generate_vapi('gexiv2',
+        vapi = gnome.generate_vapi('gexiv2-' + project_api_version,
                                sources : gir.get(0),
                                install : true,
                                packages: pc_deps)
