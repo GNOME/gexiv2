@@ -40,8 +40,7 @@ include:
     - component: "gitlab.gnome.org/GNOME/citemplates/release-service@master"
       inputs:
         dist-job-name: build-fedora@x86_64
-        # gexiv2 tags are always of the format {PROJECT_NAME}-{version}
-        tarball-artifact-path: "build/meson-dist/${CI_COMMIT_TAG}.tar.xz"
+        tarball-artifact-path: "build/meson-dist/gexiv2-${CI_COMMIT_TAG}.tar.xz"
     - project: "GNOME/citemplates"
       file: "templates/default-rules.yml"
 
