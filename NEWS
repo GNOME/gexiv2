@@ -1,3 +1,30 @@
+gexiv2 0.15.0 - 28 Jun 2025 (unstable)
+
+Attention:
+ * This release breaks API! pkgconfig files, vapi and include
+   folders are now installed with API versioning
+
+Changes in dependencies:
+ * Only supports exiv2 0.28 or later
+
+Other changes: 
+ * Deprecate _try API and have the api without _try return GError
+ * Remove old streamIO API
+ * Documentation is now built with gi-docgen
+ * Remove all functions deprecated in 0.14
+
+Bugs fixed in this release:
+ - https://gitlab.gnome.org/GNOME/gexiv2/issues/79
+ - https://gitlab.gnome.org/GNOME/gexiv2/issues/79
+ - https://gitlab.gnome.org/GNOME/gexiv2/issues/81
+ - https://gitlab.gnome.org/GNOME/gexiv2/issues/86
+
+All contributors to this release:
+ - Jens Georg <mail@jensge.org>
+ - Jens Georg <jens.georg@desy.de>
+ - Bartłomiej Piotrowski <b@bpiotrowski.pl>
+ - Doomsdayrs <doomsdayrs@gmail.com>
+
 gexiv2 0.14.2 - 24 Jul 2023 (stable)
 
  * Make compatible with exiv2 0.28 or later
