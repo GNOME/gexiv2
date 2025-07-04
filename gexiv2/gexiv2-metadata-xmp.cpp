@@ -412,7 +412,7 @@ gchar** gexiv2_metadata_get_xmp_tag_multiple(GExiv2Metadata* self, const gchar* 
                     const int SEPARATOR = 2; // ", "
                     const std::string temp = it->toString();
                     std::string::size_type pos1 = 0;
-                    std::string::size_type pos2 = temp.find(',', pos1);
+                    std::string::size_type pos2 = temp.find(", lang=", pos1);
 
                     array = g_new(gchar*, num_items + 1);
                     array[num_items] = nullptr;
