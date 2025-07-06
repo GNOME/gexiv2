@@ -219,6 +219,27 @@ static void test_bgo_790925(void)
 #endif
 }
 
+static void test_ggo_87(void) {
+    GExiv2Metadata* meta = NULL;
+    gboolean result = FALSE;
+    GError* error = NULL;
+
+    meta = gexiv2_metadata_new();
+    g_assert_nonnull(meta);
+    result = gexiv2_metadata_open_path(meta, SAMPLE_PATH "/description-with-comma.jpg", &error);
+
+    g_assert_no_error(error);
+    g_assert_true(result);
+
+    char** tags = gexiv2_metadata_try_get_tag_multiple(meta, "Xmp.dc.description", &error);
+    g_assert_no_error(error);
+    g_assert_nonnull(tags);
+
+    g_assert_cmpstr(tags[0], ==, "lang=\"x-default\" Elevator, test");
+
+    g_object_unref(meta);
+}
+
 static void test_ggo_xx(void)
 {
     GExiv2Metadata *meta = NULL;
@@ -548,6 +569,7 @@ int main(int argc, char *argv[static argc + 1])
     g_test_add_func("/bugs/gnome/gitlab/60", test_ggo_66);
     g_test_add_func("/bugs/gnome/gitlab/69", test_ggo_69);
     g_test_add_func("/bugs/gnome/gitlab/70", test_ggo_70);
+    g_test_add_func("/bugs/gnome/gitlab/87", test_ggo_87);
 
     return g_test_run();
 }
