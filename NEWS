@@ -1,3 +1,16 @@
+gexiv2 0.14.6 - 6 Jul 2025 (stable)
+ 
+ * Fix get_tag_multiple for tags that have LangAlt and contain ","
+ * Fix a memory leak when calling open_* multiple times on the same
+   Metadata object.
+
+Bugs fixed in this release:
+ - https://gitlab.gnome.org/GNOME/gexiv2/issues/87
+
+All contributors to this release:
+ - Jens Georg <mail@jensge.org>
+ - Jacob Boerema <jgboerema@gmail.com>
+
 gexiv2 0.14.5 - 25 May 2025 (stable)
  * Re-release to trigger release service
 
