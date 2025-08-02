@@ -1,3 +1,17 @@
+gexiv2 0.15.1 - 2 Aug 2025 (unstable)
+
+ * Remove charset= prefix 
+ * Fix issue with get_tag_multiple mis-interpreting tags with commas
+ * Modernize the GObject boilerplates
+ 
+Bugs fixed in this release:
+ - https://gitlab.gnome.org/GNOME/gexiv2/issues/80
+ - https://gitlab.gnome.org/GNOME/gexiv2/issues/87
+
+All contributors to this release:
+ - Jens Georg <mail@jensge.org>
+ - Jacob Boerema <jgboerema@gmail.com>
+
 gexiv2 0.15.0 - 28 Jun 2025 (unstable)
 
 Attention:
