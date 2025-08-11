@@ -44,7 +44,7 @@ enum_sources = gnome.mkenums('gexiv2-enums',
 
 install_headers(gexiv2_headers, subdir : header_folder)
 
-gexiv2 = library('gexiv2',
+gexiv2 = library('gexiv2-' + project_api_version,
                  ['gexiv2-metadata.cpp',
                   'gexiv2-metadata-exif.cpp',
                   'gexiv2-metadata-gps.cpp',
