@@ -1,7 +1,7 @@
 project(
     'gexiv2',
     ['c', 'cpp'],
-    version : '0.15.1',
+    version : '0.15.2',
     license: 'GPL-2.0-or-later',
     meson_version : '>=1.4',
     default_options : [

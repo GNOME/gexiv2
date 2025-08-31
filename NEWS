@@ -1,3 +1,11 @@
+gexiv2 0.15.2 - 31 Aug 2025 (unstable)
+
+ * Add api version to library to avoid paralell installation
+   conflict of unversioned .so
+
+All contributors to this release:
+ - Jens Georg <mail@jensge.org>
+
 gexiv2 0.15.1 - 2 Aug 2025 (unstable)
 
  * Remove charset= prefix 
