@@ -5,9 +5,11 @@
       EXIV2_REF: 'main'
   image: quay.io/gnome_infrastructure/gnome-runtime-images:gnome-49
   stage: build
-  only:
-    - schedules
-    - merge_requests
+  rules:
+    - if: '$CI_PIPELINE_SOURCE == "schedule"'
+    - if: '$CI_PIPELINE_SOURCE == "merge_request_event"'
+    - if: '$CI_COMMIT_REF_NAME =~ /^wip\/ci\//'
+    - when: never
   script:
     - sed build-aux/org.gnome.GExiv2.json.in -e "s/@EXIV2_REF@/${EXIV2_REF}/" > org.gnome.GExiv2.json
     - flatpak-builder build-dir org.gnome.GExiv2.json --stop-at=gexiv2 --user --disable-rofiles-fuse
