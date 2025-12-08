@@ -3,7 +3,7 @@
     - flatpak
   variables:
       EXIV2_REF: 'main'
-  image: quay.io/gnome_infrastructure/gnome-runtime-images:gnome-47
+  image: quay.io/gnome_infrastructure/gnome-runtime-images:gnome-49
   stage: build
   only:
     - schedules
