@@ -115,7 +115,7 @@ if get_option('introspection')
       nsversion : project_api_version,
       symbol_prefix : 'gexiv2',
       identifier_prefix : 'GExiv2',
-      export_packages : 'gexiv2',
+      export_packages : 'gexiv2-0.16',
       includes : ['GObject-2.0', 'Gio-2.0'],
       header : 'gexiv2/gexiv2.h',
       install : true)
